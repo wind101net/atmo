@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<project name="Atmo v2" default="default">
+
+	<property name="script-dir" value="${directory::get-current-directory()}" overwrite="false" />
+	<property name="root-dir" value="${directory::get-parent-directory(script-dir)}" overwrite="false" />
+	<property name="atmo-all-sln" value="${path::combine(root-dir,'atmo-all.sln')}" overwrite="false" />
+
+	<loadtasks assembly="${path::combine(nant::get-base-directory(),'..\..\nantcontrib\bin\NAnt.Contrib.Tasks.dll')}" />
+	
+	<target name="default" depends="build-all"></target>
+	
+	<target name="build-all">
+		<msbuild project="${atmo-all-sln}">
+		</msbuild>
+	</target>
+	
+</project>
