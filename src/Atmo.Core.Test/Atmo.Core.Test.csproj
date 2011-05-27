@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B90D6871-BE3B-456E-8A89-42775FC522BA}</ProjectGuid>
+    <ProjectGuid>{4B996AE9-F6ED-41AF-A0FD-DB459910FF63}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atmo</RootNamespace>
-    <AssemblyName>Atmo.Core</AssemblyName>
+    <RootNamespace>Atmo.Test</RootNamespace>
+    <AssemblyName>Atmo.Core.Test</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,11 +43,6 @@
     <Compile Include="..\AtmoAssemblyInfo.cs">
       <Link>Properties\AtmoAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Data\IDataStore.cs" />
-    <Compile Include="IDaq.cs" />
-    <Compile Include="IReadingRawValues.cs" />
-    <Compile Include="IReadingValues.cs" />
-    <Compile Include="ISensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
