@@ -56,5 +56,22 @@ namespace Atmo.Test {
 			Assert.AreEqual(98000, values.Pressure);
 		}
 
+		[Test]
+		public void FromDoubleValuesToRawValues() {
+			var values = new PackedSensorReadingValues(
+				temperature: 24.5,
+				pressure: 98000.0,
+				humidity: 0.505,
+				windDirection: 511.0,
+				windSpeed: 18.51
+			);
+
+			Assert.AreEqual(0x73B, values.RawWindSpeed);
+			Assert.AreEqual(0x1ff, values.RawWindDirection);
+			Assert.AreEqual(0x285, values.RawTemperature);
+			Assert.AreEqual(0x1f9, values.RawHumidity);
+			Assert.AreEqual(0xbf68, values.RawPressure);
+		}
+
 	}
 }
