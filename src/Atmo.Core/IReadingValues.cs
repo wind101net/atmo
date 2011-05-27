@@ -23,5 +23,10 @@
 
 namespace Atmo {
 	public interface IReadingValues {
+		double Temperature { get; }
+		double Pressure { get; }
+		double Humidity { get; }
+		double WindSpeed { get; }
+		double WindDirection { get; }
 	}
 }

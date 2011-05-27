@@ -21,7 +21,20 @@
 //
 // ================================================================================
 
+using System;
+
 namespace Atmo {
 	public interface IReadingRawValues {
+		[CLSCompliant(false)]
+		ushort RawTemperature { get; }
+		[CLSCompliant(false)]
+		ushort RawPressure { get; }
+		[CLSCompliant(false)]
+		ushort RawHumidity { get; }
+		[CLSCompliant(false)]
+		ushort RawWindSpeed { get; }
+		[CLSCompliant(false)]
+		ushort RawWindDirection { get; }
+
 	}
 }

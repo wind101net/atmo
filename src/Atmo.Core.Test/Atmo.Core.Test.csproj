@@ -32,6 +32,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,7 +44,14 @@
     <Compile Include="..\AtmoAssemblyInfo.cs">
       <Link>Properties\AtmoAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="PackedSensorRedingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">
+      <Project>{B90D6871-BE3B-456E-8A89-42775FC522BA}</Project>
+      <Name>Atmo.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
