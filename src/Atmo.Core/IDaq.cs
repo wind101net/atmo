@@ -21,8 +21,7 @@
 //
 // ================================================================================
 
-namespace Atmo.Data {
-	public interface IDataStore {
-
+namespace Atmo {
+	public interface IDaq {
 	}
 }

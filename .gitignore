@@ -1,0 +1,9 @@
+
+*.user
+/bin
+/_ReSharper.atmo-all
+*.suo
+*.vsp
+*.psess
+/src/*/obj
+*.cache
