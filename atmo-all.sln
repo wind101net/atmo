@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6EB8CD23
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmo.Core.Test", "src\Atmo.Core.Test\Atmo.Core.Test.csproj", "{4B996AE9-F6ED-41AF-A0FD-DB459910FF63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmo.UI.DevEx", "src\Atmo.UI.DevEx\Atmo.UI.DevEx.csproj", "{1A9A6AB0-3D36-48A7-988F-A3BFA6CC3380}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4B996AE9-F6ED-41AF-A0FD-DB459910FF63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B996AE9-F6ED-41AF-A0FD-DB459910FF63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B996AE9-F6ED-41AF-A0FD-DB459910FF63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A9A6AB0-3D36-48A7-988F-A3BFA6CC3380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A9A6AB0-3D36-48A7-988F-A3BFA6CC3380}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A9A6AB0-3D36-48A7-988F-A3BFA6CC3380}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A9A6AB0-3D36-48A7-988F-A3BFA6CC3380}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
