@@ -24,6 +24,7 @@
 using System;
 
 namespace Atmo {
+	[CLSCompliant(false)]
 	public interface IReadingRawValues {
 		[CLSCompliant(false)]
 		ushort RawTemperature { get; }
