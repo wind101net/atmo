@@ -17,7 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // 
-// Contact: Jan Barani at jan@baranidesign.com
+// Contact: Jan Barani mailto:jan@baranidesign.com
 //
 // ================================================================================
 
@@ -25,9 +25,6 @@ using System;
 
 namespace Atmo {
 
-	/// <summary>
-	/// 
-	/// </summary>
 	public struct PackedSensorReadingValues
 		: IReadingValues, IReadingRawValues
 	{

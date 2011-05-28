@@ -21,10 +21,30 @@
 //
 // ================================================================================
 
-namespace Atmo.Data {
+using NUnit.Framework;
 
+namespace Atmo.Test {
+	[TestFixture]
+	public class SensorReadingValuesTest {
 
-	public interface IDataStore {
+		[Test]
+		public void ConstructorGetTest() {
+
+			var values = new SensorReadingValues(
+				temperature: 11.1,
+				pressure: 22.2,
+				humidity: 33.3,
+				windDirection: 44.4,
+				windSpeed: 55.5
+			);
+
+			Assert.AreEqual(11.1, values.Temperature);
+			Assert.AreEqual(22.2, values.Pressure);
+			Assert.AreEqual(33.3, values.Humidity);
+			Assert.AreEqual(44.4, values.WindDirection);
+			Assert.AreEqual(55.5, values.WindSpeed);
+
+		}
 
 	}
 }

@@ -21,10 +21,43 @@
 //
 // ================================================================================
 
-namespace Atmo.Data {
+using System;
 
+namespace Atmo {
+	public class SensorReadingValues 
+		: IReadingValues {
 
-	public interface IDataStore {
+		/// <summary>
+		/// Creates an invalid reading value set.
+		/// </summary>
+		/// <returns>A reading value set with invalid values.</returns>
+		/// <remarks>All fields are set to Double.NaN.</remarks>
+		public static SensorReadingValues CreateInvalid() {
+			return new SensorReadingValues(Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+		}
 
+		public SensorReadingValues(
+			double temperature,
+			double pressure,
+			double humidity,
+			double windDirection,
+			double windSpeed
+		) {
+			Temperature = temperature;
+			Pressure = pressure;
+			Humidity = humidity;
+			WindDirection = windDirection;
+			WindSpeed = windSpeed;
+		}
+
+		public double Temperature { get; set; }
+
+		public double Pressure { get; set; }
+
+		public double Humidity { get; set; }
+
+		public double WindSpeed { get; set; }
+
+		public double WindDirection { get; set; }
 	}
 }

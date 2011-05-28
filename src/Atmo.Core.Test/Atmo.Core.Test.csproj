@@ -44,8 +44,9 @@
     <Compile Include="..\AtmoAssemblyInfo.cs">
       <Link>Properties\AtmoAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="PackedSensorRedingValuesTest.cs" />
+    <Compile Include="PackedSensorReadingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SensorReadingValuesTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">

@@ -17,11 +17,20 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // 
-// Contact: Jan Barani at jan@baranidesign.com
+// Contact: Jan Barani mailto:jan@baranidesign.com
 //
 // ================================================================================
 
+using System.Collections.Generic;
+
 namespace Atmo {
-	public interface IDaq {
+
+	/// <summary>
+	/// Represents a connection to a DAQ device.
+	/// </summary>
+	public interface IDaqConnection {
+
+		
+
 	}
 }
