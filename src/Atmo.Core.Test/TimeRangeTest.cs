@@ -21,49 +21,41 @@
 //
 // ================================================================================
 
+using NUnit.Framework;
 using System;
-using System.Windows.Forms;
-using System.IO;
+using System.Collections.Generic;
 
-namespace Atmo.UI.DevEx {
+namespace Atmo.Test {
+	
+	[TestFixture]
+	public class TimeRangeTest {
 
-	class ProgramContext : ApplicationContext {
+		private readonly List<DateTime> _times = new List<DateTime> {
+			new DateTime(2011,4,5,12,12,12,12),
+			new DateTime(1995,12,6,1,0,0),
+			new DateTime(1908,1,1,1,1,1), 
+		};
 
-		private readonly SplashForm _splashForm;
-		private readonly MainForm _mainForm;
+		public IEnumerable<DateTime> Times { get { return _times.AsReadOnly(); } }
 
-		public ProgramContext() {
-			_mainForm = new MainForm();
-			_mainForm.Closed += OnMainFormClosed;
-			_splashForm = new SplashForm(_mainForm);
-			_splashForm.Show(_mainForm);
+		[Test]
+		public void ConstructorLowHighSpanTest(
+			[ValueSource(typeof(TimeRangeTest),"Times")]
+			DateTime first,
+			[ValueSource(typeof(TimeRangeTest), "Times")]
+			DateTime second
+		) {
 
-			// TODO: replace with fade in
-			_mainForm.Show();
-			_splashForm.Close();
+			var range = new TimeRange(first, second);
+			
+			var low = first < second ? first : second;
+			var high = first < second ? second : first;
+
+			Assert.AreEqual(low, range.Low);
+			Assert.AreEqual(high, range.High);
+			Assert.AreEqual(high.Subtract(low), range.Span);
 		}
 
-	}
-
-	static class Program {
-
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main() {
-
-			var appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			if (!String.IsNullOrEmpty(appPath)) {
-				Directory.SetCurrentDirectory(appPath);
-			}
-
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			var context = new ProgramContext();
-			Application.Run(context);
-
-		}
 
 	}
 }

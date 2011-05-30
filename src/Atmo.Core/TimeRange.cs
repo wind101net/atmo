@@ -22,48 +22,25 @@
 // ================================================================================
 
 using System;
-using System.Windows.Forms;
-using System.IO;
 
-namespace Atmo.UI.DevEx {
+namespace Atmo {
+	public struct TimeRange {
 
-	class ProgramContext : ApplicationContext {
+		public readonly DateTime Low;
+		public readonly DateTime High;
 
-		private readonly SplashForm _splashForm;
-		private readonly MainForm _mainForm;
-
-		public ProgramContext() {
-			_mainForm = new MainForm();
-			_mainForm.Closed += OnMainFormClosed;
-			_splashForm = new SplashForm(_mainForm);
-			_splashForm.Show(_mainForm);
-
-			// TODO: replace with fade in
-			_mainForm.Show();
-			_splashForm.Close();
-		}
-
-	}
-
-	static class Program {
-
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main() {
-
-			var appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			if (!String.IsNullOrEmpty(appPath)) {
-				Directory.SetCurrentDirectory(appPath);
+		public TimeRange(DateTime a, DateTime b) {
+			if (a < b) {
+				Low = a;
+				High = b;
 			}
-
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			var context = new ProgramContext();
-			Application.Run(context);
-
+			else {
+				Low = b;
+				High = a;
+			}
 		}
+
+		public object Span { get { return High.Subtract(Low); } }
 
 	}
 }
