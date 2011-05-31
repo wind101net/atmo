@@ -44,6 +44,9 @@
     <Compile Include="..\AtmoAssemblyInfo.cs">
       <Link>Properties\AtmoAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DaqDataFileInfoTest.cs" />
+    <Compile Include="DaqDataFileReaderTest.cs" />
+    <Compile Include="DaqDataFileTestUtility.cs" />
     <Compile Include="PackedSensorReadingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SensorReadingValuesTest.cs" />
@@ -54,6 +57,12 @@
       <Project>{B90D6871-BE3B-456E-8A89-42775FC522BA}</Project>
       <Name>Atmo.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="A110518.DAT" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="A110516.DAT" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
