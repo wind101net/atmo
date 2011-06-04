@@ -7,3 +7,4 @@
 *.psess
 /src/*/obj
 *.cache
+/Sensor Data

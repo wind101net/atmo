@@ -35,7 +35,7 @@ namespace Atmo.Test {
 		public void TryConvert7ByteDateTimeFromBytesTest() {
 
 			DateTime stamp;
-			var result = DaqDataFileInfo.TryConvert7byteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0x13, 0x2e, 0x03 }, 0, out stamp);
+			var result = DaqDataFileInfo.TryConvert7ByteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0x13, 0x2e, 0x03 }, 0, out stamp);
 
 			Assert.IsTrue(result);
 			Assert.AreEqual(new DateTime(2010, 11, 18, 19, 46, 3), stamp);
@@ -46,7 +46,7 @@ namespace Atmo.Test {
 		public void TryConvert7ByteDateTimeFromBytesInvalidYearTest() {
 
 			DateTime stamp;
-			var result = DaqDataFileInfo.TryConvert7byteDateTime(new byte[] { 0xff, 0xda, 0x0b, 0x12, 0x13, 0x2e, 0x03 }, 0, out stamp);
+			var result = DaqDataFileInfo.TryConvert7ByteDateTime(new byte[] { 0xff, 0xda, 0x0b, 0x12, 0x13, 0x2e, 0x03 }, 0, out stamp);
 
 			Assert.IsFalse(result);
 			Assert.AreEqual(default(DateTime), stamp);
@@ -57,7 +57,7 @@ namespace Atmo.Test {
 		public void TryConvert7ByteDateTimeFromBytesInvalidMonthTest() {
 
 			DateTime stamp;
-			var result = DaqDataFileInfo.TryConvert7byteDateTime(new byte[] { 0x07, 0xda, 0x0f, 0x12, 0x13, 0x2e, 0x03 }, 0, out stamp);
+			var result = DaqDataFileInfo.TryConvert7ByteDateTime(new byte[] { 0x07, 0xda, 0x0f, 0x12, 0x13, 0x2e, 0x03 }, 0, out stamp);
 
 			Assert.IsFalse(result);
 			Assert.AreEqual(default(DateTime), stamp);
@@ -68,7 +68,7 @@ namespace Atmo.Test {
 		public void TryConvert7ByteDateTimeFromBytesInvalidDayTest() {
 
 			DateTime stamp;
-			var result = DaqDataFileInfo.TryConvert7byteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0xf2, 0x13, 0x2e, 0x03 }, 0, out stamp);
+			var result = DaqDataFileInfo.TryConvert7ByteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0xf2, 0x13, 0x2e, 0x03 }, 0, out stamp);
 
 			Assert.IsFalse(result);
 			Assert.AreEqual(default(DateTime), stamp);
@@ -79,7 +79,7 @@ namespace Atmo.Test {
 		public void TryConvert7ByteDateTimeFromBytesInvalidHourTest() {
 
 			DateTime stamp;
-			var result = DaqDataFileInfo.TryConvert7byteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0xf3, 0x2e, 0x03 }, 0, out stamp);
+			var result = DaqDataFileInfo.TryConvert7ByteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0xf3, 0x2e, 0x03 }, 0, out stamp);
 
 			Assert.IsFalse(result);
 			Assert.AreEqual(default(DateTime), stamp);
@@ -90,7 +90,7 @@ namespace Atmo.Test {
 		public void TryConvert7ByteDateTimeFromBytesInvalidMinuteTest() {
 
 			DateTime stamp;
-			var result = DaqDataFileInfo.TryConvert7byteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0x03, 0x4e, 0x03 }, 0, out stamp);
+			var result = DaqDataFileInfo.TryConvert7ByteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0x03, 0x4e, 0x03 }, 0, out stamp);
 
 			Assert.IsFalse(result);
 			Assert.AreEqual(default(DateTime), stamp);
@@ -101,7 +101,7 @@ namespace Atmo.Test {
 		public void TryConvert7ByteDateTimeFromBytesInvalidSecondTest() {
 
 			DateTime stamp;
-			var result = DaqDataFileInfo.TryConvert7byteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0x03, 0x2e, 0x53 }, 0, out stamp);
+			var result = DaqDataFileInfo.TryConvert7ByteDateTime(new byte[] { 0x07, 0xda, 0x0b, 0x12, 0x03, 0x2e, 0x53 }, 0, out stamp);
 
 			Assert.IsFalse(result);
 			Assert.AreEqual(default(DateTime), stamp);

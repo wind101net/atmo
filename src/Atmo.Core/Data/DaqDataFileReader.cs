@@ -78,7 +78,7 @@ namespace Atmo.Data {
 			var headerBuffer = new byte[DaqDataFileInfo.RecordSize];
 			while(DaqDataFileInfo.RecordSize == _stream.Read(headerBuffer, 0, DaqDataFileInfo.RecordSize)) {
 				if (DaqDataFileInfo.HeaderCodeByte == headerBuffer[LastRecordIndex]) {
-					if(DaqDataFileInfo.TryConvert7byteDateTime(headerBuffer,0,out firstValidStamp)) {
+					if(DaqDataFileInfo.TryConvert7ByteDateTime(headerBuffer,0,out firstValidStamp)) {
 						return recordCount;
 					}
 				}else {

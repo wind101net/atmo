@@ -30,7 +30,10 @@ namespace Atmo.Data {
 		internal const byte HeaderCodeByte = 0xa5;
 
 
-		public static bool TryConvert7byteDateTime(byte[] data, int offset, out DateTime stamp) {
+		public static bool TryConvert7ByteDateTime(byte[] data, int offset, out DateTime stamp) {
+
+			// TODO: test for an invalid date that falls within the ranges.
+
 			if (data.Length - offset >= 7) {
 				var year = (short)((data[offset] << 8) | data[offset + 1]);
 				var month = data[offset + 2];
