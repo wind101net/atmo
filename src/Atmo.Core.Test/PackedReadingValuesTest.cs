@@ -25,7 +25,7 @@ using NUnit.Framework;
 
 namespace Atmo.Test {
 	[TestFixture]
-	public class PackedSensorReadingValuesTest {
+	public class PackedReadingValuesTest {
 
 		public byte[] DeviceSampleData;
 
@@ -36,7 +36,7 @@ namespace Atmo.Test {
 
 		[Test]
 		public void FromDeviceRawBytesRawValuesTest() {
-			var values = PackedSensorReadingValues.FromDeviceBytes(DeviceSampleData, 0);
+			var values = PackedReadingValues.FromDeviceBytes(DeviceSampleData, 0);
 
 			Assert.AreEqual(0x73B, values.RawWindSpeed);
 			Assert.AreEqual(0x1ff, values.RawWindDirection);
@@ -47,7 +47,7 @@ namespace Atmo.Test {
 
 		[Test]
 		public void FromDeviceRawBytesValuesTest() {
-			var values = PackedSensorReadingValues.FromDeviceBytes(DeviceSampleData, 0);
+			var values = PackedReadingValues.FromDeviceBytes(DeviceSampleData, 0);
 
 			Assert.AreEqual(18.51, values.WindSpeed);
 			Assert.AreEqual(511, values.WindDirection);
@@ -58,7 +58,7 @@ namespace Atmo.Test {
 
 		[Test]
 		public void FromDoubleValuesToRawValues() {
-			var values = new PackedSensorReadingValues(
+			var values = new PackedReadingValues(
 				temperature: 24.5,
 				pressure: 98000.0,
 				humidity: 0.505,

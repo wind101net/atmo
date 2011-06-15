@@ -47,7 +47,8 @@
     <Compile Include="DaqDataFileInfoTest.cs" />
     <Compile Include="DaqDataFileReaderTest.cs" />
     <Compile Include="DaqDataFileTestUtility.cs" />
-    <Compile Include="PackedSensorReadingValuesTest.cs" />
+    <Compile Include="PackedReadingTest.cs" />
+    <Compile Include="PackedReadingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SensorReadingValuesTest.cs" />
     <Compile Include="TimeRangeTest.cs" />

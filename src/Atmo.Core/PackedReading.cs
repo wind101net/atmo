@@ -21,30 +21,48 @@
 //
 // ================================================================================
 
-using NUnit.Framework;
+using System;
 
-namespace Atmo.Test {
-	[TestFixture]
-	public class SensorReadingValuesTest {
+namespace Atmo {
 
-		[Test]
-		public void ConstructorGetTest() {
+	public struct PackedReading : IReading {
 
-			var values = new ReadingValues(
-				temperature: 11.1,
-				pressure: 22.2,
-				humidity: 33.3,
-				windDirection: 44.4,
-				windSpeed: 55.5
-			);
+		public readonly DateTime TimeStamp;
+		public readonly PackedReadingValues Values;
 
-			Assert.AreEqual(11.1, values.Temperature);
-			Assert.AreEqual(22.2, values.Pressure);
-			Assert.AreEqual(33.3, values.Humidity);
-			Assert.AreEqual(44.4, values.WindDirection);
-			Assert.AreEqual(55.5, values.WindSpeed);
+		public PackedReading(DateTime stamp, PackedReadingValues values) {
+            TimeStamp = stamp;
+            Values = values;
+        }
 
+		/// <inheritdoc/>
+		DateTime IReading.TimeStamp {
+			get { return TimeStamp; }
 		}
 
+		/// <inheritdoc/>
+		public double Temperature {
+			get { return Values.Temperature; }
+		}
+
+		/// <inheritdoc/>
+		public double Pressure {
+			get { return Values.Pressure; }
+		}
+
+		/// <inheritdoc/>
+		public double Humidity {
+			get { return Values.Humidity; }
+		}
+
+		/// <inheritdoc/>
+		public double WindSpeed {
+			get { return Values.WindSpeed; }
+		}
+
+		/// <inheritdoc/>
+		public double WindDirection {
+			get { return Values.WindDirection; }
+		}
 	}
 }

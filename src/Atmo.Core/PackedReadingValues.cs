@@ -25,14 +25,14 @@ using System;
 
 namespace Atmo {
 
-	public struct PackedSensorReadingValues
+	public struct PackedReadingValues
 		: IReadingValues, IReadingRawValues
 	{
 
 		/// <summary>
 		/// An invalid value.
 		/// </summary>
-		public static readonly PackedSensorReadingValues Invalid = new PackedSensorReadingValues(0, 0, 0);
+		public static readonly PackedReadingValues Invalid = new PackedReadingValues(0, 0, 0);
 
 		/// <summary>
 		/// Generate a packed sensor reading value set from a data string.
@@ -41,7 +41,7 @@ namespace Atmo {
 		/// <param name="offset">The offset to start reading from.</param>
 		/// <returns>A packed sensor reading values set.</returns>
 		/// <remarks>The data must provide at least 8 bytes to read.</remarks>
-		public static PackedSensorReadingValues FromDeviceBytes(byte[] data, int offset) {
+		public static PackedReadingValues FromDeviceBytes(byte[] data, int offset) {
 			// TODO: unchecked(abc)
 			// get the individual values
 			var windSpeed = unchecked((ushort)((data[offset] << 5) | (data[offset + 1] >> 3))); // 13 b
@@ -58,7 +58,7 @@ namespace Atmo {
 			
 			var tempFlagsData = unchecked((ushort)((temperature << 5) | flags));
 			var humDirSpeedData = unchecked((uint)(((uint)(humidity) << 22) | ((uint)(windDirection) << 13) | windSpeed));
-			return new PackedSensorReadingValues(pressureData, tempFlagsData, humDirSpeedData);
+			return new PackedReadingValues(pressureData, tempFlagsData, humDirSpeedData);
 		}
 
 		/// <summary>
@@ -80,13 +80,13 @@ namespace Atmo {
 		/// <param name="pressureData"></param>
 		/// <param name="temperatureAndFlags"></param>
 		/// <param name="humidityDirectionAndSpeed"></param>
-		private PackedSensorReadingValues(ushort pressureData, ushort temperatureAndFlags, uint humidityDirectionAndSpeed) {
+		private PackedReadingValues(ushort pressureData, ushort temperatureAndFlags, uint humidityDirectionAndSpeed) {
 			_pressureData = pressureData;
 			_temperatureAndFlags = temperatureAndFlags;
 			_humidityDirectionAndSpeed = humidityDirectionAndSpeed;
 		}
 
-		public PackedSensorReadingValues(
+		public PackedReadingValues(
 			double temperature,
 			double pressure,
 			double humidity,

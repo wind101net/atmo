@@ -21,30 +21,43 @@
 //
 // ================================================================================
 
-using NUnit.Framework;
+using System;
 
-namespace Atmo.Test {
-	[TestFixture]
-	public class SensorReadingValuesTest {
+namespace Atmo {
+	public class ReadingValues 
+		: IReadingValues {
 
-		[Test]
-		public void ConstructorGetTest() {
-
-			var values = new ReadingValues(
-				temperature: 11.1,
-				pressure: 22.2,
-				humidity: 33.3,
-				windDirection: 44.4,
-				windSpeed: 55.5
-			);
-
-			Assert.AreEqual(11.1, values.Temperature);
-			Assert.AreEqual(22.2, values.Pressure);
-			Assert.AreEqual(33.3, values.Humidity);
-			Assert.AreEqual(44.4, values.WindDirection);
-			Assert.AreEqual(55.5, values.WindSpeed);
-
+		/// <summary>
+		/// Creates an invalid reading value set.
+		/// </summary>
+		/// <returns>A reading value set with invalid values.</returns>
+		/// <remarks>All fields are set to Double.NaN.</remarks>
+		public static ReadingValues CreateInvalid() {
+			return new ReadingValues(Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
 		}
 
+		public ReadingValues(
+			double temperature,
+			double pressure,
+			double humidity,
+			double windDirection,
+			double windSpeed
+		) {
+			Temperature = temperature;
+			Pressure = pressure;
+			Humidity = humidity;
+			WindDirection = windDirection;
+			WindSpeed = windSpeed;
+		}
+
+		public double Temperature { get; set; }
+
+		public double Pressure { get; set; }
+
+		public double Humidity { get; set; }
+
+		public double WindSpeed { get; set; }
+
+		public double WindDirection { get; set; }
 	}
 }

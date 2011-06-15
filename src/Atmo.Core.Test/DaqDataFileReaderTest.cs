@@ -46,5 +46,34 @@ namespace Atmo.Test {
 			Assert.AreEqual(new DateTime(2010,3,15,19,30,23),firstDate, "Wrong date was read.");
 		}
 
+		[Test]
+		public void ReadFirstTwoRecordsTest() {
+			DateTime stamp;
+			using (var stream = DaqDataFileTestUtility.CreateSampleDaqFileStream()) {
+				using (var reader = new DaqDataFileReader(stream)) {
+
+					Assert.True(DaqDataFileInfo.TryConvert7ByteDateTime(
+						new byte[] { 0x07, 0xda, 0x03, 0x0f, 0x13, 0x1e, 0x17, 0xa5 },
+						0, out stamp
+					));
+
+					/// TODO: this first record should be skipped but the time should still increment by 1 second
+					Assert.True(reader.MoveNext());
+					Assert.AreEqual(new PackedReadingValues(),reader.Current.Values);
+					Assert.AreEqual(stamp, reader.Current.TimeStamp);
+
+					Assert.True(reader.MoveNext());
+					Assert.AreEqual(
+						PackedReadingValues.FromDeviceBytes(new byte[] {
+                            0x00, 0x01, 0x09, 0x41, 0x33, 0x60, 0x00, 0x1f                   	
+						},0),
+						reader.Current.Values
+					);
+					Assert.AreEqual(stamp.Add(new TimeSpan(0,0,0,1)),reader.Current.TimeStamp);
+
+				}
+			}
+		}
+
 	}
 }
