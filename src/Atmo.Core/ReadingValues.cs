@@ -59,5 +59,35 @@ namespace Atmo {
 		public double WindSpeed { get; set; }
 
 		public double WindDirection { get; set; }
+
+		/// <inheritdoc/>
+		public bool IsValid {
+			get { throw new NotImplementedException(); }
+		}
+
+		/// <inheritdoc/>
+		public bool IsTemperatureValid {
+			get { throw new NotImplementedException(); }
+		}
+
+		/// <inheritdoc/>
+		public bool IsPressureValid {
+			get { throw new NotImplementedException(); }
+		}
+
+		/// <inheritdoc/>
+		public bool IsHumidityValid {
+			get { throw new NotImplementedException(); }
+		}
+
+		/// <inheritdoc/>
+		public bool IsWindSpeedValid {
+			get { throw new NotImplementedException(); }
+		}
+
+		/// <inheritdoc/>
+		public bool IsWindDirectionValid {
+			get { throw new NotImplementedException(); }
+		}
 	}
 }

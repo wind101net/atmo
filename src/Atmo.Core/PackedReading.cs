@@ -64,5 +64,35 @@ namespace Atmo {
 		public double WindDirection {
 			get { return Values.WindDirection; }
 		}
+
+		/// <inheritdoc/>
+		public bool IsValid {
+			get { return Values.IsValid; }
+		}
+
+		/// <inheritdoc/>
+		public bool IsTemperatureValid {
+			get { return Values.IsTemperatureValid; }
+		}
+
+		/// <inheritdoc/>
+		public bool IsPressureValid {
+			get { return Values.IsPressureValid; }
+		}
+
+		/// <inheritdoc/>
+		public bool IsHumidityValid {
+			get { return Values.IsHumidityValid; }
+		}
+
+		/// <inheritdoc/>
+		public bool IsWindSpeedValid {
+			get { return Values.IsWindSpeedValid; }
+		}
+
+		/// <inheritdoc/>
+		public bool IsWindDirectionValid {
+			get { return Values.IsWindDirectionValid; }
+		}
 	}
 }

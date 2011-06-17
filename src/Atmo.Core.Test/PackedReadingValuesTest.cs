@@ -43,6 +43,13 @@ namespace Atmo.Test {
 			Assert.AreEqual(0x285, values.RawTemperature);
 			Assert.AreEqual(0x1f9, values.RawHumidity);
 			Assert.AreEqual(0xbf68, values.RawPressure);
+			Assert.AreEqual(
+				PackedValuesFlags.AnemTemperatureSource
+				| PackedValuesFlags.Humidity
+				| PackedValuesFlags.Pressure
+				| PackedValuesFlags.WindSpeed,
+				values.RawFlags
+			);
 		}
 
 		[Test]
@@ -54,6 +61,12 @@ namespace Atmo.Test {
 			Assert.AreEqual(24.5, values.Temperature);
 			Assert.AreEqual(.505, values.Humidity);
 			Assert.AreEqual(98000, values.Pressure);
+			Assert.IsTrue(values.IsValid);
+			Assert.IsTrue(values.IsHumidityValid);
+			Assert.IsTrue(values.IsTemperatureValid);
+			Assert.IsTrue(values.IsPressureValid);
+			Assert.IsTrue(values.IsWindSpeedValid);
+			Assert.IsFalse(values.IsWindDirectionValid);
 		}
 
 		[Test]
@@ -71,6 +84,12 @@ namespace Atmo.Test {
 			Assert.AreEqual(0x285, values.RawTemperature);
 			Assert.AreEqual(0x1f9, values.RawHumidity);
 			Assert.AreEqual(0xbf68, values.RawPressure);
+			Assert.IsTrue(values.IsValid);
+			Assert.IsTrue(values.IsHumidityValid);
+			Assert.IsTrue(values.IsTemperatureValid);
+			Assert.IsTrue(values.IsPressureValid);
+			Assert.IsTrue(values.IsWindSpeedValid);
+			Assert.IsFalse(values.IsWindDirectionValid);
 		}
 
 	}

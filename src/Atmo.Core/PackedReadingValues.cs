@@ -26,7 +26,7 @@ using System;
 namespace Atmo {
 
 	public struct PackedReadingValues
-		: IReadingValues, IReadingRawValues
+		: IReadingValues
 	{
 
 		/// <summary>
@@ -93,10 +93,14 @@ namespace Atmo {
 			double windDirection,
 			double windSpeed
 		) {
+			var flags = PackedValuesFlags.WindSpeed | PackedValuesFlags.Humidity | PackedValuesFlags.Pressure;
+			if(windDirection >= 0 && windDirection <= 360) {
+				flags |= PackedValuesFlags.WindDirection;
+			}
 			_pressureData = (ushort)(Math.Max(0, Math.Min(UInt16.MaxValue, pressure / 2.0)));
 			_temperatureAndFlags = (ushort)(
 				((ushort)(Math.Max(0, Math.Min(1023, (temperature + 40.0) * 10.0))) << 5)
-				| 0x1f // TODO: this will need to be a real value
+				| (ushort)flags // TODO: this will need to be a real value
 			);
 			_humidityDirectionAndSpeed = (
 				(uint)((uint)(Math.Max(0, Math.Min(1023, humidity * 1000.0))) << 22)
@@ -130,6 +134,10 @@ namespace Atmo {
 			get { return unchecked((ushort)((_humidityDirectionAndSpeed >> 13) & 0x1ff)); }
 		}
 
+		public PackedValuesFlags RawFlags {
+			get { return (PackedValuesFlags) (_temperatureAndFlags & 0x1f); }
+		}
+
 		public double Temperature {
 			get { return unchecked((((ushort)(_temperatureAndFlags >> 5)) / 10.0) - 40.0); }
 		}
@@ -148,6 +156,35 @@ namespace Atmo {
 
 		public double WindDirection {
 			get { return unchecked((double)((ushort)((_humidityDirectionAndSpeed >> 13) & 0x1ff))); } // TODO: Is this ushort cast needed?
+		}
+
+
+		public bool IsValid {
+			get { return 0 != ((ushort)PackedValuesFlags.AllDataFlags & _temperatureAndFlags); }
+		}
+
+		public bool IsTemperatureValid {
+			get {
+				return (0 != ((ushort) PackedValuesFlags.AnemTemperatureSource & _temperatureAndFlags))
+					|| (0 != (ushort)(_temperatureAndFlags >> 5))
+				;
+			}
+		}
+
+		public bool IsPressureValid {
+			get { return 0 != ((ushort)PackedValuesFlags.Pressure & _temperatureAndFlags); }
+		}
+
+		public bool IsHumidityValid {
+			get { return 0 != ((ushort)PackedValuesFlags.Humidity & _temperatureAndFlags); }
+		}
+
+		public bool IsWindSpeedValid {
+			get { return 0 != ((ushort)PackedValuesFlags.WindSpeed & _temperatureAndFlags); }
+		}
+
+		public bool IsWindDirectionValid {
+			get { return 0 != ((ushort)PackedValuesFlags.WindDirection & _temperatureAndFlags); }
 		}
 	}
 }

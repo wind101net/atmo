@@ -21,43 +21,43 @@
 //
 // ================================================================================
 
-namespace Atmo {
-	public interface IReadingValues {
-		double Temperature { get; }
-		double Pressure { get; }
-		double Humidity { get; }
-		/// <summary>
-		/// Wind speed in metres/second .
-		/// </summary>
-		double WindSpeed { get; }
-		/// <summary>
-		/// Wind direction in degrees.
-		/// </summary>
-		double WindDirection { get; }
+using System;
 
+namespace Atmo {
+
+	[Flags]
+	public enum PackedValuesFlags : byte {
 		/// <summary>
-		/// Returns true if the reading is valid.
+		/// Set when the pressure value is valid.
 		/// </summary>
-		bool IsValid { get; }
+		Pressure = 0x01,
 		/// <summary>
-		/// Returns true when temperature is valid.
+		/// Set when the humidity value is valid.
 		/// </summary>
-		bool IsTemperatureValid { get; }
+		Humidity = 0x02,
 		/// <summary>
-		/// Returns true when pressure is valid.
+		/// Set when the wind direction value is valid.
 		/// </summary>
-		bool IsPressureValid { get; }
+		WindDirection = 0x04,
 		/// <summary>
-		/// Returns true when humidity is valid.
+		/// Set when the wind speed value is valid.
 		/// </summary>
-		bool IsHumidityValid { get; }
+		WindSpeed = 0x08,
 		/// <summary>
-		/// Returns true when wind speed is valid;
+		/// The binary combination of Pressure, Humidity, WindDirection, and WindSpeed .
 		/// </summary>
-		bool IsWindSpeedValid { get; }
+		AllDataFlags = Pressure | Humidity | WindDirection | WindSpeed,
 		/// <summary>
-		/// Returns true when wind direction is valid.
+		/// Set when the temperature was recieved from an anemometer.
 		/// </summary>
-		bool IsWindDirectionValid { get; }
+		AnemTemperatureSource = 0x10,
+		/// <summary>
+		/// Set for a record that acts as a header for a larger group of data records.
+		/// </summary>
+		/// <remarks>
+		/// The binary combination of pressure and wind direction was chosen for this value as no current firmware/hardware sets this value for data records.
+		/// </remarks>
+		Header = Pressure | WindDirection
+
 	}
 }

@@ -159,9 +159,14 @@ namespace Atmo.Data {
 				}
 				else {
 					// a data record
+					var values = PackedReadingValues.FromDeviceBytes(recordData, 0);
+					if (!values.IsValid) {
+						_chunkRecordCounter++;
+						continue;
+					}
 					_current = new PackedReading(
 						_currentBaseTime.Add(new TimeSpan(0, 0, _chunkRecordCounter)),
-						PackedReadingValues.FromDeviceBytes(recordData, 0)
+						values
 						);
 					_chunkRecordCounter++;
 					return true;
