@@ -25,9 +25,16 @@ using System;
 
 namespace Atmo {
 
+	/// <inheritdoc/>
 	public struct PackedReading : IReading {
 
+		/// <summary>
+		/// The time stamp of the reading.
+		/// </summary>
 		public readonly DateTime TimeStamp;
+		/// <summary>
+		/// The various sensor values for the reading.
+		/// </summary>
 		public readonly PackedReadingValues Values;
 
 		public PackedReading(DateTime stamp, PackedReadingValues values) {

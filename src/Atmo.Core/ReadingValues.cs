@@ -24,6 +24,8 @@
 using System;
 
 namespace Atmo {
+
+	/// <inheritdoc/>
 	public class ReadingValues 
 		: IReadingValues {
 
@@ -50,14 +52,19 @@ namespace Atmo {
 			WindSpeed = windSpeed;
 		}
 
+		/// <inheritdoc/>
 		public double Temperature { get; set; }
 
+		/// <inheritdoc/>
 		public double Pressure { get; set; }
 
+		/// <inheritdoc/>
 		public double Humidity { get; set; }
 
+		/// <inheritdoc/>
 		public double WindSpeed { get; set; }
 
+		/// <inheritdoc/>
 		public double WindDirection { get; set; }
 
 		/// <inheritdoc/>

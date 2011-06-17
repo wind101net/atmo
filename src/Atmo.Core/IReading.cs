@@ -22,6 +22,9 @@
 // ================================================================================
 
 namespace Atmo {
+	/// <summary>
+	/// A reading of various sensors at a point in time.
+	/// </summary>
 	public interface IReading : IReadingValues {
 
 		/// <summary>

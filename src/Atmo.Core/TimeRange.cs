@@ -24,9 +24,19 @@
 using System;
 
 namespace Atmo {
+
+	/// <summary>
+	/// A time range between two time values.
+	/// </summary>
 	public struct TimeRange {
 
+		/// <summary>
+		/// The lowest time value in the range.
+		/// </summary>
 		public readonly DateTime Low;
+		/// <summary>
+		/// The highest time value in the range.
+		/// </summary>
 		public readonly DateTime High;
 
 		public TimeRange(DateTime a, DateTime b) {

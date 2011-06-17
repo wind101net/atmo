@@ -67,11 +67,13 @@ namespace Atmo.Test {
 			var reading = new PackedReading(
 				DateTimeSample,
 				new PackedReadingValues(
+// ReSharper disable RedundantArgumentName
 					temperature: 24.5,
 					pressure: 98000.0,
 					humidity: 0.505,
 					windDirection: 511.0,
 					windSpeed: 18.51
+// ReSharper restore RedundantArgumentName
 				)
 			);
 			Assert.AreEqual(0x73B, reading.Values.RawWindSpeed);

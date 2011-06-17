@@ -22,6 +22,10 @@
 // ================================================================================
 
 namespace Atmo {
+
+	/// <summary>
+	/// various reading from sensors.
+	/// </summary>
 	public interface IReadingValues {
 		double Temperature { get; }
 		double Pressure { get; }

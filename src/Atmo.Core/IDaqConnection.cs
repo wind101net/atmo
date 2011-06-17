@@ -21,8 +21,6 @@
 //
 // ================================================================================
 
-using System.Collections.Generic;
-
 namespace Atmo {
 
 	/// <summary>

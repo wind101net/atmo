@@ -25,6 +25,7 @@ using System;
 
 namespace Atmo {
 
+	/// <inheritdoc/>
 	public struct PackedReadingValues
 		: IReadingValues
 	{

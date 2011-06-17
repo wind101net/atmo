@@ -31,11 +31,13 @@ namespace Atmo.Test {
 		public void ConstructorGetTest() {
 
 			var values = new ReadingValues(
+// ReSharper disable RedundantArgumentName
 				temperature: 11.1,
 				pressure: 22.2,
 				humidity: 33.3,
 				windDirection: 44.4,
 				windSpeed: 55.5
+// ReSharper restore RedundantArgumentName
 			);
 
 			Assert.AreEqual(11.1, values.Temperature);
@@ -43,6 +45,12 @@ namespace Atmo.Test {
 			Assert.AreEqual(33.3, values.Humidity);
 			Assert.AreEqual(44.4, values.WindDirection);
 			Assert.AreEqual(55.5, values.WindSpeed);
+			Assert.IsTrue(values.IsValid);
+			Assert.IsTrue(values.IsHumidityValid);
+			Assert.IsTrue(values.IsTemperatureValid);
+			Assert.IsTrue(values.IsPressureValid);
+			Assert.IsTrue(values.IsWindSpeedValid);
+			Assert.IsTrue(values.IsWindDirectionValid);
 
 		}
 

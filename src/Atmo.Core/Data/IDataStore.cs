@@ -23,8 +23,8 @@
 
 namespace Atmo.Data {
 
-
 	public interface IDataStore {
 
 	}
+
 }
