@@ -128,6 +128,25 @@ namespace Atmo.Daq.Win32 {
 
 		public static string DefaultDaqDeviceId{ get { return DefaultDaqDeviceIdValue; }}
 
+		private static byte[] GenerateEmptyPacketData() {
+			//return Enumerable.Repeat((byte)0xff, 65).ToArray();
+			var data = new byte[65];
+			for (int i = 0; i < data.Length; i++) {
+				data[i] = 0xff;
+			}
+			return data;
+		}
+
+		private static byte[] GenerateNetworkSizePacketData(byte currentId, byte desiredId, byte size) {
+			var queryPacket = GenerateEmptyPacketData();
+			queryPacket[0] = 0;
+			queryPacket[1] = 0x82;
+			queryPacket[2] = currentId;
+			queryPacket[3] = desiredId;
+			queryPacket[4] = size;
+			return queryPacket;
+		}
+
 		private readonly Sensor[] _sensors;
 		private int _networkSize;
 		private Timer _queryTimer;
@@ -288,12 +307,7 @@ namespace Atmo.Daq.Win32 {
 				if (!IsConnected) {
 					Connect();
 				}
-				var queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
-				queryPacket[0] = 0;
-				queryPacket[1] = 0x82;
-				queryPacket[2] = 0xff;
-				queryPacket[3] = 0xff;
-				queryPacket[4] = (byte)size;
+				var queryPacket = GenerateNetworkSizePacketData(0xff,0xff,(byte)size);
 				if (UsbConn.WritePacket(queryPacket)) {
 					_networkSize = size;
 				}
@@ -301,13 +315,12 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		public bool ChangeSensorId(int currentId, int desiredId, int numTries = 3) {
-			byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
-			queryPacket[0] = 0;
-			queryPacket[1] = 0x82;
-			queryPacket[2] = currentId >= 0 ? (byte)currentId : (byte)0xff;
-			queryPacket[3] = desiredId >= 0 ? (byte)desiredId : (byte)0xff;
-			queryPacket[4] = (byte)_networkSize;
-			bool ok = false;
+			var queryPacket = GenerateNetworkSizePacketData(
+				currentId >= 0 ? (byte) currentId : (byte) 0xff,
+				desiredId >= 0 ? (byte) desiredId : (byte) 0xff,
+				(byte) _networkSize
+			);
+			var ok = false;
 			lock (_connLock) {
 				if (!IsConnected) {
 					Connect();

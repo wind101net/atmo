@@ -99,5 +99,10 @@ namespace Atmo.Daq.Win32.TestHarness {
 			_connection.SetNetworkSize((int)numericUpDownNetSize.Value);
 		}
 
+		private void buttonPing_Click(object sender, EventArgs e) {
+			var pingTime = _connection.Ping();
+			labelPing.Text = pingTime.ToString();
+		}
+
 	}
 }

@@ -43,6 +43,8 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.numericUpDownNetSize = new System.Windows.Forms.NumericUpDown();
 			this.buttonSetNetSize = new System.Windows.Forms.Button();
+			this.buttonPing = new System.Windows.Forms.Button();
+			this.labelPing = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).BeginInit();
 			this.SuspendLayout();
@@ -242,11 +244,31 @@
 			this.buttonSetNetSize.UseVisualStyleBackColor = true;
 			this.buttonSetNetSize.Click += new System.EventHandler(this.buttonSetNetSize_Click);
 			// 
+			// buttonPing
+			// 
+			this.buttonPing.Location = new System.Drawing.Point(278, 62);
+			this.buttonPing.Name = "buttonPing";
+			this.buttonPing.Size = new System.Drawing.Size(75, 23);
+			this.buttonPing.TabIndex = 10;
+			this.buttonPing.Text = "Ping";
+			this.buttonPing.UseVisualStyleBackColor = true;
+			this.buttonPing.Click += new System.EventHandler(this.buttonPing_Click);
+			// 
+			// labelPing
+			// 
+			this.labelPing.AutoSize = true;
+			this.labelPing.Location = new System.Drawing.Point(360, 66);
+			this.labelPing.Name = "labelPing";
+			this.labelPing.Size = new System.Drawing.Size(0, 13);
+			this.labelPing.TabIndex = 11;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(655, 484);
+			this.Controls.Add(this.labelPing);
+			this.Controls.Add(this.buttonPing);
 			this.Controls.Add(this.buttonSetNetSize);
 			this.Controls.Add(this.numericUpDownNetSize);
 			this.Controls.Add(this.label6);
@@ -288,6 +310,8 @@
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.NumericUpDown numericUpDownNetSize;
 		private System.Windows.Forms.Button buttonSetNetSize;
+		private System.Windows.Forms.Button buttonPing;
+		private System.Windows.Forms.Label labelPing;
 	}
 }
 
