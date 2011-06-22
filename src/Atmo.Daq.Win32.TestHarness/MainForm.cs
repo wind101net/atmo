@@ -70,7 +70,7 @@ namespace Atmo.Daq.Win32.TestHarness {
 
 		private void buttonStartQuery_Click(object sender, EventArgs e) {
 			HandleQueryResult(null);
-			_connection.Resume();
+			_connection.ResumeQuery();
 
 			var result = _connection.IsQuerying;
 
@@ -82,7 +82,7 @@ namespace Atmo.Daq.Win32.TestHarness {
 
 		private void buttonStopQuery_Click(object sender, EventArgs e) {
 			HandleQueryResult(null);
-			_connection.Pause();
+			_connection.PauseQuery();
 			HandleQueryResult(_connection.IsQuerying);
 			timerQuery.Stop();
 		}
@@ -93,6 +93,14 @@ namespace Atmo.Daq.Win32.TestHarness {
 			}
 			labelWindSpeed1.Text = _connection[0].Current.WindSpeed.ToString();
 			labelWindDir1.Text = _connection[0].Current.WindDirection.ToString();
+		}
+
+		private void buttonSetNetSize_Click(object sender, EventArgs e) {
+			_connection.SetNetworkSize((int)numericUpDownNetSize.Value);
+		}
+
+		private void button1_Click(object sender, EventArgs e) {
+			_connection.Unknown2();
 		}
 
 	}

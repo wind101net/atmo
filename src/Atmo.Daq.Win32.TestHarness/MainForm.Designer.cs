@@ -40,7 +40,12 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.labelWindSpeed1 = new System.Windows.Forms.Label();
 			this.labelWindDir1 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.numericUpDownNetSize = new System.Windows.Forms.NumericUpDown();
+			this.buttonSetNetSize = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// buttonConnect
@@ -197,11 +202,66 @@
 			this.labelWindDir1.TabIndex = 6;
 			this.labelWindDir1.Text = "...";
 			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(275, 32);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(50, 13);
+			this.label6.TabIndex = 7;
+			this.label6.Text = "Net Size:";
+			// 
+			// numericUpDownNetSize
+			// 
+			this.numericUpDownNetSize.Location = new System.Drawing.Point(328, 30);
+			this.numericUpDownNetSize.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+			this.numericUpDownNetSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numericUpDownNetSize.Name = "numericUpDownNetSize";
+			this.numericUpDownNetSize.Size = new System.Drawing.Size(33, 20);
+			this.numericUpDownNetSize.TabIndex = 8;
+			this.numericUpDownNetSize.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// buttonSetNetSize
+			// 
+			this.buttonSetNetSize.Location = new System.Drawing.Point(367, 28);
+			this.buttonSetNetSize.Name = "buttonSetNetSize";
+			this.buttonSetNetSize.Size = new System.Drawing.Size(75, 23);
+			this.buttonSetNetSize.TabIndex = 9;
+			this.buttonSetNetSize.Text = "Set";
+			this.buttonSetNetSize.UseVisualStyleBackColor = true;
+			this.buttonSetNetSize.Click += new System.EventHandler(this.buttonSetNetSize_Click);
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(287, 280);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(341, 192);
+			this.button1.TabIndex = 10;
+			this.button1.Text = "button1";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(655, 484);
+			this.Controls.Add(this.button1);
+			this.Controls.Add(this.buttonSetNetSize);
+			this.Controls.Add(this.numericUpDownNetSize);
+			this.Controls.Add(this.label6);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.labelIsQuery);
 			this.Controls.Add(this.buttonStopQuery);
@@ -213,6 +273,7 @@
 			this.Text = "Connection Test for DAQ Win32 USB HID";
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -236,6 +297,10 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label labelWindSpeed1;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.NumericUpDown numericUpDownNetSize;
+		private System.Windows.Forms.Button buttonSetNetSize;
+		private System.Windows.Forms.Button button1;
 	}
 }
 

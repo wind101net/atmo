@@ -27,7 +27,7 @@ using System.Linq;
 using System.Threading;
 
 namespace Atmo.Daq.Win32 {
-	public class UsbDaqConnection : BaseDaqUsbConnection {
+	public class UsbDaqConnection : BaseDaqUsbConnection, IDaqConnection {
 
 		private struct DaqStatusValues {
 
@@ -49,8 +49,7 @@ namespace Atmo.Daq.Win32 {
 
 		}
 
-		[Obsolete("rename")]
-		public class AnemWrapper : ISensor {
+		public class Sensor : ISensor {
 
 			private const int DefaultMaxReadingsValue = 10;
 
@@ -61,7 +60,7 @@ namespace Atmo.Daq.Win32 {
 			private readonly object _stateMutex = new object();
 			private bool _valid = false;
 
-			internal AnemWrapper(int nid, UsbDaqConnection parentConnection) {
+			internal Sensor(int nid, UsbDaqConnection parentConnection) {
 				_nid = nid;
 				_connection = parentConnection;
 				if(null == _connection) {
@@ -113,6 +112,14 @@ namespace Atmo.Daq.Win32 {
 				get { return _nid.ToString(); }
 			}
 
+			public bool IsBufferFull {
+				get { return _latestReadings.Count == _maxReadings; }
+			}
+
+			public bool IsEntireBufferInvalid {
+				get { return !_latestReadings.Any(reading => reading.IsValid); }
+			}
+
 		}
 
 		private const string DefaultDaqDeviceIdValue = "Vid_04d8&Pid_fc4a";
@@ -120,40 +127,38 @@ namespace Atmo.Daq.Win32 {
 
 		public static string DefaultDaqDeviceId{ get { return DefaultDaqDeviceIdValue; }}
 
-		private AnemWrapper[] _wrappers;
+		private readonly Sensor[] _sensors;
 		private int _networkSize;
 		private Timer _queryTimer;
 		private DateTime _lastClock = default(DateTime);
-		private readonly object _connLock = new object();
-		private bool _queryActive = true;
 		private DateTime _lastDaqStatusQuery = default(DateTime);
+		private bool _queryActive = true;
 		private readonly TimeSpan _daqStatusQueryLifetime = new TimeSpan(0, 0, 15);
 		private DaqStatusValues _daqStat = DaqStatusValues.Default;
 		private bool? _usingDaqTemp = null;
 
+		private readonly object _connLock = new object();
 
 		public UsbDaqConnection() : this(DefaultDaqDeviceIdValue) { }
 
         public UsbDaqConnection(string deviceId)
 			: base(deviceId) {
-			_wrappers = new []{
-                new AnemWrapper(0,this),
-                new AnemWrapper(1,this),
-                new AnemWrapper(2,this),
-                new AnemWrapper(3,this)
+			_sensors = new []{
+                new Sensor(0,this),
+                new Sensor(1,this),
+                new Sensor(2,this),
+                new Sensor(3,this)
             };
-        	Pause();
+        	PauseQuery();
 			_queryTimer = new Timer(new TimerCallback(QueryThreadBody), null, Timeout.Infinite, DefaultMsPeriodValue);
 			InitiateDeviceQuery();
 		}
 
-		[Obsolete("rename")]
-		public void Pause() {
+		public void PauseQuery() {
 			_queryActive = false;
 		}
 
-		[Obsolete("rename")]
-		public void Resume() {
+		public void ResumeQuery() {
 			_queryActive = true;
 		}
 
@@ -161,26 +166,25 @@ namespace Atmo.Daq.Win32 {
 			get { return _queryActive; }
 		}
 
+		/// <inheritdoc/>
 		public ISensor GetSensor(int i) {
-			return _wrappers[i];
+			return _sensors[i];
 		}
 
-		public AnemWrapper this[int i] {
-			get { return _wrappers[i]; }
+		public Sensor this[int i] {
+			get { return _sensors[i]; }
 		}
 
 		private bool InitiateDeviceQuery() {
 			return _queryTimer.Change(1, DefaultMsPeriodValue);
 		}
 
-		private bool TerminateDeviceQuery() {
+		private void TerminateDeviceQuery() {
 			if (null != _queryTimer) {
 				_queryTimer.Change(Timeout.Infinite, DefaultMsPeriodValue);
 				_queryTimer.Dispose();
 				_queryTimer = null;
-				return true;
 			}
-			return false;
 		}
 
 		private void QueryThreadBody(object bs) {
@@ -188,32 +192,50 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private void QueryThreadBody() {
-			var values = new PackedReadingValues[4];
-			_networkSize = 4; // just assume 4 for now //SetNetworkSize(4);
-			if (_queryActive) {
-				var now = DateTime.Now;
-				var daqTime = now;
-				daqTime = daqTime.Date.Add(new TimeSpan(daqTime.Hour, daqTime.Minute, daqTime.Second));
-				for (int i = 0; i < values.Length; i++) {
-					values[i] = QueryValues(i);
-				}
-				int highestValid = -1;
-				_usingDaqTemp = null;
-				for (int i = 0; i < values.Length; i++) {
-					_wrappers[i].HandleObservation(values[i], _networkSize, daqTime);
-					if (values[i].IsValid) {
-
-						if (highestValid < i) {
-							highestValid = i;
-						}
-					}
-				}
-				if (highestValid < 0) {
-					highestValid = 3;
-				}
-
+			if (!_queryActive) {
+				return;
 			}
 
+			var values = new PackedReadingValues[1];
+			bool? usingDaqTemp = null;
+			int networkSize = 4;
+			int highestValid = -1;
+			var now = DateTime.Now;
+			var daqSafeTime = now;
+			daqSafeTime = daqSafeTime.Date.Add(new TimeSpan(daqSafeTime.Hour, daqSafeTime.Minute, daqSafeTime.Second));
+
+			for (int i = 0; i < values.Length; i++) {
+				values[i] = QueryValues(i);
+			}
+
+			for (int i = 0; i < values.Length; i++) {
+					
+				if (!values[i].IsValid) {
+					continue;
+				}
+
+				if (PackedValuesFlags.AnemTemperatureSource != (values[i].RawFlags & PackedValuesFlags.AnemTemperatureSource)) {
+					usingDaqTemp = true;
+				}
+				else if (!usingDaqTemp.HasValue) {
+					usingDaqTemp = false;
+				}
+
+				highestValid = Math.Max(highestValid, i);
+			}
+
+			if (highestValid < 0) {
+				highestValid = 3;
+			}
+
+			networkSize = highestValid + 1;
+
+			for (int i = 0; i < values.Length; i++) {
+				_sensors[i].HandleObservation(values[i], networkSize, daqSafeTime);
+			}
+
+			_networkSize = networkSize;
+			_usingDaqTemp = usingDaqTemp;
 		}
 
 		private PackedReadingValues QueryValues(int nid) {
@@ -234,6 +256,81 @@ namespace Atmo.Daq.Win32 {
 				return PackedReadingValues.Invalid;
 			}
 		}
+
+		public void SetNetworkSize(int size) {
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+				var queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				queryPacket[0] = 0;
+				queryPacket[1] = 0x82;
+				queryPacket[2] = 0xff;
+				queryPacket[3] = 0xff;
+				queryPacket[4] = (byte)size;
+				if (UsbConn.WritePacket(queryPacket)) {
+					_networkSize = size;
+				}
+			}
+		}
+
+		public bool ChangeSensorId(int currentId, int desiredId) {
+			byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+			queryPacket[0] = 0;
+			queryPacket[1] = 0x82;
+			queryPacket[2] = currentId >= 0 ? (byte)currentId : (byte)0xff;
+			queryPacket[3] = desiredId >= 0 ? (byte)desiredId : (byte)0xff;
+			queryPacket[4] = (byte)_networkSize;
+			bool ok = false;
+			const int numTries = 3;
+			for (int i = 0; i < numTries; i++) {
+				lock (_connLock) {
+					if (!IsConnected) {
+						Connect();
+					}
+					ok |= UsbConn.WritePacket(queryPacket);
+				}
+				if (i != (numTries - 1)) {
+					Thread.Sleep(50);
+				}
+			}
+			return ok;
+		}
+
+		public void Unknown1() {
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+				byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				queryPacket[0] = 0;
+				queryPacket[1] = 0x83;
+				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
+					queryPacket = UsbConn.ReadPacket();
+					if (null != queryPacket) {
+						;
+					}
+				}
+			}
+		}
+
+		public void Unknown2() {
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+				byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				queryPacket[0] = 0;
+				queryPacket[1] = 0x84;
+				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
+					queryPacket = UsbConn.ReadPacket();
+					if (null != queryPacket) {
+						;
+					}
+				}
+			}
+		}
+
 
 		protected override void Dispose(bool disposing) {
 			if(disposing) {

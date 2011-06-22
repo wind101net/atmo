@@ -28,7 +28,12 @@ namespace Atmo {
 	/// </summary>
 	public interface IDaqConnection {
 
-		
+		/// <summary>
+		/// Accesses the sensor at the given index, <paramref name="i"/>.
+		/// </summary>
+		/// <param name="i">The index of the sensor to access.</param>
+		/// <returns>A sensor object (or proxy), or null.</returns>
+		ISensor GetSensor(int i);
 
 	}
 }
