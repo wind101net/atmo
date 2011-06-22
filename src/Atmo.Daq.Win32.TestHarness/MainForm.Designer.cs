@@ -33,17 +33,16 @@
 			this.labelIsQuery = new System.Windows.Forms.Label();
 			this.timerQuery = new System.Windows.Forms.Timer(this.components);
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.labelWindDir1 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.labelWindSpeed1 = new System.Windows.Forms.Label();
-			this.labelWindDir1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.numericUpDownNetSize = new System.Windows.Forms.NumericUpDown();
 			this.buttonSetNetSize = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).BeginInit();
 			this.SuspendLayout();
@@ -139,6 +138,15 @@
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(200, 100);
 			this.tableLayoutPanel1.TabIndex = 6;
 			// 
+			// labelWindDir1
+			// 
+			this.labelWindDir1.AutoSize = true;
+			this.labelWindDir1.Location = new System.Drawing.Point(103, 20);
+			this.labelWindDir1.Name = "labelWindDir1";
+			this.labelWindDir1.Size = new System.Drawing.Size(16, 13);
+			this.labelWindDir1.TabIndex = 6;
+			this.labelWindDir1.Text = "...";
+			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -193,15 +201,6 @@
 			this.labelWindSpeed1.TabIndex = 5;
 			this.labelWindSpeed1.Text = "...";
 			// 
-			// labelWindDir1
-			// 
-			this.labelWindDir1.AutoSize = true;
-			this.labelWindDir1.Location = new System.Drawing.Point(103, 20);
-			this.labelWindDir1.Name = "labelWindDir1";
-			this.labelWindDir1.Size = new System.Drawing.Size(16, 13);
-			this.labelWindDir1.TabIndex = 6;
-			this.labelWindDir1.Text = "...";
-			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
@@ -243,22 +242,11 @@
 			this.buttonSetNetSize.UseVisualStyleBackColor = true;
 			this.buttonSetNetSize.Click += new System.EventHandler(this.buttonSetNetSize_Click);
 			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(287, 280);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(341, 192);
-			this.button1.TabIndex = 10;
-			this.button1.Text = "button1";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(655, 484);
-			this.Controls.Add(this.button1);
 			this.Controls.Add(this.buttonSetNetSize);
 			this.Controls.Add(this.numericUpDownNetSize);
 			this.Controls.Add(this.label6);
@@ -300,7 +288,6 @@
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.NumericUpDown numericUpDownNetSize;
 		private System.Windows.Forms.Button buttonSetNetSize;
-		private System.Windows.Forms.Button button1;
 	}
 }
 

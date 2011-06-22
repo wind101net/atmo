@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Atmo.Data;
 
 namespace Atmo.Daq.Win32 {
 	public class UsbDaqConnection : BaseDaqUsbConnection, IDaqConnection {
@@ -257,6 +258,31 @@ namespace Atmo.Daq.Win32 {
 			}
 		}
 
+		private DaqStatusValues QueryStatus() {
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+				var queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				queryPacket[0] = 0;
+				queryPacket[1] = 0x37;
+				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
+					queryPacket = UsbConn.ReadPacket();
+					if (null != queryPacket) {
+						var volUsbRaw = (ushort)(queryPacket[2] | (queryPacket[3] << 8));
+						var volBatRaw = (ushort)(queryPacket[4] | (queryPacket[5] << 8));
+						var tmpDaqRaw = (ushort)(queryPacket[7] | (queryPacket[6] << 8));
+
+						double temp = ((double)(tmpDaqRaw) / 10.0) - 40.0;
+						double volUsb = ((double)(volUsbRaw) / 1024.0) * 6.4;
+						double volBat = ((double)(volBatRaw) / 1024.0) * 6.4;
+						return new DaqStatusValues(volBat, volUsb, temp);
+					}
+				}
+				return DaqStatusValues.Default;
+			}
+		}
+
 		public void SetNetworkSize(int size) {
 			lock (_connLock) {
 				if (!IsConnected) {
@@ -274,7 +300,7 @@ namespace Atmo.Daq.Win32 {
 			}
 		}
 
-		public bool ChangeSensorId(int currentId, int desiredId) {
+		public bool ChangeSensorId(int currentId, int desiredId, int numTries = 3) {
 			byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
 			queryPacket[0] = 0;
 			queryPacket[1] = 0x82;
@@ -282,55 +308,141 @@ namespace Atmo.Daq.Win32 {
 			queryPacket[3] = desiredId >= 0 ? (byte)desiredId : (byte)0xff;
 			queryPacket[4] = (byte)_networkSize;
 			bool ok = false;
-			const int numTries = 3;
-			for (int i = 0; i < numTries; i++) {
-				lock (_connLock) {
-					if (!IsConnected) {
-						Connect();
-					}
-					ok |= UsbConn.WritePacket(queryPacket);
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
 				}
-				if (i != (numTries - 1)) {
-					Thread.Sleep(50);
+				for (int i = 0; i < numTries; i++) {
+
+					ok |= UsbConn.WritePacket(queryPacket);
+
+					if (i < (numTries - 1)) {
+						Thread.Sleep(50);
+					}
 				}
 			}
 			return ok;
 		}
 
-		public void Unknown1() {
+		public bool SetClock(DateTime time) {
 			lock (_connLock) {
-				if (!IsConnected) {
-					Connect();
-				}
-				byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
-				queryPacket[0] = 0;
-				queryPacket[1] = 0x83;
-				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
-					queryPacket = UsbConn.ReadPacket();
-					if (null != queryPacket) {
-						;
+				var start = DateTime.Now;
+				// determine the best time to send the set clock command
+				var optimalTime = start;
+				var firstDaqClock = RawQueryClock();
+				const int checkSeg = 10;
+				for (int i = 0; i < checkSeg; i++) {
+					var currentDaqClock = RawQueryClock();
+					if (currentDaqClock != firstDaqClock) {
+						break;
 					}
+					optimalTime = DateTime.Now;
+					Thread.Sleep(1000/checkSeg);
 				}
+				// wait for it
+				var nextBestTime = optimalTime.AddSeconds(1);
+				for (int i = 0; i < checkSeg; i++) {
+					if (DateTime.Now.AddSeconds(1.0 / (double)checkSeg) >= nextBestTime) {
+						break;
+					}
+					Thread.Sleep(1000 / checkSeg);
+				}
+				// set it
+				var elapsed = DateTime.Now - start;
+				return SetClockRaw(time.Add(elapsed).AddSeconds(1));
 			}
 		}
 
-		public void Unknown2() {
+		private bool SetClockRaw(DateTime time) {
+			var start = DateTime.Now;
+			var pingTime = new TimeSpan(this.AveragePing(2).Ticks / 2);
+
+			if (!IsConnected) {
+				Connect();
+			}
+			byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+			queryPacket[0] = 0;
+			queryPacket[1] = 0x86;
+
+			var calcTime = DateTime.Now.Subtract(start);
+
+			time.Add(pingTime + calcTime);
+
+			queryPacket[2] = (byte)(time.Year % 100);
+			queryPacket[2] = (byte)((queryPacket[2] % 10) + ((queryPacket[2] / 10) * 16));
+			queryPacket[3] = (byte)time.Month;
+			queryPacket[3] = (byte)((queryPacket[3] % 10) + ((queryPacket[3] / 10) * 16));
+			queryPacket[4] = (byte)time.Day;
+			queryPacket[4] = (byte)((queryPacket[4] % 10) + ((queryPacket[4] / 10) * 16));
+			queryPacket[5] = (byte)time.Hour;
+			queryPacket[5] = (byte)((queryPacket[5] % 10) + ((queryPacket[5] / 10) * 16));
+			queryPacket[6] = (byte)time.Minute;
+			queryPacket[6] = (byte)((queryPacket[6] % 10) + ((queryPacket[6] / 10) * 16));
+			queryPacket[7] = (byte)time.Second;
+			queryPacket[7] = (byte)((queryPacket[7] % 10) + ((queryPacket[7] / 10) * 16));
+
+			if (UsbConn.WritePacket(queryPacket)) {
+				//return null != this.UsbComm.ReadPacket();
+				return true;
+			}
+			return false;
+		}
+
+		public TimeSpan Ping() {
 			lock (_connLock) {
-				if (!IsConnected) {
-					Connect();
-				}
-				byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
-				queryPacket[0] = 0;
-				queryPacket[1] = 0x84;
-				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
-					queryPacket = UsbConn.ReadPacket();
-					if (null != queryPacket) {
-						;
-					}
-				}
+				return AveragePing(2);
 			}
 		}
 
+		private TimeSpan AveragePing(int n) {
+			var sum = RawPing();
+			for (int i = 1; i < n; i++) {
+				sum += RawPing();
+			}
+			return new TimeSpan(sum.Ticks / n);
+		}
+
+		private TimeSpan RawPing() {
+			if (!IsConnected) {
+				Connect();
+			}
+			var start = DateTime.Now;
+			RawQueryClock();
+			return DateTime.Now.Subtract(start);
+		}
+
+		private DateTime RawQueryClock() {
+			if (!IsConnected) {
+				Connect();
+			}
+			var queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+			queryPacket[0] = 0;
+			queryPacket[1] = 0x87;
+			if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
+				queryPacket = UsbConn.ReadPacket();
+				if (null != queryPacket) {
+					{
+						var tmp = queryPacket[4];
+						queryPacket[4] = queryPacket[5];
+						queryPacket[5] = tmp;
+					}
+					DateTime dt;
+					return DaqDataFileInfo.TryConvert7ByteDateTime(queryPacket, 2, out dt)
+						? dt
+						: default(DateTime)
+					;
+				}
+			}
+			return default(DateTime);
+		}
+
+		private DateTime QueryAdjustedClock() {
+			lock (_connLock) {
+				var pingTime = new TimeSpan(this.AveragePing(2).Ticks / 2);
+				var rawClock = RawQueryClock();
+				return default(DateTime).Equals(rawClock) ? rawClock : rawClock.Add(pingTime);
+			}
+		}
 
 		protected override void Dispose(bool disposing) {
 			if(disposing) {

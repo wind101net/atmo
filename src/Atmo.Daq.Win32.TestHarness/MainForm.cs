@@ -99,9 +99,5 @@ namespace Atmo.Daq.Win32.TestHarness {
 			_connection.SetNetworkSize((int)numericUpDownNetSize.Value);
 		}
 
-		private void button1_Click(object sender, EventArgs e) {
-			_connection.Unknown2();
-		}
-
 	}
 }

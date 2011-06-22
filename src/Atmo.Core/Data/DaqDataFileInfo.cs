@@ -59,5 +59,6 @@ namespace Atmo.Data {
 			stamp = default(DateTime);
 			return false;
 		}
+
 	}
 }
