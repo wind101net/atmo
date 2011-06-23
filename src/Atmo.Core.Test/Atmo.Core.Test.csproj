@@ -50,8 +50,10 @@
     <Compile Include="PackedReadingTest.cs" />
     <Compile Include="PackedReadingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadingValuesConverterTest.cs" />
     <Compile Include="SensorReadingValuesTest.cs" />
     <Compile Include="TimeRangeTest.cs" />
+    <Compile Include="ValueConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">

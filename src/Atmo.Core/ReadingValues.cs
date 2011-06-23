@@ -26,8 +26,11 @@ using System;
 namespace Atmo {
 
 	/// <inheritdoc/>
-	public class ReadingValues 
-		: IReadingValues {
+	public class ReadingValues :
+		IReadingValues,
+		IEquatable<ReadingValues>,
+		IEquatable<IReadingValues>
+	{
 
 		/// <summary>
 		/// Creates an invalid reading value set.
@@ -96,5 +99,47 @@ namespace Atmo {
 		public bool IsWindDirectionValid {
 			get { throw new NotImplementedException(); }
 		}
+
+		/// <inheritdoc/>
+		public bool Equals(ReadingValues other) {
+			return null != other
+			    && Temperature == other.Temperature
+			    && Pressure == other.Pressure
+			    && Humidity == other.Humidity
+			    && WindSpeed == other.WindSpeed
+			    && WindDirection == other.WindDirection
+			;
+		}
+
+		/// <inheritdoc/>
+		public bool Equals(IReadingValues other) {
+			return null != other
+				&& Temperature == other.Temperature
+				&& Pressure == other.Pressure
+				&& Humidity == other.Humidity
+				&& WindSpeed == other.WindSpeed
+				&& WindDirection == other.WindDirection
+			;
+		}
+
+		/// <inheritdoc/>
+		public override bool Equals(object obj) {
+			return null != obj && (
+				(obj is ReadingValues) ? Equals(obj as ReadingValues)
+				: (obj is IReadingValues) && Equals(obj as IReadingValues)
+			);
+		}
+
+		public override int GetHashCode() {
+			return WindSpeed.GetHashCode() ^ Temperature.GetHashCode();
+		}
+
+		public override string ToString() {
+			return String.Format(
+				"T:{0} P:{1} H:{2} D:{3} S:{4}",
+				Temperature, Pressure, Humidity, WindDirection, WindSpeed
+			);
+		}
+
 	}
 }

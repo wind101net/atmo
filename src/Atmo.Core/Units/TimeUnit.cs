@@ -21,13 +21,34 @@
 //
 // ================================================================================
 
-namespace Atmo {
-
-	public interface ISensor {
+namespace Atmo.Units {
+	/// <summary>
+	/// Various units of time.
+	/// </summary>
+	public enum TimeUnit {
 		/// <summary>
-		/// The sensor name or identifier.
+		/// Seconds.
 		/// </summary>
-		string Name { get; }
-
+		Second,
+		/// <summary>
+		/// Minutes.
+		/// </summary>
+		Minute,
+		/// <summary>
+		/// Hours.
+		/// </summary>
+		Hour,
+		/// <summary>
+		/// Days.
+		/// </summary>
+		Day,
+		/// <summary>
+		/// Months.
+		/// </summary>
+		Month,
+		/// <summary>
+		/// Years.
+		/// </summary>
+		Year
 	}
 }

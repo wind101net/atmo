@@ -21,13 +21,39 @@
 //
 // ================================================================================
 
-namespace Atmo {
+using System;
+using System.Linq.Expressions;
 
-	public interface ISensor {
-		/// <summary>
-		/// The sensor name or identifier.
-		/// </summary>
-		string Name { get; }
+namespace Atmo.Units {
+	public class SpeedConverter : ValueConverterBase<SpeedUnit> {
 
+		private static Expression CreateExpression(Expression input, SpeedUnit from, SpeedUnit to) {
+			if (from == to) {
+				return input;
+			}
+			else if (from == SpeedUnit.MetersPerSec) {
+				return Expression.Multiply(input, Expression.Constant(2.23693629));
+			}
+			else {
+				return Expression.Multiply(input, Expression.Constant(0.44704));
+			}
+		}
+
+		public readonly Func<double, double> Conversion;
+
+		public SpeedConverter(SpeedUnit from, SpeedUnit to)
+			: base(from,to)
+		{
+			var valueIn = Expression.Parameter(typeof(double), "value");
+			Conversion = Expression.Lambda<Func<double, double>>(CreateExpression(valueIn, From, To), valueIn).Compile();
+		}
+
+		public override double Convert(double value) {
+			return Conversion(value);
+		}
+
+		public override Expression GetConversionExpression(Expression input) {
+			return CreateExpression(input, From, To);
+		}
 	}
 }

@@ -86,6 +86,10 @@
       <Project>{EBA93C91-7CDC-4B04-B1BC-5D4E134ABAEF}</Project>
       <Name>Atmo.Daq.Win32</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Atmo.UI.WinForms.Controls\Atmo.UI.WinForms.Controls.csproj">
+      <Project>{51F5422C-7639-4C87-B558-C3A77D73C9D7}</Project>
+      <Name>Atmo.UI.WinForms.Controls</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,13 +21,26 @@
 //
 // ================================================================================
 
-namespace Atmo {
-
-	public interface ISensor {
+namespace Atmo.Units {
+	/// <summary>
+	/// Various pressure units.
+	/// </summary>
+	public enum PressureUnit {
 		/// <summary>
-		/// The sensor name or identifier.
+		/// Millibar.
 		/// </summary>
-		string Name { get; }
-
+		Millibar,
+		/// <summary>
+		/// Inches of Mercury.
+		/// </summary>
+		InchOfMercury,
+		/// <summary>
+		/// Kilo-pascals.
+		/// </summary>
+		KiloPascals,
+		/// <summary>
+		/// Pascals.
+		/// </summary>
+		Pascals
 	}
 }

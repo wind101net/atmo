@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmo.Daq.Win32", "src\Atmo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmo.Daq.Win32.TestHarness", "src\Atmo.Daq.Win32.TestHarness\Atmo.Daq.Win32.TestHarness.csproj", "{D1F63D0D-C169-430D-A446-124F63B8BC9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmo.UI.WinForms.Controls", "src\Atmo.UI.WinForms.Controls\Atmo.UI.WinForms.Controls.csproj", "{51F5422C-7639-4C87-B558-C3A77D73C9D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,16 @@ Global
 		{D1F63D0D-C169-430D-A446-124F63B8BC9C}.Release|Mixed Platforms.Build.0 = Release|x86
 		{D1F63D0D-C169-430D-A446-124F63B8BC9C}.Release|x86.ActiveCfg = Release|x86
 		{D1F63D0D-C169-430D-A446-124F63B8BC9C}.Release|x86.Build.0 = Release|x86
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{51F5422C-7639-4C87-B558-C3A77D73C9D7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

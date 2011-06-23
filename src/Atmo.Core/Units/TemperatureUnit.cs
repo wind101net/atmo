@@ -21,13 +21,18 @@
 //
 // ================================================================================
 
-namespace Atmo {
-
-	public interface ISensor {
+namespace Atmo.Units {
+	/// <summary>
+	/// Various temperature units.
+	/// </summary>
+	public enum TemperatureUnit {
 		/// <summary>
-		/// The sensor name or identifier.
+		/// Celsius.
 		/// </summary>
-		string Name { get; }
-
+		Celsius,
+		/// <summary>
+		/// Fahrenheit.
+		/// </summary>
+		Fahrenheit
 	}
 }

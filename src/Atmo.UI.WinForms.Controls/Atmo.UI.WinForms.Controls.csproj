@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1A9A6AB0-3D36-48A7-988F-A3BFA6CC3380}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{51F5422C-7639-4C87-B558-C3A77D73C9D7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atmo.UI.DevEx</RootNamespace>
-    <AssemblyName>Atmo.UI.DevEx</AssemblyName>
+    <RootNamespace>Atmo.UI.WinForms.Controls</RootNamespace>
+    <AssemblyName>Atmo.UI.WinForms.Controls</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\bin\Debug\Atmo.UI.WinForms.Controls.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,14 +30,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
+    <DocumentationFile>..\..\bin\Release\Atmo.UI.WinForms.Controls.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v10.1, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Utils.v10.1, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraEditors.v10.1, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -48,42 +44,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AtmoAssemblyInfo.cs">
-      <Link>Properties\AtmoAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AtmoAssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SplashForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="SensorView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SplashForm.Designer.cs">
-      <DependentUpon>SplashForm.cs</DependentUpon>
+    <Compile Include="SensorView.designer.cs">
+      <DependentUpon>SensorView.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SensorView.resx">
+      <DependentUpon>SensorView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">
       <Project>{B90D6871-BE3B-456E-8A89-42775FC522BA}</Project>
       <Name>Atmo.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atmo.UI.WinForms.Controls\Atmo.UI.WinForms.Controls.csproj">
-      <Project>{51F5422C-7639-4C87-B558-C3A77D73C9D7}</Project>
-      <Name>Atmo.UI.WinForms.Controls</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\licenses.licx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

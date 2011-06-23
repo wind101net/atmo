@@ -49,12 +49,24 @@
     <Compile Include="IReadingValues.cs" />
     <Compile Include="ISensor.cs" />
     <Compile Include="IReading.cs" />
+    <Compile Include="ISensorInfo.cs" />
     <Compile Include="PackedReading.cs" />
     <Compile Include="PackedReadingValues.cs" />
     <Compile Include="PackedValuesFlags.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reading.cs" />
     <Compile Include="ReadingValues.cs" />
     <Compile Include="TimeRange.cs" />
+    <Compile Include="Units\PressureConverter.cs" />
+    <Compile Include="Units\ReadingValuesConverter.cs" />
+    <Compile Include="Units\SpeedConverter.cs" />
+    <Compile Include="Units\TemperatureConverter.cs" />
+    <Compile Include="Units\ValueConverterBase.cs" />
+    <Compile Include="Units\PressureUnit.cs" />
+    <Compile Include="Units\SpeedUnit.cs" />
+    <Compile Include="Units\TemperatureUnit.cs" />
+    <Compile Include="Units\TimeUnit.cs" />
+    <Compile Include="Units\UnitUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

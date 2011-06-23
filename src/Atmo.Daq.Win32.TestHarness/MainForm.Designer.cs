@@ -32,20 +32,15 @@
 			this.buttonStopQuery = new System.Windows.Forms.Button();
 			this.labelIsQuery = new System.Windows.Forms.Label();
 			this.timerQuery = new System.Windows.Forms.Timer(this.components);
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.labelWindDir1 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.labelWindSpeed1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.numericUpDownNetSize = new System.Windows.Forms.NumericUpDown();
 			this.buttonSetNetSize = new System.Windows.Forms.Button();
 			this.buttonPing = new System.Windows.Forms.Button();
 			this.labelPing = new System.Windows.Forms.Label();
-			this.tableLayoutPanel1.SuspendLayout();
+			this.sensorViewA = new Atmo.UI.DevEx.Controls.SensorView();
+			this.sensorViewB = new Atmo.UI.DevEx.Controls.SensorView();
+			this.sensorViewC = new Atmo.UI.DevEx.Controls.SensorView();
+			this.sensorViewD = new Atmo.UI.DevEx.Controls.SensorView();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -117,92 +112,6 @@
 			// 
 			this.timerQuery.Tick += new System.EventHandler(this.timerQuery_Tick);
 			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Controls.Add(this.labelWindDir1, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
-			this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
-			this.tableLayoutPanel1.Controls.Add(this.label5, 0, 4);
-			this.tableLayoutPanel1.Controls.Add(this.labelWindSpeed1, 1, 0);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 113);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 5;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(200, 100);
-			this.tableLayoutPanel1.TabIndex = 6;
-			// 
-			// labelWindDir1
-			// 
-			this.labelWindDir1.AutoSize = true;
-			this.labelWindDir1.Location = new System.Drawing.Point(103, 20);
-			this.labelWindDir1.Name = "labelWindDir1";
-			this.labelWindDir1.Size = new System.Drawing.Size(16, 13);
-			this.labelWindDir1.TabIndex = 6;
-			this.labelWindDir1.Text = "...";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "label1";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(3, 20);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(35, 13);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "label2";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(3, 40);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(35, 13);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "label3";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(3, 60);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(35, 13);
-			this.label4.TabIndex = 3;
-			this.label4.Text = "label4";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(3, 80);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(35, 13);
-			this.label5.TabIndex = 4;
-			this.label5.Text = "label5";
-			// 
-			// labelWindSpeed1
-			// 
-			this.labelWindSpeed1.AutoSize = true;
-			this.labelWindSpeed1.Location = new System.Drawing.Point(103, 0);
-			this.labelWindSpeed1.Name = "labelWindSpeed1";
-			this.labelWindSpeed1.Size = new System.Drawing.Size(16, 13);
-			this.labelWindSpeed1.TabIndex = 5;
-			this.labelWindSpeed1.Text = "...";
-			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
@@ -262,17 +171,60 @@
 			this.labelPing.Size = new System.Drawing.Size(0, 13);
 			this.labelPing.TabIndex = 11;
 			// 
+			// sensorViewA
+			// 
+			this.sensorViewA.BackColor = System.Drawing.Color.Transparent;
+			this.sensorViewA.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+			this.sensorViewA.IsSelected = false;
+			this.sensorViewA.Location = new System.Drawing.Point(22, 109);
+			this.sensorViewA.Name = "sensorViewA";
+			this.sensorViewA.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewA.TabIndex = 12;
+			// 
+			// sensorViewB
+			// 
+			this.sensorViewB.BackColor = System.Drawing.Color.Transparent;
+			this.sensorViewB.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+			this.sensorViewB.IsSelected = false;
+			this.sensorViewB.Location = new System.Drawing.Point(274, 109);
+			this.sensorViewB.Name = "sensorViewB";
+			this.sensorViewB.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewB.TabIndex = 13;
+			// 
+			// sensorViewC
+			// 
+			this.sensorViewC.BackColor = System.Drawing.Color.Transparent;
+			this.sensorViewC.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+			this.sensorViewC.IsSelected = false;
+			this.sensorViewC.Location = new System.Drawing.Point(22, 239);
+			this.sensorViewC.Name = "sensorViewC";
+			this.sensorViewC.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewC.TabIndex = 14;
+			// 
+			// sensorViewD
+			// 
+			this.sensorViewD.BackColor = System.Drawing.Color.Transparent;
+			this.sensorViewD.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+			this.sensorViewD.IsSelected = false;
+			this.sensorViewD.Location = new System.Drawing.Point(274, 239);
+			this.sensorViewD.Name = "sensorViewD";
+			this.sensorViewD.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewD.TabIndex = 15;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(655, 484);
+			this.Controls.Add(this.sensorViewD);
+			this.Controls.Add(this.sensorViewC);
+			this.Controls.Add(this.sensorViewB);
+			this.Controls.Add(this.sensorViewA);
 			this.Controls.Add(this.labelPing);
 			this.Controls.Add(this.buttonPing);
 			this.Controls.Add(this.buttonSetNetSize);
 			this.Controls.Add(this.numericUpDownNetSize);
 			this.Controls.Add(this.label6);
-			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.labelIsQuery);
 			this.Controls.Add(this.buttonStopQuery);
 			this.Controls.Add(this.buttonStartQuery);
@@ -281,8 +233,6 @@
 			this.Controls.Add(this.buttonConnect);
 			this.Name = "MainForm";
 			this.Text = "Connection Test for DAQ Win32 USB HID";
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -299,19 +249,15 @@
 		private System.Windows.Forms.Button buttonStopQuery;
 		private System.Windows.Forms.Label labelIsQuery;
 		private System.Windows.Forms.Timer timerQuery;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private System.Windows.Forms.Label labelWindDir1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label labelWindSpeed1;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.NumericUpDown numericUpDownNetSize;
 		private System.Windows.Forms.Button buttonSetNetSize;
 		private System.Windows.Forms.Button buttonPing;
 		private System.Windows.Forms.Label labelPing;
+		private UI.DevEx.Controls.SensorView sensorViewA;
+		private UI.DevEx.Controls.SensorView sensorViewB;
+		private UI.DevEx.Controls.SensorView sensorViewC;
+		private UI.DevEx.Controls.SensorView sensorViewD;
 	}
 }
 

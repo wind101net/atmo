@@ -21,13 +21,18 @@
 //
 // ================================================================================
 
-namespace Atmo {
+using Atmo.Units;
 
-	public interface ISensor {
-		/// <summary>
-		/// The sensor name or identifier.
-		/// </summary>
+namespace Atmo {
+	public interface ISensorInfo {
+
 		string Name { get; }
+
+		SpeedUnit SpeedUnit { get; }
+
+		TemperatureUnit TemperatureUnit { get; }
+
+		PressureUnit PressureUnit { get; }
 
 	}
 }

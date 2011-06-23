@@ -21,13 +21,18 @@
 //
 // ================================================================================
 
-namespace Atmo {
-
-	public interface ISensor {
+namespace Atmo.Units {
+	/// <summary>
+	/// Various units for speed.
+	/// </summary>
+	public enum SpeedUnit {
 		/// <summary>
-		/// The sensor name or identifier.
+		/// Metres/Second.
 		/// </summary>
-		string Name { get; }
-
+		MetersPerSec,
+		/// <summary>
+		/// Miles/Hour.
+		/// </summary>
+		MilesPerHour
 	}
 }

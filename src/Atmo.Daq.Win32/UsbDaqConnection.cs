@@ -109,6 +109,7 @@ namespace Atmo.Daq.Win32 {
 				get { return _latestReadings.FirstOrDefault(); }
 			}
 
+			/// <inheritdoc/>
 			public string Name {
 				get { return _nid.ToString(); }
 			}
@@ -258,12 +259,17 @@ namespace Atmo.Daq.Win32 {
 			_usingDaqTemp = usingDaqTemp;
 		}
 
-		private PackedReadingValues QueryValues(int nid) {
+		public PackedReadingValues QueryValues(int nid) {
+			
+			if(nid < 0 || nid > 3) {
+				throw new ArgumentOutOfRangeException("nid");
+			}
+
 			lock (_connLock) {
 				if (!IsConnected) {
 					Connect();
 				}
-				var queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				var queryPacket = GenerateEmptyPacketData();
 				queryPacket[0] = 0;
 				queryPacket[1] = 0x85;
 				queryPacket[2] = (byte)nid;
@@ -278,11 +284,12 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private DaqStatusValues QueryStatus() {
+			var status = DaqStatusValues.Default;
 			lock (_connLock) {
 				if (!IsConnected) {
 					Connect();
 				}
-				var queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				var queryPacket = GenerateEmptyPacketData();
 				queryPacket[0] = 0;
 				queryPacket[1] = 0x37;
 				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
@@ -292,14 +299,15 @@ namespace Atmo.Daq.Win32 {
 						var volBatRaw = (ushort)(queryPacket[4] | (queryPacket[5] << 8));
 						var tmpDaqRaw = (ushort)(queryPacket[7] | (queryPacket[6] << 8));
 
-						double temp = ((double)(tmpDaqRaw) / 10.0) - 40.0;
-						double volUsb = ((double)(volUsbRaw) / 1024.0) * 6.4;
-						double volBat = ((double)(volBatRaw) / 1024.0) * 6.4;
-						return new DaqStatusValues(volBat, volUsb, temp);
+						var temp = ((double)(tmpDaqRaw) / 10.0) - 40.0;
+						var volUsb = ((double)(volUsbRaw) / 1024.0) * 6.4;
+						var volBat = ((double)(volBatRaw) / 1024.0) * 6.4;
+
+						status = new DaqStatusValues(volBat, volUsb, temp);
 					}
 				}
-				return DaqStatusValues.Default;
 			}
+			return status;
 		}
 
 		public void SetNetworkSize(int size) {
@@ -373,7 +381,7 @@ namespace Atmo.Daq.Win32 {
 			if (!IsConnected) {
 				Connect();
 			}
-			byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+			byte[] queryPacket = GenerateEmptyPacketData();
 			queryPacket[0] = 0;
 			queryPacket[1] = 0x86;
 
@@ -428,7 +436,7 @@ namespace Atmo.Daq.Win32 {
 			if (!IsConnected) {
 				Connect();
 			}
-			var queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+			var queryPacket = GenerateEmptyPacketData();
 			queryPacket[0] = 0;
 			queryPacket[1] = 0x87;
 			if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {

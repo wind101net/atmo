@@ -21,13 +21,33 @@
 //
 // ================================================================================
 
-namespace Atmo {
+using Atmo.Units;
+using NUnit.Framework;
 
-	public interface ISensor {
-		/// <summary>
-		/// The sensor name or identifier.
-		/// </summary>
-		string Name { get; }
+namespace Atmo.Test {
+	[TestFixture]
+	public class ReadingValuesConverterTest {
+
+		[Test]
+		public void ReadingValuesConverterTestA() {
+			var converter = new ReadingValuesConverter<ReadingValues, ReadingValues>(
+				new TemperatureConverter(TemperatureUnit.Celsius,TemperatureUnit.Fahrenheit),
+				new SpeedConverter(SpeedUnit.MetersPerSec, SpeedUnit.MetersPerSec), 
+				new PressureConverter(PressureUnit.Millibar, PressureUnit.KiloPascals)
+			);
+
+			var inputA = new ReadingValues(0, 0, 0, 0, 0);
+			var expectedA = new ReadingValues(32, 0, 0, 0, 0);
+
+			Assert.AreEqual(expectedA, converter.Convert(inputA));
+
+			var inputB = new ReadingValues(30, 1000, .9, 98, 14);
+			var expectedB = new ReadingValues(86, 100, .9, 98, 14);
+
+			Assert.AreEqual(expectedB, converter.Convert(inputB));
+
+			Assert.AreNotEqual(expectedA, expectedB);
+		}
 
 	}
 }

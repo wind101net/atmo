@@ -21,13 +21,24 @@
 //
 // ================================================================================
 
-namespace Atmo {
+using System.Reflection;
 
-	public interface ISensor {
-		/// <summary>
-		/// The sensor name or identifier.
-		/// </summary>
-		string Name { get; }
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyCompany("BaraniDesign")]
+[assembly: AssemblyProduct("Atmo 2")]
+[assembly: AssemblyCopyright("Copyright © BARANI DESIGN 2011")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
-	}
-}
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// Major Version will transition from 0 to 2, skipping 1.
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
