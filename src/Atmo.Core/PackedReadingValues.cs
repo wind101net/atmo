@@ -140,23 +140,49 @@ namespace Atmo {
 		}
 
 		public double Temperature {
-			get { return unchecked((((ushort)(_temperatureAndFlags >> 5)) / 10.0) - 40.0); }
+			get {
+				return IsTemperatureValid
+					? unchecked((((ushort)(_temperatureAndFlags >> 5)) / 10.0) - 40.0)
+					: Double.NaN
+				;
+			}
 		}
 
 		public double Pressure {
-			get { return unchecked((double)(_pressureData * 2)); }
+			get {
+				return IsPressureValid
+					? unchecked((double)(_pressureData * 2))
+					: Double.NaN
+				;
+			}
 		}
 
 		public double Humidity {
-			get { return unchecked((double)((ushort)(_humidityDirectionAndSpeed >> 22)) / 1000.0); }
+			get {
+				return IsHumidityValid
+				    ? unchecked((double) ((ushort) (_humidityDirectionAndSpeed >> 22))/1000.0)
+				    : Double.NaN
+				;
+			}
 		}
 
 		public double WindSpeed {
-			get { return unchecked((double)((ushort)(_humidityDirectionAndSpeed & 0x1fff)) / 100.0); }
+			get {
+				return IsWindSpeedValid
+					? unchecked((double)((ushort)(_humidityDirectionAndSpeed & 0x1fff)) / 100.0)
+					: Double.NaN
+				;
+			}
 		}
 
 		public double WindDirection {
-			get { return unchecked((double)((ushort)((_humidityDirectionAndSpeed >> 13) & 0x1ff))); } // TODO: Is this ushort cast needed?
+			get {
+				// TODO: Is this ushort cast needed?
+				return IsWindDirectionValid
+					? unchecked((double)((ushort)((_humidityDirectionAndSpeed >> 13) & 0x1ff)))
+					: Double.NaN
+				;
+			}
 		}
 
 

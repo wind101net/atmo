@@ -21,6 +21,7 @@
 //
 // ================================================================================
 
+using System;
 using NUnit.Framework;
 
 namespace Atmo.Test {
@@ -57,7 +58,7 @@ namespace Atmo.Test {
 			var values = PackedReadingValues.FromDeviceBytes(DeviceSampleData, 0);
 
 			Assert.AreEqual(18.51, values.WindSpeed);
-			Assert.AreEqual(511, values.WindDirection);
+			Assert.AreEqual(Double.NaN, values.WindDirection);
 			Assert.AreEqual(24.5, values.Temperature);
 			Assert.AreEqual(.505, values.Humidity);
 			Assert.AreEqual(98000, values.Pressure);

@@ -56,7 +56,7 @@ namespace Atmo.Test {
 				PackedReadingValues.FromDeviceBytes(DeviceSampleData, 0)
 			);
 			Assert.AreEqual(18.51, reading.WindSpeed);
-			Assert.AreEqual(511, reading.WindDirection);
+			Assert.AreEqual(Double.NaN, reading.WindDirection);
 			Assert.AreEqual(24.5, reading.Temperature);
 			Assert.AreEqual(.505, reading.Humidity);
 			Assert.AreEqual(98000, reading.Pressure);
