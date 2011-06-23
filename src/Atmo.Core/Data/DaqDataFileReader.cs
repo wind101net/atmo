@@ -34,8 +34,8 @@ namespace Atmo.Data {
 		private readonly bool _ownsStream;
 		private bool _isClosed;
 		private DateTime _currentBaseTime;
-		private bool _timeBaseFromReadAhead = false;
-		private int _chunkRecordCounter = 0;
+		private bool _timeBaseFromReadAhead;
+		private int _chunkRecordCounter;
 		private PackedReading _current;
 
 		public DaqDataFileReader(Stream stream) : this(stream, false) { }
@@ -46,6 +46,8 @@ namespace Atmo.Data {
 			_isClosed = false;
 			_currentBaseTime = default(DateTime);
 			_current = default(PackedReading);
+			_timeBaseFromReadAhead = false;
+			_chunkRecordCounter = 0;
 			if(null == _stream) {
 				throw new ArgumentNullException("stream");
 			}
@@ -153,7 +155,7 @@ namespace Atmo.Data {
 							_timeBaseFromReadAhead = true;
 						}
 						else {
-							// just skip it, pretend it doesen't exist because we already read ahead
+							; // just skip it, pretend it doesen't exist because we already read ahead
 						}
 					}
 				}

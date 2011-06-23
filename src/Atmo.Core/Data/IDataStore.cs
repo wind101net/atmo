@@ -21,8 +21,11 @@
 //
 // ================================================================================
 
+using System;
+
 namespace Atmo.Data {
 
+	[Obsolete("Not sure what I am doing with this just yet.")]
 	public interface IDataStore {
 
 	}

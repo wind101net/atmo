@@ -21,55 +21,43 @@
 //
 // ================================================================================
 
+using System;
+
 namespace Atmo {
-	public class Reading : IReading {
+	public class Reading : ReadingValues, IReading {
 
-		public System.DateTime TimeStamp {
-			get { throw new System.NotImplementedException(); }
+		public Reading() : this(default(DateTime)) { }
+
+		public Reading(DateTime timeStamp) : base() {
+			TimeStamp = timeStamp;
 		}
 
-		public double Temperature {
-			get { throw new System.NotImplementedException(); }
+		public Reading(
+			DateTime timeStamp,
+			double temperature,
+			double pressure,
+			double humidity,
+			double windDirection,
+			double windSpeed
+		)
+			: base(temperature,pressure,humidity,windDirection,windSpeed)
+		{
+			TimeStamp = timeStamp;
 		}
 
-		public double Pressure {
-			get { throw new System.NotImplementedException(); }
+		public Reading(
+			double temperature,
+			double pressure,
+			double humidity,
+			double windDirection,
+			double windSpeed
+		)
+			: base(temperature, pressure, humidity, windDirection, windSpeed)
+		{
+			TimeStamp = default(DateTime);
 		}
 
-		public double Humidity {
-			get { throw new System.NotImplementedException(); }
-		}
+		public DateTime TimeStamp { get; set; }
 
-		public double WindSpeed {
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public double WindDirection {
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public bool IsValid {
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public bool IsTemperatureValid {
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public bool IsPressureValid {
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public bool IsHumidityValid {
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public bool IsWindSpeedValid {
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public bool IsWindDirectionValid {
-			get { throw new System.NotImplementedException(); }
-		}
 	}
 }

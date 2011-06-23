@@ -41,6 +41,14 @@ namespace Atmo {
 			return new ReadingValues(Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
 		}
 
+		public ReadingValues() {
+			Temperature = 0;
+			Pressure = 0;
+			Humidity = 0;
+			WindDirection = 0;
+			WindSpeed = 0;
+		}
+
 		public ReadingValues(
 			double temperature,
 			double pressure,
