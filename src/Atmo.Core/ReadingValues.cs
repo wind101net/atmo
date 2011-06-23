@@ -55,6 +55,22 @@ namespace Atmo {
 			WindSpeed = windSpeed;
 		}
 
+		public ReadingValues(IReadingValues values) {
+			if(null == values) {
+				Temperature = Double.NaN;
+				Pressure = Double.NaN;
+				Humidity = Double.NaN;
+				WindDirection = Double.NaN;
+				WindSpeed = Double.NaN;
+			}else {
+				Temperature = values.Temperature;
+				Pressure = values.Pressure;
+				Humidity = values.Humidity;
+				WindDirection = values.WindDirection;
+				WindSpeed = values.WindSpeed;
+			}
+		}
+
 		/// <inheritdoc/>
 		public double Temperature { get; set; }
 
@@ -72,32 +88,32 @@ namespace Atmo {
 
 		/// <inheritdoc/>
 		public bool IsValid {
-			get { throw new NotImplementedException(); }
+			get { return IsTemperatureValid || IsPressureValid || IsHumidityValid || IsWindSpeedValid || IsWindDirectionValid; }
 		}
 
 		/// <inheritdoc/>
 		public bool IsTemperatureValid {
-			get { throw new NotImplementedException(); }
+			get { return !Double.IsNaN(Temperature); }
 		}
 
 		/// <inheritdoc/>
 		public bool IsPressureValid {
-			get { throw new NotImplementedException(); }
+			get { return !Double.IsNaN(Pressure); }
 		}
 
 		/// <inheritdoc/>
 		public bool IsHumidityValid {
-			get { throw new NotImplementedException(); }
+			get { return !Double.IsNaN(Humidity); }
 		}
 
 		/// <inheritdoc/>
 		public bool IsWindSpeedValid {
-			get { throw new NotImplementedException(); }
+			get { return !Double.IsNaN(WindSpeed); }
 		}
 
 		/// <inheritdoc/>
 		public bool IsWindDirectionValid {
-			get { throw new NotImplementedException(); }
+			get { return !Double.IsNaN(WindDirection); }
 		}
 
 		/// <inheritdoc/>

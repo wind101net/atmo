@@ -41,8 +41,8 @@ namespace Atmo.Units {
 					return input;
 				}
 				return Expression.New(
-					typeof(TTo).GetConstructor(new Type[] { typeof(TFrom) })
-					?? typeof(TTo).GetConstructor(new Type[] { typeof(IReadingValues) }),
+					typeof(TTo).GetConstructor(new []{ typeof(TFrom) })
+					?? typeof(TTo).GetConstructor(new []{ typeof(IReadingValues) }),
 					input
 				);
 			}

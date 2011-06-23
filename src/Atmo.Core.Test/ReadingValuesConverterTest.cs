@@ -45,8 +45,6 @@ namespace Atmo.Test {
 			var expectedB = new ReadingValues(86, 100, .9, 98, 14);
 
 			Assert.AreEqual(expectedB, converter.Convert(inputB));
-
-			Assert.AreNotEqual(expectedA, expectedB);
 		}
 
 	}
