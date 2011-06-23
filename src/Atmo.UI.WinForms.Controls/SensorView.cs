@@ -24,19 +24,30 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Atmo.Test;
+using Atmo.Units;
 
 namespace Atmo.UI.DevEx.Controls {
 	public partial class SensorView : UserControl {
 
 		private bool _selected;
+		private ReadingValuesConverter<IReadingValues,ReadingValues> _converter;
 
 		public SensorView() {
+			_converter = null;
+			_selected = false;
+
 			InitializeComponent();
 			foreach (Control c in tableLayoutPanel.Controls) {
 				c.MouseClick += tableLayoutPanel_MouseClick;
 			}
 			ResetValues();
 			SetBackgroundColor();
+		}
+
+		public ReadingValuesConverter<IReadingValues,ReadingValues> Converter {
+			get { return _converter; }
+			set { _converter = value; }
 		}
 
 		public bool IsSelected {
@@ -62,6 +73,15 @@ namespace Atmo.UI.DevEx.Controls {
 			SetValues(null,null);
 		}
 
+		public TemperatureUnit TemperatureUnit {
+			get {
+				if(null != _converter && null != _converter.TemperatureConverter) {
+					return _converter.TemperatureConverter.To;
+				}
+				return TemperatureUnit.Celsius;
+			}
+		}
+
 		public void SetValues(ISensor sensor, IReadingValues reading) {
 			if (null != sensor) {
 				int n;
@@ -75,7 +95,66 @@ namespace Atmo.UI.DevEx.Controls {
 
 			const string na = "N/A";
 			if (null != reading && reading.IsValid) {
-				throw new NotImplementedException();
+				var data = null == Converter
+				    ? reading
+				    : Converter.Convert(reading)
+				;
+				
+				string tempText;
+				if(data.IsTemperatureValid) {
+					tempText = data.Temperature.ToString("F1");
+					if (null != _converter && null != _converter.TemperatureConverter) {
+						tempText += ' ' + UnitUtility.GetFriendlyName(_converter.TemperatureConverter.To);
+					}
+				}else {
+					tempText = na;
+				}
+
+				string presText;
+				if(data.IsPressureValid) {
+					if(null != _converter && null != _converter.PressureConverter) {
+						var presUnit = _converter.PressureConverter.To;
+						presText = Math.Round(data.Pressure,presUnit == PressureUnit.Millibar ? 1 : 2).ToString()
+							+ ' '
+							+ UnitUtility.GetFriendlyName(presUnit)
+						;
+					}else {
+						presText = Math.Round(data.Pressure, 2).ToString();
+					}
+				}else {
+					presText = na;
+				}
+
+				string speedText;
+				if(data.IsWindSpeedValid) {
+					speedText = data.WindSpeed.ToString("F2");
+					if (null != _converter && null != _converter.SpeedConverter) {
+						speedText += ' ' + UnitUtility.GetFriendlyName(_converter.SpeedConverter.To);
+					}
+				}else {
+					speedText = na;
+				}
+
+				string dirText;
+				if(data.IsWindDirectionValid) {
+					dirText = Math.Round(data.WindDirection).ToString()
+						+ "\xb0, "
+						+ Vector2D.CardinalDirection.DegreesToBestCardinalName(reading.WindDirection)
+					;
+
+				}else {
+					dirText = na;
+				}
+
+				tempValue.Text = tempText;
+				pressureValue.Text = presText;
+				humidityValue.Text = data.IsHumidityValid
+					? (Math.Round(data.Humidity * 100.0, 1).ToString() + '%')
+					: na
+				;
+				windSpeedValue.Text = speedText;
+				windDirValue.Text = dirText;
+
 			}
 			else {
 				tempValue.Text = na;

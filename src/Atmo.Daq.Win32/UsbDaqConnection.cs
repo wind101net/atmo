@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Atmo.Data;
+using Atmo.Units;
 
 namespace Atmo.Daq.Win32 {
 	public class UsbDaqConnection : BaseDaqUsbConnection, IDaqConnection {
@@ -107,6 +108,18 @@ namespace Atmo.Daq.Win32 {
 
 			public PackedReading Current {
 				get { return _latestReadings.FirstOrDefault(); }
+			}
+
+			public SpeedUnit SpeedUnit {
+				get { return SpeedUnit.MetersPerSec; }
+			}
+
+			public TemperatureUnit TemperatureUnit {
+				get { return TemperatureUnit.Celsius; }
+			}
+
+			public PressureUnit PressureUnit {
+				get { return PressureUnit.Pascals; }
 			}
 
 			/// <inheritdoc/>

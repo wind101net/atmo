@@ -23,15 +23,28 @@
 
 using System;
 using System.Windows.Forms;
+using Atmo.UI.DevEx.Controls;
+using Atmo.Units;
 
 namespace Atmo.Daq.Win32.TestHarness {
 	public partial class MainForm : Form {
 
 		private UsbDaqConnection _connection;
+		private SensorView[] _sensorViews;
 
 		public MainForm() {
 			InitializeComponent();
+			_sensorViews = new[] { sensorViewA, sensorViewB, sensorViewC, sensorViewD };
 			_connection = new UsbDaqConnection();
+			for (int i = 0; i < _sensorViews.Length; i++ ) {
+				var converter = new ReadingValuesConverter<IReadingValues, ReadingValues>(
+					new TemperatureConverter(_connection[i].TemperatureUnit,TemperatureUnit.Fahrenheit),
+					new SpeedConverter(_connection[i].SpeedUnit,SpeedUnit.MilesPerHour),
+					new PressureConverter(_connection[i].PressureUnit, PressureUnit.KiloPascals)
+				);
+				_sensorViews[i].Converter = converter;
+			}
+
 			timerProperties_Tick(this, null);
 		}
 
@@ -115,9 +128,8 @@ namespace Atmo.Daq.Win32.TestHarness {
 				return;
 			}
 			
-			var sensorViews = new[] {sensorViewA, sensorViewB, sensorViewC, sensorViewD};
-			for (var i = 0; i < sensorViews.Length; i++) {
-				sensorViews[i].SetValues(_connection.GetSensor(i), _connection[i].Current);
+			for (var i = 0; i < _sensorViews.Length; i++) {
+				_sensorViews[i].SetValues(_connection.GetSensor(i), _connection[i].Current);
 			}
 		}
 
