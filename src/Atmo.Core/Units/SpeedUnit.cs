@@ -29,7 +29,7 @@ namespace Atmo.Units {
 		/// <summary>
 		/// Metres/Second.
 		/// </summary>
-		MetersPerSec,
+		MetersPerSec = 0,
 		/// <summary>
 		/// Miles/Hour.
 		/// </summary>

@@ -29,7 +29,7 @@ namespace Atmo.Units {
 		/// <summary>
 		/// Celsius.
 		/// </summary>
-		Celsius,
+		Celsius = 0,
 		/// <summary>
 		/// Fahrenheit.
 		/// </summary>

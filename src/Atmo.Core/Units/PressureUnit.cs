@@ -27,20 +27,20 @@ namespace Atmo.Units {
 	/// </summary>
 	public enum PressureUnit {
 		/// <summary>
+		/// Pascals.
+		/// </summary>
+		Pascals = 0,
+		/// <summary>
+		/// Kilo-pascals.
+		/// </summary>
+		KiloPascals,
+		/// <summary>
 		/// Millibar.
 		/// </summary>
 		Millibar,
 		/// <summary>
 		/// Inches of Mercury.
 		/// </summary>
-		InchOfMercury,
-		/// <summary>
-		/// Kilo-pascals.
-		/// </summary>
-		KiloPascals,
-		/// <summary>
-		/// Pascals.
-		/// </summary>
-		Pascals
+		InchOfMercury
 	}
 }

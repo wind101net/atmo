@@ -12,5 +12,6 @@ namespace Atmo.UI.DevEx {
 		public MainForm() {
 			InitializeComponent();
 		}
+
 	}
 }
