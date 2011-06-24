@@ -24,12 +24,25 @@
 using System;
 
 namespace Atmo.Data {
+
+	/// <summary>
+	/// Information about DAQ data files.
+	/// </summary>
+	/// <remarks>
+	/// This class may take the form of a static helper class.
+	/// </remarks>
 	public class DaqDataFileInfo {
 
 		internal const int RecordSize = 8;
 		internal const byte HeaderCodeByte = 0xa5;
 
-
+		/// <summary>
+		/// Converts 7 bytes of data as found in a DAQ file into a date time.
+		/// </summary>
+		/// <param name="data">The raw data.</param>
+		/// <param name="offset">The offset within the raw data.</param>
+		/// <param name="stamp">The result.</param>
+		/// <returns>True if successful.</returns>
 		public static bool TryConvert7ByteDateTime(byte[] data, int offset, out DateTime stamp) {
 
 			// TODO: test for an invalid date that falls within the ranges.

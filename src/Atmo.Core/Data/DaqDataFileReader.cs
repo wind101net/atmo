@@ -26,6 +26,9 @@ using System;
 
 namespace Atmo.Data {
 	
+	/// <summary>
+	/// Reads a DAQ file.
+	/// </summary>
 	public class DaqDataFileReader : IDisposable {
 
 		private const int LastRecordIndex = DaqDataFileInfo.RecordSize - 1;
@@ -38,6 +41,10 @@ namespace Atmo.Data {
 		private int _chunkRecordCounter;
 		private PackedReading _current;
 
+		/// <summary>
+		/// Constructs a new DAQ file reader using the given <paramref name="stream"/>.
+		/// </summary>
+		/// <param name="stream">The stream to read DAQ data from.</param>
 		public DaqDataFileReader(Stream stream) : this(stream, false) { }
 
 		private DaqDataFileReader(Stream stream, bool ownsStream) {
@@ -73,6 +80,9 @@ namespace Atmo.Data {
 			_stream = null;
 		}
 
+		/// <summary>
+		/// The current reading.
+		/// </summary>
 		public PackedReading Current {
 			get {
 				return _current;
@@ -110,6 +120,10 @@ namespace Atmo.Data {
 			return -1;
 		}
 
+		/// <summary>
+		/// Moves to the next record in the DAQ file.
+		/// </summary>
+		/// <returns>true when the move was successful.</returns>
 		public bool MoveNext() {
 			if (_isClosed || _stream.Position >= _stream.Length) {
 				_isClosed = true;
