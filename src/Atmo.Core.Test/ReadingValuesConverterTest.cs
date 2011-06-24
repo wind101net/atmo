@@ -47,5 +47,35 @@ namespace Atmo.Test {
 			Assert.AreEqual(expectedB, converter.Convert(inputB));
 		}
 
+		[Test]
+		public void ReadingValuesConverterCacheTestA() {
+
+			var converterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
+
+			var inputA = new ReadingValues(0, 0, 0, 0, 0);
+			var expectedA = new ReadingValues(32, 0, 0, 0, 0);
+
+			Assert.AreEqual(
+				expectedA,
+				converterCache.Get(
+					TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit,
+					SpeedUnit.MetersPerSec, SpeedUnit.MetersPerSec,
+					PressureUnit.Millibar, PressureUnit.KiloPascals
+				).Convert(inputA)
+			);
+
+			var inputB = new ReadingValues(30, 1000, .9, 98, 14);
+			var expectedB = new ReadingValues(86, 100, .9, 98, 14);
+
+			Assert.AreEqual(
+				expectedB,
+				converterCache.Get(
+					TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit,
+					SpeedUnit.MetersPerSec, SpeedUnit.MetersPerSec,
+					PressureUnit.Millibar, PressureUnit.KiloPascals
+				).Convert(inputB)
+			);
+		}
+
 	}
 }

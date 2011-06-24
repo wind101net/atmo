@@ -59,6 +59,7 @@
     <Compile Include="TimeRange.cs" />
     <Compile Include="Units\PressureConverter.cs" />
     <Compile Include="Units\ReadingValuesConverter.cs" />
+    <Compile Include="Units\ReadingValuesConverterCache.cs" />
     <Compile Include="Units\SpeedConverter.cs" />
     <Compile Include="Units\TemperatureConverter.cs" />
     <Compile Include="Units\ValueConverterBase.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Units\TemperatureUnit.cs" />
     <Compile Include="Units\TimeUnit.cs" />
     <Compile Include="Units\UnitUtility.cs" />
+    <Compile Include="Units\ValueConverterCache.cs" />
     <Compile Include="Vector2D.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

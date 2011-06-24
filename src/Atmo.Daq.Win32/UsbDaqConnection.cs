@@ -51,7 +51,7 @@ namespace Atmo.Daq.Win32 {
 
 		}
 
-		public class Sensor : ISensor {
+		public class Sensor : ISensor, ISensorInfo {
 
 			private const int DefaultMaxReadingsValue = 10;
 

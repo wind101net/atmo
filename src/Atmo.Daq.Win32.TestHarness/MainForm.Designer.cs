@@ -178,8 +178,11 @@
 			this.sensorViewA.IsSelected = false;
 			this.sensorViewA.Location = new System.Drawing.Point(22, 109);
 			this.sensorViewA.Name = "sensorViewA";
+			this.sensorViewA.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
 			this.sensorViewA.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewA.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
 			this.sensorViewA.TabIndex = 12;
+			this.sensorViewA.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
 			// 
 			// sensorViewB
 			// 
@@ -188,8 +191,11 @@
 			this.sensorViewB.IsSelected = false;
 			this.sensorViewB.Location = new System.Drawing.Point(274, 109);
 			this.sensorViewB.Name = "sensorViewB";
+			this.sensorViewB.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
 			this.sensorViewB.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewB.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
 			this.sensorViewB.TabIndex = 13;
+			this.sensorViewB.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
 			// 
 			// sensorViewC
 			// 
@@ -198,8 +204,11 @@
 			this.sensorViewC.IsSelected = false;
 			this.sensorViewC.Location = new System.Drawing.Point(22, 239);
 			this.sensorViewC.Name = "sensorViewC";
+			this.sensorViewC.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
 			this.sensorViewC.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewC.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
 			this.sensorViewC.TabIndex = 14;
+			this.sensorViewC.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
 			// 
 			// sensorViewD
 			// 
@@ -208,8 +217,11 @@
 			this.sensorViewD.IsSelected = false;
 			this.sensorViewD.Location = new System.Drawing.Point(274, 239);
 			this.sensorViewD.Name = "sensorViewD";
+			this.sensorViewD.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
 			this.sensorViewD.Size = new System.Drawing.Size(246, 124);
+			this.sensorViewD.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
 			this.sensorViewD.TabIndex = 15;
+			this.sensorViewD.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
 			// 
 			// MainForm
 			// 

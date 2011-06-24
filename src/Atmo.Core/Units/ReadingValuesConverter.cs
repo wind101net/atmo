@@ -28,7 +28,8 @@ using System.Linq.Expressions;
 namespace Atmo.Units {
 	public class ReadingValuesConverter<TFrom, TTo>
 		where TFrom : IReadingValues
-		where TTo : IReadingValues {
+		where TTo : IReadingValues
+	{
 
 		private static Expression CreateExpression(
 			Expression input,
@@ -78,7 +79,6 @@ namespace Atmo.Units {
 			SpeedConverter speedConverter,
 			PressureConverter pressureConverter
 		) {
-			// TOOD: rebuild conversion function
 			TemperatureConverter = temperatureConverter;
 			SpeedConverter = speedConverter;
 			PressureConverter = pressureConverter;

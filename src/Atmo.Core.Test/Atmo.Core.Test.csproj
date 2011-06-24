@@ -53,6 +53,7 @@
     <Compile Include="ReadingValuesConverterTest.cs" />
     <Compile Include="SensorReadingValuesTest.cs" />
     <Compile Include="TimeRangeTest.cs" />
+    <Compile Include="ValueConverterCacheTests.cs" />
     <Compile Include="ValueConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>

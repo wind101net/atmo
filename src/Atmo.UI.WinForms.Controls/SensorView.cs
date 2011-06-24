@@ -31,10 +31,9 @@ namespace Atmo.UI.DevEx.Controls {
 	public partial class SensorView : UserControl {
 
 		private bool _selected;
-		private ReadingValuesConverter<IReadingValues,ReadingValues> _converter;
 
 		public SensorView() {
-			_converter = null;
+			ConverterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
 			_selected = false;
 
 			InitializeComponent();
@@ -45,10 +44,7 @@ namespace Atmo.UI.DevEx.Controls {
 			SetBackgroundColor();
 		}
 
-		public ReadingValuesConverter<IReadingValues,ReadingValues> Converter {
-			get { return _converter; }
-			set { _converter = value; }
-		}
+		public ReadingValuesConverterCache<IReadingValues, ReadingValues> ConverterCache { get; set; }
 
 		public bool IsSelected {
 			get { return _selected; }
@@ -73,21 +69,27 @@ namespace Atmo.UI.DevEx.Controls {
 			SetValues(null,null);
 		}
 
-		public TemperatureUnit TemperatureUnit {
-			get {
-				if(null != _converter && null != _converter.TemperatureConverter) {
-					return _converter.TemperatureConverter.To;
-				}
-				return TemperatureUnit.Celsius;
-			}
-		}
+		public TemperatureUnit TemperatureUnit { get; set; }
+
+		public SpeedUnit SpeedUnit { get; set; }
+
+		public PressureUnit PressureUnit { get; set; }
 
 		public void SetValues(ISensor sensor, IReadingValues reading) {
+			ReadingValuesConverter<IReadingValues, ReadingValues> converter = null;
 			if (null != sensor) {
 				int n;
 				sensorNameLabel.Text = (Int32.TryParse(sensor.Name, out n) && 0 <= n && n < 26)
 					? ((char) ((byte) ('A') + (byte) n)).ToString()
 					: sensor.Name;
+				if(null != ConverterCache && sensor is ISensorInfo) {
+					var si = sensor as ISensorInfo;
+					converter = ConverterCache.Get(
+						si.TemperatureUnit, TemperatureUnit,
+						si.SpeedUnit, SpeedUnit,
+						si.PressureUnit, PressureUnit
+					);
+				}
 			}
 			else {
 				sensorNameLabel.Text = "Sensor";
@@ -95,16 +97,16 @@ namespace Atmo.UI.DevEx.Controls {
 
 			const string na = "N/A";
 			if (null != reading && reading.IsValid) {
-				var data = null == Converter
+				var data = null == converter
 				    ? reading
-				    : Converter.Convert(reading)
+				    : converter.Convert(reading)
 				;
 				
 				string tempText;
 				if(data.IsTemperatureValid) {
 					tempText = data.Temperature.ToString("F1");
-					if (null != _converter && null != _converter.TemperatureConverter) {
-						tempText += ' ' + UnitUtility.GetFriendlyName(_converter.TemperatureConverter.To);
+					if (null != converter && null != converter.TemperatureConverter) {
+						tempText += ' ' + UnitUtility.GetFriendlyName(converter.TemperatureConverter.To);
 					}
 				}else {
 					tempText = na;
@@ -112,8 +114,8 @@ namespace Atmo.UI.DevEx.Controls {
 
 				string presText;
 				if(data.IsPressureValid) {
-					if(null != _converter && null != _converter.PressureConverter) {
-						var presUnit = _converter.PressureConverter.To;
+					if(null != converter && null != converter.PressureConverter) {
+						var presUnit = converter.PressureConverter.To;
 						presText = Math.Round(data.Pressure,presUnit == PressureUnit.Millibar ? 1 : 2).ToString()
 							+ ' '
 							+ UnitUtility.GetFriendlyName(presUnit)
@@ -128,8 +130,8 @@ namespace Atmo.UI.DevEx.Controls {
 				string speedText;
 				if(data.IsWindSpeedValid) {
 					speedText = data.WindSpeed.ToString("F2");
-					if (null != _converter && null != _converter.SpeedConverter) {
-						speedText += ' ' + UnitUtility.GetFriendlyName(_converter.SpeedConverter.To);
+					if (null != converter && null != converter.SpeedConverter) {
+						speedText += ' ' + UnitUtility.GetFriendlyName(converter.SpeedConverter.To);
 					}
 				}else {
 					speedText = na;
@@ -138,7 +140,7 @@ namespace Atmo.UI.DevEx.Controls {
 				string dirText;
 				if(data.IsWindDirectionValid) {
 					dirText = Math.Round(data.WindDirection).ToString()
-						+ "\xb0, "
+						+ "\xb0 "
 						+ Vector2D.CardinalDirection.DegreesToBestCardinalName(reading.WindDirection)
 					;
 
