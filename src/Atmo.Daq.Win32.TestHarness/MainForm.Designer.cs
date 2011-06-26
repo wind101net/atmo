@@ -37,11 +37,12 @@
 			this.buttonSetNetSize = new System.Windows.Forms.Button();
 			this.buttonPing = new System.Windows.Forms.Button();
 			this.labelPing = new System.Windows.Forms.Label();
-			this.sensorViewA = new Atmo.UI.DevEx.Controls.SensorView();
-			this.sensorViewB = new Atmo.UI.DevEx.Controls.SensorView();
-			this.sensorViewC = new Atmo.UI.DevEx.Controls.SensorView();
-			this.sensorViewD = new Atmo.UI.DevEx.Controls.SensorView();
+			this.panelJunk = new System.Windows.Forms.Panel();
+			this.label1 = new System.Windows.Forms.Label();
+			this.panelSensors = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).BeginInit();
+			this.panelJunk.SuspendLayout();
+			this.panelSensors.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonConnect
@@ -171,67 +172,46 @@
 			this.labelPing.Size = new System.Drawing.Size(0, 13);
 			this.labelPing.TabIndex = 11;
 			// 
-			// sensorViewA
+			// panelJunk
 			// 
-			this.sensorViewA.BackColor = System.Drawing.Color.Transparent;
-			this.sensorViewA.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-			this.sensorViewA.IsSelected = false;
-			this.sensorViewA.Location = new System.Drawing.Point(22, 109);
-			this.sensorViewA.Name = "sensorViewA";
-			this.sensorViewA.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
-			this.sensorViewA.Size = new System.Drawing.Size(246, 124);
-			this.sensorViewA.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
-			this.sensorViewA.TabIndex = 12;
-			this.sensorViewA.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
+			this.panelJunk.BackColor = System.Drawing.SystemColors.ActiveCaption;
+			this.panelJunk.Controls.Add(this.label1);
+			this.panelJunk.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelJunk.Location = new System.Drawing.Point(0, 0);
+			this.panelJunk.Name = "panelJunk";
+			this.panelJunk.Size = new System.Drawing.Size(324, 382);
+			this.panelJunk.TabIndex = 0;
 			// 
-			// sensorViewB
+			// label1
 			// 
-			this.sensorViewB.BackColor = System.Drawing.Color.Transparent;
-			this.sensorViewB.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-			this.sensorViewB.IsSelected = false;
-			this.sensorViewB.Location = new System.Drawing.Point(274, 109);
-			this.sensorViewB.Name = "sensorViewB";
-			this.sensorViewB.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
-			this.sensorViewB.Size = new System.Drawing.Size(246, 124);
-			this.sensorViewB.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
-			this.sensorViewB.TabIndex = 13;
-			this.sensorViewB.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
+			this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label1.Location = new System.Drawing.Point(0, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(324, 382);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "This control intentionally left blank";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// sensorViewC
+			// panelSensors
 			// 
-			this.sensorViewC.BackColor = System.Drawing.Color.Transparent;
-			this.sensorViewC.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-			this.sensorViewC.IsSelected = false;
-			this.sensorViewC.Location = new System.Drawing.Point(22, 239);
-			this.sensorViewC.Name = "sensorViewC";
-			this.sensorViewC.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
-			this.sensorViewC.Size = new System.Drawing.Size(246, 124);
-			this.sensorViewC.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
-			this.sensorViewC.TabIndex = 14;
-			this.sensorViewC.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
-			// 
-			// sensorViewD
-			// 
-			this.sensorViewD.BackColor = System.Drawing.Color.Transparent;
-			this.sensorViewD.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-			this.sensorViewD.IsSelected = false;
-			this.sensorViewD.Location = new System.Drawing.Point(274, 239);
-			this.sensorViewD.Name = "sensorViewD";
-			this.sensorViewD.PressureUnit = Atmo.Units.PressureUnit.KiloPascals;
-			this.sensorViewD.Size = new System.Drawing.Size(246, 124);
-			this.sensorViewD.SpeedUnit = Atmo.Units.SpeedUnit.MilesPerHour;
-			this.sensorViewD.TabIndex = 15;
-			this.sensorViewD.TemperatureUnit = Atmo.Units.TemperatureUnit.Fahrenheit;
+			this.panelSensors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelSensors.AutoScroll = true;
+			this.panelSensors.AutoScrollMinSize = new System.Drawing.Size(200, 0);
+			this.panelSensors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelSensors.Controls.Add(this.panelJunk);
+			this.panelSensors.Location = new System.Drawing.Point(628, 12);
+			this.panelSensors.Name = "panelSensors";
+			this.panelSensors.Size = new System.Drawing.Size(326, 384);
+			this.panelSensors.TabIndex = 12;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(655, 484);
-			this.Controls.Add(this.sensorViewD);
-			this.Controls.Add(this.sensorViewC);
-			this.Controls.Add(this.sensorViewB);
-			this.Controls.Add(this.sensorViewA);
+			this.ClientSize = new System.Drawing.Size(966, 408);
+			this.Controls.Add(this.panelSensors);
 			this.Controls.Add(this.labelPing);
 			this.Controls.Add(this.buttonPing);
 			this.Controls.Add(this.buttonSetNetSize);
@@ -246,6 +226,8 @@
 			this.Name = "MainForm";
 			this.Text = "Connection Test for DAQ Win32 USB HID";
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownNetSize)).EndInit();
+			this.panelJunk.ResumeLayout(false);
+			this.panelSensors.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -266,10 +248,9 @@
 		private System.Windows.Forms.Button buttonSetNetSize;
 		private System.Windows.Forms.Button buttonPing;
 		private System.Windows.Forms.Label labelPing;
-		private UI.DevEx.Controls.SensorView sensorViewA;
-		private UI.DevEx.Controls.SensorView sensorViewB;
-		private UI.DevEx.Controls.SensorView sensorViewC;
-		private UI.DevEx.Controls.SensorView sensorViewD;
+		private System.Windows.Forms.Panel panelJunk;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Panel panelSensors;
 	}
 }
 

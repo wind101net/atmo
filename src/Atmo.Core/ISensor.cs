@@ -29,5 +29,11 @@ namespace Atmo {
 		/// </summary>
 		string Name { get; }
 
+		/// <summary>
+		/// Gets the current reading of the sensor.
+		/// </summary>
+		/// <returns>The current reading or null.</returns>
+		IReading GetCurrentReading();
+
 	}
 }

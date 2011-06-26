@@ -1,4 +1,4 @@
-﻿namespace Atmo.UI.DevEx.Controls {
+﻿namespace Atmo.UI.WinForms.Controls {
 	partial class SensorView {
 		/// <summary> 
 		/// Required designer variable.
@@ -43,7 +43,7 @@
 			this.sensorNameLabel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.sensorNameLabel.Location = new System.Drawing.Point(0, 0);
 			this.sensorNameLabel.Name = "sensorNameLabel";
-			this.sensorNameLabel.Size = new System.Drawing.Size(246, 21);
+			this.sensorNameLabel.Size = new System.Drawing.Size(200, 21);
 			this.sensorNameLabel.TabIndex = 0;
 			this.sensorNameLabel.Text = "Sensor";
 			// 
@@ -71,7 +71,7 @@
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(246, 103);
+			this.tableLayoutPanel.Size = new System.Drawing.Size(200, 103);
 			this.tableLayoutPanel.TabIndex = 1;
 			this.tableLayoutPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tableLayoutPanel_MouseClick);
 			// 
@@ -181,8 +181,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.tableLayoutPanel);
 			this.Controls.Add(this.sensorNameLabel);
+			this.MinimumSize = new System.Drawing.Size(200, 0);
 			this.Name = "SensorView";
-			this.Size = new System.Drawing.Size(246, 124);
+			this.Size = new System.Drawing.Size(200, 124);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SensorView_MouseClick);
 			this.tableLayoutPanel.ResumeLayout(false);
 			this.ResumeLayout(false);

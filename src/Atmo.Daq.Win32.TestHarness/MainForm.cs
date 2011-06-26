@@ -22,19 +22,22 @@
 // ================================================================================
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
-using Atmo.UI.DevEx.Controls;
+using Atmo.UI.WinForms.Controls;
 using Atmo.Units;
 
 namespace Atmo.Daq.Win32.TestHarness {
 	public partial class MainForm : Form {
 
 		private UsbDaqConnection _connection;
-		private readonly SensorView[] _sensorViews;
+		private readonly SensorViewPanelController _sensorViewPanelControler;
 
 		public MainForm() {
 			InitializeComponent();
-			_sensorViews = new[] { sensorViewA, sensorViewB, sensorViewC, sensorViewD };
+			
+			_sensorViewPanelControler = new SensorViewPanelController(panelSensors);
+
 			_connection = new UsbDaqConnection();
 			timerProperties_Tick(this, null);
 		}
@@ -118,10 +121,9 @@ namespace Atmo.Daq.Win32.TestHarness {
 			if (!_connection.IsQuerying) {
 				return;
 			}
+
+			_sensorViewPanelControler.UpdateView(Enumerable.Range(0, 4).Select(i => _connection.GetSensor(i)));
 			
-			for (var i = 0; i < _sensorViews.Length; i++) {
-				_sensorViews[i].SetValues(_connection.GetSensor(i), _connection[i].Current);
-			}
 		}
 
 		private void buttonSetNetSize_Click(object sender, EventArgs e) {

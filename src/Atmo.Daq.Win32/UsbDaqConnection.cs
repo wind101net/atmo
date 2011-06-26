@@ -100,6 +100,7 @@ namespace Atmo.Daq.Win32 {
 				}
 			}
 
+			/// <inheritdoc/>
 			public IReading GetCurrentReading() {
 				lock (_stateMutex) {
 					return _latestReadings.FirstOrDefault();
@@ -110,14 +111,17 @@ namespace Atmo.Daq.Win32 {
 				get { return _latestReadings.FirstOrDefault(); }
 			}
 
+			/// <inheritdoc/>
 			public SpeedUnit SpeedUnit {
 				get { return SpeedUnit.MetersPerSec; }
 			}
 
+			/// <inheritdoc/>
 			public TemperatureUnit TemperatureUnit {
 				get { return TemperatureUnit.Celsius; }
 			}
 
+			/// <inheritdoc/>
 			public PressureUnit PressureUnit {
 				get { return PressureUnit.Pascals; }
 			}

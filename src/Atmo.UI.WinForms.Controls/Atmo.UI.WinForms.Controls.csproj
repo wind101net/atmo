@@ -54,6 +54,7 @@
     <Compile Include="SensorView.designer.cs">
       <DependentUpon>SensorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="SensorViewPanelController.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SensorView.resx">

@@ -27,7 +27,7 @@ using System.Windows.Forms;
 using Atmo.Test;
 using Atmo.Units;
 
-namespace Atmo.UI.DevEx.Controls {
+namespace Atmo.UI.WinForms.Controls {
 	public partial class SensorView : UserControl {
 
 		private bool _selected;
@@ -74,6 +74,10 @@ namespace Atmo.UI.DevEx.Controls {
 		public SpeedUnit SpeedUnit { get; set; }
 
 		public PressureUnit PressureUnit { get; set; }
+
+		public void Update(ISensor sensor) {
+			SetValues(sensor, null == sensor ? null : sensor.GetCurrentReading());
+		}
 
 		public void SetValues(ISensor sensor, IReadingValues reading) {
 			ReadingValuesConverter<IReadingValues, ReadingValues> converter = null;
