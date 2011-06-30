@@ -23,7 +23,7 @@
 
 namespace Atmo {
 
-	public interface ISensor {
+	public interface ISensor : ISensorInfo {
 		/// <summary>
 		/// The sensor name or identifier.
 		/// </summary>

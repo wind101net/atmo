@@ -48,6 +48,7 @@ namespace Atmo.UI.WinForms.Controls {
 		public DockStyle DockStyle { get; set; }
 		public bool SensorsFirst { get; set; }
 		public bool ReverseSync { get; set; }
+		public bool DefaultSelected { get; set; }
 
 		public bool UpdateView(IEnumerable<ISensor> sensors) {
 			return UpdateView(sensors.ToArray());
@@ -82,7 +83,8 @@ namespace Atmo.UI.WinForms.Controls {
 				added = new SensorView[sensors.Length-reused.Length];
 				for(var i = 0; i < added.Length; i++) {
 					added[i] = new SensorView() {
-                        ConverterCache = ConverterCache
+                        ConverterCache = ConverterCache,
+						IsSelected = DefaultSelected
 					};
 				}
 				if(SensorsFirst) {
@@ -108,6 +110,10 @@ namespace Atmo.UI.WinForms.Controls {
 
 			Synchronize(sync, sensors);
 			return true;
+		}
+
+		public IEnumerable<SensorView> SensorViews {
+			get { return Container.Controls.OfType<SensorView>(); }
 		}
 
 		private void Synchronize(SensorView[] views, ISensor[] sensors) {

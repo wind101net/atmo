@@ -21,12 +21,14 @@
 //
 // ================================================================================
 
+using System.Collections.Generic;
+
 namespace Atmo {
 
 	/// <summary>
 	/// Represents a connection to a DAQ device.
 	/// </summary>
-	public interface IDaqConnection {
+	public interface IDaqConnection : IEnumerable<ISensor>{
 
 		/// <summary>
 		/// Accesses the sensor at the given index, <paramref name="i"/>.

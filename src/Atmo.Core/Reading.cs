@@ -57,6 +57,18 @@ namespace Atmo {
 			TimeStamp = default(DateTime);
 		}
 
+		public Reading(DateTime timeStamp, ReadingValues values) : base(values) {
+			TimeStamp = timeStamp;
+		}
+
+		public Reading(DateTime timeStamp, IReadingValues values)
+			: base(values) {
+			TimeStamp = timeStamp;
+		}
+
+		public Reading(IReading reading)
+			: this(reading.TimeStamp,reading) { }
+
 		public DateTime TimeStamp { get; set; }
 
 	}

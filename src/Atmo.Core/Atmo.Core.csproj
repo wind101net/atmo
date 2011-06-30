@@ -45,6 +45,8 @@
     <Compile Include="Data\DaqDataFileInfo.cs" />
     <Compile Include="Data\DaqDataFileReader.cs" />
     <Compile Include="Data\IDataStore.cs" />
+    <Compile Include="Data\MemoryDataStore.cs" />
+    <Compile Include="Demo\DemoDaqConnection.cs" />
     <Compile Include="IDaqConnection.cs" />
     <Compile Include="IReadingValues.cs" />
     <Compile Include="ISensor.cs" />
@@ -70,6 +72,9 @@
     <Compile Include="Units\UnitUtility.cs" />
     <Compile Include="Units\ValueConverterCache.cs" />
     <Compile Include="Vector2D.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Stats\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -29,7 +29,7 @@ using Atmo.Data;
 using Atmo.Units;
 
 namespace Atmo.Daq.Win32 {
-	public class UsbDaqConnection : BaseDaqUsbConnection, IDaqConnection {
+	public class UsbDaqConnection : BaseDaqUsbConnection, IDaqConnection, IEnumerable<UsbDaqConnection.Sensor> {
 
 		private struct DaqStatusValues {
 
@@ -51,7 +51,7 @@ namespace Atmo.Daq.Win32 {
 
 		}
 
-		public class Sensor : ISensor, ISensorInfo {
+		public class Sensor : ISensor {
 
 			private const int DefaultMaxReadingsValue = 10;
 
@@ -491,5 +491,18 @@ namespace Atmo.Daq.Win32 {
 			base.Dispose(disposing);
 		}
 
+		
+
+		IEnumerator<ISensor> IEnumerable<ISensor>.GetEnumerator() {
+			return _sensors.Cast<ISensor>().GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+			return _sensors.AsEnumerable().GetEnumerator();
+		}
+
+		IEnumerator<UsbDaqConnection.Sensor> IEnumerable<UsbDaqConnection.Sensor>.GetEnumerator() {
+			return _sensors.AsEnumerable().GetEnumerator();
+		}
 	}
 }

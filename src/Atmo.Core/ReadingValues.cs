@@ -63,6 +63,23 @@ namespace Atmo {
 			WindSpeed = windSpeed;
 		}
 
+		public ReadingValues(ReadingValues values) {
+			if (null == values) {
+				Temperature = Double.NaN;
+				Pressure = Double.NaN;
+				Humidity = Double.NaN;
+				WindDirection = Double.NaN;
+				WindSpeed = Double.NaN;
+			}
+			else {
+				Temperature = values.Temperature;
+				Pressure = values.Pressure;
+				Humidity = values.Humidity;
+				WindDirection = values.WindDirection;
+				WindSpeed = values.WindSpeed;
+			}
+		}
+
 		public ReadingValues(IReadingValues values) {
 			if(null == values) {
 				Temperature = Double.NaN;
