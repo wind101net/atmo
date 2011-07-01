@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Atmo.Data;
+using Atmo.Stats;
 using Atmo.UI.WinForms.Controls;
 using Atmo.Units;
 
@@ -94,14 +95,16 @@ namespace Atmo.UI.DevEx {
 			var liveDataTimeSpan = new TimeSpan(0, 1, 0);
 
 			if(liveDataEnabled) {
+				var enabledSensorsLiveMeans = new List<List<ReadingAggregate>>(enabledSensors.Count);
 				foreach(var sensor in enabledSensors) {
-					var summaries = _memoryDataStore.GetReadingSummaries(
-						sensor.Name,
-						now,
-						TimeSpan.Zero.Subtract(liveDataTimeSpan),
-						TimeUnit.Second
-					);
+					var recentReadings = _memoryDataStore.GetReadings(sensor.Name, now, TimeSpan.Zero.Subtract(liveDataTimeSpan));
+					var means = StatsUtil.AggregateMean(recentReadings, TimeUnit.Minute).ToList();
+					enabledSensorsLiveMeans.Add(means);
 				}
+				var enabledSensorsCompiledMeans = StatsUtil.JoinParallelMeanReadings(enabledSensorsLiveMeans);
+				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
+				liveAtmosphericGraph.FormatTimeAxis(liveDataTimeSpan);
+				liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
 			}
 
 
