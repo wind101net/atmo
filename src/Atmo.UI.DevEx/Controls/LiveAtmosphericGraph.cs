@@ -54,7 +54,7 @@ namespace Atmo.UI.DevEx.Controls {
 		public void SetDataSource(List<Reading> items) {
 			chartControl.DataSource = new List<Reading>(items);
 			ForceYRanges(items);
-			chartControl.Update();
+			//chartControl.Update();
 		}
 
 		private void ForceYRanges(List<Reading> readings) {

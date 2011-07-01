@@ -110,6 +110,9 @@ namespace Atmo {
 			);
 		}
 
+		public PackedReadingValues(IReadingValues values)
+			: this(values.Temperature, values.Pressure, values.Humidity, values.WindDirection, values.WindSpeed) { }
+
 		[CLSCompliant(false)]
 		public ushort RawTemperature {
 			get { return unchecked((ushort)(_temperatureAndFlags >> 5)); }

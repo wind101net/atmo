@@ -59,9 +59,8 @@
 			DevExpress.XtraCharts.PointSeriesView pointSeriesView1 = new DevExpress.XtraCharts.PointSeriesView();
 			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel6 = new DevExpress.XtraCharts.PointSeriesLabel();
 			DevExpress.XtraCharts.AreaSeriesView areaSeriesView3 = new DevExpress.XtraCharts.AreaSeriesView();
-			this.bindingSourceReading = new System.Windows.Forms.BindingSource(this.components);
 			this.chartControl = new DevExpress.XtraCharts.ChartControl();
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).BeginInit();
+			this.bindingSourceReading = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagramPane1)).BeginInit();
@@ -87,16 +86,11 @@
 			((System.ComponentModel.ISupportInitialize)(pointSeriesView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel6)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView3)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// bindingSourceReading
-			// 
-			this.bindingSourceReading.AllowNew = false;
-			this.bindingSourceReading.DataSource = typeof(Atmo.Reading);
 			// 
 			// chartControl
 			// 
-			this.chartControl.CacheToMemory = true;
 			this.chartControl.DataSource = this.bindingSourceReading;
 			xyDiagram1.AxisX.DateTimeOptions.Format = DevExpress.XtraCharts.DateTimeFormat.MonthAndDay;
 			xyDiagram1.AxisX.DateTimeScaleMode = DevExpress.XtraCharts.DateTimeScaleMode.AutomaticIntegral;
@@ -340,6 +334,7 @@
 			series5.Name = "Direction";
 			series5.ValueDataMembersSerializable = "WindDirection";
 			pointSeriesView1.AxisYName = "Direction AxisY";
+			pointSeriesView1.Color = System.Drawing.Color.Black;
 			pointSeriesView1.PaneName = "SpeedAndDirection";
 			pointSeriesView1.PointMarkerOptions.BorderVisible = false;
 			pointSeriesView1.PointMarkerOptions.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
@@ -360,6 +355,11 @@
 			this.chartControl.Size = new System.Drawing.Size(599, 478);
 			this.chartControl.TabIndex = 0;
 			// 
+			// bindingSourceReading
+			// 
+			this.bindingSourceReading.AllowNew = false;
+			this.bindingSourceReading.DataSource = typeof(Atmo.Reading);
+			// 
 			// LiveAtmosphericGraph
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -367,7 +367,6 @@
 			this.Controls.Add(this.chartControl);
 			this.Name = "LiveAtmosphericGraph";
 			this.Size = new System.Drawing.Size(599, 478);
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagramPane1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagramPane2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY1)).EndInit();
@@ -393,6 +392,7 @@
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel6)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).EndInit();
 			this.ResumeLayout(false);
 
 		}

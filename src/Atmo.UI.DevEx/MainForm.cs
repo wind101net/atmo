@@ -98,7 +98,7 @@ namespace Atmo.UI.DevEx {
 				var enabledSensorsLiveMeans = new List<List<ReadingAggregate>>(enabledSensors.Count);
 				foreach(var sensor in enabledSensors) {
 					var recentReadings = _memoryDataStore.GetReadings(sensor.Name, now, TimeSpan.Zero.Subtract(liveDataTimeSpan));
-					var means = StatsUtil.AggregateMean(recentReadings, TimeUnit.Minute).ToList();
+					var means = StatsUtil.AggregateMean(recentReadings, TimeUnit.Second).ToList();
 					enabledSensorsLiveMeans.Add(means);
 				}
 				var enabledSensorsCompiledMeans = StatsUtil.JoinParallelMeanReadings(enabledSensorsLiveMeans);

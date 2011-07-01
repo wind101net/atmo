@@ -26,6 +26,20 @@ using System;
 namespace Atmo.Units {
 	public static class UnitUtility {
 		
+		public static double WrapDegree(double degrees) {
+			const double degreePeriod = 360.0;
+			if(degrees < 0) {
+				do {
+					degrees += degreePeriod;
+				} while (degrees < 0);
+			}else {
+				while (degrees >= degreePeriod) {
+					degrees -= degreePeriod;
+				}
+			}
+			return degrees;
+		}
+
 		public static string GetFriendlyName(SpeedUnit unit) {
 			switch (unit) {
 			case SpeedUnit.MetersPerSec: return "m/s";

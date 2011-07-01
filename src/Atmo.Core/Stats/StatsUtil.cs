@@ -133,7 +133,7 @@ namespace Atmo.Stats {
 				: Double.NaN;
 
 			var directionValue = dirCount > 0
-				? Math.Atan2(dirSinSum/dirCount, dirCosSum/dirCount) * radToDegFactor
+				? UnitUtility.WrapDegree(Math.Atan2(dirSinSum/dirCount, dirCosSum/dirCount) * radToDegFactor)
 				: Double.NaN;
 
 			return new ReadingValues(temperatureValue, pressureValue, humidityValue, directionValue, speedValue);
@@ -216,7 +216,7 @@ namespace Atmo.Stats {
 				: Double.NaN;
 
 			var directionValue = dirCount > 0
-				? Math.Atan2(dirSinSum / dirCount, dirCosSum / dirCount) * radToDegFactor
+				? UnitUtility.WrapDegree(Math.Atan2(dirSinSum / dirCount, dirCosSum / dirCount) * radToDegFactor)
 				: Double.NaN;
 
 			return new ReadingAggregate(
