@@ -25,14 +25,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Atmo.Stats;
 using DevExpress.XtraCharts;
 using Atmo.Units;
 
 namespace Atmo.UI.DevEx.Controls {
 	public partial class LiveAtmosphericGraph : DevExpress.XtraEditors.XtraUserControl {
+		
 		public LiveAtmosphericGraph() {
 			InitializeComponent();
 		}
+
+		public TemperatureUnit TemperatureUnit { get; set; }
+
+		public SpeedUnit SpeedUnit { get; set; }
+
+		public PressureUnit PressureUnit { get; set; }
 
 		public void SetDataSource<T>(IEnumerable<T> items) where T:IReading {
 			SetDataSource(items.ToList());
@@ -58,97 +66,65 @@ namespace Atmo.UI.DevEx.Controls {
 		}
 
 		private void ForceYRanges(List<Reading> readings) {
-			if (readings.Count > 0) {
-				var min = new ReadingValues(readings[0]) {WindDirection = 0};
-				var max = new ReadingValues(min);
-				for(int i = 1; i < readings.Count; i++) {
-					var reading = readings[i];
-					if (min.Temperature > reading.Temperature) {
-						min.Temperature = reading.Temperature;
-					}
-					if (max.Temperature < reading.Temperature) {
-						max.Temperature = reading.Temperature;
-					}
-					if (min.Humidity > reading.Humidity) {
-						min.Humidity = reading.Humidity;
-					}
-					if (max.Humidity < reading.Humidity) {
-						max.Humidity = reading.Humidity;
-					}
-					if (min.WindSpeed > reading.WindSpeed) {
-						min.WindSpeed = reading.WindSpeed;
-					}
-					if (max.WindSpeed < reading.WindSpeed) {
-						max.WindSpeed = reading.WindSpeed;
-					}
-					if (min.Pressure > reading.Pressure) {
-						min.Pressure = reading.Pressure;
-					}
-					if (max.Pressure < reading.Pressure) {
-						max.Pressure = reading.Pressure;
-					}
-				}
+			if (readings.Count == 0) {
+				return;
+			}
+			var diagram = (chartControl.Diagram as XYDiagram);
+			if (null == diagram) {
+				return;
+			}
 
-				var range = new ReadingValues(
-					Math.Abs(min.Temperature - max.Temperature),
-					Math.Abs(min.Pressure - max.Pressure),
-					Math.Abs(min.Humidity - max.Humidity),
-					Math.Abs(min.WindSpeed - max.WindSpeed),
-					0
-				);
-				var mid = new ReadingValues(
-					(min.Temperature + max.Temperature) / 2.0,
-					(min.Pressure + max.Pressure) / 2.0,
-					(min.Humidity + max.Humidity) / 2.0,
-					(min.WindSpeed + max.WindSpeed) / 2.0,
-					0
-				);
-				// TODO: min ranges from settings?
-				var minRange = new ReadingValues(
-					0,
-					0,
-					0,
-					0,
-					0
-				);
+			var minMaxCalculator = new ReadingMinMaxCalculator<Reading>();
+			for(var i = 0; i < readings.Count; i++) {
+				minMaxCalculator.Proccess(readings[i]);
+			}
 
-				var diagram = (chartControl.Diagram as XYDiagram);
+			var range = minMaxCalculator.Result;
+			var minRange = new ReadingValues(
+				3,
+				3,
+				3,
+				3,
+				0
+			);
 
-				if (range.Temperature < minRange.Temperature) {
-					diagram.AxisY.Range.Auto = false;
-					double minVal = mid.Temperature - (minRange.Temperature / 2.0);
-					diagram.AxisY.Range.SetMinMaxValues(minVal, minVal + minRange.Temperature);
-				}
-				else {
-					diagram.AxisY.Range.Auto = true;
-				}
-				if (range.Pressure < minRange.Pressure) {
-					diagram.SecondaryAxesY[2].Range.Auto = false;
-					double minVal = mid.Pressure - (minRange.Pressure / 2.0);
-					diagram.SecondaryAxesY[2].Range.SetMinMaxValues(minVal, minVal + minRange.Pressure);
-					//diagram.SecondaryAxesY[2].NumericOptions.Precision = (desiredPressureUnit == PressureUnit.Millibar ? 1 : 2);
-				}
-				else {
-					diagram.SecondaryAxesY[2].Range.Auto = true;
-				}
-				if (range.Humidity < minRange.Humidity) {
-					diagram.SecondaryAxesY[0].Range.Auto = false;
-					double minVal = mid.Humidity - (minRange.Humidity / 2.0);
-					diagram.SecondaryAxesY[0].Range.SetMinMaxValues(minVal, minVal + minRange.Humidity);
-					//diagram.SecondaryAxesY[0].NumericOptions.Precision = 1;
-				}
-				else {
-					diagram.SecondaryAxesY[0].Range.Auto = true;
-				}
-				if (range.WindSpeed < minRange.WindSpeed) {
-					diagram.SecondaryAxesY[1].Range.Auto = false;
-					double minVal = Math.Max(0, mid.WindSpeed - (minRange.WindSpeed / 2.0));
-					diagram.SecondaryAxesY[1].Range.SetMinMaxValues(minVal, minVal + minRange.WindSpeed);
-				}
-				else {
-					diagram.SecondaryAxesY[1].Range.Auto = true;
-				}
-
+			if (range.Temperature.Size < minRange.Temperature && minRange.Temperature > 0) {
+				diagram.AxisY.Range.Auto = false;
+				var valRange = new Range(0, minRange.Temperature);
+				valRange.Recenter(range.Temperature.Mid);
+				diagram.AxisY.Range.SetMinMaxValues(valRange.Low, valRange.High);
+			}
+			else {
+				diagram.AxisY.Range.Auto = true;
+			}
+			if (range.Pressure.Size < minRange.Pressure && minRange.Pressure > 0) {
+				diagram.SecondaryAxesY[2].Range.Auto = false;
+				var valRange = new Range(0, minRange.Pressure);
+				valRange.Recenter(range.Pressure.Mid);
+				diagram.SecondaryAxesY[2].Range.SetMinMaxValues(valRange.Low,valRange.High);
+				//diagram.SecondaryAxesY[2].NumericOptions.Precision = (desiredPressureUnit == PressureUnit.Millibar ? 1 : 2);
+			}
+			else {
+				diagram.SecondaryAxesY[2].Range.Auto = true;
+			}
+			if (range.Humidity.Size < minRange.Humidity && minRange.Humidity > 0) {
+				diagram.SecondaryAxesY[0].Range.Auto = false;
+				var valRange = new Range(0, minRange.Humidity);
+				valRange.Recenter(range.Humidity.Mid);
+				diagram.SecondaryAxesY[0].Range.SetMinMaxValues(valRange.Low, valRange.High);
+				//diagram.SecondaryAxesY[0].NumericOptions.Precision = 1;
+			}
+			else {
+				diagram.SecondaryAxesY[0].Range.Auto = true;
+			}
+			if (range.WindSpeed.Size < minRange.WindSpeed && minRange.WindSpeed > 0) {
+				diagram.SecondaryAxesY[1].Range.Auto = false;
+				var valRange = new Range(0, minRange.WindSpeed);
+				valRange.Recenter(range.WindSpeed.Mid);
+				diagram.SecondaryAxesY[1].Range.SetMinMaxValues(valRange.Low, valRange.High);
+			}
+			else {
+				diagram.SecondaryAxesY[1].Range.Auto = true;
 			}
 
 		}
@@ -202,7 +178,7 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 
 			// Todo: get the desired unit
-			int pressureDecimals = 1;//(desiredPressureUnit == PressureUnit.Millibar ? 1 : 2);
+			int pressureDecimals = (PressureUnit == PressureUnit.Millibar ? 1 : 2);
 			int humidityDecimals = 1;
 
 			var diagram = chartControl.Diagram as XYDiagram;

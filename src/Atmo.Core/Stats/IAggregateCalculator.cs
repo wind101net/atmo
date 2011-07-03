@@ -21,43 +21,14 @@
 //
 // ================================================================================
 
-using System;
+using System.Collections.Generic;
 
 namespace Atmo.Stats {
-	public class ReadingAggregate : ReadingValues, IReading {
+	public interface IAggregateCalculator<in TInput, out TResult> {
 
-		public TimeRange TimeRange;
-		public int Count;
+		void Proccess(TInput input);
 
-		public new static ReadingAggregate CreateInvalid() {
-			return new ReadingAggregate(DateTime.MinValue, DateTime.MaxValue, ReadingValues.CreateInvalid(), 0);
-		}
-
-		public ReadingAggregate(DateTime beingStamp, DateTime endStamp, ReadingValues values, int count) : base(values) {
-			TimeRange = new TimeRange(beingStamp, endStamp);
-			Count = count;
-		}
-
-		public TimeSpan TimeSpan {
-			get {
-				return TimeRange.Span;
-				//return EndStamp.AddTicks(1).Subtract(BeginStamp);
-			}
-		}
-
-		public DateTime TimeStamp {
-			// TODO: make this the midpoint???
-			get { return TimeRange.Low; }
-		}
-
-		public DateTime BeginStamp {
-			get { return TimeRange.Low; }
-		}
-
-		public DateTime EndStamp {
-			get { return TimeRange.High; }
-		}
-
+		TResult Result { get; }
 
 	}
 }

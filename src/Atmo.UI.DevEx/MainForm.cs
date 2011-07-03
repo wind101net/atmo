@@ -40,6 +40,12 @@ namespace Atmo.UI.DevEx {
 		public MainForm() {
 			InitializeComponent();
 
+			ConverterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
+			ConverterCacheReadingValues = ReadingValuesConverterCache<ReadingValues>.Default;
+			ConverterCacheReadingAggregate = ReadingValuesConverterCache<ReadingAggregate>.Default;
+
+			TemperatureUnit = TemperatureUnit.Fahrenheit;
+
 			_deviceConnection = new Demo.DemoDaqConnection();
 
 			_memoryDataStore = new MemoryDataStore();
@@ -53,6 +59,9 @@ namespace Atmo.UI.DevEx {
 		public TemperatureUnit TemperatureUnit { get; set; }
 		public SpeedUnit SpeedUnit { get; set; }
 		public PressureUnit PressureUnit { get; set; }
+		public ReadingValuesConverterCache<IReadingValues, ReadingValues> ConverterCache { get; set; }
+		public ReadingValuesConverterCache<ReadingValues> ConverterCacheReadingValues { get; set; }
+		public ReadingValuesConverterCache<ReadingAggregate> ConverterCacheReadingAggregate { get; set; }
 
 		private void timerTesting_Tick(object sender, EventArgs e) {
 			
@@ -94,17 +103,41 @@ namespace Atmo.UI.DevEx {
 			var liveDataEnabled = true;
 			var liveDataTimeSpan = new TimeSpan(0, 1, 0);
 
+			// pass it off to the live data graphs/tables
 			if(liveDataEnabled) {
+				
+				// gather the data for each selected sensor
 				var enabledSensorsLiveMeans = new List<List<ReadingAggregate>>(enabledSensors.Count);
 				foreach(var sensor in enabledSensors) {
+					
+					// get the recent readings
 					var recentReadings = _memoryDataStore.GetReadings(sensor.Name, now, TimeSpan.Zero.Subtract(liveDataTimeSpan));
+					
+					// calculate the mean data
 					var means = StatsUtil.AggregateMean(recentReadings, TimeUnit.Second).ToList();
+
+					// convert the units for display
+					var converter = ConverterCacheReadingAggregate.Get(
+						sensor.TemperatureUnit, TemperatureUnit,
+						sensor.SpeedUnit, SpeedUnit,
+						sensor.PressureUnit, PressureUnit
+					);
+					converter.ConvertInline(means);
+					
+					// add it to the presentation list
 					enabledSensorsLiveMeans.Add(means);
 				}
+
+				// compile it all together into one set
 				var enabledSensorsCompiledMeans = StatsUtil.JoinParallelMeanReadings(enabledSensorsLiveMeans);
+
+				// present the data set
 				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
 				liveAtmosphericGraph.FormatTimeAxis(liveDataTimeSpan);
 				liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
+				liveAtmosphericGraph.TemperatureUnit = TemperatureUnit;
+				liveAtmosphericGraph.PressureUnit = PressureUnit;
+				liveAtmosphericGraph.SpeedUnit = SpeedUnit;
 			}
 
 

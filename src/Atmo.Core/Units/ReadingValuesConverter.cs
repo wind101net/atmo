@@ -22,10 +22,69 @@
 // ================================================================================
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Atmo.Stats;
 
 namespace Atmo.Units {
+
+	public class ReadingValuesConverter<TValue> : ReadingValuesConverter<TValue,TValue>
+		where TValue : IReadingValues
+	{
+
+		public ReadingValuesConverter(
+			TemperatureConverter temperatureConverter,
+			SpeedConverter speedConverter,
+			PressureConverter pressureConverter
+		) : base(temperatureConverter,speedConverter,pressureConverter) { }
+
+		public void ConvertInline(List<TValue> values) {
+			if(null == TemperatureConverter && null == SpeedConverter && null == PressureConverter) {
+				return;
+			}
+			if(typeof(TValue).IsSubclassOf(typeof(ReadingValues))) {
+				for(var i = 0; i < values.Count; i++) {
+					var target = values[i] as ReadingValues;
+					if (null != TemperatureConverter) {
+						target.Temperature = TemperatureConverter.Conversion(target.Temperature);
+					}
+					if (null != PressureConverter) {
+						target.Pressure = PressureConverter.Conversion(target.Pressure);
+					}
+					if (null != SpeedConverter) {
+						target.WindSpeed = SpeedConverter.Conversion(target.WindSpeed);
+					}
+				}
+				return;
+			}
+			for(var i = 0; i < values.Count; i++) {
+				values[i] = Conversion(values[i]);
+			}
+		}
+
+		public void ConvertInline(ref TValue value) {
+			if (null == TemperatureConverter && null == SpeedConverter && null == PressureConverter) {
+				return;
+			}
+			if (value is ReadingValues) {
+				var target = value as ReadingValues;
+				if (null != TemperatureConverter) {
+					target.Temperature = TemperatureConverter.Conversion(target.Temperature);
+				}
+				if (null != PressureConverter) {
+					target.Pressure = PressureConverter.Conversion(target.Pressure);
+				}
+				if (null != SpeedConverter) {
+					target.WindSpeed = SpeedConverter.Conversion(target.WindSpeed);
+				}
+				return;
+			}
+			value = Conversion(value);			
+		}
+
+	}
+
 	public class ReadingValuesConverter<TFrom, TTo>
 		where TFrom : IReadingValues
 		where TTo : IReadingValues
@@ -62,14 +121,19 @@ namespace Atmo.Units {
 				pressExp = pressureConverter.GetConversionExpression(pressExp);
 			}
 
-			return Expression.New(
-				typeof(TTo).GetConstructor(Enumerable.Repeat(typeof(double), 5).ToArray()),
-				tempExp,
-				pressExp,
-				humExp,
-				dirExp,
-				speedExp
-			);
+			try {
+				return Expression.New(
+					typeof (TTo).GetConstructor(Enumerable.Repeat(typeof (double), 5).ToArray()),
+					tempExp,
+					pressExp,
+					humExp,
+					dirExp,
+					speedExp
+					);
+			}catch {
+				return null;
+			}
+
 		}
 
 		public readonly Func<TFrom, TTo> Conversion;
@@ -79,11 +143,14 @@ namespace Atmo.Units {
 			SpeedConverter speedConverter,
 			PressureConverter pressureConverter
 		) {
-			TemperatureConverter = temperatureConverter;
-			SpeedConverter = speedConverter;
-			PressureConverter = pressureConverter;
+			TemperatureConverter = (null == temperatureConverter || temperatureConverter.From == temperatureConverter.To) ? null : temperatureConverter;
+			SpeedConverter = (null == speedConverter || speedConverter.From == speedConverter.To) ? null : speedConverter;
+			PressureConverter = (null == pressureConverter || pressureConverter.From == pressureConverter.To) ? null : pressureConverter;
 			var recordIn = Expression.Parameter(typeof(TFrom), "record");
-			Conversion = Expression.Lambda<Func<TFrom, TTo>>(CreateExpression(recordIn, TemperatureConverter, SpeedConverter, PressureConverter), recordIn).Compile();
+			var exp = CreateExpression(recordIn, TemperatureConverter, SpeedConverter, PressureConverter);
+			if (null != exp) {
+				Conversion = Expression.Lambda<Func<TFrom, TTo>>(exp, recordIn).Compile();
+			}
 		}
 
 		public TemperatureConverter TemperatureConverter { get; private set; }

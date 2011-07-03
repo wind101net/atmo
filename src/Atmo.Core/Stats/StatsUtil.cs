@@ -68,162 +68,22 @@ namespace Atmo.Stats {
 		}
 
 		public static ReadingValues AggregateMeanValues<T>(IEnumerable<T> readings, out int count)
-			where T:IReadingValues
-		{
-			const double degToRadFactor = Math.PI/180.0;
-			const double radToDegFactor = 180.0/Math.PI;
-
-			double temperatureValue = 0;
-			double pressureValue = 0;
-			double humidityValue = 0;
-			double speedValue = 0;
-			double dirSinSum = 0;
-			double dirCosSum = 0;
-
-			int temperatureCount = 0;
-			int pressureCount = 0;
-			int humidityCount = 0;
-			int speedCount = 0;
-			int dirCount = 0;
-
-			count = 0;
-			
-			foreach(var reading in readings) {
-				if(reading.IsValid) {
-					if(reading.IsTemperatureValid) {
-						temperatureValue += reading.Temperature;
-						temperatureCount++;
-					}
-					if(reading.IsPressureValid) {
-						pressureValue += reading.Pressure;
-						pressureCount++;
-					}
-					if(reading.IsHumidityValid) {
-						humidityValue += reading.Humidity;
-						humidityCount++;
-					}
-					if(reading.IsWindSpeedValid) {
-						speedValue += reading.WindSpeed;
-						speedCount++;
-					}
-					if(reading.IsWindDirectionValid) {
-						var dir = reading.WindDirection*degToRadFactor;
-						dirSinSum += Math.Sin(dir);
-						dirCosSum += Math.Cos(dir);
-						dirCount++;
-					}
-					count++;
-				}
+			where T:IReadingValues {
+			var calculator = new ReadingValuesMeanCalculator<T>();
+			foreach (var reading in readings) {
+				calculator.Proccess(reading);
 			}
+			count = calculator.ProcessedCount;
+			return calculator.Result;
 
-			temperatureValue = temperatureCount > 0
-				? temperatureValue / temperatureCount
-				: Double.NaN;
-
-			pressureValue = pressureCount > 0
-				? pressureValue / pressureCount
-				: Double.NaN;
-
-			humidityValue = humidityCount > 0
-				? humidityValue / humidityCount
-				: Double.NaN;
-
-			speedValue = speedCount > 0
-				? speedValue / speedCount
-				: Double.NaN;
-
-			var directionValue = dirCount > 0
-				? UnitUtility.WrapDegree(Math.Atan2(dirSinSum/dirCount, dirCosSum/dirCount) * radToDegFactor)
-				: Double.NaN;
-
-			return new ReadingValues(temperatureValue, pressureValue, humidityValue, directionValue, speedValue);
 		}
 
-		public static ReadingAggregate AggregateMeanAggregates(List<ReadingAggregate> readings)
-		{
-			const double degToRadFactor = Math.PI / 180.0;
-			const double radToDegFactor = 180.0 / Math.PI;
-
-			double temperatureValue = 0;
-			double pressureValue = 0;
-			double humidityValue = 0;
-			double speedValue = 0;
-			double dirSinSum = 0;
-			double dirCosSum = 0;
-
-			int temperatureCount = 0;
-			int pressureCount = 0;
-			int humidityCount = 0;
-			int speedCount = 0;
-			int dirCount = 0;
-
-			int count = 0;
-
-			var minStart = DateTime.MaxValue;
-			var maxEnd = DateTime.MinValue;
-
-			foreach (var reading in readings) {
-				if (reading.IsValid) {
-					var localCount = reading.Count;
-
-					if(reading.BeginStamp < minStart) {
-						minStart = reading.BeginStamp;
-					}
-					if(reading.EndStamp > maxEnd) {
-						maxEnd = reading.EndStamp;
-					}
-
-					if (reading.IsTemperatureValid) {
-						temperatureValue += (reading.Temperature * localCount);
-						temperatureCount += localCount;
-					}
-					if (reading.IsPressureValid) {
-						pressureValue += (reading.Pressure * localCount);
-						pressureCount += localCount;
-					}
-					if (reading.IsHumidityValid) {
-						humidityValue += (reading.Humidity * localCount);
-						humidityCount += localCount;
-					}
-					if (reading.IsWindSpeedValid) {
-						speedValue += (reading.WindSpeed * localCount);
-						speedCount += localCount;
-					}
-					if (reading.IsWindDirectionValid) {
-						var dir = reading.WindDirection * degToRadFactor;
-						dirSinSum += (Math.Sin(dir) * localCount);
-						dirCosSum += (Math.Cos(dir) * localCount);
-						dirCount += localCount;
-					}
-					count += localCount;
-				}
+		public static ReadingAggregate AggregateMeanAggregates(List<ReadingAggregate> readings) {
+			var calculator = new ReadingAggregateMeanCalculator();
+			foreach(var reading in readings) {
+				calculator.Proccess(reading);
 			}
-
-			temperatureValue = temperatureCount > 0
-				? temperatureValue / temperatureCount
-				: Double.NaN;
-
-			pressureValue = pressureCount > 0
-				? pressureValue / pressureCount
-				: Double.NaN;
-
-			humidityValue = humidityCount > 0
-				? humidityValue / humidityCount
-				: Double.NaN;
-
-			speedValue = speedCount > 0
-				? speedValue / speedCount
-				: Double.NaN;
-
-			var directionValue = dirCount > 0
-				? UnitUtility.WrapDegree(Math.Atan2(dirSinSum / dirCount, dirCosSum / dirCount) * radToDegFactor)
-				: Double.NaN;
-
-			return new ReadingAggregate(
-				minStart, maxEnd,
-				new ReadingValues(temperatureValue, pressureValue, humidityValue, directionValue, speedValue),
-				count
-			);
+			return calculator.Result;
 		}
 
 		public static IEnumerable<ReadingAggregate> JoinParallelMeanReadings(IEnumerable<List<ReadingAggregate>> rawReadings)

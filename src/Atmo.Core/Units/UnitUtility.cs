@@ -28,14 +28,11 @@ namespace Atmo.Units {
 		
 		public static double WrapDegree(double degrees) {
 			const double degreePeriod = 360.0;
-			if(degrees < 0) {
-				do {
-					degrees += degreePeriod;
-				} while (degrees < 0);
-			}else {
-				while (degrees >= degreePeriod) {
-					degrees -= degreePeriod;
-				}
+			while (degrees < 0) {
+				degrees += degreePeriod;	
+			}
+			while (degrees >= degreePeriod) {
+				degrees -= degreePeriod;
 			}
 			return degrees;
 		}

@@ -24,62 +24,63 @@
 using System;
 
 namespace Atmo {
+	public struct Range {
 
-	/// <summary>
-	/// A time range between two time values.
-	/// </summary>
-	public struct TimeRange {
+		public static bool operator ==(Range a, Range b) {
+			return a.Equals(b);
+		}
 
-		/// <summary>
-		/// The lowest time value in the range.
-		/// </summary>
-		private DateTime _low;
-		/// <summary>
-		/// The highest time value in the range.
-		/// </summary>
-		private DateTime _high;
+		public static bool operator !=(Range a, Range b) {
+			return !a.Equals(b);
+		}
 
-		public TimeRange(DateTime value) {
+		private double _low;
+		private double _high;
+
+		public Range(double value) {
 			_low = _high = value;
 		}
 
-		public TimeRange(DateTime a, DateTime b) {
-			if (a < b) {
-				_low = a;
-				_high = b;
-			}
-			else {
+		public Range(double a, double b) {
+			if (b < a) {
 				_low = b;
 				_high = a;
 			}
+			else {
+				_low = a;
+				_high = b;
+			}
 		}
 
-		public TimeRange(TimeRange range) {
+		public Range(Range range) {
 			_low = range._low;
 			_high = range._high;
 		}
 
-		public DateTime Low { get { return _low; } }
+		public double Low { get { return _low; } }
 
-		public DateTime High { get { return _high; } }
+		public double High { get { return _high; } }
 
-		public TimeSpan Span { get { return High.Subtract(Low); } }
+		public double Mid { get { return (_low + _high)/2.0; } }
 
-		public void Merge(DateTime time) {
-			if (time < _low) {
-				_low = time;
-			}else if(time > _high) {
-				_high = time;
+		public double Size { get { return _high - _low; } }
+
+		public void Merge(double value) {
+			if(Double.IsNaN(_low) || Double.IsNaN(_high)) {
+				_low = _high = value;
+			}else {
+				if(value < _low) {
+					_low = value;
+				}else if(value > _high) {
+					_high = value;
+				}
 			}
 		}
 
-		public void Merge(TimeRange timeRange) {
-			if(timeRange._low < _low) {
-				_low = timeRange._low;
-			}
-			if(timeRange._high > _high) {
-				_high = timeRange._high;
-			}
+		public void Recenter(double mid) {
+			var len = _high - _low;
+			_high = mid + (len / 2.0);
+			_low = _high - len;
 		}
 	}
 }

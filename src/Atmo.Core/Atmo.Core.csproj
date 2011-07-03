@@ -47,6 +47,8 @@
     <Compile Include="Data\IDataStore.cs" />
     <Compile Include="Data\MemoryDataStore.cs" />
     <Compile Include="Demo\DemoDaqConnection.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="Stats\IAggregateCalculator.cs" />
     <Compile Include="Stats\ReadingAggregate.cs" />
     <Compile Include="IDaqConnection.cs" />
     <Compile Include="IReadingValues.cs" />
@@ -59,6 +61,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reading.cs" />
     <Compile Include="ReadingValues.cs" />
+    <Compile Include="Stats\ReadingAggregateMeanCalculator.cs" />
+    <Compile Include="Stats\ReadingAggregateMinMaxCalculator.cs" />
+    <Compile Include="Stats\ReadingMinMaxCalculator.cs" />
+    <Compile Include="Stats\ReadingRangeAggregate.cs" />
+    <Compile Include="Stats\ReadingValuesMeanCalculator.cs" />
     <Compile Include="Stats\StatsUtil.cs" />
     <Compile Include="TimeRange.cs" />
     <Compile Include="Units\PressureConverter.cs" />

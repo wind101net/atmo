@@ -23,6 +23,7 @@
 
 using System;
 using System.Linq;
+using Atmo.Stats;
 using Atmo.Units;
 using NUnit.Framework;
 
@@ -89,6 +90,47 @@ namespace Atmo.Test {
 			Assert.AreEqual(5, means[1].WindSpeed);
 			Assert.AreEqual(new DateTime(2011, 6, 30, 22, 19, 0), means[1].BeginStamp);
 			Assert.AreEqual(new DateTime(2011, 6, 30, 22, 20, 0), means[1].EndStamp);
+
+		}
+
+		[Test]
+		public void AggregateMinMaxTest() {
+			var start = new DateTime(2011, 6, 30, 22, 18, 58);
+			var values = new[] {
+                new ReadingValues(1.0,	2.0,		Double.NaN,180,	4.0),
+				new ReadingValues(2.0,	Double.NaN,	Double.NaN,45,	6.0),
+				new ReadingValues(3.0,	4.0,		Double.NaN,315,	Double.NaN),
+				new ReadingValues(Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN)
+			};
+			var readings = new ReadingAggregate[(values.Length * 2) + 2];
+			for (var i = 0; i < readings.Length; i++) {
+				readings[i] = new ReadingAggregate(
+					start.Add(new TimeSpan(0, 0, 0, i*2)),
+					start.Add(new TimeSpan(0, 0, 0, (i+1)*2)),
+					values[i % values.Length],
+					1
+				);
+			}
+
+			var minMaxCalc = new ReadingAggregateMinMaxCalculator();
+			foreach(var reading in readings) {
+				minMaxCalc.Proccess(reading);
+			}
+
+			var result = minMaxCalc.Result;
+
+			Assert.AreEqual(
+				new TimeRange(
+					start,
+					start.Add(new TimeSpan(0, 0, 0, (readings.Length) * 2))
+				),
+				result.TimeStamp
+			);
+			Assert.AreEqual(new Range(1,3), result.Temperature);
+			Assert.AreEqual(new Range(2,4), result.Pressure);
+			Assert.AreEqual(new Range(Double.NaN), result.Humidity);
+			Assert.AreEqual(new Range(45,315), result.WindDirection);
+			Assert.AreEqual(new Range(4,6), result.WindSpeed);
 
 		}
 
