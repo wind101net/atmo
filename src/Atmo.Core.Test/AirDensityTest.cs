@@ -21,17 +21,19 @@
 //
 // ================================================================================
 
-using System;
-using DevExpress.XtraEditors;
+using Atmo.Calculation;
+using NUnit.Framework;
 
-namespace Atmo.UI.DevEx {
-	public partial class SettingsForm : XtraForm {
-		public SettingsForm() {
-			InitializeComponent();
+namespace Atmo.Test {
+
+	[TestFixture]
+	public class AirDensityTest {
+
+		[Test]
+		public void SampleTest1() {
+			Assert.AreEqual(0.1157, AirDensityCalculator.AirDensity(17, .5, 10000),0.01);
 		}
 
-		private void simpleButtonCancel_Click(object sender, EventArgs e) {
-			Close();
-		}
 	}
+
 }

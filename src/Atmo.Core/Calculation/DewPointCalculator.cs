@@ -22,16 +22,24 @@
 // ================================================================================
 
 using System;
-using DevExpress.XtraEditors;
 
-namespace Atmo.UI.DevEx {
-	public partial class SettingsForm : XtraForm {
-		public SettingsForm() {
-			InitializeComponent();
-		}
+namespace Atmo.Calculation {
+	public class DewPointCalculator {
+		/// <summary>
+		/// Calculates the dew point.
+		/// </summary>
+		/// <param name="temperature">The temperature in degrees C.</param>
+		/// <param name="humidity">The relative humidity as a decimal (0.0 to 1.0).</param>
+		/// <returns>The dew point.</returns>
+		public static double DewPoint(double temperature, double humidity) {
 
-		private void simpleButtonCancel_Click(object sender, EventArgs e) {
-			Close();
+			const double m = 17.62;
+			const double tn = 243.12;
+
+			var h = ((Math.Log10(humidity*100) - 2.0)/0.4343)
+				+ ((m*temperature)/(tn + temperature));
+			var dewPoint = (tn * h) / (m - h);
+			return dewPoint;
 		}
 	}
 }

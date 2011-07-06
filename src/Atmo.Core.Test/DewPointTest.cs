@@ -21,17 +21,19 @@
 //
 // ================================================================================
 
-using System;
-using DevExpress.XtraEditors;
+using Atmo.Calculation;
+using NUnit.Framework;
 
-namespace Atmo.UI.DevEx {
-	public partial class SettingsForm : XtraForm {
-		public SettingsForm() {
-			InitializeComponent();
+namespace Atmo.Test {
+	[TestFixture]
+	public class DewPointTest {
+
+		[Test]
+		public void SampleTest1() {
+			Assert.AreEqual(9, DewPointCalculator.DewPoint(20,0.50), 0.5);
+			Assert.AreEqual(13, DewPointCalculator.DewPoint(56, 0.09), 0.5);
+			Assert.AreEqual(-17, DewPointCalculator.DewPoint(-16.5, 0.94), 0.5);
 		}
 
-		private void simpleButtonCancel_Click(object sender, EventArgs e) {
-			Close();
-		}
 	}
 }

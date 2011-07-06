@@ -44,9 +44,11 @@
     <Compile Include="..\AtmoAssemblyInfo.cs">
       <Link>Properties\AtmoAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AirDensityTest.cs" />
     <Compile Include="DaqDataFileInfoTest.cs" />
     <Compile Include="DaqDataFileReaderTest.cs" />
     <Compile Include="DaqDataFileTestUtility.cs" />
+    <Compile Include="DewPointTest.cs" />
     <Compile Include="PackedReadingTest.cs" />
     <Compile Include="PackedReadingValuesTest.cs" />
     <Compile Include="PersistentStateTest.cs" />

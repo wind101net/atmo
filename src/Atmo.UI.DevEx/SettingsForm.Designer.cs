@@ -23,58 +23,16 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.tabControlSettings = new System.Windows.Forms.TabControl();
-			this.tabPageGraph = new System.Windows.Forms.TabPage();
-			this.tabPageData = new System.Windows.Forms.TabPage();
-			this.tabPagePws = new System.Windows.Forms.TabPage();
 			this.simpleButtonApply = new DevExpress.XtraEditors.SimpleButton();
 			this.simpleButtonOk = new DevExpress.XtraEditors.SimpleButton();
 			this.simpleButtonCancel = new DevExpress.XtraEditors.SimpleButton();
-			this.tabControlSettings.SuspendLayout();
+			this.xtraTabControlSettings = new DevExpress.XtraTab.XtraTabControl();
+			this.xtraTabPageGraph = new DevExpress.XtraTab.XtraTabPage();
+			this.xtraTabPageData = new DevExpress.XtraTab.XtraTabPage();
+			this.xtraTabPagePws = new DevExpress.XtraTab.XtraTabPage();
+			((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).BeginInit();
+			this.xtraTabControlSettings.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// tabControlSettings
-			// 
-			this.tabControlSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControlSettings.Controls.Add(this.tabPageGraph);
-			this.tabControlSettings.Controls.Add(this.tabPageData);
-			this.tabControlSettings.Controls.Add(this.tabPagePws);
-			this.tabControlSettings.Location = new System.Drawing.Point(12, 12);
-			this.tabControlSettings.Name = "tabControlSettings";
-			this.tabControlSettings.SelectedIndex = 0;
-			this.tabControlSettings.Size = new System.Drawing.Size(398, 311);
-			this.tabControlSettings.TabIndex = 0;
-			// 
-			// tabPageGraph
-			// 
-			this.tabPageGraph.Location = new System.Drawing.Point(4, 22);
-			this.tabPageGraph.Name = "tabPageGraph";
-			this.tabPageGraph.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageGraph.Size = new System.Drawing.Size(390, 285);
-			this.tabPageGraph.TabIndex = 0;
-			this.tabPageGraph.Text = "Graph";
-			this.tabPageGraph.UseVisualStyleBackColor = true;
-			// 
-			// tabPageData
-			// 
-			this.tabPageData.Location = new System.Drawing.Point(4, 22);
-			this.tabPageData.Name = "tabPageData";
-			this.tabPageData.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageData.Size = new System.Drawing.Size(390, 285);
-			this.tabPageData.TabIndex = 1;
-			this.tabPageData.Text = "Data";
-			this.tabPageData.UseVisualStyleBackColor = true;
-			// 
-			// tabPagePws
-			// 
-			this.tabPagePws.Location = new System.Drawing.Point(4, 22);
-			this.tabPagePws.Name = "tabPagePws";
-			this.tabPagePws.Size = new System.Drawing.Size(390, 285);
-			this.tabPagePws.TabIndex = 2;
-			this.tabPagePws.Text = "PWS";
-			this.tabPagePws.UseVisualStyleBackColor = true;
 			// 
 			// simpleButtonApply
 			// 
@@ -104,15 +62,45 @@
 			this.simpleButtonCancel.Text = "Cancel";
 			this.simpleButtonCancel.Click += new System.EventHandler(this.simpleButtonCancel_Click);
 			// 
+			// xtraTabControlSettings
+			// 
+			this.xtraTabControlSettings.Location = new System.Drawing.Point(12, 12);
+			this.xtraTabControlSettings.Name = "xtraTabControlSettings";
+			this.xtraTabControlSettings.SelectedTabPage = this.xtraTabPageGraph;
+			this.xtraTabControlSettings.Size = new System.Drawing.Size(398, 311);
+			this.xtraTabControlSettings.TabIndex = 4;
+			this.xtraTabControlSettings.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.xtraTabPageGraph,
+            this.xtraTabPageData,
+            this.xtraTabPagePws});
+			// 
+			// xtraTabPageGraph
+			// 
+			this.xtraTabPageGraph.Name = "xtraTabPageGraph";
+			this.xtraTabPageGraph.Size = new System.Drawing.Size(396, 288);
+			this.xtraTabPageGraph.Text = "Graph";
+			// 
+			// xtraTabPageData
+			// 
+			this.xtraTabPageData.Name = "xtraTabPageData";
+			this.xtraTabPageData.Size = new System.Drawing.Size(396, 288);
+			this.xtraTabPageData.Text = "Data";
+			// 
+			// xtraTabPagePws
+			// 
+			this.xtraTabPagePws.Name = "xtraTabPagePws";
+			this.xtraTabPagePws.Size = new System.Drawing.Size(396, 288);
+			this.xtraTabPagePws.Text = "PWS";
+			// 
 			// SettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(422, 364);
+			this.Controls.Add(this.xtraTabControlSettings);
 			this.Controls.Add(this.simpleButtonCancel);
 			this.Controls.Add(this.simpleButtonOk);
 			this.Controls.Add(this.simpleButtonApply);
-			this.Controls.Add(this.tabControlSettings);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(277, 247);
@@ -121,19 +109,20 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Preferences";
-			this.tabControlSettings.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).EndInit();
+			this.xtraTabControlSettings.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabControlSettings;
-		private System.Windows.Forms.TabPage tabPageGraph;
-		private System.Windows.Forms.TabPage tabPageData;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonApply;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonOk;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonCancel;
-		private System.Windows.Forms.TabPage tabPagePws;
+		private DevExpress.XtraTab.XtraTabControl xtraTabControlSettings;
+		private DevExpress.XtraTab.XtraTabPage xtraTabPageGraph;
+		private DevExpress.XtraTab.XtraTabPage xtraTabPageData;
+		private DevExpress.XtraTab.XtraTabPage xtraTabPagePws;
 	}
 }

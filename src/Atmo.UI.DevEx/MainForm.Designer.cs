@@ -116,7 +116,7 @@
 			// 
 			// barButtonItemImport
 			// 
-			this.barButtonItemImport.Caption = "Import...";
+			this.barButtonItemImport.Caption = "Download Sensor Data...";
 			this.barButtonItemImport.Id = 7;
 			this.barButtonItemImport.Name = "barButtonItemImport";
 			// 
