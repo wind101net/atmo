@@ -21,16 +21,17 @@
 //
 // ================================================================================
 
-using DevExpress.XtraEditors;
+using System;
+using System.Windows.Forms;
 
 namespace Atmo.UI.DevEx {
-	public partial class SplashForm : XtraForm {
-
-		private readonly MainForm _spawnForm;
-
-		public SplashForm(MainForm spawnForm) {
-			_spawnForm = spawnForm;
+	public partial class SettingsForm : Form {
+		public SettingsForm() {
 			InitializeComponent();
+		}
+
+		private void simpleButtonCancel_Click(object sender, EventArgs e) {
+			Close();
 		}
 	}
 }

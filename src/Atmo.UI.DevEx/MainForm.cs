@@ -24,14 +24,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using Atmo.Data;
 using Atmo.Stats;
 using Atmo.UI.WinForms.Controls;
 using Atmo.Units;
+using DevExpress.XtraEditors;
 
 namespace Atmo.UI.DevEx {
-	public partial class MainForm : Form {
+	public partial class MainForm : XtraForm {
 
 		private IDaqConnection _deviceConnection = null;
 		private MemoryDataStore _memoryDataStore = null;
@@ -147,6 +147,24 @@ namespace Atmo.UI.DevEx {
 			}*/
 
 
+		}
+
+		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			var settingsForm = new SettingsForm();
+			settingsForm.ShowDialog(this);
+		}
+
+		private void simpleButtonFindSensors_Click(object sender, EventArgs e) {
+			FindSensors();
+		}
+
+		private void barButtonItemSensorSetup_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			FindSensors();
+		}
+
+		private void FindSensors() {
+			var findSensorForm = new FindSensorsForm();
+			findSensorForm.ShowDialog(this);
 		}
 
 	}

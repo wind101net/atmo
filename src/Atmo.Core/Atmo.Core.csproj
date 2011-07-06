@@ -46,6 +46,7 @@
     <Compile Include="Data\DaqDataFileReader.cs" />
     <Compile Include="Data\IDataStore.cs" />
     <Compile Include="Data\MemoryDataStore.cs" />
+    <Compile Include="Data\PersistentState.cs" />
     <Compile Include="Demo\DemoDaqConnection.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Stats\IAggregateCalculator.cs" />

@@ -24,12 +24,8 @@
 using DevExpress.XtraEditors;
 
 namespace Atmo.UI.DevEx {
-	public partial class SplashForm : XtraForm {
-
-		private readonly MainForm _spawnForm;
-
-		public SplashForm(MainForm spawnForm) {
-			_spawnForm = spawnForm;
+	public partial class AboutForm : XtraForm {
+		public AboutForm() {
 			InitializeComponent();
 		}
 	}

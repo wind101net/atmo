@@ -22,10 +22,12 @@
 // ================================================================================
 
 using System;
+using System.Xml.Serialization;
 
 namespace Atmo {
 
 	/// <inheritdoc/>
+	[XmlRoot("Readingvalues")]
 	public class ReadingValues :
 		IReadingValues,
 		IEquatable<ReadingValues>,
@@ -97,18 +99,23 @@ namespace Atmo {
 		}
 
 		/// <inheritdoc/>
+		[XmlAttribute("temperature")]
 		public double Temperature { get; set; }
 
 		/// <inheritdoc/>
+		[XmlAttribute("pressure")]
 		public double Pressure { get; set; }
 
 		/// <inheritdoc/>
+		[XmlAttribute("humidity")]
 		public double Humidity { get; set; }
 
 		/// <inheritdoc/>
+		[XmlAttribute("windspeed")]
 		public double WindSpeed { get; set; }
 
 		/// <inheritdoc/>
+		[XmlAttribute("winddirection")]
 		public double WindDirection { get; set; }
 
 		/// <inheritdoc/>
