@@ -71,6 +71,7 @@
     <Compile Include="Stats\ReadingValuesMeanCalculator.cs" />
     <Compile Include="Stats\StatsUtil.cs" />
     <Compile Include="TimeRange.cs" />
+    <Compile Include="TimeStampedValue.cs" />
     <Compile Include="Units\PressureConverter.cs" />
     <Compile Include="Units\ReadingValuesConverter.cs" />
     <Compile Include="Units\ReadingValuesConverterCache.cs" />

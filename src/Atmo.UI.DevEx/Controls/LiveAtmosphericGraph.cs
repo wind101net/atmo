@@ -25,9 +25,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Atmo.Calculation;
+using Atmo.Data;
 using Atmo.Stats;
 using DevExpress.XtraCharts;
 using Atmo.Units;
+using System.Linq;
 
 namespace Atmo.UI.DevEx.Controls {
 	public partial class LiveAtmosphericGraph : DevExpress.XtraEditors.XtraUserControl {
@@ -36,11 +39,17 @@ namespace Atmo.UI.DevEx.Controls {
 			InitializeComponent();
 		}
 
+		public ReadingValuesConverterCache<ReadingValues> ConverterCacheReadingValues { get; set; }
+
 		public TemperatureUnit TemperatureUnit { get; set; }
 
 		public SpeedUnit SpeedUnit { get; set; }
 
 		public PressureUnit PressureUnit { get; set; }
+
+		public PersistentState State { get; set; }
+
+		public double HeightAboveSeaLevel { get; set; }
 
 		public void SetDataSource<T>(IEnumerable<T> items) where T:IReading {
 			SetDataSource(items.ToList());
@@ -60,9 +69,66 @@ namespace Atmo.UI.DevEx.Controls {
 		}
 
 		public void SetDataSource(List<Reading> items) {
-			chartControl.DataSource = new List<Reading>(items);
-			ForceYRanges(items);
+			// todo: can this copy be eliminated?
+			var newList = new List<Reading>(items);
+			chartControl.DataSource = newList;
+
+			SetUserData(newList);
+
+			ForceYRanges(newList);
 			//chartControl.Update();
+		}
+
+		private void SetUserData(List<Reading> items) {
+			var userValues = GetUserValues(items);
+			var series = chartControl.Series.OfType<Series>().FirstOrDefault(s => s.Name == "User");
+			series.DataSource = userValues;
+		}
+
+		private List<TimeStampedValue> GetUserValues(List<Reading> items) {
+			var userValues = new List<TimeStampedValue>(items.Count);
+			switch(State.UserGraphAttribute) {
+				case PersistentState.UserCalculatedAttribute.DewPoint: {
+					var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+						.Get(TemperatureUnit, TemperatureUnit.Celsius);
+					foreach (var curItem in items) {
+						var temperature = curItem.Temperature;
+						if (Double.IsNaN(temperature)) {
+							continue;
+						}
+						temperature = tempConverter.Convert(temperature);
+						userValues.Add(new TimeStampedValue(
+						    curItem.TimeStamp,
+						    DewPointCalculator.DewPoint(temperature, curItem.Humidity)
+						));
+					}
+					return userValues;
+				}
+				case PersistentState.UserCalculatedAttribute.AirDensity: {
+					var airDensityCalc = new AirDensityCalculator(HeightAboveSeaLevel);
+					var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+						.Get(TemperatureUnit, TemperatureUnit.Celsius);
+					var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+						.Get(PressureUnit, PressureUnit.Pascals);
+					foreach (var curItem in items) {
+						var temperature = curItem.Temperature;
+						if (Double.IsNaN(temperature)) {
+							continue;
+						}
+						temperature = tempConverter.Convert(temperature);
+						var pressure = curItem.Pressure;
+						pressure = Double.IsNaN(pressure)
+							? airDensityCalc.EstimatedPressure
+							: pressConverter.Convert(pressure);
+						userValues.Add(new TimeStampedValue(
+							curItem.TimeStamp,
+							AirDensityCalculator.AirDensity(temperature,curItem.Humidity,pressure)
+						));
+					}
+					return userValues;
+				}
+			}
+			return userValues;
 		}
 
 		private void ForceYRanges(List<Reading> readings) {
@@ -80,13 +146,7 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 
 			var range = minMaxCalculator.Result;
-			var minRange = new ReadingValues(
-				3,
-				3,
-				3,
-				3,
-				0
-			);
+			var minRange = State.MinRangeSizes;
 
 			if (range.Temperature.Size < minRange.Temperature && minRange.Temperature > 0) {
 				diagram.AxisY.Range.Auto = false;

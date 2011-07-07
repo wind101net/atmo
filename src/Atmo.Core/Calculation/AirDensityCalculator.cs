@@ -31,6 +31,10 @@ namespace Atmo.Calculation {
 			get { return PressureUnit.Pascals; }
 		}
 
+		public static TemperatureUnit TemperatureUnit {
+			get { return TemperatureUnit.Celsius; }
+		}
+
 		/// <summary>
 		/// Height above sea level in meters.
 		/// </summary>

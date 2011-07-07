@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
+    <None Include="Properties\DataSources\Atmo.TimeStampedValue.datasource" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

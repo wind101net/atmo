@@ -41,6 +41,7 @@
 			DevExpress.XtraCharts.CustomAxisLabel customAxisLabel3 = new DevExpress.XtraCharts.CustomAxisLabel();
 			DevExpress.XtraCharts.CustomAxisLabel customAxisLabel4 = new DevExpress.XtraCharts.CustomAxisLabel();
 			DevExpress.XtraCharts.CustomAxisLabel customAxisLabel5 = new DevExpress.XtraCharts.CustomAxisLabel();
+			DevExpress.XtraCharts.SecondaryAxisY secondaryAxisY5 = new DevExpress.XtraCharts.SecondaryAxisY();
 			DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
 			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel1 = new DevExpress.XtraCharts.PointSeriesLabel();
 			DevExpress.XtraCharts.AreaSeriesView areaSeriesView1 = new DevExpress.XtraCharts.AreaSeriesView();
@@ -53,14 +54,18 @@
 			DevExpress.XtraCharts.AreaSeriesView areaSeriesView2 = new DevExpress.XtraCharts.AreaSeriesView();
 			DevExpress.XtraCharts.Series series4 = new DevExpress.XtraCharts.Series();
 			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel4 = new DevExpress.XtraCharts.PointSeriesLabel();
-			DevExpress.XtraCharts.SplineSeriesView splineSeriesView2 = new DevExpress.XtraCharts.SplineSeriesView();
+			DevExpress.XtraCharts.AreaSeriesView areaSeriesView3 = new DevExpress.XtraCharts.AreaSeriesView();
 			DevExpress.XtraCharts.Series series5 = new DevExpress.XtraCharts.Series();
 			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel5 = new DevExpress.XtraCharts.PointSeriesLabel();
-			DevExpress.XtraCharts.PointSeriesView pointSeriesView1 = new DevExpress.XtraCharts.PointSeriesView();
+			DevExpress.XtraCharts.SplineSeriesView splineSeriesView2 = new DevExpress.XtraCharts.SplineSeriesView();
+			DevExpress.XtraCharts.Series series6 = new DevExpress.XtraCharts.Series();
 			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel6 = new DevExpress.XtraCharts.PointSeriesLabel();
-			DevExpress.XtraCharts.AreaSeriesView areaSeriesView3 = new DevExpress.XtraCharts.AreaSeriesView();
+			DevExpress.XtraCharts.PointSeriesView pointSeriesView1 = new DevExpress.XtraCharts.PointSeriesView();
+			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel7 = new DevExpress.XtraCharts.PointSeriesLabel();
+			DevExpress.XtraCharts.AreaSeriesView areaSeriesView4 = new DevExpress.XtraCharts.AreaSeriesView();
 			this.chartControl = new DevExpress.XtraCharts.ChartControl();
 			this.bindingSourceReading = new System.Windows.Forms.BindingSource(this.components);
+			this.bindingSourceStampValue = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagramPane1)).BeginInit();
@@ -69,6 +74,7 @@
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY4)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(secondaryAxisY5)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView1)).BeginInit();
@@ -80,13 +86,17 @@
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(series4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel4)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(splineSeriesView2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(areaSeriesView3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(series5)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel5)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(pointSeriesView1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(splineSeriesView2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(series6)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel6)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(areaSeriesView3)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(pointSeriesView1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel7)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(areaSeriesView4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceStampValue)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// chartControl
@@ -253,11 +263,24 @@
 			secondaryAxisY4.Title.TextColor = System.Drawing.Color.Black;
 			secondaryAxisY4.Title.Visible = true;
 			secondaryAxisY4.VisibleInPanesSerializable = "1";
+			secondaryAxisY5.Alignment = DevExpress.XtraCharts.AxisAlignment.Near;
+			secondaryAxisY5.AxisID = 4;
+			secondaryAxisY5.Name = "User";
+			secondaryAxisY5.Range.AlwaysShowZeroLevel = false;
+			secondaryAxisY5.Range.ScrollingRange.SideMarginsEnabled = true;
+			secondaryAxisY5.Range.SideMarginsEnabled = false;
+			secondaryAxisY5.Title.Antialiasing = false;
+			secondaryAxisY5.Title.Font = new System.Drawing.Font("Tahoma", 10F);
+			secondaryAxisY5.Title.Text = "User";
+			secondaryAxisY5.Title.TextColor = System.Drawing.Color.Navy;
+			secondaryAxisY5.Title.Visible = true;
+			secondaryAxisY5.VisibleInPanesSerializable = "0";
 			xyDiagram1.SecondaryAxesY.AddRange(new DevExpress.XtraCharts.SecondaryAxisY[] {
             secondaryAxisY1,
             secondaryAxisY2,
             secondaryAxisY3,
-            secondaryAxisY4});
+            secondaryAxisY4,
+            secondaryAxisY5});
 			this.chartControl.Diagram = xyDiagram1;
 			this.chartControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.chartControl.Legend.AlignmentHorizontal = DevExpress.XtraCharts.LegendAlignmentHorizontal.Right;
@@ -313,45 +336,58 @@
 			areaSeriesView2.MarkerOptions.Visible = false;
 			areaSeriesView2.PaneName = "SpeedAndDirection";
 			series3.View = areaSeriesView2;
-			series4.ArgumentDataMember = "TimeStamp";
+			series4.ArgumentDataMember = "StampProperty";
 			series4.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.DateTime;
+			series4.DataSource = this.bindingSourceStampValue;
 			pointSeriesLabel4.LineVisible = true;
 			pointSeriesLabel4.Visible = false;
 			series4.Label = pointSeriesLabel4;
-			series4.Name = "Pressure";
-			series4.ValueDataMembersSerializable = "Pressure";
-			splineSeriesView2.AxisYName = "Pressure AxisY";
-			splineSeriesView2.Color = System.Drawing.Color.Black;
-			splineSeriesView2.LineMarkerOptions.Visible = false;
-			splineSeriesView2.LineTensionPercent = 50;
-			splineSeriesView2.PaneName = "UserAndPressure";
-			series4.View = splineSeriesView2;
+			series4.Name = "User";
+			series4.ValueDataMembersSerializable = "ValueProperty";
+			areaSeriesView3.AxisYName = "User";
+			areaSeriesView3.MarkerOptions.Visible = false;
+			areaSeriesView3.PaneName = "UserAndPressure";
+			series4.View = areaSeriesView3;
 			series5.ArgumentDataMember = "TimeStamp";
 			series5.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.DateTime;
 			pointSeriesLabel5.LineVisible = true;
 			pointSeriesLabel5.Visible = false;
 			series5.Label = pointSeriesLabel5;
-			series5.Name = "Direction";
-			series5.ValueDataMembersSerializable = "WindDirection";
+			series5.Name = "Pressure";
+			series5.ValueDataMembersSerializable = "Pressure";
+			splineSeriesView2.AxisYName = "Pressure AxisY";
+			splineSeriesView2.Color = System.Drawing.Color.Black;
+			splineSeriesView2.LineMarkerOptions.Visible = false;
+			splineSeriesView2.LineTensionPercent = 50;
+			splineSeriesView2.PaneName = "UserAndPressure";
+			series5.View = splineSeriesView2;
+			series6.ArgumentDataMember = "TimeStamp";
+			series6.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.DateTime;
+			pointSeriesLabel6.LineVisible = true;
+			pointSeriesLabel6.Visible = false;
+			series6.Label = pointSeriesLabel6;
+			series6.Name = "Direction";
+			series6.ValueDataMembersSerializable = "WindDirection";
 			pointSeriesView1.AxisYName = "Direction AxisY";
 			pointSeriesView1.Color = System.Drawing.Color.Black;
 			pointSeriesView1.PaneName = "SpeedAndDirection";
 			pointSeriesView1.PointMarkerOptions.BorderVisible = false;
 			pointSeriesView1.PointMarkerOptions.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
 			pointSeriesView1.PointMarkerOptions.Size = 4;
-			series5.View = pointSeriesView1;
+			series6.View = pointSeriesView1;
 			this.chartControl.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
         series1,
         series2,
         series3,
         series4,
-        series5};
+        series5,
+        series6};
 			this.chartControl.SeriesTemplate.ArgumentDataMember = "TimeStamp";
 			this.chartControl.SeriesTemplate.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.DateTime;
-			pointSeriesLabel6.LineVisible = true;
-			this.chartControl.SeriesTemplate.Label = pointSeriesLabel6;
-			areaSeriesView3.Transparency = ((byte)(0));
-			this.chartControl.SeriesTemplate.View = areaSeriesView3;
+			pointSeriesLabel7.LineVisible = true;
+			this.chartControl.SeriesTemplate.Label = pointSeriesLabel7;
+			areaSeriesView4.Transparency = ((byte)(0));
+			this.chartControl.SeriesTemplate.View = areaSeriesView4;
 			this.chartControl.Size = new System.Drawing.Size(599, 478);
 			this.chartControl.TabIndex = 0;
 			// 
@@ -359,6 +395,11 @@
 			// 
 			this.bindingSourceReading.AllowNew = false;
 			this.bindingSourceReading.DataSource = typeof(Atmo.Reading);
+			// 
+			// bindingSourceStampValue
+			// 
+			this.bindingSourceStampValue.AllowNew = false;
+			this.bindingSourceStampValue.DataSource = typeof(Atmo.TimeStampedValue);
 			// 
 			// LiveAtmosphericGraph
 			// 
@@ -373,6 +414,7 @@
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY4)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(secondaryAxisY5)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView1)).EndInit();
@@ -384,15 +426,19 @@
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(series3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel4)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(splineSeriesView2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(areaSeriesView3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(series4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel5)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(pointSeriesView1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(splineSeriesView2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(series5)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel6)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(areaSeriesView3)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(pointSeriesView1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(series6)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel7)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(areaSeriesView4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceStampValue)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -401,5 +447,6 @@
 
 		private DevExpress.XtraCharts.ChartControl chartControl;
 		private System.Windows.Forms.BindingSource bindingSourceReading;
+		private System.Windows.Forms.BindingSource bindingSourceStampValue;
 	}
 }

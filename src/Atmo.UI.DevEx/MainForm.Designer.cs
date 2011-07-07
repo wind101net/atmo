@@ -236,10 +236,10 @@
 			// 
 			// liveAtmosphericGraph
 			// 
-			this.liveAtmosphericGraph.Location = new System.Drawing.Point(234, 31);
+			this.liveAtmosphericGraph.Location = new System.Drawing.Point(248, 144);
 			this.liveAtmosphericGraph.Name = "liveAtmosphericGraph";
 			this.liveAtmosphericGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-			this.liveAtmosphericGraph.Size = new System.Drawing.Size(760, 478);
+			this.liveAtmosphericGraph.Size = new System.Drawing.Size(677, 410);
 			this.liveAtmosphericGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
 			this.liveAtmosphericGraph.TabIndex = 4;
 			this.liveAtmosphericGraph.TemperatureUnit = Atmo.Units.TemperatureUnit.Celsius;
@@ -309,10 +309,10 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(994, 1287);
+			this.Controls.Add(this.liveAtmosphericGraph);
 			this.Controls.Add(this.simpleButtonDownloadData);
 			this.Controls.Add(this.simpleButtonFindSensors);
 			this.Controls.Add(this.panelSensors);
-			this.Controls.Add(this.liveAtmosphericGraph);
 			this.Controls.Add(this.barDockControlLeft);
 			this.Controls.Add(this.barDockControlRight);
 			this.Controls.Add(this.barDockControlBottom);

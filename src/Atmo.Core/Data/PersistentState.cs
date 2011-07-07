@@ -21,6 +21,7 @@
 //
 // ================================================================================
 
+using System;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -29,6 +30,11 @@ namespace Atmo.Data {
 	[XmlRoot("PersistentState")]
 	public class PersistentState {
 
+		public enum UserCalculatedAttribute {
+			DewPoint,
+			AirDensity
+		}
+
 		public static XmlSerializer Serializer { get; private set; }
 
 		static PersistentState() {
@@ -36,8 +42,16 @@ namespace Atmo.Data {
 		}
 
 		public static PersistentState ReadFile(string filePath) {
-			using(var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-				return ReadStream(fileStream);
+			if(!File.Exists(filePath)) {
+				return null;
+			}
+			try {
+				using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+					return ReadStream(fileStream);
+				}
+			}
+			catch(FileNotFoundException fnf) {
+				return null;
 			}
 		}
 
@@ -56,17 +70,27 @@ namespace Atmo.Data {
 		}
 
 		public PersistentState() {
-			MinValueRange = new ReadingValues(0,0,0,0,0);
-			MinDewPointRange = 0;
-			MinAirDensityRange = 0;
+			MinRangeSizes = new ReadingValues(10, 5, 0.20, 0, 0);
+			MinRangeSizeDewPoint = 10;
+			MinRangeSizeAirDensity = 0.05;
+			HeightAboveSeaLevel = Double.NaN;
+			UserGraphAttribute = default(UserCalculatedAttribute);
 		}
 
 		[XmlElement("MinRangeSizes")]
-		public ReadingValues MinValueRange { get; set; }
+		public ReadingValues MinRangeSizes { get; set; }
+		
 		[XmlElement("MinRangeSizeDewPoint")]
-		public double MinDewPointRange { get; set; }
+		public double MinRangeSizeDewPoint { get; set; }
+		
 		[XmlElement("MinRangeSizeAirDensity")]
-		public double MinAirDensityRange { get; set; }
+		public double MinRangeSizeAirDensity { get; set; }
+		
+		[XmlElement("UserGraphAttribute")]
+		public UserCalculatedAttribute UserGraphAttribute { get; set; }
+
+		[XmlElement("HeightAboveSeaLevel")]
+		public double HeightAboveSeaLevel { get; set; }
 
 	}
 }

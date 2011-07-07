@@ -35,9 +35,11 @@ namespace Atmo.Test {
 		[SetUp]
 		public void SetUp() {
 			var state = new PersistentState {
-				MinValueRange = new ReadingValues(1, 2, 3, 4, 5),
-				MinDewPointRange = 6,
-				MinAirDensityRange = 7
+				MinRangeSizes = new ReadingValues(1, 2, 3, 4, 5),
+				MinRangeSizeDewPoint = 6,
+				MinRangeSizeAirDensity = 7,
+				HeightAboveSeaLevel = 8,
+				UserGraphAttribute = PersistentState.UserCalculatedAttribute.AirDensity
 			};
 
 			var sb = new StringBuilder();
@@ -52,13 +54,15 @@ namespace Atmo.Test {
 			var readState = PersistentState.Serializer.Deserialize(new StringReader(_xml234567)) as PersistentState;
 
 			Assert.IsNotNull(readState);
-			Assert.AreEqual(1, readState.MinValueRange.Temperature);
-			Assert.AreEqual(2, readState.MinValueRange.Pressure);
-			Assert.AreEqual(3, readState.MinValueRange.Humidity);
-			Assert.AreEqual(4, readState.MinValueRange.WindDirection);
-			Assert.AreEqual(5, readState.MinValueRange.WindSpeed);
-			Assert.AreEqual(6, readState.MinDewPointRange);
-			Assert.AreEqual(7, readState.MinAirDensityRange);
+			Assert.AreEqual(1, readState.MinRangeSizes.Temperature);
+			Assert.AreEqual(2, readState.MinRangeSizes.Pressure);
+			Assert.AreEqual(3, readState.MinRangeSizes.Humidity);
+			Assert.AreEqual(4, readState.MinRangeSizes.WindDirection);
+			Assert.AreEqual(5, readState.MinRangeSizes.WindSpeed);
+			Assert.AreEqual(6, readState.MinRangeSizeDewPoint);
+			Assert.AreEqual(7, readState.MinRangeSizeAirDensity);
+			Assert.AreEqual(8, readState.HeightAboveSeaLevel);
+			Assert.AreEqual(PersistentState.UserCalculatedAttribute.AirDensity, readState.UserGraphAttribute);
 
 		}
 

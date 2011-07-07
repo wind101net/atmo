@@ -37,12 +37,20 @@ namespace Atmo.UI.DevEx {
 		private MemoryDataStore _memoryDataStore = null;
 		private SensorViewPanelController _sensorViewPanelControler = null;
 
-		public MainForm() {
+		private ProgramContext AppContext { get; set; }
+
+		public MainForm(ProgramContext appContext) {
+			if (null == appContext) {
+				throw new ArgumentNullException();
+			}
+			AppContext = appContext;
+
 			InitializeComponent();
 
 			ConverterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
 			ConverterCacheReadingValues = ReadingValuesConverterCache<ReadingValues>.Default;
 			ConverterCacheReadingAggregate = ReadingValuesConverterCache<ReadingAggregate>.Default;
+			liveAtmosphericGraph.ConverterCacheReadingValues = ConverterCacheReadingValues;
 
 			TemperatureUnit = TemperatureUnit.Fahrenheit;
 
@@ -132,12 +140,13 @@ namespace Atmo.UI.DevEx {
 				var enabledSensorsCompiledMeans = StatsUtil.JoinParallelMeanReadings(enabledSensorsLiveMeans);
 
 				// present the data set
-				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
-				liveAtmosphericGraph.FormatTimeAxis(liveDataTimeSpan);
-				liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
 				liveAtmosphericGraph.TemperatureUnit = TemperatureUnit;
 				liveAtmosphericGraph.PressureUnit = PressureUnit;
 				liveAtmosphericGraph.SpeedUnit = SpeedUnit;
+				liveAtmosphericGraph.FormatTimeAxis(liveDataTimeSpan);
+				liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
+				liveAtmosphericGraph.State = AppContext.PersistentState;
+				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
 			}
 
 
@@ -150,7 +159,7 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
-			var settingsForm = new SettingsForm();
+			var settingsForm = new SettingsForm(AppContext.PersistentState);
 			settingsForm.ShowDialog(this);
 		}
 
