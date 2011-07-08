@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Atmo.Test;
 using Atmo.Units;
-using System.Linq;
 
 namespace Atmo.Demo {
 	public class DemoDaqConnection : KeyedCollection<string, DemoDaqConnection.DemoSensor>, IDaqConnection {
@@ -35,7 +34,7 @@ namespace Atmo.Demo {
 
 			private DemoDaqConnection _parent;
 			private string _name;
-			private ReadingValues _lastReading;
+			private Reading _lastReading;
 			private Random _rand = new Random((int)System.DateTime.Now.Ticks);
 			private bool _valid;
 
@@ -62,9 +61,12 @@ namespace Atmo.Demo {
 			}
 
 			public IReading GetCurrentReading() {
+				if(_parent.Paused) {
+					return _lastReading;
+				}
 				var now = _parent.QueryClock();
 				var reading = GetCurrentReading(now, _rand, _lastReading);
-				_lastReading = new ReadingValues(reading);
+				_lastReading = new Reading(reading);
 				return reading;
 			}
 
@@ -223,7 +225,10 @@ namespace Atmo.Demo {
             Add(new DemoSensor("B", this, true));
             Add(new DemoSensor("C", this, false));
             Add(new DemoSensor("D", this, false));
-        }
+			Paused = false;
+		}
+
+		public bool Paused { get; private set; }
 
 		protected override string GetKeyForItem(DemoSensor item) {
 			return item.Name;
@@ -262,51 +267,51 @@ namespace Atmo.Demo {
 
 
 		public void SetNetworkSize(int size) {
-			throw new NotImplementedException();
+			;
 		}
 
 		public bool IsConnected {
-			get { throw new NotImplementedException(); }
+			get { return true; }
 		}
 
 		public bool SetSensorId(int currentId, int desiredId) {
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public void Pause() {
-			throw new NotImplementedException();
+			;
 		}
 
 		public void Resume() {
-			throw new NotImplementedException();
+			;
 		}
 
 		public double VoltageUsb {
-			get { throw new NotImplementedException(); }
+			get { return 1.1; }
 		}
 
 		public double VoltageBattery {
-			get { throw new NotImplementedException(); }
+			get { return 2.2; }
 		}
 
 		public double Temperature {
-			get { throw new NotImplementedException(); }
+			get { return 3.3; }
 		}
 
 		public TemperatureUnit TemperatureUnit {
-			get { throw new NotImplementedException(); }
+			get { return Units.TemperatureUnit.Celsius; }
 		}
 
 		public bool UsingDaqTemp {
-			get { throw new NotImplementedException(); }
+			get { return false; }
 		}
 
 		public void UseDaqTemp(bool useDaqTemp) {
-			throw new NotImplementedException();
+			;
 		}
 
 		public bool ReconnectMedia() {
-			throw new NotImplementedException();
+			return false;
 		}
 	}
 }

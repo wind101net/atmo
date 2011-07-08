@@ -505,49 +505,122 @@ namespace Atmo.Daq.Win32 {
 			return _sensors.AsEnumerable().GetEnumerator();
 		}
 
-
 		public DateTime QueryClock() {
-			throw new NotImplementedException();
+			return _lastClock;
 		}
 
-		public bool SetSensorId(int currentId, int desiredId) {
-			throw new NotImplementedException();
+		bool IDaqConnection.SetSensorId(int currentId, int desiredId) {
+			return ChangeSensorId(currentId, desiredId);
 		}
 
-		public void Pause() {
-			throw new NotImplementedException();
+		void IDaqConnection.Pause() {
+			PauseQuery();
 		}
 
-		public void Resume() {
-			throw new NotImplementedException();
+		void IDaqConnection.Resume() {
+			ResumeQuery();
 		}
 
 		public double VoltageUsb {
-			get { throw new NotImplementedException(); }
+			get {
+				_lastDaqStatusQuery = DateTime.Now.Add(_daqStatusQueryLifetime);
+				return _daqStat.VoltageUsb;
+			}
 		}
 
 		public double VoltageBattery {
-			get { throw new NotImplementedException(); }
+			get {
+				_lastDaqStatusQuery = DateTime.Now.Add(_daqStatusQueryLifetime);
+				return _daqStat.VoltageBattery;
+			}
 		}
 
 		public double Temperature {
-			get { throw new NotImplementedException(); }
+			get {
+				_lastDaqStatusQuery = DateTime.Now.Add(_daqStatusQueryLifetime);
+				return _daqStat.Temperature;
+			}
 		}
 
 		public TemperatureUnit TemperatureUnit {
-			get { throw new NotImplementedException(); }
+			get { return TemperatureUnit.Celsius; }
 		}
 
 		public bool UsingDaqTemp {
-			get { throw new NotImplementedException(); }
+			get { return _usingDaqTemp.HasValue && _usingDaqTemp.Value; }
 		}
 
 		public void UseDaqTemp(bool useDaqTemp) {
-			throw new NotImplementedException();
+			SetDaqTempSelected(useDaqTemp);
+			_usingDaqTemp = useDaqTemp;
+		}
+
+		private bool SetDaqTempSelected(bool useDaq) {
+			bool sumOk = true;
+			lock (_connLock) {
+				if (!this.IsConnected) {
+					this.Connect();
+				}
+
+				for (int nid = 0; nid < _networkSize; nid++) {
+					bool ok = true;
+					byte[] packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+					packet[0] = 0;
+					packet[1] = 0x74;
+					packet[2] = checked((byte)nid);
+					if (UsbConn.WritePacket(packet)) {
+						packet = UsbConn.ReadPacket();
+						if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte)nid) || packet[3] != 0x4f || packet[4] != 0x4b) {
+							ok = false;
+						}
+					}
+					//else
+					//{
+					//    return false;
+					//}
+					try {
+						packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+						packet[0] = 0;
+						packet[1] = 0x72;
+						packet[3] = useDaq ? (byte)0x00 : (byte)0x01;
+						packet[2] = (byte)nid;
+						if (UsbConn.WritePacket(packet)) {
+							byte[] res = UsbConn.ReadPacket();
+							if (null == res || res[3] != 79 || res[4] != 75) {
+								ok = false;
+							}
+						}
+					}
+					finally {
+
+						packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+						packet[0] = 0;
+						packet[1] = 0x76;
+						packet[2] = checked((byte)nid);
+						if (UsbConn.WritePacket(packet)) {
+							byte[] res = UsbConn.ReadPacket();
+							;
+						}
+					}
+					sumOk = sumOk | ok;
+				}
+			}
+			return sumOk;
 		}
 
 		public bool ReconnectMedia() {
-			throw new NotImplementedException();
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+				byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				queryPacket[0] = 0;
+				queryPacket[1] = 0x78;
+				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

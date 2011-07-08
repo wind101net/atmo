@@ -192,7 +192,7 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void DownloadData() {
-			ImportDataForm importForm = new ImportDataForm(_dbStore, _deviceConnection);
+			var importForm = new ImportDataForm(_dbStore, _deviceConnection);
 			importForm.ShowDialog(this);
 
 			//ReloadHistoric();
