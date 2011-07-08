@@ -22,12 +22,72 @@
 // ================================================================================
 
 using System;
+using System.Collections.Generic;
+using Atmo.Stats;
+using Atmo.Units;
 
 namespace Atmo.Data {
 
-	[Obsolete("Not sure what I am doing with this just yet.")]
+	
 	public interface IDataStore {
-		// TODO: stuff
+		/// <summary>
+		/// Gets the information for all sensors in the data store.
+		/// </summary>
+		/// <returns>A collection of sensor infos.</returns>
+		IEnumerable<ISensorInfo> GetAllSensorInfos();
+
+		/// <summary>
+		/// Gets sensor readings from the data store.
+		/// </summary>
+		/// <param name="sensor">The sensor name to get readings for.</param>
+		/// <param name="from">The date to start retrieving from.</param>
+		/// <param name="span">The direction and magnitude of time to retrieve records for, usually a negative value.</param>
+		/// <returns>A collection of sensor readings.</returns>
+		IEnumerable<IReading> GetReadings(string sensor, DateTime from, TimeSpan span);
+
+		/// <summary>
+		/// Gets summarized sensor readings.
+		/// </summary>
+		/// <param name="sensor">The sensor name to get readings for.</param>
+		/// <param name="from">The date to start retrieving from.</param>
+		/// <param name="span">The direction and magnitude of time to retrieve records for, usually a negative value.</param>
+		/// <param name="summaryUnit">The time span of each summary.</param>
+		/// <returns>A collection of sensor reading summaries.</returns>
+		/// <remarks>Summaries are zero aligned.</remarks>
+		IEnumerable<IReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit);
+
+		/// <summary>
+		/// Adds a sensor info record to the data store.
+		/// </summary>
+		/// <param name="sensor">The sensor to add.</param>
+		/// <returns><c>true</c> on success, <c>false</c> otherwise.</returns>
+		bool AddSensor(ISensorInfo sensor);
+
+		/// <summary>
+		/// Adds readings to the data store.
+		/// </summary>
+		/// <param name="sensor">The sensor name to add readings for.</param>
+		/// <param name="readings">The readings to add.</param>
+		/// <returns><c>true</c> on success, <c>false</c> otherwise.</returns>
+		bool Push(string sensor, IEnumerable<IReading> readings);
+
+		DateTime GetMaxSyncStamp();
+
+		bool AdjustTimeStamps(
+			string sensorName,
+			TimeRange currentRange,
+			TimeRange correctedRange
+		);
+
+		string GetLatestSensorNameForHardwareId(string hardwareId);
+
+		void SetLatestSensorNameForHardwareId(string dbSensorName, string hardwareId);
+
+		bool PushSyncStamp(DateTime stamp);
+
+		bool Push<T>(string sensor, IEnumerable<T> readings) where T : IReading;
+
+		bool Push<T>(string sensor, IEnumerable<T> readings, bool replace) where T : IReading;
 	}
 
 }

@@ -46,12 +46,17 @@
     <Compile Include="Calculation\DewPointCalculator.cs" />
     <Compile Include="Data\DaqDataFileInfo.cs" />
     <Compile Include="Data\DaqDataFileReader.cs" />
+    <Compile Include="Data\DbDataStore.cs" />
     <Compile Include="Data\IDataStore.cs" />
     <Compile Include="Data\MemoryDataStore.cs" />
     <Compile Include="Data\PersistentState.cs" />
     <Compile Include="Demo\DemoDaqConnection.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Stats\IAggregateCalculator.cs" />
+    <Compile Include="Stats\IReadingsSummary.cs" />
+    <Compile Include="Stats\PackedRadingsSummary.cs" />
+    <Compile Include="Stats\PackedReadingsDaySummary.cs" />
+    <Compile Include="Stats\PackedReadingsHourSummary.cs" />
     <Compile Include="Stats\ReadingAggregate.cs" />
     <Compile Include="IDaqConnection.cs" />
     <Compile Include="IReadingValues.cs" />
@@ -68,6 +73,7 @@
     <Compile Include="Stats\ReadingAggregateMinMaxCalculator.cs" />
     <Compile Include="Stats\ReadingMinMaxCalculator.cs" />
     <Compile Include="Stats\ReadingRangeAggregate.cs" />
+    <Compile Include="Stats\ReadingsSummary.cs" />
     <Compile Include="Stats\ReadingValuesMeanCalculator.cs" />
     <Compile Include="Stats\StatsUtil.cs" />
     <Compile Include="TimeRange.cs" />

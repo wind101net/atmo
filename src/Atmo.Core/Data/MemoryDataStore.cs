@@ -131,19 +131,6 @@ namespace Atmo.Data {
 			);
 		}
 
-		/*
-		IEnumerable<IReading> IDataStore.GetReadings(string sensor, DateTime from, TimeSpan span) {
-			return this.GetReadings(sensor, from, span).OfType<IReading>();
-		}
-
-		public IEnumerable<ReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
-			return StatsUtility.Summarize<Reading>(this.GetReadings(sensor, from, span), summaryUnit);
-		}
-
-		IEnumerable<IReadingsSummary> IDataStore.GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
-			return this.GetReadingSummaries(sensor, from, span, summaryUnit).OfType<IReadingsSummary>();
-		}*/
-
 		public bool AddSensor(ISensorInfo sensor) {
 			if (null == sensor) {
 				return false; // throw new ArgumentNullException("sensor");
@@ -195,5 +182,25 @@ namespace Atmo.Data {
 			;
 		}
 
+		IEnumerable<IReading> IDataStore.GetReadings(string sensor, DateTime from, TimeSpan span) {
+			return GetReadings(sensor, from, span).Cast<IReading>();
+		}
+
+		public IEnumerable<Stats.IReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
+			throw new NotImplementedException();
+		}
+
+		/*
+		IEnumerable<IReading> IDataStore.GetReadings(string sensor, DateTime from, TimeSpan span) {
+			return this.GetReadings(sensor, from, span).OfType<IReading>();
+		}
+
+		public IEnumerable<ReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
+			return StatsUtility.Summarize<Reading>(this.GetReadings(sensor, from, span), summaryUnit);
+		}
+
+		IEnumerable<IReadingsSummary> IDataStore.GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
+			return this.GetReadingSummaries(sensor, from, span, summaryUnit).OfType<IReadingsSummary>();
+		}*/
 	}
 }

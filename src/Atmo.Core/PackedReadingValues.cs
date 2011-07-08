@@ -22,6 +22,7 @@
 // ================================================================================
 
 using System;
+using System.Collections.Generic;
 
 namespace Atmo {
 
@@ -61,6 +62,141 @@ namespace Atmo {
 			var humDirSpeedData = unchecked((uint)(((uint)(humidity) << 22) | ((uint)(windDirection) << 13) | windSpeed));
 			return new PackedReadingValues(pressureData, tempFlagsData, humDirSpeedData);
 		}
+
+		public static byte[] ConvertToPackedBytes(IReadingValues values) {
+			return ConvertToPackedBytes(
+				values is PackedReadingValues
+				? (PackedReadingValues)values
+				: (
+					values is PackedReading
+					? ((PackedReading)values).Values
+					: new PackedReadingValues(values)
+				)
+			);
+		}
+
+		public static byte[] ConvertToPackedBytes(PackedReadingValues values) {
+			var data = new byte[8];
+			Array.Copy(BitConverter.GetBytes(values._pressureData), data, 2);
+			Array.Copy(BitConverter.GetBytes(values._temperatureAndFlags), 0, data, 2, 2);
+			Array.Copy(BitConverter.GetBytes(values._humidityDirectionAndSpeed), 0, data, 4, 4);
+			return data;
+		}
+
+		public static PackedReadingValues ConvertFromPackedBytes(byte[] data) {
+			var pressureData = BitConverter.ToUInt16(data, 0);
+			var tempFlagsData = BitConverter.ToUInt16(data, 2);
+			var humDirSpeedData = BitConverter.ToUInt32(data, 4);
+			return new PackedReadingValues(pressureData, tempFlagsData, humDirSpeedData);
+		}
+
+		public static PackedReadingValues ConvertFromPackedBytes(byte[] data, int offset) {
+			var pressureData = BitConverter.ToUInt16(data, offset);
+			var tempFlagsData = BitConverter.ToUInt16(data, offset + 2);
+			var humDirSpeedData = BitConverter.ToUInt32(data, offset + 4);
+			return new PackedReadingValues(pressureData, tempFlagsData, humDirSpeedData);
+		}
+
+		#region Count Byte Conversions
+
+		public static byte[] ConvertTemperatureCountsToPackedBytes(Dictionary<double, int> tempValues) {
+			Dictionary<ushort, int> ushortValues = new Dictionary<ushort, int>(tempValues.Count);
+			int count;
+			foreach (KeyValuePair<double, int> kvp in tempValues) {
+				ushort cmpVal = (ushort)(Math.Round(Math.Max(0, Math.Min(1023, (kvp.Key + 40.0) * 10.0))));
+				ushortValues[cmpVal] = ushortValues.TryGetValue(cmpVal, out count) ? count + kvp.Value : kvp.Value;
+			}
+			return ConvertToPackedBytes(ushortValues);
+		}
+
+		public static byte[] ConvertPressureCountsToPackedBytes(Dictionary<double, int> tempValues) {
+			Dictionary<ushort, int> ushortValues = new Dictionary<ushort, int>(tempValues.Count);
+			int count;
+			foreach (KeyValuePair<double, int> kvp in tempValues) {
+				ushort cmpVal = (ushort)(Math.Round(Math.Max(0, Math.Min(65535, kvp.Key / 2.0))));
+				ushortValues[cmpVal] = ushortValues.TryGetValue(cmpVal, out count) ? count + kvp.Value : kvp.Value;
+			}
+			return ConvertToPackedBytes(ushortValues);
+		}
+
+		public static byte[] ConvertHumidityCountsToPackedBytes(Dictionary<double, int> tempValues) {
+			Dictionary<ushort, int> byteValues = new Dictionary<ushort, int>(tempValues.Count);
+			int count;
+			foreach (KeyValuePair<double, int> kvp in tempValues) {
+				ushort cmpVal = (ushort)(Math.Round(Math.Max(0, Math.Min(1023, kvp.Key * 1000))));
+				byteValues[cmpVal] = byteValues.TryGetValue(cmpVal, out count) ? count + kvp.Value : kvp.Value;
+			}
+			return ConvertToPackedBytes(byteValues);
+		}
+
+		public static byte[] ConvertWindSpeedCountsToPackedBytes(Dictionary<double, int> tempValues) {
+			Dictionary<ushort, int> ushortValues = new Dictionary<ushort, int>(tempValues.Count);
+			int count;
+			foreach (KeyValuePair<double, int> kvp in tempValues) {
+				ushort cmpVal = (ushort)(Math.Round(Math.Max(0, Math.Min(8191, kvp.Key * 100.0))));
+				ushortValues[cmpVal] = ushortValues.TryGetValue(cmpVal, out count) ? count + kvp.Value : kvp.Value;
+			}
+			return ConvertToPackedBytes(ushortValues);
+		}
+
+		public static byte[] ConvertWindDirectionCountsToPackedBytes(Dictionary<double, int> tempValues) {
+			Dictionary<ushort, int> ushortValues = new Dictionary<ushort, int>(tempValues.Count);
+			int count;
+			foreach (KeyValuePair<double, int> kvp in tempValues) {
+				ushort cmpVal = (ushort)(Math.Round(Math.Max(0, Math.Min(511, kvp.Key))));
+				ushortValues[cmpVal] = ushortValues.TryGetValue(cmpVal, out count) ? count + kvp.Value : kvp.Value;
+			}
+			return ConvertToPackedBytes(ushortValues);
+		}
+
+		private static byte[] ConvertToPackedBytes(Dictionary<ushort, int> countValues) {
+			int stride = sizeof(ushort) + sizeof(int);
+			byte[] result = new byte[countValues.Count * stride];
+			IEnumerator<KeyValuePair<ushort, int>> enumerator = countValues.GetEnumerator();
+			for (int i = 0; enumerator.MoveNext(); i++) {
+				byte[] usData = BitConverter.GetBytes(enumerator.Current.Key);
+				Array.Copy(usData, 0, result, i * stride, usData.Length);
+				byte[] iData = BitConverter.GetBytes(enumerator.Current.Value);
+				Array.Copy(iData, 0, result, (i * stride) + usData.Length, iData.Length);
+			}
+			return result;
+		}
+
+		private static byte[] ConvertToPackedBytes(Dictionary<byte, int> countValues) {
+			int stride = sizeof(byte) + sizeof(int);
+			byte[] result = new byte[countValues.Count * stride];
+			IEnumerator<KeyValuePair<byte, int>> enumerator = countValues.GetEnumerator();
+			for (int i = 0; enumerator.MoveNext(); i++) {
+				result[i * stride] = enumerator.Current.Key;
+				byte[] iData = BitConverter.GetBytes(enumerator.Current.Value);
+				Array.Copy(iData, 0, result, (i * stride) + 1, iData.Length);
+			}
+			return result;
+		}
+
+		public static Dictionary<ushort, int> PackedCountsToHashUnsigned16(byte[] data) {
+			int stride = sizeof(ushort) + sizeof(int);
+			Dictionary<ushort, int> result = new Dictionary<ushort, int>(data.Length / stride);
+			for (int i = 0; i < data.Length; i += stride) {
+				ushort key = BitConverter.ToUInt16(data, i);
+				int value = BitConverter.ToInt32(data, i + sizeof(ushort));
+				result[key] = value;
+			}
+			return result;
+		}
+
+		public static Dictionary<byte, int> PackedCountsToHashUnsigned8(byte[] data) {
+			int stride = sizeof(byte) + sizeof(int);
+			Dictionary<byte, int> result = new Dictionary<byte, int>(data.Length / stride);
+			for (int i = 0; i < data.Length; i += stride) {
+				byte key = data[i];
+				int value = BitConverter.ToInt32(data, i + sizeof(byte));
+				result[key] = value;
+			}
+			return result;
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Stores the pressure data.
