@@ -119,6 +119,7 @@
 			this.barButtonItemImport.Caption = "Download Sensor Data...";
 			this.barButtonItemImport.Id = 7;
 			this.barButtonItemImport.Name = "barButtonItemImport";
+			this.barButtonItemImport.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemImport_ItemClick);
 			// 
 			// barButtonItemExport
 			// 
@@ -236,11 +237,14 @@
 			// 
 			// liveAtmosphericGraph
 			// 
+			this.liveAtmosphericGraph.ConverterCacheReadingValues = null;
+			this.liveAtmosphericGraph.HeightAboveSeaLevel = 0D;
 			this.liveAtmosphericGraph.Location = new System.Drawing.Point(248, 144);
 			this.liveAtmosphericGraph.Name = "liveAtmosphericGraph";
 			this.liveAtmosphericGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
 			this.liveAtmosphericGraph.Size = new System.Drawing.Size(677, 410);
 			this.liveAtmosphericGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
+			this.liveAtmosphericGraph.State = null;
 			this.liveAtmosphericGraph.TabIndex = 4;
 			this.liveAtmosphericGraph.TemperatureUnit = Atmo.Units.TemperatureUnit.Celsius;
 			// 
@@ -303,6 +307,7 @@
 			this.simpleButtonDownloadData.Size = new System.Drawing.Size(205, 23);
 			this.simpleButtonDownloadData.TabIndex = 23;
 			this.simpleButtonDownloadData.Text = "Download Data...";
+			this.simpleButtonDownloadData.Click += new System.EventHandler(this.simpleButtonDownloadData_Click);
 			// 
 			// MainForm
 			// 

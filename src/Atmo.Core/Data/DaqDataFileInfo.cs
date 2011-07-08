@@ -22,6 +22,8 @@
 // ================================================================================
 
 using System;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Atmo.Data {
 
@@ -32,6 +34,8 @@ namespace Atmo.Data {
 	/// This class may take the form of a static helper class.
 	/// </remarks>
 	public class DaqDataFileInfo {
+
+		public static readonly Regex AnemFileNameRegex = new Regex(@"([A-D])(\d\d)(\d\d)(\d\d)[.]DAT", RegexOptions.IgnoreCase);
 
 		internal const int RecordSize = 8;
 		internal const byte HeaderCodeByte = 0xa5;
@@ -71,6 +75,77 @@ namespace Atmo.Data {
 			}
 			stamp = default(DateTime);
 			return false;
+		}
+
+		public static DaqDataFileInfo Create(FileInfo fileInfo) {
+			int nid = 0;
+
+			string idValue = AnemFileNameRegex.Match(fileInfo.Name).Groups[1].Value;
+			if (String.IsNullOrEmpty(idValue) || 1 != idValue.Length) {
+				return null;
+			}
+			
+			char idChar = Char.ToUpperInvariant(idValue[0]);
+			if (idChar >= 'A' && idChar <= 'Z') {
+				nid = idChar - 'A';
+			}
+			else {
+				return null;
+			}
+
+			try {
+				using (FileStream fs = File.Open(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+					DateTime stamp;
+					int recordsPassed = -1;
+					using (var reader = new DaqDataFileReader(fs)) {
+						recordsPassed = reader.ReadNextValidStamp(out stamp);
+					}
+					if (recordsPassed >= 0) {
+						if (0 != recordsPassed) {
+							stamp = stamp.Subtract(new TimeSpan(0, 0, recordsPassed));
+						}
+						return new DaqDataFileInfo(fileInfo, nid, stamp);
+					}
+					return null;
+				}
+			}
+			catch (IOException ioEx) {
+				return null;
+			}
+		}
+
+		private readonly FileInfo _fileInfo;
+        private int _nid;
+        private DateTime _firstStamp;
+
+
+		private DaqDataFileInfo(FileInfo fileInfo, int nid, DateTime firstStamp) {
+            if (null == fileInfo) {
+                throw new ArgumentNullException("fileInfo");
+            }
+            _fileInfo = fileInfo;
+            _nid = nid;
+            _firstStamp = firstStamp;
+        }
+
+        public int Nid {
+            get { return _nid; }
+        }
+
+        public DateTime FirstStamp {
+            get { return _firstStamp; }
+        }
+
+        public FileInfo Path {
+            get { return _fileInfo; }
+        }
+
+        public override string ToString() {
+            return String.Concat(_fileInfo.Name, " (", _nid, ',', _firstStamp, ')');
+        }
+
+		public DaqDataFileReader CreateReader() {
+			return new DaqDataFileReader(_fileInfo);
 		}
 
 	}

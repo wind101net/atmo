@@ -259,5 +259,54 @@ namespace Atmo.Demo {
 			}
 		}
 
+
+
+		public void SetNetworkSize(int size) {
+			throw new NotImplementedException();
+		}
+
+		public bool IsConnected {
+			get { throw new NotImplementedException(); }
+		}
+
+		public bool SetSensorId(int currentId, int desiredId) {
+			throw new NotImplementedException();
+		}
+
+		public void Pause() {
+			throw new NotImplementedException();
+		}
+
+		public void Resume() {
+			throw new NotImplementedException();
+		}
+
+		public double VoltageUsb {
+			get { throw new NotImplementedException(); }
+		}
+
+		public double VoltageBattery {
+			get { throw new NotImplementedException(); }
+		}
+
+		public double Temperature {
+			get { throw new NotImplementedException(); }
+		}
+
+		public TemperatureUnit TemperatureUnit {
+			get { throw new NotImplementedException(); }
+		}
+
+		public bool UsingDaqTemp {
+			get { throw new NotImplementedException(); }
+		}
+
+		public void UseDaqTemp(bool useDaqTemp) {
+			throw new NotImplementedException();
+		}
+
+		public bool ReconnectMedia() {
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -21,7 +21,9 @@
 //
 // ================================================================================
 
+using System;
 using System.Collections.Generic;
+using Atmo.Units;
 
 namespace Atmo {
 
@@ -36,6 +38,36 @@ namespace Atmo {
 		/// <param name="i">The index of the sensor to access.</param>
 		/// <returns>A sensor object (or proxy), or null.</returns>
 		ISensor GetSensor(int i);
+
+		DateTime QueryClock();
+
+		TimeSpan Ping();
+
+		bool SetClock(DateTime time);
+
+		void SetNetworkSize(int size);
+
+		bool IsConnected { get; }
+
+		bool SetSensorId(int currentId, int desiredId);
+
+		void Pause();
+
+		void Resume();
+
+		double VoltageUsb { get; }
+
+		double VoltageBattery { get; }
+
+		double Temperature { get; }
+
+		TemperatureUnit TemperatureUnit { get; }
+
+		bool UsingDaqTemp { get; }
+
+		void UseDaqTemp(bool useDaqTemp);
+
+		bool ReconnectMedia();
 
 	}
 }

@@ -41,6 +41,12 @@ namespace Atmo.Data {
 		private int _chunkRecordCounter;
 		private PackedReading _current;
 
+		public DaqDataFileReader(FileInfo fileInfo)
+			: this(fileInfo.FullName) { }
+
+		public DaqDataFileReader(string filePath)
+			: this(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), true) { }
+
 		/// <summary>
 		/// Constructs a new DAQ file reader using the given <paramref name="stream"/>.
 		/// </summary>

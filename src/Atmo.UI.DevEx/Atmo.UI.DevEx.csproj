@@ -43,6 +43,7 @@
     <Reference Include="DevExpress.XtraEditors.v10.1, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -67,6 +68,12 @@
     <Compile Include="Controls\HistoricalGraphBreakdown.Designer.cs">
       <DependentUpon>HistoricalGraphBreakdown.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ImportAnemMap.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ImportAnemMap.designer.cs">
+      <DependentUpon>ImportAnemMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LiveAtmosphericGraph.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -90,6 +97,12 @@
     </Compile>
     <Compile Include="FindSensorsForm.Designer.cs">
       <DependentUpon>FindSensorsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImportDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImportDataForm.designer.cs">
+      <DependentUpon>ImportDataForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -123,11 +136,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\ImportAnemMap.resx">
+      <DependentUpon>ImportAnemMap.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\LiveAtmosphericGraph.resx">
       <DependentUpon>LiveAtmosphericGraph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FindSensorsForm.resx">
       <DependentUpon>FindSensorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImportDataForm.resx">
+      <DependentUpon>ImportDataForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -138,6 +157,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ClearStorage.db" />
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
     <None Include="Properties\DataSources\Atmo.TimeStampedValue.datasource" />
   </ItemGroup>

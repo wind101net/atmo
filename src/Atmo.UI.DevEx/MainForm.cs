@@ -36,6 +36,8 @@ namespace Atmo.UI.DevEx {
 		private IDaqConnection _deviceConnection = null;
 		private MemoryDataStore _memoryDataStore = null;
 		private SensorViewPanelController _sensorViewPanelControler = null;
+		private System.Data.SQLite.SQLiteConnection _dbConnection = null;
+		private IDataStore _dbStore = null;
 
 		private ProgramContext AppContext { get; set; }
 
@@ -55,6 +57,11 @@ namespace Atmo.UI.DevEx {
 			TemperatureUnit = TemperatureUnit.Fahrenheit;
 
 			_deviceConnection = new Demo.DemoDaqConnection();
+
+			_dbConnection = new System.Data.SQLite.SQLiteConnection(
+				@"data source=ClearStorage.db;page size=4096;cache size=4000;journal mode=Off"
+			);
+			_dbStore = new DbDataStore(_dbConnection);
 
 			_memoryDataStore = new MemoryDataStore();
 
@@ -174,6 +181,21 @@ namespace Atmo.UI.DevEx {
 		private void FindSensors() {
 			var findSensorForm = new FindSensorsForm();
 			findSensorForm.ShowDialog(this);
+		}
+
+		private void barButtonItemImport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			DownloadData();
+		}
+
+		private void simpleButtonDownloadData_Click(object sender, EventArgs e) {
+			DownloadData();
+		}
+
+		private void DownloadData() {
+			ImportDataForm importForm = new ImportDataForm(_dbStore, _deviceConnection);
+			importForm.ShowDialog(this);
+
+			//ReloadHistoric();
 		}
 
 	}

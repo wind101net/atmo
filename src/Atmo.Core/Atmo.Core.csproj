@@ -52,6 +52,7 @@
     <Compile Include="Data\PersistentState.cs" />
     <Compile Include="Demo\DemoDaqConnection.cs" />
     <Compile Include="Range.cs" />
+    <Compile Include="SensorInfo.cs" />
     <Compile Include="Stats\IAggregateCalculator.cs" />
     <Compile Include="Stats\IReadingsSummary.cs" />
     <Compile Include="Stats\PackedRadingsSummary.cs" />
