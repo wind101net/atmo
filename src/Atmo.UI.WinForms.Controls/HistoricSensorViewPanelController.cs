@@ -22,31 +22,23 @@
 // ================================================================================
 
 using System.Windows.Forms;
-using Atmo.Units;
 
 namespace Atmo.UI.WinForms.Controls {
-	public class SensorViewPanelController : ViewPanelController<SensorView, ISensor> {
+	public class HistoricSensorViewPanelController : ViewPanelController<HistoricSensorView, ISensorInfo> {
 
-		public SensorViewPanelController(Control container) : base(container) {
-			ConverterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
-		}
+		public HistoricSensorViewPanelController(Control container) : base(container) { }
 
-		public ReadingValuesConverterCache<IReadingValues, ReadingValues> ConverterCache { get; set; }
-
-		protected override SensorView CreateNewView() {
-			return new SensorView() {
-				ConverterCache = ConverterCache,
+		protected override HistoricSensorView CreateNewView() {
+			return new HistoricSensorView() {
 				IsSelected = DefaultSelected
 			};
 		}
 
-		protected override void UpdateView(SensorView view, ISensor model) {
-			view.ConverterCache = ConverterCache;
+		protected override void UpdateView(HistoricSensorView view, ISensorInfo model) {
 			if (view.Dock != DockStyle) {
 				view.Dock = DockStyle;
 			}
 			view.Update(model);
 		}
-
 	}
 }

@@ -24,16 +24,14 @@
 namespace Atmo {
 
 	public interface ISensor : ISensorInfo {
-		/// <summary>
-		/// The sensor name or identifier.
-		/// </summary>
-		string Name { get; }
 
 		/// <summary>
 		/// Gets the current reading of the sensor.
 		/// </summary>
 		/// <returns>The current reading or null.</returns>
 		IReading GetCurrentReading();
+
+		bool IsValid { get; }
 
 	}
 }

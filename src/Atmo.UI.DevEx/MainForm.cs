@@ -36,8 +36,10 @@ namespace Atmo.UI.DevEx {
 		private IDaqConnection _deviceConnection = null;
 		private MemoryDataStore _memoryDataStore = null;
 		private SensorViewPanelController _sensorViewPanelControler = null;
+		private HistoricSensorViewPanelController _historicSensorViewPanelController = null;
 		private System.Data.SQLite.SQLiteConnection _dbConnection = null;
 		private IDataStore _dbStore = null;
+		private bool _updateHistorical = false;
 
 		private ProgramContext AppContext { get; set; }
 
@@ -68,7 +70,11 @@ namespace Atmo.UI.DevEx {
 			_sensorViewPanelControler = new SensorViewPanelController(panelSensors) {
 				DefaultSelected = true
 			};
+			_historicSensorViewPanelController = new HistoricSensorViewPanelController(panelSensors) {
+				DefaultSelected = true
+			};
 
+			ReloadHistoric();
 		}
 
 		public TemperatureUnit TemperatureUnit { get; set; }
@@ -82,7 +88,7 @@ namespace Atmo.UI.DevEx {
 			
 			// current live state
 			var now = DateTime.Now;
-			var sensors = _deviceConnection.ToList();
+			var sensors = _deviceConnection.Where(s => s.IsValid).ToList();
 
 			// get readings
 			var readings = new Dictionary<ISensor, IReading>();
@@ -94,7 +100,7 @@ namespace Atmo.UI.DevEx {
 			}
 
 			// save to memory
-			foreach(KeyValuePair<ISensor, IReading> reading in readings) {
+			foreach(var reading in readings) {
 				if(!_memoryDataStore.GetAllSensorInfos().Any(si => si.Name.Equals(reading.Key.Name))) {
 					_memoryDataStore.AddSensor(reading.Key);
 				}
@@ -105,7 +111,7 @@ namespace Atmo.UI.DevEx {
 			_sensorViewPanelControler.UpdateView(sensors);
 
 			// the current sensor views
-			var sensorViews = _sensorViewPanelControler.SensorViews.ToList();
+			var sensorViews = _sensorViewPanelControler.Views.ToList();
 
 			// determine which sensors are enabled
 			var enabledSensors = new List<ISensor>();
@@ -179,7 +185,7 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void FindSensors() {
-			var findSensorForm = new FindSensorsForm();
+			var findSensorForm = new FindSensorsDialog(_deviceConnection);
 			findSensorForm.ShowDialog(this);
 		}
 
@@ -194,8 +200,17 @@ namespace Atmo.UI.DevEx {
 		private void DownloadData() {
 			var importForm = new ImportDataForm(_dbStore, _deviceConnection);
 			importForm.ShowDialog(this);
+			ReloadHistoric();
+		}
 
-			//ReloadHistoric();
+		public void ReloadHistoric() {
+			var historicSensors = _dbStore.GetAllSensorInfos();
+			_historicSensorViewPanelController.UpdateView(historicSensors);
+			TriggerHistoricalUpdate();
+		}
+
+		private void TriggerHistoricalUpdate() {
+			_updateHistorical = true;
 		}
 
 	}

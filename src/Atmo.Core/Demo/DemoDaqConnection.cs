@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Atmo.Stats;
 using Atmo.Test;
 using Atmo.Units;
 
@@ -85,8 +86,8 @@ namespace Atmo.Demo {
 
 
 				//double windDirectionDeg = Vector2D.RadiansToDegrees(windDirectionRad);
-				Vector2D windDirectionVec = new Vector2D((Math.Cos(windDirectionRad) * 2.0), (Math.Sin(windDirectionRad) * 2.0));
-				double windDirectionDeg = windDirectionVec.GetNorthRelativeClockwiseAngularDegrees();
+				//Vector2D windDirectionVec = new Vector2D((Math.Cos(windDirectionRad) * 2.0), (Math.Sin(windDirectionRad) * 2.0));
+				//double windDirectionDeg = windDirectionVec.GetNorthRelativeClockwiseAngularDegrees();
 
 
 				double averageWindSpeed = 9;
@@ -192,18 +193,8 @@ namespace Atmo.Demo {
 
 				double windSpeed = rand.NextDouble();
 				windSpeed = (windSpeed > 0.5) ? 0 : 4.0 * averageWindSpeed * windSpeed * windSpeed;
-				if (null != lastReading && lastReading.IsValid) {
-					pressure = (pressure + pressure + lastReading.Pressure) / 3.0;
-					double oldWindDirRad = (lastReading.WindDirection / 180.0) * Math.PI;
-					oldWindDirRad = -oldWindDirRad;
-					oldWindDirRad += Math.PI / 2.0;
 
-					var oldWindDirVec = new Vector2D(windDirectionVec.X + (Math.Cos(oldWindDirRad) * 10.0), windDirectionVec.Y + (Math.Sin(oldWindDirRad) * 10.0));
-					windDirectionDeg = oldWindDirVec.GetNorthRelativeClockwiseAngularDegrees();
-					windSpeed = (windSpeed + windSpeed + lastReading.WindSpeed * 3.0) / 5.0;
-					temp = (temp + temp + (lastReading.Temperature * 20.0)) / 22.0;
-					humidity = (humidity + humidity + lastReading.Humidity * 80.0) / 82.0;
-				}
+				double windDirectionDeg = (((rand.NextDouble()*360.0)*4) + 90)/5.0; // 4 parts random, 1 part 90 degrees
 
 				var newValues = new ReadingValues(
 					temp,
@@ -212,6 +203,26 @@ namespace Atmo.Demo {
 					windSpeed,
 					windDirectionDeg
 				);
+
+				if (null != lastReading && lastReading.IsValid) {
+					var readings = new[] {lastReading, lastReading, lastReading, newValues};
+
+					var meanCalc = new ReadingValuesMeanCalculator<IReadingValues>();
+
+
+					/*
+					pressure = (pressure + pressure + lastReading.Pressure) / 3.0;
+					double oldWindDirRad = (lastReading.WindDirection / 180.0) * Math.PI;
+					oldWindDirRad = -oldWindDirRad;
+					oldWindDirRad += Math.PI / 2.0;
+					var oldWindDirVec = new Vector2D(windDirectionVec.X + (Math.Cos(oldWindDirRad) * 10.0), windDirectionVec.Y + (Math.Sin(oldWindDirRad) * 10.0));
+					windDirectionDeg = oldWindDirVec.GetNorthRelativeClockwiseAngularDegrees();
+					windSpeed = (windSpeed + windSpeed + lastReading.WindSpeed * 3.0) / 5.0;
+					temp = (temp + temp + (lastReading.Temperature * 20.0)) / 22.0;
+					humidity = (humidity + humidity + lastReading.Humidity * 80.0) / 82.0;
+					*/
+				}
+
 				var stamp = now.Date.Add(new TimeSpan(now.Hour, now.Minute, now.Second));
 				return new PackedReading(
 					stamp,
@@ -223,7 +234,7 @@ namespace Atmo.Demo {
 		public DemoDaqConnection() {
             Add(new DemoSensor("A", this, true));
             Add(new DemoSensor("B", this, true));
-            Add(new DemoSensor("C", this, false));
+            Add(new DemoSensor("C", this, true));
             Add(new DemoSensor("D", this, false));
 			Paused = false;
 		}

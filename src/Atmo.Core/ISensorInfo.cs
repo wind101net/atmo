@@ -26,6 +26,9 @@ using Atmo.Units;
 namespace Atmo {
 	public interface ISensorInfo {
 
+		/// <summary>
+		/// The sensor name or identifier.
+		/// </summary>
 		string Name { get; }
 
 		SpeedUnit SpeedUnit { get; }

@@ -21,31 +21,49 @@
 //
 // ================================================================================
 
+using System.Drawing;
 using System.Windows.Forms;
-using Atmo.Units;
 
 namespace Atmo.UI.WinForms.Controls {
-	public class SensorViewPanelController : ViewPanelController<SensorView, ISensor> {
+	public partial class HistoricSensorView : UserControl {
 
-		public SensorViewPanelController(Control container) : base(container) {
-			ConverterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
+		private bool _selected;
+
+		public HistoricSensorView() {
+			_selected = false;
+
+			InitializeComponent();
+
+			SetBackgroundColor();
+
 		}
 
-		public ReadingValuesConverterCache<IReadingValues, ReadingValues> ConverterCache { get; set; }
-
-		protected override SensorView CreateNewView() {
-			return new SensorView() {
-				ConverterCache = ConverterCache,
-				IsSelected = DefaultSelected
-			};
+		public bool IsSelected {
+			get { return _selected; }
+			set { _selected = value; SetBackgroundColor(); }
 		}
 
-		protected override void UpdateView(SensorView view, ISensor model) {
-			view.ConverterCache = ConverterCache;
-			if (view.Dock != DockStyle) {
-				view.Dock = DockStyle;
-			}
-			view.Update(model);
+		public ISensorInfo SensorInfo { get; set; }
+
+		private void SetBackgroundColor() {
+			SetBackgroundColor(IsSelected);
+		}
+
+		private void SetBackgroundColor(bool selected) {
+			BackColor = (selected) ? SystemColors.Highlight : Color.Transparent;
+			ForeColor = (selected) ? SystemColors.ControlText : SystemColors.InactiveCaptionText;
+		}
+
+		public void Update(ISensorInfo sensorInfo) {
+			SetValues(sensorInfo);
+		}
+
+		public void SetValues(ISensorInfo sensorInfo) {
+			labelSensorName.Text = sensorInfo == null ? "Sensor" : sensorInfo.Name;
+		}
+
+		private void labelSensorName_Click(object sender, System.EventArgs e) {
+			IsSelected = !IsSelected;
 		}
 
 	}

@@ -21,32 +21,10 @@
 //
 // ================================================================================
 
-using System.Windows.Forms;
-using Atmo.Units;
-
-namespace Atmo.UI.WinForms.Controls {
-	public class SensorViewPanelController : ViewPanelController<SensorView, ISensor> {
-
-		public SensorViewPanelController(Control container) : base(container) {
-			ConverterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
-		}
-
-		public ReadingValuesConverterCache<IReadingValues, ReadingValues> ConverterCache { get; set; }
-
-		protected override SensorView CreateNewView() {
-			return new SensorView() {
-				ConverterCache = ConverterCache,
-				IsSelected = DefaultSelected
-			};
-		}
-
-		protected override void UpdateView(SensorView view, ISensor model) {
-			view.ConverterCache = ConverterCache;
-			if (view.Dock != DockStyle) {
-				view.Dock = DockStyle;
-			}
-			view.Update(model);
-		}
-
+namespace Atmo {
+	public enum SensorStatus {
+		Unknown,
+		Connected,
+		Disconnected
 	}
 }

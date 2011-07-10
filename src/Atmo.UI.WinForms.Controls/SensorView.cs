@@ -58,11 +58,6 @@ namespace Atmo.UI.WinForms.Controls {
 		private void SetBackgroundColor(bool selected) {
 			BackColor = (selected) ? SystemColors.Highlight : Color.Transparent;
 			ForeColor = (selected) ? SystemColors.ControlText : SystemColors.InactiveCaptionText;
-			//this.sensorNameLabel.ForeColor = this.ForeColor;
-			//this.tableLayoutPanel1.ForeColor = this.ForeColor;
-			//foreach (Control c in this.tableLayoutPanel1.Controls.OfType<Control>()) {
-			//	c.ForeColor = this.ForeColor;
-			//}
 		}
 
 		public void ResetValues() {
@@ -177,6 +172,50 @@ namespace Atmo.UI.WinForms.Controls {
 
 		private void SensorView_MouseClick(object sender, MouseEventArgs e) {
 			IsSelected = !IsSelected;
+		}
+
+		private void labelControl5_Click(object sender, EventArgs e) {
+
+		}
+
+		private void labelControl1_Click(object sender, EventArgs e) {
+
+		}
+
+		private void labelControl2_Click(object sender, EventArgs e) {
+
+		}
+
+		private void labelControl3_Click(object sender, EventArgs e) {
+
+		}
+
+		private void labelControl4_Click(object sender, EventArgs e) {
+
+		}
+
+		private void windSpeedValue_Click(object sender, EventArgs e) {
+
+		}
+
+		private void pressureValue_Click(object sender, EventArgs e) {
+
+		}
+
+		private void humidityValue_Click(object sender, EventArgs e) {
+
+		}
+
+		private void tempValue_Click(object sender, EventArgs e) {
+
+		}
+
+		private void windDirValue_Click(object sender, EventArgs e) {
+
+		}
+
+		private void sensorNameLabel_Click(object sender, EventArgs e) {
+
 		}
 	}
 }
