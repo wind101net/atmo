@@ -1013,12 +1013,12 @@ namespace Atmo.Data {
 				DateTime dayAlignedMinStamp = UnitUtility.StripToUnit(minStamp, TimeUnit.Day);
 				DateTime dayAlignedMaxStamp = UnitUtility.StripToUnit(maxStamp, TimeUnit.Day).AddDays(1.0);
 
-				List<SensorReadingsSummary> hourSummaries = new List<SensorReadingsSummary>(
+				List<ReadingsSummary> hourSummaries = new List<ReadingsSummary>(
 					StatsUtil.Summarize<PackedReading>(
 						GetReadings(sensor, dayAlignedMinStamp, dayAlignedMaxStamp.Subtract(dayAlignedMinStamp)), TimeUnit.Hour)
 					);
 
-				List<SensorReadingsSummary> updates = new List<SensorReadingsSummary>();
+				List<ReadingsSummary> updates = new List<ReadingsSummary>();
 
 				pushRecordCommand.CommandType = CommandType.Text;
 				pushRecordCommand.CommandText = "SELECT stamp FROM HourRecord"
@@ -1114,7 +1114,7 @@ namespace Atmo.Data {
 
 					// todo: try to get this into a single query as above they are.
 
-					foreach (SensorReadingsSummary summary in hourSummaries) {
+					foreach (ReadingsSummary summary in hourSummaries) {
 						if (existingHourStamps.Contains(summary.BeginStamp)) {
 							updates.Add(summary);
 						}
@@ -1150,7 +1150,7 @@ namespace Atmo.Data {
 						                                +
 						                                " minValues=@minValues,maxValues=@maxValues,meanValues=@meanValues,medianValues=@medianValues,recordCount=@recordCount"
 						                                + " WHERE sensorId=@sensorId AND stamp=@stamp";
-						foreach (SensorReadingsSummary summary in updates) {
+						foreach (ReadingsSummary summary in updates) {
 							stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
 							minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
 							maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
@@ -1182,11 +1182,11 @@ namespace Atmo.Data {
 
 
 
-				List<SensorReadingsSummary> daySummaries = new List<SensorReadingsSummary>();
+				List<ReadingsSummary> daySummaries = new List<ReadingsSummary>();
 				{
-					List<List<SensorReadingsSummary>> dailyHourSummaries = new List<List<SensorReadingsSummary>>();
-					List<SensorReadingsSummary> currentHourSummaries = new List<SensorReadingsSummary>();
-					foreach (SensorReadingsSummary hourSummary in hourSummaries) {
+					List<List<ReadingsSummary>> dailyHourSummaries = new List<List<ReadingsSummary>>();
+					List<ReadingsSummary> currentHourSummaries = new List<ReadingsSummary>();
+					foreach (ReadingsSummary hourSummary in hourSummaries) {
 						if (
 							currentHourSummaries.Count == 0
 							||
@@ -1196,14 +1196,14 @@ namespace Atmo.Data {
 						}
 						else {
 							dailyHourSummaries.Add(currentHourSummaries);
-							currentHourSummaries = new List<SensorReadingsSummary>();
+							currentHourSummaries = new List<ReadingsSummary>();
 						}
 					}
 					if (currentHourSummaries.Count > 0) {
 						dailyHourSummaries.Add(currentHourSummaries);
 					}
-					foreach (List<SensorReadingsSummary> hourlyForCondensing in dailyHourSummaries) {
-						SensorReadingsSummary summary = StatsUtil.Combine(hourlyForCondensing);
+					foreach (List<ReadingsSummary> hourlyForCondensing in dailyHourSummaries) {
+						ReadingsSummary summary = StatsUtil.Combine(hourlyForCondensing);
 						summary.BeginStamp = summary.BeginStamp.Date;
 						summary.EndStamp = summary.BeginStamp.AddDays(1).AddTicks(-1);
 						daySummaries.Add(summary);
@@ -1227,7 +1227,7 @@ namespace Atmo.Data {
 					pushRecordCommand.CommandText =
 						"INSERT INTO DayRecord(sensorId,stamp,minValues,maxValues,meanValues,medianValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount) VALUES " +
 						"(@sensorId,@stamp,@minValues,@maxValues,@meanValues,@medianValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)";
-					foreach (SensorReadingsSummary summary in daySummaries) {
+					foreach (ReadingsSummary summary in daySummaries) {
 						if (existingDayStamps.Contains(summary.BeginStamp)) {
 							updates.Add(summary);
 						}
@@ -1263,7 +1263,7 @@ namespace Atmo.Data {
 						                                +
 						                                " minValues=@minValues,maxValues=@maxValues,meanValues=@meanValues,medianValues=@medianValues,recordCount=@recordCount"
 						                                + " WHERE sensorId=@sensorId AND stamp=@stamp";
-						foreach (SensorReadingsSummary summary in updates) {
+						foreach (ReadingsSummary summary in updates) {
 							stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
 							minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
 							maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);

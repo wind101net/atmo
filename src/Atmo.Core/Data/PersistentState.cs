@@ -56,26 +56,41 @@ namespace Atmo.Data {
 		}
 
 		public static PersistentState ReadStream(Stream stream) {
-			return Serializer.Deserialize(stream) as PersistentState;
+			PersistentState state = null;
+			try {
+				state = Serializer.Deserialize(stream) as PersistentState;
+				state.IsDirty = false;
+			}catch {
+				state = null;
+			}
+			return state;
 		}
 
-		public static void SaveFile(string filePath, PersistentState state) {
+		public static bool SaveFile(string filePath, PersistentState state) {
 			using(var fileStream = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None)) {
-				SaveStream(fileStream, state);
+				return SaveStream(fileStream, state);
 			}
 		}
 
-		public static void SaveStream(Stream stream, PersistentState state) {
-			Serializer.Serialize(stream, state);
+		public static bool SaveStream(Stream stream, PersistentState state) {
+			try {
+				Serializer.Serialize(stream, state);
+				return true;
+			}catch {
+				return false;
+			}
 		}
 
 		public PersistentState() {
+			IsDirty = true;
 			MinRangeSizes = new ReadingValues(10, 5, 0.20, 0, 0);
 			MinRangeSizeDewPoint = 10;
 			MinRangeSizeAirDensity = 0.05;
 			HeightAboveSeaLevel = Double.NaN;
 			UserGraphAttribute = default(UserCalculatedAttribute);
 		}
+
+		public bool IsDirty { get; set; }
 
 		[XmlElement("MinRangeSizes")]
 		public ReadingValues MinRangeSizes { get; set; }

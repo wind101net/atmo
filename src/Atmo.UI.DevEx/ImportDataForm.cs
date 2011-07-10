@@ -39,10 +39,12 @@ namespace Atmo.UI.DevEx {
         private IDataStore _dataStore;
 		private IDaqConnection _device;
 		private Dictionary<int, List<DaqDataFileInfo>> _fileInfosLookup;
+		public bool AutoImport { get; set; }
 
 
 		public ImportDataForm(IDataStore dataStore, IDaqConnection device)
             : base() {
+			AutoImport = false;
             _dataStore = dataStore;
             _device = device;
             _fileInfosLookup = null;

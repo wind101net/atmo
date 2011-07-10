@@ -151,6 +151,9 @@
     <EmbeddedResource Include="Controls\SensorSetupLine.resx">
       <DependentUpon>SensorSetupLine.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WindResourceGraph.resx">
+      <DependentUpon>WindResourceGraph.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ImportDataForm.resx">
       <DependentUpon>ImportDataForm.cs</DependentUpon>
     </EmbeddedResource>

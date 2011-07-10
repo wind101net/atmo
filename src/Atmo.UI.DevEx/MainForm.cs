@@ -162,13 +162,6 @@ namespace Atmo.UI.DevEx {
 				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
 			}
 
-
-			/*foreach (SensorDeviceView sensorDeviceView in sensorViewContainer.Controls.OfType<SensorDeviceView>()) {
-				sensorDeviceView.UpdateSensors(readings);
-				sensorDeviceView.SetPreferedUnits(desiredTempUnit, desiredSpeedUnit, desiredPressureUnit);
-			}*/
-
-
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -190,15 +183,17 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void barButtonItemImport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
-			DownloadData();
+			DownloadDataDialog();
 		}
 
 		private void simpleButtonDownloadData_Click(object sender, EventArgs e) {
-			DownloadData();
+			DownloadDataDialog(true);
 		}
 
-		private void DownloadData() {
-			var importForm = new ImportDataForm(_dbStore, _deviceConnection);
+		private void DownloadDataDialog(bool auto = false) {
+			var importForm = new ImportDataForm(_dbStore, _deviceConnection) {
+				AutoImport = true
+			};
 			importForm.ShowDialog(this);
 			ReloadHistoric();
 		}

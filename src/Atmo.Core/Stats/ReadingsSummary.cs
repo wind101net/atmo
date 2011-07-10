@@ -25,9 +25,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Atmo.Stats {
-	public class SensorReadingsSummary : IReadingsSummary, IReading {
-
-		#region Static Methods
+	public class ReadingsSummary : IReadingsSummary, IReading {
 
 		private static Dictionary<double, int> RoundAndCombine(Dictionary<double, int> values) {
 			Dictionary<double, int> result = new Dictionary<double, int>(values.Count);
@@ -42,10 +40,6 @@ namespace Atmo.Stats {
 			return result;
 		}
 
-		#endregion
-
-		#region Fields
-
 		public DateTime BeginStamp;
 		public DateTime EndStamp;
 		public ReadingValues Min;
@@ -59,11 +53,19 @@ namespace Atmo.Stats {
 		public Dictionary<double, int> WindSpeedCounts;
 		public Dictionary<double, int> WindDirectionCounts;
 
-		#endregion
+		public ReadingsSummary(IReadingsSummary summary)
+			: this(
+			summary.BeginStamp, summary.EndStamp,
+			new ReadingValues(summary.Min), new ReadingValues(summary.Max), new ReadingValues(summary.Mean), new ReadingValues(summary.Median), 
+			summary.Count,
+			summary.GetTemperatureCounts(),
+			summary.GetPressureCounts(),
+			summary.GetHumidityCounts(),
+			summary.GetWindSpeedCounts(),
+			summary.GetWindDirectionCounts())
+		{ }
 
-		#region Constructors
-
-		public SensorReadingsSummary(
+		public ReadingsSummary(
 			DateTime beginStamp,
 			DateTime endStamp,
 			ReadingValues min,
@@ -91,78 +93,61 @@ namespace Atmo.Stats {
 			WindDirectionCounts = RoundAndCombine(dirCounts);
 		}
 
-		#endregion
-
-		#region ISensorReadingsSummary Members
-
 		DateTime IReadingsSummary.BeginStamp {
-			get { return this.BeginStamp; }
+			get { return BeginStamp; }
 		}
 
 		DateTime IReadingsSummary.EndStamp {
-			get { return this.EndStamp; }
+			get { return EndStamp; }
 		}
 
 		public TimeSpan TimeSpan {
-			get { return this.EndStamp.AddTicks(1).Subtract(this.BeginStamp); }
+			get { return EndStamp.AddTicks(1).Subtract(BeginStamp); }
 		}
 
 		IReadingValues IReadingsSummary.Min {
-			get { return this.Min; }
+			get { return Min; }
 		}
 
 		IReadingValues IReadingsSummary.Max {
-			get { return this.Max; }
+			get { return Max; }
 		}
 
 		IReadingValues IReadingsSummary.Mean {
-			get { return this.Mean; }
+			get { return Mean; }
 		}
 
 		IReadingValues IReadingsSummary.Median {
-			get { return this.Median; }
+			get { return Median; }
 		}
 
 		int IReadingsSummary.Count {
-			get { return this.Count; }
+			get { return Count; }
 		}
-
-		#endregion
-
-		#region ISensorReading Members
 
 		public DateTime TimeStamp {
-			get { return this.BeginStamp; }
+			get { return BeginStamp; }
 		}
 
-		#endregion
-
-		#region ISensorReadingValues Members
-
 		public double Temperature {
-			get { return this.Mean.Temperature; }
+			get { return Mean.Temperature; }
 		}
 
 		public double Pressure {
-			get { return this.Mean.Pressure; }
+			get { return Mean.Pressure; }
 		}
 
 		public double Humidity {
-			get { return this.Mean.Humidity; }
+			get { return Mean.Humidity; }
 		}
 
 		public double WindSpeed {
-			get { return this.Mean.WindSpeed; }
+			get { return Mean.WindSpeed; }
 		}
 
 		public double WindDirection {
-			get { return this.Mean.WindDirection; }
+			get { return Mean.WindDirection; }
 		}
-
-		#endregion
-
-		#region ISensorReadingsSummary Members
-
 
 		public int GetTemperatureCount(double value) {
 			int count;
@@ -209,11 +194,6 @@ namespace Atmo.Stats {
 			);
 		}
 
-		#endregion
-
-		#region ISensorReadingsSummary Members
-
-
 		public Dictionary<double, int> GetTemperatureCounts() {
 			return TemperatureCounts;
 		}
@@ -234,19 +214,9 @@ namespace Atmo.Stats {
 			return WindDirectionCounts;
 		}
 
-		#endregion
-
-		#region ISensorReadingValues Members
-
-
 		public bool IsValid {
 			get { return null != Mean && Count > 0; }
 		}
-
-		#endregion
-
-		#region ISensorReadingValues Members
-
 
 		public bool IsTemperatureValid {
 			get { return null != Mean && Mean.IsTemperatureValid; }
@@ -267,7 +237,5 @@ namespace Atmo.Stats {
 		public bool IsWindDirectionValid {
 			get { return null != Mean && Mean.IsWindDirectionValid; }
 		}
-
-		#endregion
 	}
 }

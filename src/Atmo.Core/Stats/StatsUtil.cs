@@ -38,7 +38,7 @@ namespace Atmo.Stats {
 		/// <remarks>
 		/// Result is ordered by stamp in ascending order.
 		/// </remarks>
-		public static IEnumerable<SensorReadingsSummary> Summarize<T>(IEnumerable<T> readings, TimeUnit unit) where T : IReading {
+		public static IEnumerable<ReadingsSummary> Summarize<T>(IEnumerable<T> readings, TimeUnit unit) where T : IReading {
 			List<T> collectedReadings = new List<T>();
 			IEnumerator<T> enumerator = readings.OrderBy(r => r.TimeStamp).GetEnumerator();
 			if (enumerator.MoveNext()) {
@@ -63,7 +63,7 @@ namespace Atmo.Stats {
 			}
 		}
 
-		private static SensorReadingsSummary FormSummary<T>(DateTime dateRangeLow, DateTime dateRangeHigh, List<T> readings) where T : IReadingValues {
+		private static ReadingsSummary FormSummary<T>(DateTime dateRangeLow, DateTime dateRangeHigh, List<T> readings) where T : IReadingValues {
 			List<double> tempValues = new List<double>(readings.Count);
 			List<double> presValues = new List<double>(readings.Count);
 			List<double> humValues = new List<double>(readings.Count);
@@ -152,7 +152,7 @@ namespace Atmo.Stats {
 				speedValues.Count == 0 ? Double.NaN : speedValues[speedValues.Count / 2],
 				dirValues.Count == 0 ? Double.NaN : dirValues[dirValues.Count / 2]
 			);
-			return new SensorReadingsSummary(
+			return new ReadingsSummary(
 				dateRangeLow,
 				dateRangeHigh.Subtract(new TimeSpan(1)),
 				minValues,
@@ -167,9 +167,9 @@ namespace Atmo.Stats {
 			);
 		}
 
-		public static SensorReadingsSummary Combine(List<SensorReadingsSummary> readings) {
+		public static ReadingsSummary Combine(List<ReadingsSummary> readings) {
 			int totalCount = readings.Sum(r => r.Count);
-			SensorReadingsSummary summary = new SensorReadingsSummary(
+			ReadingsSummary summary = new ReadingsSummary(
 				readings.Min(r => r.BeginStamp),
 				readings.Max(r => r.EndStamp),
 				new ReadingValues(Double.MaxValue, Double.MaxValue, Double.MaxValue, double.MaxValue, double.MaxValue),
@@ -183,7 +183,7 @@ namespace Atmo.Stats {
 				new Dictionary<double, int>(),
 				new Dictionary<double, int>()
 			);
-			foreach (SensorReadingsSummary reading in readings) {
+			foreach (ReadingsSummary reading in readings) {
 				if (summary.Min.Temperature > reading.Min.Temperature) {
 					summary.Min.Temperature = reading.Min.Temperature;
 				}

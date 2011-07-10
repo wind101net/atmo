@@ -164,7 +164,7 @@ namespace Atmo.Units {
 			return ConvertUnits(readings, sensorInfo.TemperatureUnit, desiredTempUnit, sensorInfo.SpeedUnit, desiredSpeedUnit, sensorInfo.PressureUnit, desiredPressUnit);
 		}
 
-		public static IEnumerable<SensorReadingsSummary> ConvertUnits(
+		public static IEnumerable<ReadingsSummary> ConvertUnits(
 			IEnumerable<ISensorReadingsSummary> readings,
 			TemperatureUnit desiredTempUnit,
 			SpeedUnit desiredSpeedUnit,
@@ -256,7 +256,7 @@ namespace Atmo.Units {
 			public readonly Func<double, double> ConvertSpeedValue;
 			public readonly Func<double, double> ConvertPressValue;
 			public readonly Func<ISensorReadingValues, SensorReadingValues> ConvertSensorReadingValue;
-			public readonly Func<ISensorReadingsSummary, SensorReadingsSummary> ConvertSensorReadingsSummary;
+			public readonly Func<ISensorReadingsSummary, ReadingsSummary> ConvertSensorReadingsSummary;
 
 			public readonly TemperatureUnit dataTempUnit;
 			public readonly TemperatureUnit desiredTempUnit;
@@ -295,7 +295,7 @@ namespace Atmo.Units {
 
 				ParameterExpression readingSummaryIn = ParameterExpression.Parameter(typeof(ISensorReadingsSummary), "readingSummary");
 
-				ConvertSensorReadingsSummary = Expression.Lambda<Func<ISensorReadingsSummary, SensorReadingsSummary>>(
+				ConvertSensorReadingsSummary = Expression.Lambda<Func<ISensorReadingsSummary, ReadingsSummary>>(
 					CreateConvertOneSummary(readingSummaryIn), readingSummaryIn
 				).Compile();
 
@@ -377,7 +377,7 @@ namespace Atmo.Units {
 			private Expression CreateConvertOneSummary(Expression summaryIn) {
 
 				return Expression.New(
-					typeof(SensorReadingsSummary).GetConstructor(
+					typeof(ReadingsSummary).GetConstructor(
 						Enumerable.Repeat(typeof(DateTime), 2)
 						.Concat(Enumerable.Repeat(typeof(SensorReadingValues), 4))
 						.Concat(new Type[] { typeof(int) })
@@ -467,7 +467,7 @@ namespace Atmo.Units {
 			return newOp;
 		}
 
-		public static Func<ISensorReadingsSummary, SensorReadingsSummary> GetSummaryConvFunc(
+		public static Func<ISensorReadingsSummary, ReadingsSummary> GetSummaryConvFunc(
 			TemperatureUnit dataTempUnit,
 			TemperatureUnit desiredTempUnit,
 			SpeedUnit dataSpeedUnit,
@@ -499,7 +499,7 @@ namespace Atmo.Units {
 			return op.ConvertTempValue;
 		}
 
-		public static IEnumerable<SensorReadingsSummary> ConvertUnits(
+		public static IEnumerable<ReadingsSummary> ConvertUnits(
 			IEnumerable<ISensorReadingsSummary> readings,
 			TemperatureUnit dataTempUnit,
 			TemperatureUnit desiredTempUnit,
