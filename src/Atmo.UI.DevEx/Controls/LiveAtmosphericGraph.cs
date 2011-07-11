@@ -83,6 +83,19 @@ namespace Atmo.UI.DevEx.Controls {
 			var userValues = GetUserValues(items);
 			var series = chartControl.Series.OfType<Series>().FirstOrDefault(s => s.Name == "User");
 			series.DataSource = userValues;
+
+			var diagram = (chartControl.Diagram as XYDiagram);
+			var titleText = "User";
+			switch (State.UserGraphAttribute) {
+				case PersistentState.UserCalculatedAttribute.AirDensity:
+					titleText = "Air Density";
+					break;
+				case PersistentState.UserCalculatedAttribute.DewPoint:
+					titleText = "Dew Point";
+					break;
+			}
+			var axis = diagram.SecondaryAxesY.OfType<Axis>().FirstOrDefault(a => a.Name == "User");
+			axis.Title.Text = titleText;
 		}
 
 		private List<TimeStampedValue> GetUserValues(List<Reading> items) {
