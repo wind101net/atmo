@@ -171,6 +171,8 @@
   <ItemGroup>
     <Content Include="ClearStorage.db" />
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
+    <None Include="Properties\DataSources\Atmo.Stats.WindDirectionEnergy.datasource" />
+    <None Include="Properties\DataSources\Atmo.Stats.WindSpeedFrequency.datasource" />
     <None Include="Properties\DataSources\Atmo.TimeStampedValue.datasource" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
