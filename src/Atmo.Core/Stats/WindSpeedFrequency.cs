@@ -22,13 +22,15 @@
 // ================================================================================
 
 namespace Atmo.Stats {
-	public struct WindSpeedFrequency {
+	public class WindSpeedFrequency {
 
 		public readonly double Speed;
-		public readonly int Frequency;
-		public readonly double Weibull;
+		public int Frequency;
+		public double Weibull;
 
-		public WindSpeedFrequency(double speed) : this(speed, 0, 0) { }
+		public WindSpeedFrequency(double speed) : this(speed, 0) { }
+
+		public WindSpeedFrequency(double speed, int frequency) : this(speed, frequency, 0) { }
 
 		public WindSpeedFrequency(double speed, int frequency, double weibull) {
 			Speed = speed;

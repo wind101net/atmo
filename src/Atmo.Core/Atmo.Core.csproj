@@ -78,6 +78,7 @@
     <Compile Include="Stats\ReadingsSummary.cs" />
     <Compile Include="Stats\ReadingValuesMeanCalculator.cs" />
     <Compile Include="Stats\StatsUtil.cs" />
+    <Compile Include="Stats\WindDataSummaryCalculator.cs" />
     <Compile Include="Stats\WindDirectionEnergy.cs" />
     <Compile Include="Stats\WindSpeedFrequency.cs" />
     <Compile Include="TimeRange.cs" />

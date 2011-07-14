@@ -22,11 +22,11 @@
 // ================================================================================
 
 namespace Atmo.Stats {
-	public struct WindDirectionEnergy {
+	public class WindDirectionEnergy {
 
 		public readonly double Direction;
-		public readonly double Energy;
-		public readonly double Frequency;
+		public double Energy;
+		public double Frequency;
 
 		public WindDirectionEnergy(double direction) : this(direction, 0, 0) { }
 
