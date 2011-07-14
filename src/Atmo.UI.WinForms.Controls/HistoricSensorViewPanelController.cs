@@ -40,5 +40,17 @@ namespace Atmo.UI.WinForms.Controls {
 			}
 			view.Update(model);
 		}
+
+		public bool IsSensorSelected(ISensorInfo sensor) {
+			foreach(var view in Views) {
+				if(null == view.SensorInfo) {
+					continue;
+				}
+				if(view.SensorInfo.Name == sensor.Name) {
+					return view.IsSelected;
+				}
+			}
+			return false;
+		}
 	}
 }

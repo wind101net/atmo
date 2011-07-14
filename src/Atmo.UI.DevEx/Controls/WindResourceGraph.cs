@@ -63,7 +63,18 @@ namespace Atmo.UI.DevEx.Controls {
 
 		public void SetDataSource(List<ReadingsSummary> items) {
 			// todo: can this copy be eliminated?
-			var newList = new List<ReadingsSummary>(items);
+			
+
+			var windCalc = new WindDataSummaryCalculator<IReadingsSummary>();
+			// HACK: just do the first one for now!
+			foreach (var item in items) {
+				windCalc.Process(item);
+			}
+
+			chartControlWindDir.DataSource = windCalc.WindDirectionEnergyData;
+			chartControlWindSpeedFreq.DataSource = windCalc.WindSpeedFrequencyData;
+
+
 			//chartControl.DataSource = newList;
 
 			//SetUserData(newList);

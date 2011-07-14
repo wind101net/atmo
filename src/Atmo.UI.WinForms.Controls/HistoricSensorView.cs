@@ -59,6 +59,7 @@ namespace Atmo.UI.WinForms.Controls {
 		}
 
 		public void SetValues(ISensorInfo sensorInfo) {
+			SensorInfo = sensorInfo; 
 			labelSensorName.Text = sensorInfo == null ? "Sensor" : sensorInfo.Name;
 		}
 

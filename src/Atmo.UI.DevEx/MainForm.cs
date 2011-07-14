@@ -162,6 +162,23 @@ namespace Atmo.UI.DevEx {
 				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
 			}
 
+			// TODO: remove this crap and replace with the real thing later
+			// HACK: testing only below here ---------------------------------------------------
+
+
+
+			var historicalSelected = _dbStore.GetAllSensorInfos().Where(si => _historicSensorViewPanelController.IsSensorSelected(si)).ToList();
+			var sensorReadings = historicalSelected.Select(
+				sensor =>
+				_dbStore.GetReadingSummaries(sensor.Name, DateTime.Now, new TimeSpan(-10*365, 0, 0, 0), TimeUnit.Hour)
+			);
+
+
+			// HACK: just do the first one for now!
+			windResourceGraph.SetDataSource(sensorReadings.First());
+
+
+
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {

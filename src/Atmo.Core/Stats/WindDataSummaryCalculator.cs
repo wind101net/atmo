@@ -68,43 +68,37 @@ namespace Atmo.Stats {
 				var speed = readings.Mean.WindSpeed;
 				var power = speed*speed;
 				var energy = power*speed;
-				foreach (KeyValuePair<double, int> kvp in readings.GetWindDirectionCounts()) {
-					var dirSlot = UnitUtility.WrapDegree(((int)((kvp.Key + _angleHalfStep) / _angleStep)) * _angleStep);
-
+				foreach (var set in readings.GetWindDirectionCounts()) {
+					if (Double.IsNaN(set.Key)) {
+						continue;
+					}
+					var dirSlot = UnitUtility.WrapDegree(((int)((set.Key + _angleHalfStep) / _angleStep)) * _angleStep);
 					WindDirectionEnergy windDirEnrg;
 					if(_directionLookup.TryGetValue(dirSlot, out windDirEnrg)) {
-						windDirEnrg.Frequency += kvp.Value;
+						windDirEnrg.Frequency += set.Value;
 						windDirEnrg.Energy += energy;
 					}else {
-						windDirEnrg = new WindDirectionEnergy(dirSlot, kvp.Value, energy);
+						windDirEnrg = new WindDirectionEnergy(dirSlot, set.Value, energy);
 						_directionLookup.Add(dirSlot, windDirEnrg);
 					}
-
-
-					/*if (_directionLookup.Contains(dirSlot)) {
-						_directionLookup[dirSlot].Frequency += kvp.Value;
-						_directionLookup[dirSlot].Energy += e;
-					}
-					else {
-						_directionLookup.Add(new WindDirectionEnergy(dirSlot, kvp.Value, e));
-					}*/
 				}
 
 			}
 
 			// wind speed stuff
 			foreach(var set in readings.GetWindSpeedCounts()) {
-				if (!Double.IsNaN(set.Key)) {
-					var speedBucket = ((int)((set.Key + _speedHalfStep) / _speedStep)) * _speedStep;
-					WindSpeedFrequency windSpeedFreq;
-					if(_speedLookup.TryGetValue(speedBucket, out windSpeedFreq)) {
-						windSpeedFreq.Frequency += set.Value;
-					}else {
-						windSpeedFreq = new WindSpeedFrequency(speedBucket, set.Value, 0);
-						_speedLookup.Add(speedBucket, windSpeedFreq);
-					}
-					_weibullCalcNeeded = true;
+				if (Double.IsNaN(set.Key)) {
+					continue;
 				}
+				var speedBucket = ((int)((set.Key + _speedHalfStep) / _speedStep)) * _speedStep;
+				WindSpeedFrequency windSpeedFreq;
+				if(_speedLookup.TryGetValue(speedBucket, out windSpeedFreq)) {
+					windSpeedFreq.Frequency += set.Value;
+				}else {
+					windSpeedFreq = new WindSpeedFrequency(speedBucket, set.Value, 0);
+					_speedLookup.Add(speedBucket, windSpeedFreq);
+				}
+				_weibullCalcNeeded = true;
 			}
 		}
 

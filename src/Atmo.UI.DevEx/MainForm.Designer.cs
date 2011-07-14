@@ -53,6 +53,7 @@
 			this.simpleButtonFindSensors = new DevExpress.XtraEditors.SimpleButton();
 			this.defaultLookAndFeel = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
 			this.simpleButtonDownloadData = new DevExpress.XtraEditors.SimpleButton();
+			this.windResourceGraph = new Atmo.UI.DevEx.Controls.WindResourceGraph();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			this.panelJunk.SuspendLayout();
@@ -309,11 +310,24 @@
 			this.simpleButtonDownloadData.Text = "Download Data...";
 			this.simpleButtonDownloadData.Click += new System.EventHandler(this.simpleButtonDownloadData_Click);
 			// 
+			// windResourceGraph
+			// 
+			this.windResourceGraph.ConverterCacheReadingValues = null;
+			this.windResourceGraph.Location = new System.Drawing.Point(262, 586);
+			this.windResourceGraph.Name = "windResourceGraph";
+			this.windResourceGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
+			this.windResourceGraph.Size = new System.Drawing.Size(633, 640);
+			this.windResourceGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
+			this.windResourceGraph.State = null;
+			this.windResourceGraph.TabIndex = 28;
+			this.windResourceGraph.TemperatureUnit = Atmo.Units.TemperatureUnit.Celsius;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(994, 1287);
+			this.Controls.Add(this.windResourceGraph);
 			this.Controls.Add(this.liveAtmosphericGraph);
 			this.Controls.Add(this.simpleButtonDownloadData);
 			this.Controls.Add(this.simpleButtonFindSensors);
@@ -362,6 +376,7 @@
 		private DevExpress.XtraEditors.SimpleButton simpleButtonFindSensors;
 		private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonDownloadData;
+		private Controls.WindResourceGraph windResourceGraph;
 
 	}
 }
