@@ -112,7 +112,7 @@
 			this.chartControlWindSpeedFreq.Name = "chartControlWindSpeedFreq";
 			series1.ArgumentDataMember = "SpeedPropertty";
 			series1.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			series1.DataSource = this.bindingSourceWindSpeedFreq;
+			//series1.DataSource = this.bindingSourceWindSpeedFreq;
 			pointSeriesLabel1.LineVisible = true;
 			pointSeriesLabel1.Visible = false;
 			series1.Label = pointSeriesLabel1;
@@ -126,7 +126,7 @@
 			series1.View = splineAreaSeriesView1;
 			series2.ArgumentDataMember = "SpeedPropertty";
 			series2.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			series2.DataSource = this.bindingSourceWindSpeedFreq;
+			//series2.DataSource = this.bindingSourceWindSpeedFreq;
 			sideBySideBarSeriesLabel1.LineVisible = true;
 			sideBySideBarSeriesLabel1.Visible = false;
 			series2.Label = sideBySideBarSeriesLabel1;
@@ -138,7 +138,7 @@
 			series2.View = sideBySideBarSeriesView1;
 			series3.ArgumentDataMember = "SpeedPropertty";
 			series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			series3.DataSource = this.bindingSourceWindSpeedFreq;
+			//series3.DataSource = this.bindingSourceWindSpeedFreq;
 			pointSeriesLabel2.LineVisible = true;
 			pointSeriesLabel2.Visible = false;
 			series3.Label = pointSeriesLabel2;
@@ -187,7 +187,7 @@
 			this.chartControlWindDir.Name = "chartControlWindDir";
 			series4.ArgumentDataMember = "DirectionProperty";
 			series4.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			series4.DataSource = this.bindingSourceWindDir;
+			//series4.DataSource = this.bindingSourceWindDir;
 			radarPointSeriesLabel1.LineVisible = true;
 			radarPointSeriesLabel1.Visible = false;
 			series4.Label = radarPointSeriesLabel1;
@@ -200,7 +200,7 @@
 			series4.View = polarAreaSeriesView1;
 			series5.ArgumentDataMember = "DirectionProperty";
 			series5.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			series5.DataSource = this.bindingSourceWindDir;
+			//series5.DataSource = this.bindingSourceWindDir;
 			radarPointSeriesLabel2.LineVisible = true;
 			radarPointSeriesLabel2.Visible = false;
 			series5.Label = radarPointSeriesLabel2;
