@@ -30,7 +30,7 @@ namespace Atmo.Test {
 	[TestFixture]
 	public class PersistentStateTest {
 
-		private string _xml234567 = null;
+		private string _xml234567;
 
 		[SetUp]
 		public void SetUp() {

@@ -24,27 +24,19 @@
 using System;
 
 namespace Atmo.Stats {
-	public class ReadingMinMaxCalculator<TReading> : IAggregateCalculator<TReading, ReadingRangeAggregate>
+    public class ReadingMinMaxCalculator<TReading> :
+        ReadingValueMinMaxCalculator<TReading>,
+        IAggregateCalculator<TReading, ReadingRangeAggregate>
 		where TReading: IReading
 	{
 
 		private TimeRange _time;
-		private Range _temperature;
-		private Range _humidity;
-		private Range _pressure;
-		private Range _windSpeed;
-		private Range _windDirection;
 
-		public ReadingMinMaxCalculator() {
+		public ReadingMinMaxCalculator() : base() {
 			_time = new TimeRange(default(DateTime), default(DateTime));
-			_temperature = new Range(Double.NaN);
-			_humidity = new Range(Double.NaN);
-			_pressure = new Range(Double.NaN);
-			_windSpeed = new Range(Double.NaN);
-			_windDirection = new Range(Double.NaN);
 		}
 
-		public void Proccess(TReading input) {
+		public new void Proccess(TReading input) {
 			if (null == input || !input.IsValid) {
 				return;
 			}
@@ -56,32 +48,14 @@ namespace Atmo.Stats {
 				_time.Merge(input.TimeStamp);
 			}
 
-			if (input.IsTemperatureValid) {
-				_temperature.Merge(input.Temperature);
-			}
-			if (input.IsHumidityValid) {
-				_humidity.Merge(input.Humidity);
-			}
-			if (input.IsPressureValid) {
-				_pressure.Merge(input.Pressure);
-			}
-			if (input.IsWindSpeedValid) {
-				_windSpeed.Merge(input.WindSpeed);
-			}
-			if (input.IsWindDirectionValid) {
-				_windDirection.Merge(input.WindDirection);
-			}
+            base.Proccess(input);
 		}
 
-		public ReadingRangeAggregate Result {
+		public new ReadingRangeAggregate Result {
 			get {
 				return new ReadingRangeAggregate(
 					_time,
-					_temperature,
-					_humidity,
-					_pressure,
-					_windSpeed,
-					_windDirection
+					base.Result
 				);
 			}
 		}

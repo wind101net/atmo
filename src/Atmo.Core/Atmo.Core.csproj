@@ -76,7 +76,9 @@
     <Compile Include="Stats\ReadingMinMaxCalculator.cs" />
     <Compile Include="Stats\ReadingRangeAggregate.cs" />
     <Compile Include="Stats\ReadingsSummary.cs" />
+    <Compile Include="Stats\ReadingValueMinMaxCalculator.cs" />
     <Compile Include="Stats\ReadingValuesMeanCalculator.cs" />
+    <Compile Include="Stats\ReadingValuesRange.cs" />
     <Compile Include="Stats\StatsUtil.cs" />
     <Compile Include="Stats\WindDataSummaryCalculator.cs" />
     <Compile Include="Stats\WindDirectionEnergy.cs" />

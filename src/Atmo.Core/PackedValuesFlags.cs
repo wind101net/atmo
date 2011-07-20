@@ -27,6 +27,10 @@ namespace Atmo {
 
 	[Flags]
 	public enum PackedValuesFlags : byte {
+        /// <summary>
+        /// Default value, nothing is valid.
+        /// </summary>
+        None = 0,
 		/// <summary>
 		/// Set when the pressure value is valid.
 		/// </summary>

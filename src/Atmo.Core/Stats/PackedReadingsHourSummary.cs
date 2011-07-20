@@ -24,7 +24,9 @@
 using System;
 
 namespace Atmo.Stats {
-	public class PackedReadingsHourSummary : PackedSensorReadingsSummary {
+	public class PackedReadingsHourSummary : PackedReadingsSummary {
+
+        private static readonly TimeSpan OneHour = new TimeSpan(1,0,0);
 
 		public PackedReadingsHourSummary(
 			DateTime beginStamp,
@@ -42,8 +44,12 @@ namespace Atmo.Stats {
 			  count
 		) { }
 
+        public override DateTime EndStamp {
+            get { return BeginStamp.AddHours(1).Subtract(OneTick); }
+        }
+
 		public override TimeSpan TimeSpan {
-			get { return new TimeSpan(0, 1, 0, 0); }
+			get { return OneHour; }
 		}
 	}
 }

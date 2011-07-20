@@ -25,9 +25,9 @@ using System;
 using System.Collections.Generic;
 
 namespace Atmo.Stats {
-	public abstract class PackedSensorReadingsSummary : IReadingsSummary {
+	public abstract class PackedReadingsSummary : IReadingsSummary {
 
-		#region Fields
+        internal static readonly TimeSpan OneTick = new TimeSpan(1);
 
 		public DateTime BeginStamp;
 		public int Count;
@@ -41,11 +41,7 @@ namespace Atmo.Stats {
 		public Dictionary<ushort, int> WindSpeedCounts;
 		public Dictionary<ushort, int> WindDirectionCounts;
 
-		#endregion
-
-		#region Constructor
-
-		public PackedSensorReadingsSummary(
+		protected PackedReadingsSummary(
 			DateTime beginStamp,
 			PackedReadingValues min,
 			PackedReadingValues max,
@@ -66,17 +62,11 @@ namespace Atmo.Stats {
 			WindDirectionCounts = new Dictionary<ushort, int>();
 		}
 
-		#endregion
-
-		#region ISensorReadingsSummary Members
-
 		DateTime IReadingsSummary.BeginStamp {
 			get { return BeginStamp; }
 		}
 
-		public DateTime EndStamp {
-			get { return new DateTime((new DateTime(this.BeginStamp.Year, this.BeginStamp.Month, this.BeginStamp.Day).AddDays(1.0)).Ticks - 1); }
-		}
+	    public abstract DateTime EndStamp { get; }
 
 		public abstract TimeSpan TimeSpan { get; }
 
@@ -99,10 +89,6 @@ namespace Atmo.Stats {
 		int IReadingsSummary.Count {
 			get { return Count; }
 		}
-
-		#endregion
-
-		#region ISensorReadingsSummary Members
 
 		public int GetTemperatureCount(double value) {
 			int count;
@@ -149,15 +135,10 @@ namespace Atmo.Stats {
 			);
 		}
 
-		#endregion
-
-		#region ISensorReadingsSummary Members
-
-
 		public Dictionary<double, int> GetTemperatureCounts() {
 			var result = new Dictionary<double, int>(TemperatureCounts.Count);
 			foreach (var kvp in TemperatureCounts) {
-				result.Add((double)(kvp.Key / 10.0) - 40.0, kvp.Value);
+				result.Add((kvp.Key / 10.0) - 40.0, kvp.Value);
 			}
 			return result;
 		}
@@ -165,7 +146,7 @@ namespace Atmo.Stats {
 		public Dictionary<double, int> GetPressureCounts() {
 			var result = new Dictionary<double, int>(PressureCounts.Count);
 			foreach (var kvp in PressureCounts) {
-				result.Add((double)(kvp.Key) * 2.0, kvp.Value);
+				result.Add(kvp.Key * 2.0, kvp.Value);
 			}
 			return result;
 		}
@@ -173,7 +154,7 @@ namespace Atmo.Stats {
 		public Dictionary<double, int> GetHumidityCounts() {
 			var result = new Dictionary<double, int>(HumidityCounts.Count);
 			foreach (var kvp in HumidityCounts) {
-				result.Add((double)(kvp.Key) / 1000.0, kvp.Value);
+				result.Add(kvp.Key / 1000.0, kvp.Value);
 			}
 			return result;
 		}
@@ -181,7 +162,7 @@ namespace Atmo.Stats {
 		public Dictionary<double, int> GetWindSpeedCounts() {
 			var result = new Dictionary<double, int>(WindSpeedCounts.Count);
 			foreach (var kvp in WindSpeedCounts) {
-				result.Add((double)(kvp.Key) / 100.0, kvp.Value);
+				result.Add(kvp.Key / 100.0, kvp.Value);
 			}
 			return result;
 		}
@@ -189,12 +170,10 @@ namespace Atmo.Stats {
 		public Dictionary<double, int> GetWindDirectionCounts() {
 			var result = new Dictionary<double, int>(WindDirectionCounts.Count);
 			foreach (var kvp in WindDirectionCounts) {
-				result.Add((double)(kvp.Key), kvp.Value);
+				result.Add(kvp.Key, kvp.Value);
 			}
 			return result;
 		}
-
-		#endregion
 
 	}
 }

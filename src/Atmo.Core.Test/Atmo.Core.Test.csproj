@@ -32,7 +32,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.5.8.10295, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,6 +49,7 @@
     <Compile Include="DaqDataFileReaderTest.cs" />
     <Compile Include="DaqDataFileTestUtility.cs" />
     <Compile Include="DewPointTest.cs" />
+    <Compile Include="PackedReadingsHourSummaryTest.cs" />
     <Compile Include="PackedReadingTest.cs" />
     <Compile Include="PackedReadingValuesTest.cs" />
     <Compile Include="PersistentStateTest.cs" />

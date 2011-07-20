@@ -23,50 +23,66 @@
 
 using System;
 
-namespace Atmo.Stats {
-	public class ReadingRangeAggregate : ReadingValuesRange {
+namespace Atmo.Stats
+{
+    public class ReadingValuesRange
+    {
 
-		public readonly TimeRange TimeStamp;
+        public readonly Range Temperature;
+		public readonly Range Humidity;
+		public readonly Range Pressure;
+		public readonly Range WindSpeed;
+		public readonly Range WindDirection;
+		
         [Obsolete("May need to remove this to increase data density")]
-		private Reading _min;
+        private ReadingValues _min;
         [Obsolete("May need to remove this to increase data density")]
-		private Reading _max;
+		private ReadingValues _max;
 
-        public ReadingRangeAggregate(
-            TimeRange timeStamp,
-            ReadingValuesRange ranges
-        ) : base(ranges)
+        public ReadingValuesRange(ReadingValuesRange ranges)
         {
-            TimeStamp = new TimeRange(timeStamp);
+            Temperature = new Range(ranges.Temperature);
+            Humidity = new Range(ranges.Humidity);
+            Pressure = new Range(ranges.Pressure);
+            WindSpeed = new Range(ranges.WindSpeed);
+            WindDirection = new Range(ranges.WindDirection);
             _min = _max = null;
         }
 
-		public ReadingRangeAggregate(
-			TimeRange timeStamp,
+        public ReadingValuesRange(
 			Range temperature,
 			Range humidity,
 			Range pressure,
 			Range windSpeed,
 			Range windDirection
-		) : base(temperature, humidity, pressure, windSpeed, windDirection)
-        {
-			TimeStamp = new TimeRange(timeStamp);
+		) {
+			Temperature = new Range(temperature);
+			Humidity = new Range(humidity);
+			Pressure = new Range(pressure);
+			WindSpeed = new Range(windSpeed);
+			WindDirection = new Range(windDirection);
 			_min = _max = null;
 		}
 
-		public new Reading Min { get {
-			return _min ?? (_min = new Reading(
-				TimeStamp.Low,
-                base.Min
+		public ReadingValues Min { get {
+			return _min ?? (_min = new ReadingValues(
+				Temperature.Low,
+				Pressure.Low,
+				Humidity.Low,
+				WindDirection.Low,
+				WindSpeed.Low
 			));
 		} }
 
-		public new Reading Max { get {
-			return _max ?? (_max = new Reading(
-				TimeStamp.High,
-				base.Max
+		public ReadingValues Max { get {
+			return _max ?? (_max = new ReadingValues(
+				Temperature.High,
+				Pressure.High,
+				Humidity.High,
+				WindDirection.High,
+				WindSpeed.High
 			));
 		} }
 
-	}
+    }
 }

@@ -27,8 +27,10 @@ using System.Collections.Generic;
 namespace Atmo {
 
 	/// <inheritdoc/>
-	public struct PackedReadingValues
-		: IReadingValues
+	public struct PackedReadingValues :
+        IReadingValues,
+        IEquatable<IReadingValues>,
+        IEquatable<PackedReadingValues>
 	{
 
 		/// <summary>
@@ -198,6 +200,16 @@ namespace Atmo {
 
 		#endregion
 
+        public static bool operator==(PackedReadingValues a, PackedReadingValues b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator!=(PackedReadingValues a, PackedReadingValues b)
+        {
+            return !a.Equals(b);
+        }
+
 		/// <summary>
 		/// Stores the pressure data.
 		/// </summary>
@@ -230,14 +242,26 @@ namespace Atmo {
 			double windDirection,
 			double windSpeed
 		) {
-			var flags = PackedValuesFlags.WindSpeed | PackedValuesFlags.Humidity | PackedValuesFlags.Pressure;
+			/*var flags = PackedValuesFlags.WindSpeed | PackedValuesFlags.Humidity | PackedValuesFlags.Pressure;
 			if(windDirection >= 0 && windDirection <= 360) {
 				flags |= PackedValuesFlags.WindDirection;
-			}
+			}*/
+
+		    var flags = PackedValuesFlags.None;
+            if(!Double.IsNaN(pressure))
+                flags |= PackedValuesFlags.Pressure;
+            if (!Double.IsNaN(humidity))
+                flags |= PackedValuesFlags.Humidity;
+            if (!Double.IsNaN(windDirection))
+                flags |= PackedValuesFlags.WindDirection;
+            if (!Double.IsNaN(windSpeed))
+                flags |= PackedValuesFlags.WindSpeed;
+
 			_pressureData = (ushort)(Math.Max(0, Math.Min(UInt16.MaxValue, pressure / 2.0)));
+
 			_temperatureAndFlags = (ushort)(
 				((ushort)(Math.Max(0, Math.Min(1023, (temperature + 40.0) * 10.0))) << 5)
-				| (ushort)flags // TODO: this will need to be a real value
+				| (ushort)flags
 			);
 			_humidityDirectionAndSpeed = (
 				(uint)((uint)(Math.Max(0, Math.Min(1023, humidity * 1000.0))) << 22)
@@ -352,5 +376,45 @@ namespace Atmo {
 		public bool IsWindDirectionValid {
 			get { return 0 != ((ushort)PackedValuesFlags.WindDirection & _temperatureAndFlags); }
 		}
-	}
+
+        public bool Equals(IReadingValues other)
+        {
+            return null != other
+                && (IsTemperatureValid ? other.Temperature == Temperature : !other.IsTemperatureValid)
+                && (IsPressureValid ? other.Pressure == Pressure : !other.IsPressureValid)
+                && (IsHumidityValid ? other.Humidity == Humidity : !other.IsHumidityValid)
+                && (IsWindDirectionValid ? other.WindDirection == WindDirection : !other.IsWindDirectionValid)
+                && (IsWindSpeedValid ? other.WindSpeed == WindSpeed : !other.IsWindSpeedValid)
+            ;
+        }
+
+        public bool Equals(PackedReadingValues other)
+        {
+            return _humidityDirectionAndSpeed == other._humidityDirectionAndSpeed
+                && _pressureData == other._pressureData
+                && _temperatureAndFlags == other._temperatureAndFlags;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PackedReadingValues
+                ? Equals((PackedReadingValues)obj)
+                : Equals(obj as IReadingValues)
+            ;
+        }
+
+        public override int GetHashCode()
+        {
+            return _humidityDirectionAndSpeed.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return String.Format(
+                "T:{0} P:{1} H:{2} D:{3} S:{4}",
+                Temperature, Pressure, Humidity, WindDirection, WindSpeed
+            );
+        }
+
+    }
 }

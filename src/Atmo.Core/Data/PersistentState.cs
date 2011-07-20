@@ -56,10 +56,11 @@ namespace Atmo.Data {
 		}
 
 		public static PersistentState ReadStream(Stream stream) {
-			PersistentState state = null;
+			PersistentState state;
 			try {
 				state = Serializer.Deserialize(stream) as PersistentState;
-				state.IsDirty = false;
+                if(null != state)
+				    state.IsDirty = false;
 			}catch {
 				state = null;
 			}
