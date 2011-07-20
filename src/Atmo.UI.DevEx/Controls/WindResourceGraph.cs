@@ -44,7 +44,7 @@ namespace Atmo.UI.DevEx.Controls {
 		public PersistentState State { get; set; }
 
 		public void SetDataSource<T>(IEnumerable<T> items) where T : IReadingsSummary {
-			SetDataSource(items.ToList());
+			SetDataSource(items is List<T> ? items as List<T> : new List<T>(items));
 		}
 
 		public void SetDataSource<T>(List<T> items) where T : IReadingsSummary {

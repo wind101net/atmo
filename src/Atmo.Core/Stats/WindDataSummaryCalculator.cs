@@ -52,38 +52,48 @@ namespace Atmo.Stats {
 			_speedHalfStep = _speedStep/2;
 			//_speedFrequency = new List<WindSpeedFrequency>();
 			//_directionEnergy = new List<WindDirectionEnergy>();
-			_speedLookup = new Dictionary<double, WindSpeedFrequency>();
-			_directionLookup = new Dictionary<double, WindDirectionEnergy>();
 			//_validSpeeds = new List<double>();
 			//_minSpeed = _maxSpeed = Double.NaN;
 			_maxAlgorithmIterations = 16;
-			_angleStep = 22.5;
+			_angleStep = 22.5 / 2.0;
 			_angleHalfStep = _angleStep/2;
+
+			_speedLookup = new Dictionary<double, WindSpeedFrequency>();
+
+			int directionCounts = (int) (360.0/_angleStep);
+			_directionLookup = new Dictionary<double, WindDirectionEnergy>(directionCounts);
+			for(int i = 0; i < directionCounts; i++) {
+				var dir = i*_angleStep;
+				_directionLookup.Add(dir, new WindDirectionEnergy(dir, 0, 0));
+			}
+
 		}
 
 		public void Process(T readings) {
 
 			// wind dir stuff
-			if(null != readings.Mean && !Double.IsNaN(readings.Mean.WindSpeed)) {
+			if(null != readings.Mean) {
 				var speed = readings.Mean.WindSpeed;
-				var power = speed*speed;
-				var energy = power*speed;
-				foreach (var set in readings.GetWindDirectionCounts()) {
-					if (0 == set.Value || Double.IsNaN(set.Key)) {
-						continue;
-					}
-					var dirSlot = UnitUtility.WrapDegree(((int)((set.Key + _angleHalfStep) / _angleStep)) * _angleStep);
-					WindDirectionEnergy windDirEnrg;
-					var modEnergy = energy*set.Value;
-					if(_directionLookup.TryGetValue(dirSlot, out windDirEnrg)) {
-						windDirEnrg.Frequency += set.Value;
-						windDirEnrg.Energy += modEnergy;
-					}else {
-						windDirEnrg = new WindDirectionEnergy(dirSlot, set.Value, modEnergy);
-						_directionLookup.Add(dirSlot, windDirEnrg);
+				if (0 != speed && !Double.IsNaN(speed)) {
+					var power = speed*speed;
+					var energy = power*speed;
+					foreach (var set in readings.GetWindDirectionCounts()) {
+						if (0 == set.Value || Double.IsNaN(set.Key)) {
+							continue;
+						}
+						var dirSlot = UnitUtility.WrapDegree(((int) ((set.Key + _angleHalfStep)/_angleStep))*_angleStep);
+						WindDirectionEnergy windDirEnrg;
+						var modEnergy = energy*set.Value;
+						if (_directionLookup.TryGetValue(dirSlot, out windDirEnrg)) {
+							windDirEnrg.Frequency += set.Value;
+							windDirEnrg.Energy += modEnergy;
+						}
+						//else {
+						//	windDirEnrg = new WindDirectionEnergy(dirSlot, set.Value, modEnergy);
+						//	_directionLookup.Add(dirSlot, windDirEnrg);
+						//}
 					}
 				}
-
 			}
 
 			// wind speed stuff
@@ -96,7 +106,7 @@ namespace Atmo.Stats {
 				if(_speedLookup.TryGetValue(speedBucket, out windSpeedFreq)) {
 					windSpeedFreq.Frequency += set.Value;
 				}else {
-					windSpeedFreq = new WindSpeedFrequency(speedBucket, set.Value, 0);
+					windSpeedFreq = new WindSpeedFrequency(speedBucket, set.Value);
 					_speedLookup.Add(speedBucket, windSpeedFreq);
 				}
 				_weibullCalcNeeded = true;

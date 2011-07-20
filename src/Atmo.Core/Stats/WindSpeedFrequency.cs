@@ -28,9 +28,17 @@ namespace Atmo.Stats {
 		public int Frequency;
 		public double Weibull;
 
-		public WindSpeedFrequency(double speed) : this(speed, 0) { }
+		public WindSpeedFrequency(double speed) {
+			Speed = speed;
+			Frequency = 0;
+			Weibull = 0;
+		}
 
-		public WindSpeedFrequency(double speed, int frequency) : this(speed, frequency, 0) { }
+		public WindSpeedFrequency(double speed, int frequency) {
+			Speed = speed;
+			Frequency = frequency;
+			Weibull = 0;
+		}
 
 		public WindSpeedFrequency(double speed, int frequency, double weibull) {
 			Speed = speed;
