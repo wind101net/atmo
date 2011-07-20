@@ -43,7 +43,7 @@ namespace Atmo.Test
             _values = new[] {
                 new ReadingValues(1.0,	2.0,		Double.NaN,180,	4.0),
 				new ReadingValues(2.0,	Double.NaN,	Double.NaN,45,	6.0),
-				new ReadingValues(3.0,	4.0,		Double.NaN,315,	Double.NaN),
+				new ReadingValues(3.0,	6.0,		Double.NaN,315,	Double.NaN),
 				new ReadingValues(Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN)
 			};
             var minMaxCalc = new ReadingValueMinMaxCalculator<ReadingValues>();

@@ -151,22 +151,22 @@ namespace Atmo {
 		/// <inheritdoc/>
 		public bool Equals(ReadingValues other) {
 			return null != other
-			    && Temperature == other.Temperature
-			    && Pressure == other.Pressure
-			    && Humidity == other.Humidity
-			    && WindSpeed == other.WindSpeed
-			    && WindDirection == other.WindDirection
+				&& (IsTemperatureValid ? other.Temperature == Temperature : !other.IsTemperatureValid)
+				&& (IsPressureValid ? other.Pressure == Pressure : !other.IsPressureValid)
+				&& (IsHumidityValid ? other.Humidity == Humidity : !other.IsHumidityValid)
+				&& (IsWindDirectionValid ? other.WindDirection == WindDirection : !other.IsWindDirectionValid)
+				&& (IsWindSpeedValid ? other.WindSpeed == WindSpeed : !other.IsWindSpeedValid)
 			;
 		}
 
 		/// <inheritdoc/>
 		public bool Equals(IReadingValues other) {
 			return null != other
-				&& Temperature == other.Temperature
-				&& Pressure == other.Pressure
-				&& Humidity == other.Humidity
-				&& WindSpeed == other.WindSpeed
-				&& WindDirection == other.WindDirection
+				&& (IsTemperatureValid ? other.Temperature == Temperature : !other.IsTemperatureValid)
+				&& (IsPressureValid ? other.Pressure == Pressure : !other.IsPressureValid)
+				&& (IsHumidityValid ? other.Humidity == Humidity : !other.IsHumidityValid)
+				&& (IsWindDirectionValid ? other.WindDirection == WindDirection : !other.IsWindDirectionValid)
+				&& (IsWindSpeedValid ? other.WindSpeed == WindSpeed : !other.IsWindSpeedValid)
 			;
 		}
 

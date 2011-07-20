@@ -248,14 +248,36 @@ namespace Atmo {
 			}*/
 
 		    var flags = PackedValuesFlags.None;
-            if(!Double.IsNaN(pressure))
-                flags |= PackedValuesFlags.Pressure;
-            if (!Double.IsNaN(humidity))
-                flags |= PackedValuesFlags.Humidity;
-            if (!Double.IsNaN(windDirection))
-                flags |= PackedValuesFlags.WindDirection;
-            if (!Double.IsNaN(windSpeed))
-                flags |= PackedValuesFlags.WindSpeed;
+			if (Double.IsNaN(pressure)) {
+				pressure = 0;
+			}
+			else {
+				flags |= PackedValuesFlags.Pressure;
+			}
+			if (Double.IsNaN(humidity)) {
+				humidity = 0;
+			}
+			else {
+				flags |= PackedValuesFlags.Humidity;
+			}
+			if (Double.IsNaN(windDirection)) {
+				windDirection = 0;
+			}
+			else {
+				flags |= PackedValuesFlags.WindDirection;
+			}
+			if (Double.IsNaN(windSpeed)) {
+				windSpeed = 0;
+			}
+			else {
+				flags |= PackedValuesFlags.WindSpeed;
+			}
+			
+			if(Double.IsNaN(temperature)) {
+				flags |= PackedValuesFlags.AnemTemperatureSource;
+				temperature = 0;
+			}
+
 
 			_pressureData = (ushort)(Math.Max(0, Math.Min(UInt16.MaxValue, pressure / 2.0)));
 

@@ -71,13 +71,13 @@ namespace Atmo.Test {
 					temperature: 24.5,
 					pressure: 98000.0,
 					humidity: 0.505,
-					windDirection: 511.0,
+					windDirection: Double.NaN,
 					windSpeed: 18.51
 // ReSharper restore RedundantArgumentName
 				)
 			);
 			Assert.AreEqual(0x73B, reading.Values.RawWindSpeed);
-			Assert.AreEqual(0x1ff, reading.Values.RawWindDirection);
+			Assert.AreEqual(0x0, reading.Values.RawWindDirection);
 			Assert.AreEqual(0x285, reading.Values.RawTemperature);
 			Assert.AreEqual(0x1f9, reading.Values.RawHumidity);
 			Assert.AreEqual(0xbf68, reading.Values.RawPressure);
