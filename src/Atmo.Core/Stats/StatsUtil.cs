@@ -167,9 +167,12 @@ namespace Atmo.Stats {
 			);
 		}
 
-		public static ReadingsSummary Combine(List<ReadingsSummary> readings) {
+		public static ReadingsSummary Combine<TSummary>(List<TSummary> readings) where TSummary : IReadingsSummary {
+
+
+
 			int totalCount = readings.Sum(r => r.Count);
-			ReadingsSummary summary = new ReadingsSummary(
+			var summary = new ReadingsSummary(
 				readings.Min(r => r.BeginStamp),
 				readings.Max(r => r.EndStamp),
 				new ReadingValues(Double.MaxValue, Double.MaxValue, Double.MaxValue, double.MaxValue, double.MaxValue),
@@ -183,7 +186,8 @@ namespace Atmo.Stats {
 				new Dictionary<double, int>(),
 				new Dictionary<double, int>()
 			);
-			foreach (ReadingsSummary reading in readings) {
+			// TODO: use calculator?
+			foreach (var reading in readings) {
 				if (summary.Min.Temperature > reading.Min.Temperature) {
 					summary.Min.Temperature = reading.Min.Temperature;
 				}
@@ -214,7 +218,78 @@ namespace Atmo.Stats {
 				if (summary.Max.WindDirection < reading.Max.WindDirection) {
 					summary.Max.WindDirection = reading.Max.WindDirection;
 				}
-				double readingCountD = (double)reading.Count;
+				var readingCountD = (double)reading.Count;
+				summary.Mean.Temperature += reading.Mean.Temperature * readingCountD;
+				summary.Mean.Pressure += reading.Mean.Pressure * readingCountD;
+				summary.Mean.Humidity += reading.Mean.Humidity * readingCountD;
+				summary.Mean.WindSpeed += reading.Mean.WindSpeed * readingCountD;
+				summary.Mean.WindDirection += reading.Mean.WindDirection * readingCountD;
+				AppendCounts(summary.TemperatureCounts, reading.GetTemperatureCounts());
+				AppendCounts(summary.PressureCounts, reading.GetPressureCounts());
+				AppendCounts(summary.HumidityCounts, reading.GetHumidityCounts());
+				AppendCounts(summary.WindSpeedCounts, reading.GetWindSpeedCounts());
+				AppendCounts(summary.WindDirectionCounts, reading.GetWindDirectionCounts());
+			}
+			var totalCountD = (double)totalCount;
+			if (0 != totalCountD && 1 != totalCountD) {
+				summary.Mean.Temperature /= totalCountD;
+				summary.Mean.Pressure /= totalCountD;
+				summary.Mean.Humidity /= totalCountD;
+				summary.Mean.WindSpeed /= totalCountD;
+				summary.Mean.WindDirection /= totalCountD;
+			}
+			return summary;
+		}
+
+		public static ReadingsSummary Combine(List<ReadingsSummary> readings) {
+			int totalCount = readings.Sum(r => r.Count);
+			var summary = new ReadingsSummary(
+				readings.Min(r => r.BeginStamp),
+				readings.Max(r => r.EndStamp),
+				new ReadingValues(Double.MaxValue, Double.MaxValue, Double.MaxValue, double.MaxValue, double.MaxValue),
+				new ReadingValues(Double.MinValue, Double.MinValue, Double.MinValue, double.MinValue, double.MinValue),
+				new ReadingValues(0, 0, 0, 0, 0),
+				new ReadingValues(0, 0, 0, 0, 0), // TODO: median
+				totalCount,
+				new Dictionary<double, int>(),
+				new Dictionary<double, int>(),
+				new Dictionary<double, int>(),
+				new Dictionary<double, int>(),
+				new Dictionary<double, int>()
+			);
+			// TODO: use calculator?
+			foreach (var reading in readings) {
+				if (summary.Min.Temperature > reading.Min.Temperature) {
+					summary.Min.Temperature = reading.Min.Temperature;
+				}
+				if (summary.Min.Pressure > reading.Min.Pressure) {
+					summary.Min.Pressure = reading.Min.Pressure;
+				}
+				if (summary.Min.Humidity > reading.Min.Humidity) {
+					summary.Min.Humidity = reading.Min.Humidity;
+				}
+				if (summary.Min.WindSpeed > reading.Min.WindSpeed) {
+					summary.Min.WindSpeed = reading.Min.WindSpeed;
+				}
+				if (summary.Min.WindDirection > reading.Min.WindDirection) {
+					summary.Min.WindDirection = reading.Min.WindDirection;
+				}
+				if (summary.Max.Temperature < reading.Max.Temperature) {
+					summary.Max.Temperature = reading.Max.Temperature;
+				}
+				if (summary.Max.Pressure < reading.Max.Pressure) {
+					summary.Max.Pressure = reading.Max.Pressure;
+				}
+				if (summary.Max.Humidity < reading.Max.Humidity) {
+					summary.Max.Humidity = reading.Max.Humidity;
+				}
+				if (summary.Max.WindSpeed < reading.Max.WindSpeed) {
+					summary.Max.WindSpeed = reading.Max.WindSpeed;
+				}
+				if (summary.Max.WindDirection < reading.Max.WindDirection) {
+					summary.Max.WindDirection = reading.Max.WindDirection;
+				}
+				var readingCountD = (double)reading.Count;
 				summary.Mean.Temperature += reading.Mean.Temperature * readingCountD;
 				summary.Mean.Pressure += reading.Mean.Pressure * readingCountD;
 				summary.Mean.Humidity += reading.Mean.Humidity * readingCountD;
@@ -226,7 +301,7 @@ namespace Atmo.Stats {
 				AppendCounts(summary.WindSpeedCounts, reading.WindSpeedCounts);
 				AppendCounts(summary.WindDirectionCounts, reading.WindDirectionCounts);
 			}
-			double totalCountD = (double)totalCount;
+			var totalCountD = (double)totalCount;
 			if (0 != totalCountD && 1 != totalCountD) {
 				summary.Mean.Temperature /= totalCountD;
 				summary.Mean.Pressure /= totalCountD;
@@ -343,5 +418,33 @@ namespace Atmo.Stats {
 
 
 
+
+		public static IEnumerable<ReadingsSummary> JoinReadingSummaryEnumerable<TSummary>(IEnumerable<IEnumerable<TSummary>> sensorReadings) where TSummary : IReadingsSummary {
+			var sortedEnumerators = sensorReadings
+				.Select(readingSet => readingSet.OrderBy(r => r.BeginStamp).GetEnumerator())
+				.Where(e => e.MoveNext())
+				.ToList();
+			var forCompilation = new List<TSummary>();
+			while(sortedEnumerators.Count > 0) {
+				forCompilation.Clear();
+				//int count = 0;
+				var currentTimeReading = sortedEnumerators.Min(e => e.Current.BeginStamp);
+				for(int i = 0; i < sortedEnumerators.Count; i++) {
+					var currentEnumerator = sortedEnumerators[i];
+					var currentReading = currentEnumerator.Current;
+					if (currentReading.BeginStamp == currentTimeReading) {
+						forCompilation.Add(currentReading);
+						//count++;
+					}
+					if (currentReading.BeginStamp <= currentTimeReading) {
+						if (!currentEnumerator.MoveNext()) {
+							sortedEnumerators.RemoveAt(i);
+							i--;
+						}
+					}
+				}
+				yield return Combine(forCompilation);
+			}
+		}
 	}
 }

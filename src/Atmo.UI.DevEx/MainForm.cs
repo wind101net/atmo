@@ -165,17 +165,33 @@ namespace Atmo.UI.DevEx {
 			// TODO: remove this crap and replace with the real thing later
 			// HACK: testing only below here ---------------------------------------------------
 
-
+			var hackForwardTimeSpan = new TimeSpan(365, 0, 0, 0);
+			var hackBackTimeSpan = -hackForwardTimeSpan;
+			var then = now.Subtract(hackForwardTimeSpan);
 
 			var historicalSelected = _dbStore.GetAllSensorInfos().Where(si => _historicSensorViewPanelController.IsSensorSelected(si)).ToList();
 			var sensorReadings = historicalSelected.Select(
 				sensor =>
-				_dbStore.GetReadingSummaries(sensor.Name, DateTime.Now, new TimeSpan(-10*365, 0, 0, 0), TimeUnit.Hour)
+				_dbStore.GetReadingSummaries(sensor.Name, now, hackBackTimeSpan, TimeUnit.Hour)
 			);
 
+			var historicalSummaries = StatsUtil.JoinReadingSummaryEnumerable(sensorReadings).ToList();
 
-			// HACK: just do the first one for now!
-			windResourceGraph.SetDataSource(sensorReadings.First());
+			windResourceGraph.TemperatureUnit = TemperatureUnit;
+			windResourceGraph.PressureUnit = PressureUnit;
+			windResourceGraph.SpeedUnit = SpeedUnit;
+
+			windResourceGraph.SetDataSource(historicalSummaries);
+
+			historicalGraphBreakdown.TemperatureUnit = TemperatureUnit;
+			historicalGraphBreakdown.PressureUnit = PressureUnit;
+			historicalGraphBreakdown.SpeedUnit = SpeedUnit;
+			historicalGraphBreakdown.SelectedAttributeType = ReadingAttributeType.WindSpeed;
+			historicalGraphBreakdown.StepBack = true;
+			historicalGraphBreakdown.DrillStartDate = then;
+			historicalGraphBreakdown.CumulativeTimeSpan = hackForwardTimeSpan;
+
+			historicalGraphBreakdown.SetDataSource(historicalSummaries);
 
 
 

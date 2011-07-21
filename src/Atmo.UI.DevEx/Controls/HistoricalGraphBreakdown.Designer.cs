@@ -23,10 +23,31 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			components = new System.ComponentModel.Container();
+			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+			this.SuspendLayout();
+			// 
+			// flowLayoutPanel
+			// 
+			this.flowLayoutPanel.AutoScroll = true;
+			this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanel.Name = "flowLayoutPanel";
+			this.flowLayoutPanel.Size = new System.Drawing.Size(988, 834);
+			this.flowLayoutPanel.TabIndex = 0;
+			// 
+			// HistoricalGraphBreakdown
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.flowLayoutPanel);
+			this.Name = "HistoricalGraphBreakdown";
+			this.Size = new System.Drawing.Size(988, 834);
+			this.ResumeLayout(false);
+
 		}
 
 		#endregion
+
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 	}
 }

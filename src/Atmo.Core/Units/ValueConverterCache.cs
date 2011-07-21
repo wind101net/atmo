@@ -46,7 +46,7 @@ namespace Atmo.Units {
 			}
 
 			public override int GetHashCode() {
-				return From.GetHashCode() ^ -(To.GetHashCode());
+				return From.GetHashCode();
 			}
 
 			public override string ToString() {

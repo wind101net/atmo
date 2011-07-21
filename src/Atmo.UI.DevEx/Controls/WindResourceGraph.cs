@@ -66,7 +66,7 @@ namespace Atmo.UI.DevEx.Controls {
 			
 
 			var windCalc = new WindDataSummaryCalculator<IReadingsSummary>();
-			// HACK: just do the first one for now!
+			
 			foreach (var item in items) {
 				windCalc.Process(item);
 			}
@@ -74,13 +74,6 @@ namespace Atmo.UI.DevEx.Controls {
 			chartControlWindDir.DataSource = windCalc.WindDirectionEnergyData;
 			chartControlWindSpeedFreq.DataSource = windCalc.WindSpeedFrequencyData;
 
-
-			//chartControl.DataSource = newList;
-
-			//SetUserData(newList);
-
-			//ForceYRanges(newList);
-			//chartControl.Update();
 		}
 
 	}

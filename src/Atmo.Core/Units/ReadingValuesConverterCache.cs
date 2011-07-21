@@ -164,7 +164,7 @@ namespace Atmo.Units {
 			}
 
 			public override int GetHashCode() {
-				return Temp.GetHashCode() ^ -(Speed.GetHashCode()) ^ Press.GetHashCode();
+				return Temp.GetHashCode() ^ Speed.GetHashCode();
 			}
 
 			public override string ToString() {

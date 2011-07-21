@@ -54,6 +54,7 @@
 			this.defaultLookAndFeel = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
 			this.simpleButtonDownloadData = new DevExpress.XtraEditors.SimpleButton();
 			this.windResourceGraph = new Atmo.UI.DevEx.Controls.WindResourceGraph();
+			this.historicalGraphBreakdown = new Atmo.UI.DevEx.Controls.HistoricalGraphBreakdown();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			this.panelJunk.SuspendLayout();
@@ -240,10 +241,10 @@
 			// 
 			this.liveAtmosphericGraph.ConverterCacheReadingValues = null;
 			this.liveAtmosphericGraph.HeightAboveSeaLevel = 0D;
-			this.liveAtmosphericGraph.Location = new System.Drawing.Point(248, 144);
+			this.liveAtmosphericGraph.Location = new System.Drawing.Point(218, 30);
 			this.liveAtmosphericGraph.Name = "liveAtmosphericGraph";
 			this.liveAtmosphericGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-			this.liveAtmosphericGraph.Size = new System.Drawing.Size(677, 410);
+			this.liveAtmosphericGraph.Size = new System.Drawing.Size(764, 295);
 			this.liveAtmosphericGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
 			this.liveAtmosphericGraph.State = null;
 			this.liveAtmosphericGraph.TabIndex = 4;
@@ -313,20 +314,37 @@
 			// windResourceGraph
 			// 
 			this.windResourceGraph.ConverterCacheReadingValues = null;
-			this.windResourceGraph.Location = new System.Drawing.Point(262, 586);
+			this.windResourceGraph.Location = new System.Drawing.Point(218, 331);
 			this.windResourceGraph.Name = "windResourceGraph";
 			this.windResourceGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-			this.windResourceGraph.Size = new System.Drawing.Size(633, 640);
+			this.windResourceGraph.Size = new System.Drawing.Size(764, 395);
 			this.windResourceGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
 			this.windResourceGraph.State = null;
 			this.windResourceGraph.TabIndex = 28;
 			this.windResourceGraph.TemperatureUnit = Atmo.Units.TemperatureUnit.Celsius;
+			// 
+			// historicalGraphBreakdown
+			// 
+			this.historicalGraphBreakdown.ConverterCacheReadingValues = null;
+			this.historicalGraphBreakdown.CumulativeTimeSpan = System.TimeSpan.Parse("00:00:00");
+			this.historicalGraphBreakdown.DrillStartDate = new System.DateTime(((long)(0)));
+			this.historicalGraphBreakdown.Location = new System.Drawing.Point(218, 732);
+			this.historicalGraphBreakdown.Name = "historicalGraphBreakdown";
+			this.historicalGraphBreakdown.PressureUnit = Atmo.Units.PressureUnit.Pascals;
+			this.historicalGraphBreakdown.SelectedAttributeType = Atmo.ReadingAttributeType.Temperature;
+			this.historicalGraphBreakdown.Size = new System.Drawing.Size(764, 543);
+			this.historicalGraphBreakdown.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
+			this.historicalGraphBreakdown.State = null;
+			this.historicalGraphBreakdown.StepBack = false;
+			this.historicalGraphBreakdown.TabIndex = 33;
+			this.historicalGraphBreakdown.TemperatureUnit = Atmo.Units.TemperatureUnit.Celsius;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(994, 1287);
+			this.Controls.Add(this.historicalGraphBreakdown);
 			this.Controls.Add(this.windResourceGraph);
 			this.Controls.Add(this.liveAtmosphericGraph);
 			this.Controls.Add(this.simpleButtonDownloadData);
@@ -377,6 +395,7 @@
 		private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonDownloadData;
 		private Controls.WindResourceGraph windResourceGraph;
+		private Controls.HistoricalGraphBreakdown historicalGraphBreakdown;
 
 	}
 }

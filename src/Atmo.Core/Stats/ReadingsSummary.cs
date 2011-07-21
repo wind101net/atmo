@@ -28,13 +28,14 @@ namespace Atmo.Stats {
 	public class ReadingsSummary : IReadingsSummary, IReading {
 
 		private static Dictionary<double, int> RoundAndCombine(Dictionary<double, int> values) {
-			Dictionary<double, int> result = new Dictionary<double, int>(values.Count);
-			if (null != values) {
+			var result = new Dictionary<double, int>(values.Count);
+			foreach (var kvp in values) {
+				var roundKey = Math.Round(kvp.Key);
 				int count;
-				double value;
-				foreach (KeyValuePair<double, int> kvp in values) {
-					value = Math.Round(kvp.Key);
-					result[value] = (result.TryGetValue(value, out count)) ? (count + kvp.Value) : kvp.Value;
+				if (result.TryGetValue(roundKey, out count)) {
+					result[roundKey] = count + kvp.Value;
+				}else {
+					result.Add(roundKey, kvp.Value);
 				}
 			}
 			return result;
@@ -215,7 +216,15 @@ namespace Atmo.Stats {
 		}
 
 		public bool IsValid {
-			get { return null != Mean && Count > 0; }
+			get {
+				return Count > 0 && (
+					IsTemperatureValid
+					|| IsPressureValid
+					|| IsHumidityValid
+					|| IsWindSpeedValid
+					|| IsWindDirectionValid
+				);
+			}
 		}
 
 		public bool IsTemperatureValid {
