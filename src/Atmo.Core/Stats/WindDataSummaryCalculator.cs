@@ -74,7 +74,7 @@ namespace Atmo.Stats {
 			// wind dir stuff
 			if(null != readings.Mean) {
 				var speed = readings.Mean.WindSpeed;
-				if (0 != speed && !Double.IsNaN(speed)) {
+				if (!Double.IsNaN(speed)) {
 					var power = speed*speed;
 					var energy = power*speed;
 					foreach (var set in readings.GetWindDirectionCounts()) {
@@ -88,10 +88,6 @@ namespace Atmo.Stats {
 							windDirEnrg.Frequency += set.Value;
 							windDirEnrg.Energy += modEnergy;
 						}
-						//else {
-						//	windDirEnrg = new WindDirectionEnergy(dirSlot, set.Value, modEnergy);
-						//	_directionLookup.Add(dirSlot, windDirEnrg);
-						//}
 					}
 				}
 			}
