@@ -62,6 +62,12 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CustomTimeRangeSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomTimeRangeSelector.Designer.cs">
+      <DependentUpon>CustomTimeRangeSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HistoricalGraphBreakdown.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -142,6 +148,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\CustomTimeRangeSelector.resx">
+      <DependentUpon>CustomTimeRangeSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\HistoricalGraphBreakdown.resx">
       <DependentUpon>HistoricalGraphBreakdown.cs</DependentUpon>
     </EmbeddedResource>

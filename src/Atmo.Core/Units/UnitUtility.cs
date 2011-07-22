@@ -22,10 +22,49 @@
 // ================================================================================
 
 using System;
+using System.Text;
 
 namespace Atmo.Units {
 	public static class UnitUtility {
 		
+		public static string TimeSpanLabelString(TimeSpan span) {
+			var builder = new StringBuilder();
+			// year/week/day
+			if(span.Days >= 365) {
+				if(0 == span.Days % 365) {
+					builder.AppendFormat("{0} Year{1} ", span.Days/365, span.Days == 365 ? String.Empty : "s");
+				}else {
+					builder.AppendFormat("{0} Days ", span.Days);
+				}
+			}else if(span.Days >= 7) {
+				if(0 == span.Days % 7) {
+					builder.AppendFormat("{0} Week{1} ", span.Days / 7, span.Days == 7 ? String.Empty : "s");
+				}else {
+					builder.AppendFormat("{0} Days ", span.Days);
+				}
+			}else if(span.Days > 0) {
+				builder.AppendFormat("{0} Day{1} ", span.Days, span.Days == 1 ? String.Empty : "s");
+			}
+			// hour
+			if(0 != span.Hours) {
+				builder.AppendFormat("{0} Hour{1} ", span.Hours, span.Hours == 1 ? String.Empty : "s");
+			}
+			// min
+			if (0 != span.Minutes) {
+				builder.AppendFormat("{0} Minute{1} ", span.Minutes, span.Minutes == 1 ? String.Empty : "s");
+			}
+			// sec
+			if (0 != span.Seconds) {
+				builder.AppendFormat("{0} Second{1} ", span.Seconds, span.Seconds == 1 ? String.Empty : "s");
+			}
+			// cleanup
+			if(builder.Length > 0 && builder[builder.Length-1] == ' ') {
+				builder.Remove(builder.Length - 1, 1);
+			}
+			// final
+			return builder.ToString();
+		}
+
 		public static double WrapDegree(double degrees) {
 			const double degreePeriod = 360.0;
 			while (degrees < 0) {

@@ -66,7 +66,7 @@ namespace Atmo.UI.DevEx.Controls {
 			SetDataSource(readings);
 		}
 
-		private class CumulativeTimeInfo : List<CumulativeWindow> {
+		public class CumulativeTimeInfo : List<CumulativeWindow> {
 
 			//public TimeSpan unitSpan = OneDay;
 			public TimeUnit unit = TimeUnit.Day;
@@ -85,7 +85,7 @@ namespace Atmo.UI.DevEx.Controls {
 
 		}
 
-		private class CumulativeWindow {
+		public class CumulativeWindow {
 			public DateTime min;
 			public DateTime max;
 			public string name;
@@ -116,7 +116,7 @@ namespace Atmo.UI.DevEx.Controls {
 		private static readonly TimeSpan OneDay = new TimeSpan(1, 0, 0, 0);
 		private static readonly TimeSpan OneWeek = new TimeSpan(7, 0, 0, 0);
 
-		private CumulativeTimeInfo GetCumulativeWindows(DateTime startValue, TimeSpan span, bool stepBack) {
+		public static CumulativeTimeInfo GetCumulativeWindows(DateTime startValue, TimeSpan span, bool stepBack) {
 
 
 			if (span == new TimeSpan(3, 0, 0)) {

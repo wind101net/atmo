@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Atmo.Data;
 using Atmo.Stats;
+using Atmo.UI.DevEx.Controls;
 using Atmo.UI.WinForms.Controls;
 using Atmo.Units;
 using DevExpress.XtraEditors;
@@ -165,14 +166,26 @@ namespace Atmo.UI.DevEx {
 			// TODO: remove this crap and replace with the real thing later
 			// HACK: testing only below here ---------------------------------------------------
 
-			var hackForwardTimeSpan = new TimeSpan(365, 0, 0, 0);
+			/*var hackForwardTimeSpan = new TimeSpan(365, 0, 0, 0);
 			var hackBackTimeSpan = -hackForwardTimeSpan;
-			var then = now.Subtract(hackForwardTimeSpan);
+			var then = now.Subtract(hackForwardTimeSpan);*/
+
+
+			var histTimeSpan = histTimeRangeSelector.SelectedSpan;
+			var histStartDate = histNowChk.Checked
+			    ? now.Subtract(histTimeSpan)
+			    : histDateChooser.DateTime.Date.Add(histTimeChooser.Time.TimeOfDay);
+
+			var cumTimeInfo = HistoricalGraphBreakdown.GetCumulativeWindows(
+				histStartDate.Add(histTimeSpan),
+				histTimeSpan,
+				!histNowChk.Checked
+			);
 
 			var historicalSelected = _dbStore.GetAllSensorInfos().Where(si => _historicSensorViewPanelController.IsSensorSelected(si)).ToList();
 			var sensorReadings = historicalSelected.Select(
 				sensor =>
-				_dbStore.GetReadingSummaries(sensor.Name, now, hackBackTimeSpan, TimeUnit.Hour)
+				_dbStore.GetReadingSummaries(sensor.Name, cumTimeInfo.MaxStamp, cumTimeInfo.MinStamp - cumTimeInfo.MaxStamp, UnitUtility.ChooseBestUnit(histTimeSpan))
 			);
 
 			var historicalSummaries = StatsUtil.JoinReadingSummaryEnumerable(sensorReadings).ToList();
@@ -187,9 +200,9 @@ namespace Atmo.UI.DevEx {
 			historicalGraphBreakdown.PressureUnit = PressureUnit;
 			historicalGraphBreakdown.SpeedUnit = SpeedUnit;
 			historicalGraphBreakdown.SelectedAttributeType = ReadingAttributeType.WindSpeed;
-			historicalGraphBreakdown.StepBack = true;
-			historicalGraphBreakdown.DrillStartDate = then;
-			historicalGraphBreakdown.CumulativeTimeSpan = hackForwardTimeSpan;
+			historicalGraphBreakdown.StepBack = !histNowChk.Checked;
+			historicalGraphBreakdown.DrillStartDate = histStartDate;
+			historicalGraphBreakdown.CumulativeTimeSpan = histTimeSpan;
 
 			historicalGraphBreakdown.SetDataSource(historicalSummaries);
 
@@ -239,6 +252,51 @@ namespace Atmo.UI.DevEx {
 
 		private void TriggerHistoricalUpdate() {
 			_updateHistorical = true;
+		}
+
+		private void drillTimeChooser_Properties_Spin(object sender, DevExpress.XtraEditors.Controls.SpinEventArgs e) {
+
+		}
+
+		private void drillTimeChooser_Properties_EditValueChanged(object sender, EventArgs e) {
+
+		}
+
+		private void drillTimeChooser_Properties_EditValueChanging(object sender, DevExpress.XtraEditors.Controls.ChangingEventArgs e) {
+
+		}
+
+		private void drillTimeChooser_Properties_ParseEditValue(object sender, DevExpress.XtraEditors.Controls.ConvertEditValueEventArgs e) {
+
+		}
+
+		private void drillDateChooser_Properties_EditValueChanged(object sender, EventArgs e) {
+
+		}
+
+		private void histNowChk_CheckedChanged(object sender, EventArgs e) {
+			DateTime now = DateTime.Now;
+			if (histNowChk.Checked) {
+
+				TimeSpan cumulativeTimeSpan = histTimeRangeSelector.SelectedSpan;
+				DateTime drillStartDate = now.Subtract(cumulativeTimeSpan);
+
+				SetHistoricalTimeInputs(histDateChooser, histTimeChooser, drillStartDate);
+				histDateChooser.Enabled = false;
+				histTimeChooser.Enabled = false;
+			}
+			else {
+				histDateChooser.Enabled = true;
+				histTimeChooser.Enabled = (histTimeRangeSelector.SelectedSpan <= new TimeSpan(1, 0, 0, 0));
+				drillTimeChooser_Properties_EditValueChanged(null, null);
+			}
+			TriggerHistoricalUpdate();
+		}
+
+		private void SetHistoricalTimeInputs(DateEdit dateEdit, TimeEdit timeEdit, DateTime value) {
+			dateEdit.DateTime = value.Date;
+			timeEdit.Time = value;
+
 		}
 
 	}

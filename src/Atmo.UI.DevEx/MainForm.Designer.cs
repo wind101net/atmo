@@ -24,6 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.barManager = new DevExpress.XtraBars.BarManager(this.components);
 			this.bar2 = new DevExpress.XtraBars.Bar();
 			this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -55,9 +56,20 @@
 			this.simpleButtonDownloadData = new DevExpress.XtraEditors.SimpleButton();
 			this.windResourceGraph = new Atmo.UI.DevEx.Controls.WindResourceGraph();
 			this.historicalGraphBreakdown = new Atmo.UI.DevEx.Controls.HistoricalGraphBreakdown();
+			this.liveTimeRangeSelector = new Atmo.UI.DevEx.Controls.CustomTimeRangeSelector();
+			this.histTimeRangeSelector = new Atmo.UI.DevEx.Controls.CustomTimeRangeSelector();
+			this.histNowChk = new DevExpress.XtraEditors.CheckEdit();
+			this.histTimeChooser = new DevExpress.XtraEditors.TimeEdit();
+			this.histDateChooser = new DevExpress.XtraEditors.DateEdit();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			this.panelJunk.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.liveTimeRangeSelector.RangeSlider.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.histTimeRangeSelector.RangeSlider.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.histNowChk.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.histTimeChooser.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.histDateChooser.Properties.VistaTimeProperties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.histDateChooser.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// barManager
@@ -241,10 +253,10 @@
 			// 
 			this.liveAtmosphericGraph.ConverterCacheReadingValues = null;
 			this.liveAtmosphericGraph.HeightAboveSeaLevel = 0D;
-			this.liveAtmosphericGraph.Location = new System.Drawing.Point(218, 30);
+			this.liveAtmosphericGraph.Location = new System.Drawing.Point(218, 61);
 			this.liveAtmosphericGraph.Name = "liveAtmosphericGraph";
 			this.liveAtmosphericGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-			this.liveAtmosphericGraph.Size = new System.Drawing.Size(764, 295);
+			this.liveAtmosphericGraph.Size = new System.Drawing.Size(764, 264);
 			this.liveAtmosphericGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
 			this.liveAtmosphericGraph.State = null;
 			this.liveAtmosphericGraph.TabIndex = 4;
@@ -314,10 +326,10 @@
 			// windResourceGraph
 			// 
 			this.windResourceGraph.ConverterCacheReadingValues = null;
-			this.windResourceGraph.Location = new System.Drawing.Point(218, 331);
+			this.windResourceGraph.Location = new System.Drawing.Point(218, 362);
 			this.windResourceGraph.Name = "windResourceGraph";
 			this.windResourceGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-			this.windResourceGraph.Size = new System.Drawing.Size(764, 395);
+			this.windResourceGraph.Size = new System.Drawing.Size(764, 364);
 			this.windResourceGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
 			this.windResourceGraph.State = null;
 			this.windResourceGraph.TabIndex = 28;
@@ -339,11 +351,100 @@
 			this.historicalGraphBreakdown.TabIndex = 33;
 			this.historicalGraphBreakdown.TemperatureUnit = Atmo.Units.TemperatureUnit.Celsius;
 			// 
+			// liveTimeRangeSelector
+			// 
+			this.liveTimeRangeSelector.Appearance.BackColor = System.Drawing.Color.Transparent;
+			this.liveTimeRangeSelector.Appearance.Options.UseBackColor = true;
+			this.liveTimeRangeSelector.Location = new System.Drawing.Point(218, 30);
+			this.liveTimeRangeSelector.Name = "liveTimeRangeSelector";
+			// 
+			// 
+			// 
+			this.liveTimeRangeSelector.RangeSlider.Dock = System.Windows.Forms.DockStyle.Left;
+			this.liveTimeRangeSelector.RangeSlider.Location = new System.Drawing.Point(0, 0);
+			this.liveTimeRangeSelector.RangeSlider.Name = "rangeSlider";
+			this.liveTimeRangeSelector.RangeSlider.Properties.AutoSize = false;
+			this.liveTimeRangeSelector.RangeSlider.Properties.Maximum = 4;
+			this.liveTimeRangeSelector.RangeSlider.Size = new System.Drawing.Size(137, 25);
+			this.liveTimeRangeSelector.RangeSlider.TabIndex = 1;
+			this.liveTimeRangeSelector.SelectedIndex = 0;
+			this.liveTimeRangeSelector.Size = new System.Drawing.Size(200, 25);
+			this.liveTimeRangeSelector.TabIndex = 38;
+			this.liveTimeRangeSelector.TimeSpans = ((System.Collections.Generic.List<System.TimeSpan>)(resources.GetObject("liveTimeRangeSelector.TimeSpans")));
+			// 
+			// histTimeRangeSelector
+			// 
+			this.histTimeRangeSelector.Appearance.BackColor = System.Drawing.Color.Transparent;
+			this.histTimeRangeSelector.Appearance.Options.UseBackColor = true;
+			this.histTimeRangeSelector.Location = new System.Drawing.Point(723, 331);
+			this.histTimeRangeSelector.Name = "histTimeRangeSelector";
+			// 
+			// 
+			// 
+			this.histTimeRangeSelector.RangeSlider.Dock = System.Windows.Forms.DockStyle.Left;
+			this.histTimeRangeSelector.RangeSlider.EditValue = 3;
+			this.histTimeRangeSelector.RangeSlider.Location = new System.Drawing.Point(0, 0);
+			this.histTimeRangeSelector.RangeSlider.Name = "rangeSlider";
+			this.histTimeRangeSelector.RangeSlider.Properties.AutoSize = false;
+			this.histTimeRangeSelector.RangeSlider.Properties.Maximum = 7;
+			this.histTimeRangeSelector.RangeSlider.Size = new System.Drawing.Size(137, 25);
+			this.histTimeRangeSelector.RangeSlider.TabIndex = 1;
+			this.histTimeRangeSelector.RangeSlider.Value = 3;
+			this.histTimeRangeSelector.SelectedIndex = 3;
+			this.histTimeRangeSelector.Size = new System.Drawing.Size(200, 25);
+			this.histTimeRangeSelector.TabIndex = 39;
+			this.histTimeRangeSelector.TimeSpans = ((System.Collections.Generic.List<System.TimeSpan>)(resources.GetObject("histTimeRangeSelector.TimeSpans")));
+			// 
+			// histNowChk
+			// 
+			this.histNowChk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.histNowChk.EditValue = true;
+			this.histNowChk.Location = new System.Drawing.Point(929, 338);
+			this.histNowChk.Name = "histNowChk";
+			this.histNowChk.Properties.Caption = "Latest";
+			this.histNowChk.Size = new System.Drawing.Size(53, 18);
+			this.histNowChk.TabIndex = 44;
+			this.histNowChk.CheckedChanged += new System.EventHandler(this.histNowChk_CheckedChanged);
+			// 
+			// histTimeChooser
+			// 
+			this.histTimeChooser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.histTimeChooser.EditValue = new System.DateTime(2010, 1, 11, 0, 0, 0, 0);
+			this.histTimeChooser.Location = new System.Drawing.Point(617, 336);
+			this.histTimeChooser.Name = "histTimeChooser";
+			this.histTimeChooser.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton()});
+			this.histTimeChooser.Properties.Spin += new DevExpress.XtraEditors.Controls.SpinEventHandler(this.drillTimeChooser_Properties_Spin);
+			this.histTimeChooser.Properties.EditValueChanged += new System.EventHandler(this.drillTimeChooser_Properties_EditValueChanged);
+			this.histTimeChooser.Properties.EditValueChanging += new DevExpress.XtraEditors.Controls.ChangingEventHandler(this.drillTimeChooser_Properties_EditValueChanging);
+			this.histTimeChooser.Properties.ParseEditValue += new DevExpress.XtraEditors.Controls.ConvertEditValueEventHandler(this.drillTimeChooser_Properties_ParseEditValue);
+			this.histTimeChooser.Size = new System.Drawing.Size(100, 20);
+			this.histTimeChooser.TabIndex = 49;
+			// 
+			// histDateChooser
+			// 
+			this.histDateChooser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.histDateChooser.EditValue = null;
+			this.histDateChooser.Location = new System.Drawing.Point(513, 336);
+			this.histDateChooser.Name = "histDateChooser";
+			this.histDateChooser.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+			this.histDateChooser.Properties.VistaTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton()});
+			this.histDateChooser.Properties.EditValueChanged += new System.EventHandler(this.drillDateChooser_Properties_EditValueChanged);
+			this.histDateChooser.Size = new System.Drawing.Size(98, 20);
+			this.histDateChooser.TabIndex = 50;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(994, 1287);
+			this.Controls.Add(this.histDateChooser);
+			this.Controls.Add(this.histTimeChooser);
+			this.Controls.Add(this.histNowChk);
+			this.Controls.Add(this.liveTimeRangeSelector);
+			this.Controls.Add(this.histTimeRangeSelector);
 			this.Controls.Add(this.historicalGraphBreakdown);
 			this.Controls.Add(this.windResourceGraph);
 			this.Controls.Add(this.liveAtmosphericGraph);
@@ -359,6 +460,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
 			this.panelSensors.ResumeLayout(false);
 			this.panelJunk.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.liveTimeRangeSelector.RangeSlider.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.histTimeRangeSelector.RangeSlider.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.histNowChk.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.histTimeChooser.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.histDateChooser.Properties.VistaTimeProperties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.histDateChooser.Properties)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -396,6 +503,11 @@
 		private DevExpress.XtraEditors.SimpleButton simpleButtonDownloadData;
 		private Controls.WindResourceGraph windResourceGraph;
 		private Controls.HistoricalGraphBreakdown historicalGraphBreakdown;
+		private Controls.CustomTimeRangeSelector histTimeRangeSelector;
+		private Controls.CustomTimeRangeSelector liveTimeRangeSelector;
+		private DevExpress.XtraEditors.CheckEdit histNowChk;
+		private DevExpress.XtraEditors.DateEdit histDateChooser;
+		private DevExpress.XtraEditors.TimeEdit histTimeChooser;
 
 	}
 }
