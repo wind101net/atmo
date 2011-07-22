@@ -8,3 +8,6 @@
 /src/*/obj
 *.cache
 /Sensor Data
+/build/SetupMain/obj
+/build/SetupMain/bin
+/build/SetupMain/buildresult
