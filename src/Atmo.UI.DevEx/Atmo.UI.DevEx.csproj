@@ -74,6 +74,12 @@
     <Compile Include="Controls\HistoricalGraphBreakdown.Designer.cs">
       <DependentUpon>HistoricalGraphBreakdown.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HistoricalTimeSelectHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\HistoricalTimeSelectHeader.Designer.cs">
+      <DependentUpon>HistoricalTimeSelectHeader.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ImportAnemMap.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -85,6 +91,12 @@
     </Compile>
     <Compile Include="Controls\LiveAtmosphericGraph.Designer.cs">
       <DependentUpon>LiveAtmosphericGraph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LiveAtmosphericHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LiveAtmosphericHeader.Designer.cs">
+      <DependentUpon>LiveAtmosphericHeader.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SensorSetupLine.cs">
       <SubType>UserControl</SubType>
@@ -124,6 +136,11 @@
     <Compile Include="FindSensorsDialog.designer.cs">
       <DependentUpon>FindSensorsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,11 +171,17 @@
     <EmbeddedResource Include="Controls\HistoricalGraphBreakdown.resx">
       <DependentUpon>HistoricalGraphBreakdown.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\HistoricalTimeSelectHeader.resx">
+      <DependentUpon>HistoricalTimeSelectHeader.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ImportAnemMap.resx">
       <DependentUpon>ImportAnemMap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\LiveAtmosphericGraph.resx">
       <DependentUpon>LiveAtmosphericGraph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LiveAtmosphericHeader.resx">
+      <DependentUpon>LiveAtmosphericHeader.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SensorSetupLine.resx">
       <DependentUpon>SensorSetupLine.cs</DependentUpon>
@@ -175,6 +198,10 @@
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="FindSensorsDialog.resx">
       <DependentUpon>FindSensorsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

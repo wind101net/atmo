@@ -75,7 +75,9 @@ namespace Atmo.UI.DevEx {
 				DefaultSelected = true
 			};
 
+			historicalTimeSelectHeader.CheckEdit.CheckedChanged += histNowChk_CheckedChanged;
 			ReloadHistoric();
+
 		}
 
 		public TemperatureUnit TemperatureUnit { get; set; }
@@ -171,6 +173,11 @@ namespace Atmo.UI.DevEx {
 			var then = now.Subtract(hackForwardTimeSpan);*/
 
 
+			var histTimeRangeSelector = historicalTimeSelectHeader.TimeRange;
+			var histDateChooser = historicalTimeSelectHeader.DateEdit;
+			var histNowChk = historicalTimeSelectHeader.CheckEdit;
+			var histTimeChooser = historicalTimeSelectHeader.TimeEdit;
+
 			var histTimeSpan = histTimeRangeSelector.SelectedSpan;
 			var histStartDate = histNowChk.Checked
 			    ? now.Subtract(histTimeSpan)
@@ -205,7 +212,7 @@ namespace Atmo.UI.DevEx {
 			historicalGraphBreakdown.CumulativeTimeSpan = histTimeSpan;
 
 			historicalGraphBreakdown.SetDataSource(historicalSummaries);
-
+			
 
 
 		}
@@ -275,29 +282,9 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void histNowChk_CheckedChanged(object sender, EventArgs e) {
-			DateTime now = DateTime.Now;
-			if (histNowChk.Checked) {
-
-				TimeSpan cumulativeTimeSpan = histTimeRangeSelector.SelectedSpan;
-				DateTime drillStartDate = now.Subtract(cumulativeTimeSpan);
-
-				SetHistoricalTimeInputs(histDateChooser, histTimeChooser, drillStartDate);
-				histDateChooser.Enabled = false;
-				histTimeChooser.Enabled = false;
-			}
-			else {
-				histDateChooser.Enabled = true;
-				histTimeChooser.Enabled = (histTimeRangeSelector.SelectedSpan <= new TimeSpan(1, 0, 0, 0));
-				drillTimeChooser_Properties_EditValueChanged(null, null);
-			}
 			TriggerHistoricalUpdate();
 		}
 
-		private void SetHistoricalTimeInputs(DateEdit dateEdit, TimeEdit timeEdit, DateTime value) {
-			dateEdit.DateTime = value.Date;
-			timeEdit.Time = value;
-
-		}
 
 	}
 }

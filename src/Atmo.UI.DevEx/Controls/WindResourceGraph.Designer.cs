@@ -50,6 +50,7 @@
 			this.chartControlWindSpeedFreq = new DevExpress.XtraCharts.ChartControl();
 			this.chartControlWindDir = new DevExpress.XtraCharts.ChartControl();
 			this.bindingSourceWindDir = new System.Windows.Forms.BindingSource(this.components);
+			this.groupControl = new DevExpress.XtraEditors.GroupControl();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControlWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
@@ -76,6 +77,8 @@
 			((System.ComponentModel.ISupportInitialize)(radarPointSeriesLabel3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(polarAreaSeriesView3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindDir)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
+			this.groupControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// bindingSourceWindSpeedFreq
@@ -108,11 +111,10 @@
 			this.chartControlWindSpeedFreq.Legend.Direction = DevExpress.XtraCharts.LegendDirection.LeftToRight;
 			this.chartControlWindSpeedFreq.Legend.EquallySpacedItems = false;
 			this.chartControlWindSpeedFreq.Legend.Shadow.Visible = true;
-			this.chartControlWindSpeedFreq.Location = new System.Drawing.Point(0, 0);
+			this.chartControlWindSpeedFreq.Location = new System.Drawing.Point(2, 22);
 			this.chartControlWindSpeedFreq.Name = "chartControlWindSpeedFreq";
 			series1.ArgumentDataMember = "SpeedPropertty";
 			series1.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			//series1.DataSource = this.bindingSourceWindSpeedFreq;
 			pointSeriesLabel1.LineVisible = true;
 			pointSeriesLabel1.Visible = false;
 			series1.Label = pointSeriesLabel1;
@@ -126,7 +128,6 @@
 			series1.View = splineAreaSeriesView1;
 			series2.ArgumentDataMember = "SpeedPropertty";
 			series2.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			//series2.DataSource = this.bindingSourceWindSpeedFreq;
 			sideBySideBarSeriesLabel1.LineVisible = true;
 			sideBySideBarSeriesLabel1.Visible = false;
 			series2.Label = sideBySideBarSeriesLabel1;
@@ -138,7 +139,6 @@
 			series2.View = sideBySideBarSeriesView1;
 			series3.ArgumentDataMember = "SpeedPropertty";
 			series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			//series3.DataSource = this.bindingSourceWindSpeedFreq;
 			pointSeriesLabel2.LineVisible = true;
 			pointSeriesLabel2.Visible = false;
 			series3.Label = pointSeriesLabel2;
@@ -159,7 +159,7 @@
 			this.chartControlWindSpeedFreq.SeriesTemplate.View = splineAreaSeriesView2;
 			this.chartControlWindSpeedFreq.SideBySideBarDistanceFixed = 0;
 			this.chartControlWindSpeedFreq.SideBySideEqualBarWidth = true;
-			this.chartControlWindSpeedFreq.Size = new System.Drawing.Size(898, 203);
+			this.chartControlWindSpeedFreq.Size = new System.Drawing.Size(894, 203);
 			this.chartControlWindSpeedFreq.TabIndex = 0;
 			// 
 			// chartControlWindDir
@@ -183,11 +183,10 @@
 			this.chartControlWindDir.Legend.Shadow.Visible = true;
 			this.chartControlWindDir.Legend.TextOffset = 1;
 			this.chartControlWindDir.Legend.VerticalIndent = 1;
-			this.chartControlWindDir.Location = new System.Drawing.Point(0, 203);
+			this.chartControlWindDir.Location = new System.Drawing.Point(2, 225);
 			this.chartControlWindDir.Name = "chartControlWindDir";
 			series4.ArgumentDataMember = "DirectionProperty";
 			series4.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			//series4.DataSource = this.bindingSourceWindDir;
 			radarPointSeriesLabel1.LineVisible = true;
 			radarPointSeriesLabel1.Visible = false;
 			series4.Label = radarPointSeriesLabel1;
@@ -200,7 +199,6 @@
 			series4.View = polarAreaSeriesView1;
 			series5.ArgumentDataMember = "DirectionProperty";
 			series5.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			//series5.DataSource = this.bindingSourceWindDir;
 			radarPointSeriesLabel2.LineVisible = true;
 			radarPointSeriesLabel2.Visible = false;
 			series5.Label = radarPointSeriesLabel2;
@@ -218,19 +216,29 @@
 			this.chartControlWindDir.SeriesTemplate.Label = radarPointSeriesLabel3;
 			polarAreaSeriesView3.Transparency = ((byte)(0));
 			this.chartControlWindDir.SeriesTemplate.View = polarAreaSeriesView3;
-			this.chartControlWindDir.Size = new System.Drawing.Size(898, 676);
+			this.chartControlWindDir.Size = new System.Drawing.Size(894, 652);
 			this.chartControlWindDir.TabIndex = 1;
 			// 
 			// bindingSourceWindDir
 			// 
 			this.bindingSourceWindDir.DataSource = typeof(Atmo.Stats.WindDirectionEnergy);
 			// 
+			// groupControl
+			// 
+			this.groupControl.Controls.Add(this.chartControlWindDir);
+			this.groupControl.Controls.Add(this.chartControlWindSpeedFreq);
+			this.groupControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupControl.Location = new System.Drawing.Point(0, 0);
+			this.groupControl.Name = "groupControl";
+			this.groupControl.Size = new System.Drawing.Size(898, 879);
+			this.groupControl.TabIndex = 2;
+			this.groupControl.Text = "Wind Resource Analysis";
+			// 
 			// WindResourceGraph
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.chartControlWindDir);
-			this.Controls.Add(this.chartControlWindSpeedFreq);
+			this.Controls.Add(this.groupControl);
 			this.Name = "WindResourceGraph";
 			this.Size = new System.Drawing.Size(898, 879);
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).EndInit();
@@ -259,6 +267,8 @@
 			((System.ComponentModel.ISupportInitialize)(polarAreaSeriesView3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControlWindDir)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindDir)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl)).EndInit();
+			this.groupControl.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -269,5 +279,6 @@
 		private System.Windows.Forms.BindingSource bindingSourceWindSpeedFreq;
 		private DevExpress.XtraCharts.ChartControl chartControlWindDir;
 		private System.Windows.Forms.BindingSource bindingSourceWindDir;
+		private DevExpress.XtraEditors.GroupControl groupControl;
 	}
 }

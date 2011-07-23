@@ -24,24 +24,39 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+			this.groupControl = new DevExpress.XtraEditors.GroupControl();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
+			this.groupControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// flowLayoutPanel
 			// 
 			this.flowLayoutPanel.AutoScroll = true;
 			this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanel.Location = new System.Drawing.Point(2, 22);
 			this.flowLayoutPanel.Name = "flowLayoutPanel";
-			this.flowLayoutPanel.Size = new System.Drawing.Size(988, 834);
+			this.flowLayoutPanel.Size = new System.Drawing.Size(635, 484);
 			this.flowLayoutPanel.TabIndex = 0;
+			// 
+			// groupControl
+			// 
+			this.groupControl.Controls.Add(this.flowLayoutPanel);
+			this.groupControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupControl.Location = new System.Drawing.Point(0, 0);
+			this.groupControl.Name = "groupControl";
+			this.groupControl.Size = new System.Drawing.Size(639, 508);
+			this.groupControl.TabIndex = 1;
+			this.groupControl.Text = "Historical Breakdown";
 			// 
 			// HistoricalGraphBreakdown
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.flowLayoutPanel);
+			this.Controls.Add(this.groupControl);
 			this.Name = "HistoricalGraphBreakdown";
-			this.Size = new System.Drawing.Size(988, 834);
+			this.Size = new System.Drawing.Size(639, 508);
+			((System.ComponentModel.ISupportInitialize)(this.groupControl)).EndInit();
+			this.groupControl.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -49,5 +64,6 @@
 		#endregion
 
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
+		private DevExpress.XtraEditors.GroupControl groupControl;
 	}
 }

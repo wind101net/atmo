@@ -63,9 +63,11 @@
 			DevExpress.XtraCharts.PointSeriesView pointSeriesView1 = new DevExpress.XtraCharts.PointSeriesView();
 			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel7 = new DevExpress.XtraCharts.PointSeriesLabel();
 			DevExpress.XtraCharts.AreaSeriesView areaSeriesView4 = new DevExpress.XtraCharts.AreaSeriesView();
+			this.bindingSourceStampValue = new System.Windows.Forms.BindingSource(this.components);
 			this.chartControl = new DevExpress.XtraCharts.ChartControl();
 			this.bindingSourceReading = new System.Windows.Forms.BindingSource(this.components);
-			this.bindingSourceStampValue = new System.Windows.Forms.BindingSource(this.components);
+			this.groupControl = new DevExpress.XtraEditors.GroupControl();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceStampValue)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagramPane1)).BeginInit();
@@ -96,8 +98,14 @@
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel7)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceStampValue)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
+			this.groupControl.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// bindingSourceStampValue
+			// 
+			this.bindingSourceStampValue.AllowNew = false;
+			this.bindingSourceStampValue.DataSource = typeof(Atmo.TimeStampedValue);
 			// 
 			// chartControl
 			// 
@@ -294,7 +302,7 @@
 			this.chartControl.Legend.TextOffset = 1;
 			this.chartControl.Legend.VerticalIndent = 1;
 			this.chartControl.Legend.Visible = false;
-			this.chartControl.Location = new System.Drawing.Point(0, 0);
+			this.chartControl.Location = new System.Drawing.Point(2, 22);
 			this.chartControl.Name = "chartControl";
 			this.chartControl.PaletteBaseColorNumber = 4;
 			this.chartControl.PaletteName = "Apex";
@@ -388,7 +396,7 @@
 			this.chartControl.SeriesTemplate.Label = pointSeriesLabel7;
 			areaSeriesView4.Transparency = ((byte)(0));
 			this.chartControl.SeriesTemplate.View = areaSeriesView4;
-			this.chartControl.Size = new System.Drawing.Size(599, 478);
+			this.chartControl.Size = new System.Drawing.Size(595, 454);
 			this.chartControl.TabIndex = 0;
 			// 
 			// bindingSourceReading
@@ -396,18 +404,24 @@
 			this.bindingSourceReading.AllowNew = false;
 			this.bindingSourceReading.DataSource = typeof(Atmo.Reading);
 			// 
-			// bindingSourceStampValue
+			// groupControl
 			// 
-			this.bindingSourceStampValue.AllowNew = false;
-			this.bindingSourceStampValue.DataSource = typeof(Atmo.TimeStampedValue);
+			this.groupControl.Controls.Add(this.chartControl);
+			this.groupControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupControl.Location = new System.Drawing.Point(0, 0);
+			this.groupControl.Name = "groupControl";
+			this.groupControl.Size = new System.Drawing.Size(599, 478);
+			this.groupControl.TabIndex = 1;
+			this.groupControl.Text = "Live Readings";
 			// 
 			// LiveAtmosphericGraph
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.chartControl);
+			this.Controls.Add(this.groupControl);
 			this.Name = "LiveAtmosphericGraph";
 			this.Size = new System.Drawing.Size(599, 478);
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceStampValue)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagramPane1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagramPane2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY1)).EndInit();
@@ -438,7 +452,8 @@
 			((System.ComponentModel.ISupportInitialize)(areaSeriesView4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceStampValue)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl)).EndInit();
+			this.groupControl.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -448,5 +463,6 @@
 		private DevExpress.XtraCharts.ChartControl chartControl;
 		private System.Windows.Forms.BindingSource bindingSourceReading;
 		private System.Windows.Forms.BindingSource bindingSourceStampValue;
+		private DevExpress.XtraEditors.GroupControl groupControl;
 	}
 }
