@@ -30,6 +30,10 @@
 			this.textEditFolderPath = new DevExpress.XtraEditors.TextEdit();
 			this.buttonSelectDataFolder = new DevExpress.XtraEditors.SimpleButton();
 			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+			this.importAnemMap3 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
+			this.importAnemMap2 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
+			this.importAnemMap1 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
+			this.importAnemMap0 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
 			this.buttonCancel = new DevExpress.XtraEditors.SimpleButton();
 			this.buttonImport = new DevExpress.XtraEditors.SimpleButton();
 			this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
@@ -38,10 +42,6 @@
 			this.daqCheckTimer = new System.Windows.Forms.Timer(this.components);
 			this.groupControl4 = new DevExpress.XtraEditors.GroupControl();
 			this.chkOverwrite = new DevExpress.XtraEditors.CheckEdit();
-			this.importAnemMap3 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
-			this.importAnemMap2 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
-			this.importAnemMap1 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
-			this.importAnemMap0 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
 			this.groupControl1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.listBoxAnemFiles)).BeginInit();
@@ -115,82 +115,6 @@
 			this.groupControl2.TabIndex = 1;
 			this.groupControl2.Text = "2. Select Anemometers For Import";
 			// 
-			// buttonCancel
-			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonCancel.Location = new System.Drawing.Point(12, 442);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 2;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-			// 
-			// buttonImport
-			// 
-			this.buttonImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonImport.Enabled = false;
-			this.buttonImport.Location = new System.Drawing.Point(93, 442);
-			this.buttonImport.Name = "buttonImport";
-			this.buttonImport.Size = new System.Drawing.Size(75, 23);
-			this.buttonImport.TabIndex = 3;
-			this.buttonImport.Text = "Import";
-			this.buttonImport.Click += new System.EventHandler(this.buttonImport_Click);
-			// 
-			// progressBarControl1
-			// 
-			this.progressBarControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.progressBarControl1.Enabled = false;
-			this.progressBarControl1.Location = new System.Drawing.Point(174, 442);
-			this.progressBarControl1.Name = "progressBarControl1";
-			this.progressBarControl1.Size = new System.Drawing.Size(401, 23);
-			this.progressBarControl1.TabIndex = 4;
-			// 
-			// groupControl3
-			// 
-			this.groupControl3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupControl3.Controls.Add(this.syncChk);
-			this.groupControl3.Location = new System.Drawing.Point(12, 314);
-			this.groupControl3.Name = "groupControl3";
-			this.groupControl3.Size = new System.Drawing.Size(563, 58);
-			this.groupControl3.TabIndex = 5;
-			this.groupControl3.Text = "3. Synchronization";
-			// 
-			// syncChk
-			// 
-			this.syncChk.Enabled = false;
-			this.syncChk.Location = new System.Drawing.Point(10, 30);
-			this.syncChk.Name = "syncChk";
-			this.syncChk.Properties.Caption = "Synchronize time and adjust data after import.";
-			this.syncChk.Size = new System.Drawing.Size(545, 18);
-			this.syncChk.TabIndex = 0;
-			// 
-			// daqCheckTimer
-			// 
-			this.daqCheckTimer.Enabled = true;
-			this.daqCheckTimer.Interval = 333;
-			this.daqCheckTimer.Tick += new System.EventHandler(this.daqCheckTimer_Tick);
-			// 
-			// groupControl4
-			// 
-			this.groupControl4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupControl4.Controls.Add(this.chkOverwrite);
-			this.groupControl4.Location = new System.Drawing.Point(12, 378);
-			this.groupControl4.Name = "groupControl4";
-			this.groupControl4.Size = new System.Drawing.Size(563, 58);
-			this.groupControl4.TabIndex = 6;
-			this.groupControl4.Text = "4. Options";
-			// 
-			// chkOverwrite
-			// 
-			this.chkOverwrite.Location = new System.Drawing.Point(10, 31);
-			this.chkOverwrite.Name = "chkOverwrite";
-			this.chkOverwrite.Properties.Caption = "Overwrite";
-			this.chkOverwrite.Size = new System.Drawing.Size(75, 18);
-			this.chkOverwrite.TabIndex = 0;
-			// 
 			// importAnemMap3
 			// 
 			this.importAnemMap3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -246,6 +170,82 @@
 			this.importAnemMap0.Size = new System.Drawing.Size(553, 26);
 			this.importAnemMap0.StartStamp = new System.DateTime(((long)(0)));
 			this.importAnemMap0.TabIndex = 0;
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonCancel.Location = new System.Drawing.Point(12, 442);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.TabIndex = 2;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			// 
+			// buttonImport
+			// 
+			this.buttonImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonImport.Enabled = false;
+			this.buttonImport.Location = new System.Drawing.Point(93, 442);
+			this.buttonImport.Name = "buttonImport";
+			this.buttonImport.Size = new System.Drawing.Size(75, 23);
+			this.buttonImport.TabIndex = 3;
+			this.buttonImport.Text = "Import";
+			this.buttonImport.Click += new System.EventHandler(this.buttonImport_Click);
+			// 
+			// progressBarControl1
+			// 
+			this.progressBarControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.progressBarControl1.Enabled = false;
+			this.progressBarControl1.Location = new System.Drawing.Point(174, 442);
+			this.progressBarControl1.Name = "progressBarControl1";
+			this.progressBarControl1.Size = new System.Drawing.Size(401, 23);
+			this.progressBarControl1.TabIndex = 4;
+			// 
+			// groupControl3
+			// 
+			this.groupControl3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupControl3.Controls.Add(this.syncChk);
+			this.groupControl3.Location = new System.Drawing.Point(12, 314);
+			this.groupControl3.Name = "groupControl3";
+			this.groupControl3.Size = new System.Drawing.Size(563, 58);
+			this.groupControl3.TabIndex = 5;
+			this.groupControl3.Text = "3. Synchronization";
+			// 
+			// syncChk
+			// 
+			this.syncChk.Enabled = false;
+			this.syncChk.Location = new System.Drawing.Point(10, 30);
+			this.syncChk.Name = "syncChk";
+			this.syncChk.Properties.Caption = "Synchronize logger time and adjust data after import.";
+			this.syncChk.Size = new System.Drawing.Size(545, 18);
+			this.syncChk.TabIndex = 0;
+			// 
+			// daqCheckTimer
+			// 
+			this.daqCheckTimer.Enabled = true;
+			this.daqCheckTimer.Interval = 333;
+			this.daqCheckTimer.Tick += new System.EventHandler(this.daqCheckTimer_Tick);
+			// 
+			// groupControl4
+			// 
+			this.groupControl4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupControl4.Controls.Add(this.chkOverwrite);
+			this.groupControl4.Location = new System.Drawing.Point(12, 378);
+			this.groupControl4.Name = "groupControl4";
+			this.groupControl4.Size = new System.Drawing.Size(563, 58);
+			this.groupControl4.TabIndex = 6;
+			this.groupControl4.Text = "4. Options";
+			// 
+			// chkOverwrite
+			// 
+			this.chkOverwrite.Location = new System.Drawing.Point(10, 31);
+			this.chkOverwrite.Name = "chkOverwrite";
+			this.chkOverwrite.Properties.Caption = "Overwrite";
+			this.chkOverwrite.Size = new System.Drawing.Size(75, 18);
+			this.chkOverwrite.TabIndex = 0;
 			// 
 			// ImportDataForm
 			// 

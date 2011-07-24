@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Product Id="d429de7b-2717-4ce3-b49e-6ac4b067d1cd" Name="Atmo 2" Language="1033" Version="1.0.0.0" Manufacturer="Barani Design" UpgradeCode="22cf86d5-9ef4-402b-88eb-7cbb1c7a8ed9">
 		<Package InstallerVersion="200" Compressed="yes" />
-
+		<Property Id="MSIFASTINSTALL" Value="7" />
 		<Media Id="1" Cabinet="atmo.cab" EmbedCab="yes" />
 
 		<Directory Id="TARGETDIR" Name="SourceDir">

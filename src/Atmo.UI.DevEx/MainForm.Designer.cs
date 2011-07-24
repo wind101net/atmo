@@ -320,7 +320,7 @@
 			// 
 			this.windResourceGraph.ConverterCacheReadingValues = null;
 			this.windResourceGraph.Dock = System.Windows.Forms.DockStyle.Top;
-			this.windResourceGraph.Location = new System.Drawing.Point(0, 562);
+			this.windResourceGraph.Location = new System.Drawing.Point(0, 1123);
 			this.windResourceGraph.Name = "windResourceGraph";
 			this.windResourceGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
 			this.windResourceGraph.Size = new System.Drawing.Size(586, 778);
@@ -335,7 +335,7 @@
 			this.historicalGraphBreakdown.CumulativeTimeSpan = System.TimeSpan.Parse("00:00:00");
 			this.historicalGraphBreakdown.Dock = System.Windows.Forms.DockStyle.Top;
 			this.historicalGraphBreakdown.DrillStartDate = new System.DateTime(((long)(0)));
-			this.historicalGraphBreakdown.Location = new System.Drawing.Point(0, 1340);
+			this.historicalGraphBreakdown.Location = new System.Drawing.Point(0, 562);
 			this.historicalGraphBreakdown.Name = "historicalGraphBreakdown";
 			this.historicalGraphBreakdown.PressureUnit = Atmo.Units.PressureUnit.Pascals;
 			this.historicalGraphBreakdown.SelectedAttributeType = Atmo.ReadingAttributeType.Temperature;
@@ -375,8 +375,8 @@
 			this.mainScrollableControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.mainScrollableControl.Controls.Add(this.historicalGraphBreakdown);
 			this.mainScrollableControl.Controls.Add(this.windResourceGraph);
+			this.mainScrollableControl.Controls.Add(this.historicalGraphBreakdown);
 			this.mainScrollableControl.Controls.Add(this.historicalTimeSelectHeader);
 			this.mainScrollableControl.Controls.Add(this.liveAtmosphericGraph);
 			this.mainScrollableControl.Controls.Add(this.liveAtmosphericHeader);

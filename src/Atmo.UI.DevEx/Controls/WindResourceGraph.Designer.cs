@@ -94,7 +94,7 @@
 			xyDiagram1.AxisX.ScaleBreakOptions.Style = DevExpress.XtraCharts.ScaleBreakStyle.Straight;
 			xyDiagram1.AxisX.Tickmarks.MinorVisible = false;
 			xyDiagram1.AxisX.VisibleInPanesSerializable = "-1";
-			xyDiagram1.AxisY.Range.ScrollingRange.SideMarginsEnabled = true;
+			xyDiagram1.AxisY.Range.ScrollingRange.SideMarginsEnabled = false;
 			xyDiagram1.AxisY.Range.SideMarginsEnabled = true;
 			xyDiagram1.AxisY.VisibleInPanesSerializable = "-1";
 			secondaryAxisY1.AxisID = 0;
@@ -118,24 +118,26 @@
 			pointSeriesLabel1.LineVisible = true;
 			pointSeriesLabel1.Visible = false;
 			series1.Label = pointSeriesLabel1;
-			series1.Name = "Wind Energy";
-			series1.ValueDataMembersSerializable = "Energy";
+			series1.Name = "Wind Power";
+			series1.ValueDataMembersSerializable = "Power";
 			splineAreaSeriesView1.AxisYName = "Secondary AxisY 1";
-			splineAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(135)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(64)))));
+			splineAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(64)))));
 			splineAreaSeriesView1.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
 			splineAreaSeriesView1.MarkerOptions.Visible = false;
-			splineAreaSeriesView1.Transparency = ((byte)(120));
 			series1.View = splineAreaSeriesView1;
 			series2.ArgumentDataMember = "SpeedPropertty";
 			series2.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
+			series2.DataFilters.ClearAndAddRange(new DevExpress.XtraCharts.DataFilter[] {
+            new DevExpress.XtraCharts.DataFilter("SpeedPropertty", "System.Double", DevExpress.XtraCharts.DataFilterCondition.NotEqual, 0D)});
 			sideBySideBarSeriesLabel1.LineVisible = true;
 			sideBySideBarSeriesLabel1.Visible = false;
 			series2.Label = sideBySideBarSeriesLabel1;
 			series2.Name = "Wind Speed Frequency";
 			series2.ValueDataMembersSerializable = "FrequencyProperty";
 			sideBySideBarSeriesView1.BarWidth = 1D;
-			sideBySideBarSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(135)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
+			sideBySideBarSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
 			sideBySideBarSeriesView1.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
+			sideBySideBarSeriesView1.Transparency = ((byte)(135));
 			series2.View = sideBySideBarSeriesView1;
 			series3.ArgumentDataMember = "SpeedPropertty";
 			series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
@@ -164,11 +166,6 @@
 			// 
 			// chartControlWindDir
 			// 
-			polarDiagram1.AxisX.NumericOptions.Format = DevExpress.XtraCharts.NumericFormat.Number;
-			polarDiagram1.AxisX.NumericOptions.Precision = 0;
-			polarDiagram1.AxisY.MinorCount = 1;
-			polarDiagram1.AxisY.NumericOptions.Format = DevExpress.XtraCharts.NumericFormat.Percent;
-			polarDiagram1.AxisY.NumericOptions.Precision = 1;
 			polarDiagram1.AxisY.Range.ScrollingRange.SideMarginsEnabled = true;
 			polarDiagram1.AxisY.Range.SideMarginsEnabled = true;
 			polarDiagram1.RotationDirection = DevExpress.XtraCharts.RadarDiagramRotationDirection.Clockwise;
@@ -190,11 +187,9 @@
 			radarPointSeriesLabel1.LineVisible = true;
 			radarPointSeriesLabel1.Visible = false;
 			series4.Label = radarPointSeriesLabel1;
-			series4.Name = "Wind From Direction";
-			series4.ValueDataMembersSerializable = "FrequencyProperty";
-			polarAreaSeriesView1.Border.Visible = false;
-			polarAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-			polarAreaSeriesView1.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
+			series4.Name = "Power From Direction";
+			series4.ValueDataMembersSerializable = "PowerProperty";
+			polarAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(64)))));
 			polarAreaSeriesView1.MarkerOptions.Visible = false;
 			series4.View = polarAreaSeriesView1;
 			series5.ArgumentDataMember = "DirectionProperty";
@@ -202,11 +197,12 @@
 			radarPointSeriesLabel2.LineVisible = true;
 			radarPointSeriesLabel2.Visible = false;
 			series5.Label = radarPointSeriesLabel2;
-			series5.Name = "Energy From Direction";
-			series5.ValueDataMembersSerializable = "EnergyProperty";
-			polarAreaSeriesView2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+			series5.Name = "Wind From Direction";
+			series5.ValueDataMembersSerializable = "FrequencyProperty";
+			polarAreaSeriesView2.Border.Visible = false;
+			polarAreaSeriesView2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
+			polarAreaSeriesView2.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
 			polarAreaSeriesView2.MarkerOptions.Visible = false;
-			polarAreaSeriesView2.Transparency = ((byte)(200));
 			series5.View = polarAreaSeriesView2;
 			this.chartControlWindDir.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
         series4,

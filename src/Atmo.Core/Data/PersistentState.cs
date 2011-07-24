@@ -24,6 +24,7 @@
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using Atmo.Units;
 
 namespace Atmo.Data {
 
@@ -89,6 +90,7 @@ namespace Atmo.Data {
 			MinRangeSizeAirDensity = 0.05;
 			HeightAboveSeaLevel = Double.NaN;
 			UserGraphAttribute = default(UserCalculatedAttribute);
+			UnitGroup = default(UnitGroupType);
 		}
 
 		public bool IsDirty { get; set; }
@@ -107,6 +109,18 @@ namespace Atmo.Data {
 
 		[XmlElement("HeightAboveSeaLevel")]
 		public double HeightAboveSeaLevel { get; set; }
+
+		[XmlElement("UnitGroupType")]
+		public UnitGroupType UnitGroup { get; set; }
+
+		[XmlIgnore]
+		public PressureUnit PressureUnit { get { return UnitUtility.GetPressureUnitForGroup(UnitGroup); } }
+
+		[XmlIgnore]
+		public TemperatureUnit TemperatureUnit { get { return UnitUtility.GetTemperatureUnitForGroup(UnitGroup); } }
+
+		[XmlIgnore]
+		public SpeedUnit SpeedUnit { get { return UnitUtility.GetSpeedUnitForGroup(UnitGroup); } }
 
 	}
 }

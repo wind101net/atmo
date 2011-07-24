@@ -21,50 +21,9 @@
 //
 // ================================================================================
 
-namespace Atmo.Stats {
-	public class WindSpeedFrequency {
-
-		public readonly double Speed;
-		public int Frequency;
-		public double Weibull;
-
-		public WindSpeedFrequency(double speed) {
-			Speed = speed;
-			Frequency = 0;
-			Weibull = 0;
-		}
-
-		public WindSpeedFrequency(double speed, int frequency) {
-			Speed = speed;
-			Frequency = frequency;
-			Weibull = 0;
-		}
-
-		public WindSpeedFrequency(double speed, int frequency, double weibull) {
-			Speed = speed;
-			Frequency = frequency;
-			Weibull = weibull;
-		}
-
-		public double SpeedPropertty {
-			get { return Speed; }
-		}
-
-		public int FrequencyProperty {
-			get { return Frequency; }
-			//set { _frequency = value; }
-		}
-
-		public double WeibullProperty {
-			get { return Weibull; }
-			//set { _weibull = value; }
-		}
-
-		public double Power {
-			get {
-				return Speed * Speed * Speed * (double)Frequency;
-			}
-		}
-
+namespace Atmo.Units {
+	public enum UnitGroupType {
+		Metric = 0,
+		English
 	}
 }

@@ -26,6 +26,7 @@ using System.Linq;
 using Atmo.Data;
 using Atmo.Stats;
 using Atmo.Units;
+using DevExpress.XtraCharts;
 
 namespace Atmo.UI.DevEx.Controls {
 	public partial class WindResourceGraph : DevExpress.XtraEditors.XtraUserControl {
@@ -71,8 +72,9 @@ namespace Atmo.UI.DevEx.Controls {
 				windCalc.Process(item);
 			}
 
+			var speedFrequencyData = windCalc.WindSpeedFrequencyData;
 			chartControlWindDir.DataSource = windCalc.WindDirectionEnergyData;
-			chartControlWindSpeedFreq.DataSource = windCalc.WindSpeedFrequencyData;
+			chartControlWindSpeedFreq.DataSource = speedFrequencyData;
 
 		}
 

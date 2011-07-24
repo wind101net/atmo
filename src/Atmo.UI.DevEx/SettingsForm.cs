@@ -41,17 +41,22 @@ namespace Atmo.UI.DevEx {
 			var userGraphValues = (PersistentState.UserCalculatedAttribute[])Enum.GetValues(typeof (PersistentState.UserCalculatedAttribute));
 			comboBoxEditUserGraph.Properties.Items.AddRange(userGraphValues);
 
+			var unitGroupValues = (UnitGroupType[]) Enum.GetValues(typeof (UnitGroupType));
+			comboBoxEditUnitGroup.Properties.Items.AddRange(unitGroupValues);
+
 			SetValuesFromState();
 		}
 
 		public void SetValuesFromState() {
 			SetGraphRangeValues();
 			SetUserGraphFormValue();
+			SetUnitGroupFormValue();
 		}
 
 		public void SetStateFromForm() {
 			SetStateGraphRangeValues();
 			SetStateUserGraphType();
+			SetStateUnitGroup();
 		}
 
 		public void SetGraphRangeValues() {
@@ -88,6 +93,23 @@ namespace Atmo.UI.DevEx {
 			}
 		}
 
+		public void SetUnitGroupFormValue() {
+			try {
+				comboBoxEditUnitGroup.SelectedItem = State.UnitGroup;
+				comboBoxEditUnitGroup_SelectedIndexChanged(null, null);
+			}catch {
+				;
+			}
+		}
+
+		public void SetStateUnitGroup() {
+			try {
+				State.UnitGroup = (UnitGroupType)comboBoxEditUnitGroup.SelectedItem;
+			}catch {
+				State.UnitGroup = default(UnitGroupType);
+			}
+		}
+
 		private void simpleButtonCancel_Click(object sender, EventArgs e) {
 			Close();
 		}
@@ -100,5 +122,36 @@ namespace Atmo.UI.DevEx {
 		private void simpleButtonApply_Click(object sender, EventArgs e) {
 			SetStateFromForm();
 		}
+
+		private void comboBoxEditUnitGroup_SelectedIndexChanged(object sender, EventArgs e) {
+			const string na = "N/A";
+			string pressName;
+			string speedName;
+			string tempName;
+			try {
+				var selected = (UnitGroupType) comboBoxEditUnitGroup.SelectedItem;
+				try {
+					pressName = UnitUtility.GetPressureUnitForGroup(selected).ToString();
+				}catch {
+					pressName = null;
+				}
+				try {
+					speedName = UnitUtility.GetSpeedUnitForGroup(selected).ToString();
+				}catch {
+					speedName = null;
+				}
+				try {
+					tempName = UnitUtility.GetTemperatureUnitForGroup(selected).ToString();
+				}catch {
+					tempName = null;
+				}
+			}catch {
+				pressName = speedName = tempName = null;
+			}
+			labelControlPressUnit.Text = pressName ?? na;
+			labelControlSpeedUnit.Text = speedName ?? na;
+			labelControlTempUnit.Text = tempName ?? na;
+		}
+
 	}
 }

@@ -37,7 +37,7 @@ namespace Atmo.Units {
 				case PressureUnit.KiloPascals:
 					return Expression.Multiply(input, Expression.Constant(3.38600));
 				case PressureUnit.Pascals:
-					return Expression.Multiply(input, Expression.Constant(3386));
+					return Expression.Multiply(input, Expression.Constant(3386.0));
 				case PressureUnit.Millibar:
 					return Expression.Multiply(input, Expression.Constant(33.86));
 				default:

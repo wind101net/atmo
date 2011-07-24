@@ -75,18 +75,18 @@ namespace Atmo.Stats {
 			if(null != readings.Mean) {
 				var speed = readings.Mean.WindSpeed;
 				if (!Double.IsNaN(speed)) {
-					var power = speed*speed;
-					var energy = power*speed;
+					var energy = speed*speed;
+					var power = energy*speed;
 					foreach (var set in readings.GetWindDirectionCounts()) {
 						if (0 == set.Value || Double.IsNaN(set.Key)) {
 							continue;
 						}
 						var dirSlot = UnitUtility.WrapDegree(((int) ((set.Key + _angleHalfStep)/_angleStep))*_angleStep);
 						WindDirectionEnergy windDirEnrg;
-						var modEnergy = energy*set.Value;
+						var modEnergy = power*set.Value;
 						if (_directionLookup.TryGetValue(dirSlot, out windDirEnrg)) {
 							windDirEnrg.Frequency += set.Value;
-							windDirEnrg.Energy += modEnergy;
+							windDirEnrg.Power += modEnergy;
 						}
 					}
 				}
@@ -114,12 +114,12 @@ namespace Atmo.Stats {
 				double energySum = 0;
 				double frequencySum = 0;
 				foreach(var record in _directionLookup.Values) {
-					energySum += record.Energy;
+					energySum += record.Power;
 					frequencySum += record.Frequency;
 				}
 				var result = new List<WindDirectionEnergy>(_directionLookup.Count);
 				foreach (var record in _directionLookup.Values) {
-					result.Add(new WindDirectionEnergy(record.Direction, record.Frequency / frequencySum, record.Energy / energySum));
+					result.Add(new WindDirectionEnergy(record.Direction, record.Frequency / frequencySum, record.Power / energySum));
 				}
 				return result;
 			}

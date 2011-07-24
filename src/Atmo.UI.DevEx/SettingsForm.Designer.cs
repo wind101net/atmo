@@ -46,6 +46,15 @@
 			this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
 			this.spinEditTemperature = new DevExpress.XtraEditors.SpinEdit();
 			this.xtraTabPageData = new DevExpress.XtraTab.XtraTabPage();
+			this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+			this.comboBoxEditUnitGroup = new DevExpress.XtraEditors.ComboBoxEdit();
+			this.labelControlSpeedUnit = new DevExpress.XtraEditors.LabelControl();
+			this.labelControlPressUnit = new DevExpress.XtraEditors.LabelControl();
+			this.labelControlTempUnit = new DevExpress.XtraEditors.LabelControl();
+			this.labelControl10 = new DevExpress.XtraEditors.LabelControl();
+			this.labelControl8 = new DevExpress.XtraEditors.LabelControl();
+			this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
+			this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
 			this.xtraTabPagePws = new DevExpress.XtraTab.XtraTabPage();
 			((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).BeginInit();
 			this.xtraTabControlSettings.SuspendLayout();
@@ -62,6 +71,10 @@
 			((System.ComponentModel.ISupportInitialize)(this.spinEditPressure.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spinEditHumidity.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spinEditTemperature.Properties)).BeginInit();
+			this.xtraTabPageData.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
+			this.groupControl1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.comboBoxEditUnitGroup.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// simpleButtonApply
@@ -380,9 +393,95 @@
 			// 
 			// xtraTabPageData
 			// 
+			this.xtraTabPageData.Controls.Add(this.groupControl1);
 			this.xtraTabPageData.Name = "xtraTabPageData";
 			this.xtraTabPageData.Size = new System.Drawing.Size(426, 271);
 			this.xtraTabPageData.Text = "Data";
+			// 
+			// groupControl1
+			// 
+			this.groupControl1.Controls.Add(this.comboBoxEditUnitGroup);
+			this.groupControl1.Controls.Add(this.labelControlSpeedUnit);
+			this.groupControl1.Controls.Add(this.labelControlPressUnit);
+			this.groupControl1.Controls.Add(this.labelControlTempUnit);
+			this.groupControl1.Controls.Add(this.labelControl10);
+			this.groupControl1.Controls.Add(this.labelControl8);
+			this.groupControl1.Controls.Add(this.labelControl6);
+			this.groupControl1.Controls.Add(this.labelControl4);
+			this.groupControl1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupControl1.Location = new System.Drawing.Point(0, 0);
+			this.groupControl1.Name = "groupControl1";
+			this.groupControl1.Size = new System.Drawing.Size(426, 118);
+			this.groupControl1.TabIndex = 2;
+			this.groupControl1.Text = "Data Units";
+			// 
+			// comboBoxEditUnitGroup
+			// 
+			this.comboBoxEditUnitGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxEditUnitGroup.Location = new System.Drawing.Point(130, 25);
+			this.comboBoxEditUnitGroup.Name = "comboBoxEditUnitGroup";
+			this.comboBoxEditUnitGroup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+			this.comboBoxEditUnitGroup.Size = new System.Drawing.Size(291, 20);
+			this.comboBoxEditUnitGroup.TabIndex = 8;
+			this.comboBoxEditUnitGroup.SelectedIndexChanged += new System.EventHandler(this.comboBoxEditUnitGroup_SelectedIndexChanged);
+			// 
+			// labelControlSpeedUnit
+			// 
+			this.labelControlSpeedUnit.Location = new System.Drawing.Point(130, 85);
+			this.labelControlSpeedUnit.Name = "labelControlSpeedUnit";
+			this.labelControlSpeedUnit.Size = new System.Drawing.Size(18, 13);
+			this.labelControlSpeedUnit.TabIndex = 7;
+			this.labelControlSpeedUnit.Text = "N/A";
+			// 
+			// labelControlPressUnit
+			// 
+			this.labelControlPressUnit.Location = new System.Drawing.Point(130, 66);
+			this.labelControlPressUnit.Name = "labelControlPressUnit";
+			this.labelControlPressUnit.Size = new System.Drawing.Size(18, 13);
+			this.labelControlPressUnit.TabIndex = 6;
+			this.labelControlPressUnit.Text = "N/A";
+			// 
+			// labelControlTempUnit
+			// 
+			this.labelControlTempUnit.Location = new System.Drawing.Point(130, 47);
+			this.labelControlTempUnit.Name = "labelControlTempUnit";
+			this.labelControlTempUnit.Size = new System.Drawing.Size(18, 13);
+			this.labelControlTempUnit.TabIndex = 5;
+			this.labelControlTempUnit.Text = "N/A";
+			// 
+			// labelControl10
+			// 
+			this.labelControl10.Location = new System.Drawing.Point(5, 85);
+			this.labelControl10.Name = "labelControl10";
+			this.labelControl10.Size = new System.Drawing.Size(52, 13);
+			this.labelControl10.TabIndex = 4;
+			this.labelControl10.Text = "Speed Unit";
+			// 
+			// labelControl8
+			// 
+			this.labelControl8.Location = new System.Drawing.Point(5, 66);
+			this.labelControl8.Name = "labelControl8";
+			this.labelControl8.Size = new System.Drawing.Size(64, 13);
+			this.labelControl8.TabIndex = 3;
+			this.labelControl8.Text = "Pressure Unit";
+			// 
+			// labelControl6
+			// 
+			this.labelControl6.Location = new System.Drawing.Point(5, 47);
+			this.labelControl6.Name = "labelControl6";
+			this.labelControl6.Size = new System.Drawing.Size(84, 13);
+			this.labelControl6.TabIndex = 2;
+			this.labelControl6.Text = "Temperature Unit";
+			// 
+			// labelControl4
+			// 
+			this.labelControl4.Location = new System.Drawing.Point(5, 28);
+			this.labelControl4.Name = "labelControl4";
+			this.labelControl4.Size = new System.Drawing.Size(51, 13);
+			this.labelControl4.TabIndex = 1;
+			this.labelControl4.Text = "Unit Group";
 			// 
 			// xtraTabPagePws
 			// 
@@ -423,6 +522,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.spinEditPressure.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.spinEditHumidity.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.spinEditTemperature.Properties)).EndInit();
+			this.xtraTabPageData.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
+			this.groupControl1.ResumeLayout(false);
+			this.groupControl1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.comboBoxEditUnitGroup.Properties)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -453,5 +557,14 @@
 		private DevExpress.XtraEditors.GroupControl groupControlUserGraph;
 		private DevExpress.XtraEditors.LabelControl labelControl2;
 		private DevExpress.XtraEditors.ComboBoxEdit comboBoxEditUserGraph;
+		private DevExpress.XtraEditors.GroupControl groupControl1;
+		private DevExpress.XtraEditors.LabelControl labelControl4;
+		private DevExpress.XtraEditors.LabelControl labelControlSpeedUnit;
+		private DevExpress.XtraEditors.LabelControl labelControlPressUnit;
+		private DevExpress.XtraEditors.LabelControl labelControlTempUnit;
+		private DevExpress.XtraEditors.LabelControl labelControl10;
+		private DevExpress.XtraEditors.LabelControl labelControl8;
+		private DevExpress.XtraEditors.LabelControl labelControl6;
+		private DevExpress.XtraEditors.ComboBoxEdit comboBoxEditUnitGroup;
 	}
 }

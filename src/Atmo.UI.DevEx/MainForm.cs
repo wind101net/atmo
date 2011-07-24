@@ -57,8 +57,6 @@ namespace Atmo.UI.DevEx {
 			ConverterCacheReadingAggregate = ReadingValuesConverterCache<ReadingAggregate>.Default;
 			liveAtmosphericGraph.ConverterCacheReadingValues = ConverterCacheReadingValues;
 
-			TemperatureUnit = TemperatureUnit.Fahrenheit;
-
 			_deviceConnection = new Demo.DemoDaqConnection();
 
 			_dbConnection = new System.Data.SQLite.SQLiteConnection(
@@ -80,9 +78,10 @@ namespace Atmo.UI.DevEx {
 
 		}
 
-		public TemperatureUnit TemperatureUnit { get; set; }
-		public SpeedUnit SpeedUnit { get; set; }
-		public PressureUnit PressureUnit { get; set; }
+		public TemperatureUnit TemperatureUnit { get { return AppContext.PersistentState.TemperatureUnit; } }
+		public SpeedUnit SpeedUnit { get { return AppContext.PersistentState.SpeedUnit; } }
+		public PressureUnit PressureUnit { get { return AppContext.PersistentState.PressureUnit; } }
+
 		public ReadingValuesConverterCache<IReadingValues, ReadingValues> ConverterCache { get; set; }
 		public ReadingValuesConverterCache<ReadingValues> ConverterCacheReadingValues { get; set; }
 		public ReadingValuesConverterCache<ReadingAggregate> ConverterCacheReadingAggregate { get; set; }

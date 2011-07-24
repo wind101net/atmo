@@ -91,6 +91,7 @@
     <Compile Include="Units\ReadingValuesConverterCache.cs" />
     <Compile Include="Units\SpeedConverter.cs" />
     <Compile Include="Units\TemperatureConverter.cs" />
+    <Compile Include="Units\UnitGroupType.cs" />
     <Compile Include="Units\ValueConverterBase.cs" />
     <Compile Include="Units\PressureUnit.cs" />
     <Compile Include="Units\SpeedUnit.cs" />

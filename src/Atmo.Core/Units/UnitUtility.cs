@@ -103,6 +103,39 @@ namespace Atmo.Units {
 			}
 		}
 
+		public static PressureUnit GetPressureUnitForGroup(UnitGroupType group) {
+			switch(group) {
+			case UnitGroupType.Metric:
+					return PressureUnit.Millibar;
+			case UnitGroupType.English:
+					return PressureUnit.InchOfMercury;
+			default:
+				throw new ArgumentOutOfRangeException("group");
+			}
+		}
+
+		public static TemperatureUnit GetTemperatureUnitForGroup(UnitGroupType group) {
+			switch (group) {
+			case UnitGroupType.Metric:
+				return TemperatureUnit.Celsius;
+			case UnitGroupType.English:
+				return TemperatureUnit.Fahrenheit;
+			default:
+				throw new ArgumentOutOfRangeException("group");
+			}
+		}
+
+		public static SpeedUnit GetSpeedUnitForGroup(UnitGroupType group) {
+			switch (group) {
+			case UnitGroupType.Metric:
+				return SpeedUnit.MetersPerSec;
+			case UnitGroupType.English:
+				return SpeedUnit.MilesPerHour;
+			default:
+				throw new ArgumentOutOfRangeException("group");
+			}
+		}
+
 		[Obsolete("Should use a converter")]
 		public static double ConvertUnit(double value, TemperatureUnit from, TemperatureUnit to) {
 			if (from == to) {

@@ -25,23 +25,23 @@ namespace Atmo.Stats {
 	public class WindDirectionEnergy {
 
 		public readonly double Direction;
-		public double Energy;
+		public double Power;
 		public double Frequency;
 
 		public WindDirectionEnergy(double direction) : this(direction, 0, 0) { }
 
-		public WindDirectionEnergy(double direction, double frequency, double energy) {
+		public WindDirectionEnergy(double direction, double frequency, double power) {
 			Direction = direction;
 			Frequency = frequency;
-			Energy = energy;
+			Power = power;
 		}
 
 		public double DirectionProperty {
 			get { return Direction; }
 		}
 
-		public double EnergyProperty {
-			get { return Energy; }
+		public double PowerProperty {
+			get { return Power; }
 			//set { _energy = value; }
 		}
 

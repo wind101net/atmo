@@ -43,12 +43,16 @@ namespace Atmo.UI.DevEx.Controls {
 				_timeSpans.Sort();
 				rangeSlider.Properties.Minimum = 0;
 				rangeSlider.Properties.Maximum = _timeSpans.Count - 1;
+				rangeSlider_ValueChanged(null, null);
 			}
 		}
 
 		public int SelectedIndex {
 			get { return rangeSlider.Value; }
-			set { rangeSlider.Value = value; }
+			set {
+				rangeSlider.Value = value;
+				rangeSlider_ValueChanged(null, null);
+			}
 		}
 
 		public TimeSpan SelectedSpan {
