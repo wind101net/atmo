@@ -10,7 +10,7 @@
 				<Directory Id="BaraniDesign" Name="BaraniDesign">
 					<Directory Id="INSTALLLOCATION" Name="Atmo2">
 						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
-							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="C:\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.dll" KeyPath="yes"/>
+							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="buildresult\System.Data.SQLite.dll" KeyPath="yes"/>
 						</Component>
 						<Component Id="AtmoCore" Guid="C43E5FA4-228E-44D6-8956-4640CFAE6748" NeverOverwrite="no">
 							<File Id="AtmoCoredll" Name="Atmo.Core.dll" Source="buildresult\Atmo.Core.dll" KeyPath="yes" />
@@ -24,8 +24,8 @@
 						</Component>
 						<Component Id="DevExpress3rdParty" Guid="9F7F0063-EA4D-4478-B3C7-5DB2404C280D" NeverOverwrite="no">
 							<File Id="DevExpress.Charts.v10.1.Core.dll" Name="DevExpress.Charts.v10.1.Core.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Charts.v10.1.Core.dll" />
-							<File Id="DevExpress.Data.v10.1.dll" Name="DevExpress.Data.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.1.dll"  />
-							<File Id="DevExpress.Utils.v10.1.dll" Name="DevExpress.Utils.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.1.dll" KeyPath="yes" />
+							<File Id="DevExpress.Data.v10.1.dll" Name="DevExpress.Data.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.1.dll" KeyPath="yes" />
+							<File Id="DevExpress.Utils.v10.1.dll" Name="DevExpress.Utils.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.1.dll"  />
 							<File Id="DevExpress.XtraBars.v10.1.dll" Name="DevExpress.XtraBars.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.1.dll"  />
 							<File Id="DevExpress.XtraCharts.v10.1.dll" Name="DevExpress.XtraCharts.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.dll"  />
 							<File Id="DevExpress.XtraCharts.v10.1.UI.dll" Name="DevExpress.XtraCharts.v10.1.UI.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.UI.dll"  />
