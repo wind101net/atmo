@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="d429de7b-2717-4ce3-b49e-6ac4b067d1cd" Name="Atmo 2" Language="1033" Version="1.0.0.0" Manufacturer="Barani Design" UpgradeCode="22cf86d5-9ef4-402b-88eb-7cbb1c7a8ed9">
+	<Product Id="*" Name="Atmo 2" Language="1033" Version="2.0.0.1" Manufacturer="Barani Design" UpgradeCode="22cf86d5-9ef4-402b-88eb-7cbb1c7a8ed9">
 		<Package InstallerVersion="200" Compressed="yes" />
 		<Property Id="MSIFASTINSTALL" Value="7" />
 		<Media Id="1" Cabinet="atmo.cab" EmbedCab="yes" />
@@ -9,29 +9,31 @@
 			<Directory Id="ProgramFilesFolder">
 				<Directory Id="BaraniDesign" Name="BaraniDesign">
 					<Directory Id="INSTALLLOCATION" Name="Atmo2">
-						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360">
-							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="C:\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.dll" KeyPath="yes" />
+						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
+							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="C:\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.dll" KeyPath="yes"/>
 						</Component>
-						<Component Id="AtmoCore" Guid="C43E5FA4-228E-44D6-8956-4640CFAE6748">
+						<Component Id="AtmoCore" Guid="C43E5FA4-228E-44D6-8956-4640CFAE6748" NeverOverwrite="no">
 							<File Id="AtmoCoredll" Name="Atmo.Core.dll" Source="buildresult\Atmo.Core.dll" KeyPath="yes" />
 							<File Id="AtmoDaqWin32dll" Name="Atmo.Daq.Win32.dll" Source="buildresult\Atmo.Daq.Win32.dll" />
-							<File Id="ClearStoragedb" Name="ClearStorage.db" Source="buildresult\ClearStorage.db" />
 						</Component>
-						<Component Id="AtmoWinFormsLibs" Guid="F32AC172-BD63-4C3A-A600-E704327E9A04">
-							<File Id="AtmoUIWinFormsControls" Name="Atmo.UI.WinForms.Controls.dll" Source="buildresult\Atmo.UI.WinForms.Controls.dll" KeyPath="yes" />
+						<Component Id="DbFiles" Guid="674B9440-8854-4040-B09A-8EE8108BACF9"  NeverOverwrite="yes" Permanent="yes" >
+							<File Id="ClearStoragedb" Name="ClearStorage.db" Source="buildresult\ClearStorage.db" KeyPath="yes" />
 						</Component>
-						<Component Id="DevExpress3rdParty" Guid="9F7F0063-EA4D-4478-B3C7-5DB2404C280D">
+						<Component Id="AtmoWinFormsLibs" Guid="F32AC172-BD63-4C3A-A600-E704327E9A04" NeverOverwrite="no">
+							<File Id="AtmoUIWinFormsControls" Name="Atmo.UI.WinForms.Controls.dll" Source="buildresult\Atmo.UI.WinForms.Controls.dll" KeyPath="yes"  />
+						</Component>
+						<Component Id="DevExpress3rdParty" Guid="9F7F0063-EA4D-4478-B3C7-5DB2404C280D" NeverOverwrite="no">
 							<File Id="DevExpress.Charts.v10.1.Core.dll" Name="DevExpress.Charts.v10.1.Core.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Charts.v10.1.Core.dll" />
-							<File Id="DevExpress.Data.v10.1.dll" Name="DevExpress.Data.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.1.dll" />
+							<File Id="DevExpress.Data.v10.1.dll" Name="DevExpress.Data.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.1.dll"  />
 							<File Id="DevExpress.Utils.v10.1.dll" Name="DevExpress.Utils.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.1.dll" KeyPath="yes" />
-							<File Id="DevExpress.XtraBars.v10.1.dll" Name="DevExpress.XtraBars.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.1.dll" />
-							<File Id="DevExpress.XtraCharts.v10.1.dll" Name="DevExpress.XtraCharts.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.dll" />
-							<File Id="DevExpress.XtraCharts.v10.1.UI.dll" Name="DevExpress.XtraCharts.v10.1.UI.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.UI.dll" />
-							<File Id="DevExpress.XtraEditors.v10.1.dll" Name="DevExpress.XtraEditors.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraEditors.v10.1.dll" />
+							<File Id="DevExpress.XtraBars.v10.1.dll" Name="DevExpress.XtraBars.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.1.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.1.dll" Name="DevExpress.XtraCharts.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.1.UI.dll" Name="DevExpress.XtraCharts.v10.1.UI.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.UI.dll"  />
+							<File Id="DevExpress.XtraEditors.v10.1.dll" Name="DevExpress.XtraEditors.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraEditors.v10.1.dll"  />
 							<File Id="DevExpress.XtraGrid.v10.1.dll" Name="DevExpress.XtraGrid.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraGrid.v10.1.dll" />
 							<File Id="DevExpress.XtraNavBar.v10.1.dll" Name="DevExpress.XtraNavBar.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraNavBar.v10.1.dll" />
 						</Component>
-						<Component Id="AtmoUIExecutable" Guid="68d1ecba-629a-4125-9967-5206f272ba31">
+						<Component Id="AtmoUIExecutable" Guid="68d1ecba-629a-4125-9967-5206f272ba31" NeverOverwrite="no">
 							<File Id="AtmoUIDevExexe" Name="Atmo.UI.DevEx.exe" Source="buildresult\Atmo.UI.DevEx.exe" KeyPath="yes">
 								<Shortcut Id="startmenuAtmoUIDevExexe" Directory="ProgramMenuDir" Name="Atmo 2" WorkingDirectory='INSTALLDIR' Icon="Atmo.UI.DevEx.exe" IconIndex="0" Advertise="yes" />
 								<Shortcut Id="desktopAtmoUIDevExexe" Directory="DesktopFolder" Name="Atmo 2"
@@ -55,6 +57,7 @@
 
 		<Feature Id="ProductFeature" Title="Atmo 2" Level="1">
 			<ComponentRef Id="Core3rdParty" />
+			<ComponentRef Id="DbFiles" />
 			<ComponentRef Id="AtmoCore" />
 			<ComponentRef Id="AtmoWinFormsLibs" />
 			<ComponentRef Id="DevExpress3rdParty" />
@@ -64,5 +67,17 @@
 
 		<Icon Id="Atmo.UI.DevEx.exe" SourceFile="buildresult\Atmo.UI.DevEx.exe" />
 
+		<InstallExecuteSequence>
+			<RemoveExistingProducts After="InstallInitialize"/>
+		</InstallExecuteSequence>
+
+		<Upgrade Id="6EB66FD5-28EF-474F-8F76-E84F597A3CCB">
+			<UpgradeVersion Minimum="0.0.1"
+							IncludeMinimum="yes"
+							Maximum="3.0.0"
+							Property="OLDERVERSIONBEINGUPGRADED" />
+		</Upgrade>
+
 	</Product>
+	
 </Wix>
