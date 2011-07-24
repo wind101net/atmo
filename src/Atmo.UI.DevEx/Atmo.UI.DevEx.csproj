@@ -103,6 +103,18 @@
     <Compile Include="Controls\CustomTimeRangeSelector.Designer.cs">
       <DependentUpon>CustomTimeRangeSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DateTimePicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DateTimePicker.designer.cs">
+      <DependentUpon>DateTimePicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DateTimeRangePicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DateTimeRangePicker.designer.cs">
+      <DependentUpon>DateTimeRangePicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HistoricalGraphBreakdown.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -188,6 +200,12 @@
     <Compile Include="SplashForm.Designer.cs">
       <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimeCorrection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeCorrection.designer.cs">
+      <DependentUpon>TimeCorrection.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">
@@ -206,6 +224,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\CustomTimeRangeSelector.resx">
       <DependentUpon>CustomTimeRangeSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DateTimePicker.resx">
+      <DependentUpon>DateTimePicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DateTimeRangePicker.resx">
+      <DependentUpon>DateTimeRangePicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HistoricalGraphBreakdown.resx">
       <DependentUpon>HistoricalGraphBreakdown.cs</DependentUpon>
@@ -244,6 +268,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeCorrection.resx">
+      <DependentUpon>TimeCorrection.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

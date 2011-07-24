@@ -175,6 +175,7 @@
 			this.barButtonItemTimeCorrection.Caption = "Database Time Correction...";
 			this.barButtonItemTimeCorrection.Id = 10;
 			this.barButtonItemTimeCorrection.Name = "barButtonItemTimeCorrection";
+			this.barButtonItemTimeCorrection.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemTimeCorrection_ItemClick);
 			// 
 			// barSubItem4
 			// 

@@ -284,6 +284,11 @@ namespace Atmo.UI.DevEx {
 			TriggerHistoricalUpdate();
 		}
 
+		private void barButtonItemTimeCorrection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			var timeCorrectionDialog = new TimeCorrection(_dbStore);
+			timeCorrectionDialog.ShowDialog(this);
+		}
+
 
 	}
 }
