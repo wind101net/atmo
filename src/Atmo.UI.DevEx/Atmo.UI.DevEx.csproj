@@ -212,6 +212,12 @@
     <Compile Include="TimeCorrection.designer.cs">
       <DependentUpon>TimeCorrection.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimeSync.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeSync.designer.cs">
+      <DependentUpon>TimeSync.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">
@@ -280,6 +286,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TimeCorrection.resx">
       <DependentUpon>TimeCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeSync.resx">
+      <DependentUpon>TimeSync.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

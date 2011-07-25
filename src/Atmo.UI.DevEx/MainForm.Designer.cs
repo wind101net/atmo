@@ -35,6 +35,7 @@
 			this.barButtonItemSensorSetup = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemFirmwareUpdate = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemTimeCorrection = new DevExpress.XtraBars.BarButtonItem();
+			this.barButtonItemTimeSync = new DevExpress.XtraBars.BarButtonItem();
 			this.barSubItem4 = new DevExpress.XtraBars.BarSubItem();
 			this.barButtonItemDoc = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemUpdates = new DevExpress.XtraBars.BarButtonItem();
@@ -89,9 +90,10 @@
             this.barButtonItemUpdates,
             this.barButtonItemSupport,
             this.barButtonItemAbout,
-            this.barButtonItemExit});
+            this.barButtonItemExit,
+            this.barButtonItemTimeSync});
 			this.barManager.MainMenu = this.bar2;
-			this.barManager.MaxItemId = 17;
+			this.barManager.MaxItemId = 18;
 			// 
 			// bar2
 			// 
@@ -149,7 +151,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemPrefs),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemSensorSetup, true),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemFirmwareUpdate),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemTimeCorrection, true)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemTimeCorrection, true),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemTimeSync)});
 			this.barSubItem3.Name = "barSubItem3";
 			// 
 			// barButtonItemPrefs
@@ -178,6 +181,13 @@
 			this.barButtonItemTimeCorrection.Id = 10;
 			this.barButtonItemTimeCorrection.Name = "barButtonItemTimeCorrection";
 			this.barButtonItemTimeCorrection.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemTimeCorrection_ItemClick);
+			// 
+			// barButtonItemTimeSync
+			// 
+			this.barButtonItemTimeSync.Caption = "Time Synchronization";
+			this.barButtonItemTimeSync.Id = 17;
+			this.barButtonItemTimeSync.Name = "barButtonItemTimeSync";
+			this.barButtonItemTimeSync.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemTimeSync_ItemClick);
 			// 
 			// barSubItem4
 			// 
@@ -454,6 +464,7 @@
 		private Controls.LiveAtmosphericHeader liveAtmosphericHeader;
 		private DevExpress.XtraEditors.GroupControl groupControlDbList;
 		private DevExpress.XtraEditors.GroupControl groupControlSensors;
+		private DevExpress.XtraBars.BarButtonItem barButtonItemTimeSync;
 
 	}
 }

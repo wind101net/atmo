@@ -286,6 +286,12 @@ namespace Atmo.UI.DevEx {
 			exportForm.ShowDialog(this);
 		}
 
+		private void barButtonItemTimeSync_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			var timeSync = new TimeSync(_deviceConnection,_dbStore);
+			timeSync.ShowDialog(this);
+
+		}
+
 
 	}
 }
