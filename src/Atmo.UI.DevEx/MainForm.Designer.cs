@@ -48,8 +48,8 @@
 			this.liveAtmosphericGraph = new Atmo.UI.DevEx.Controls.LiveAtmosphericGraph();
 			this.timerTesting = new System.Windows.Forms.Timer(this.components);
 			this.panelSensors = new System.Windows.Forms.Panel();
-			this.panelJunk = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
+			this.groupControlDbList = new DevExpress.XtraEditors.GroupControl();
+			this.groupControlSensors = new DevExpress.XtraEditors.GroupControl();
 			this.simpleButtonFindSensors = new DevExpress.XtraEditors.SimpleButton();
 			this.defaultLookAndFeel = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
 			this.simpleButtonDownloadData = new DevExpress.XtraEditors.SimpleButton();
@@ -60,7 +60,8 @@
 			this.mainScrollableControl = new DevExpress.XtraEditors.XtraScrollableControl();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
-			this.panelJunk.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.groupControlDbList)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControlSensors)).BeginInit();
 			this.mainScrollableControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -132,6 +133,7 @@
 			this.barButtonItemExport.Caption = "Export...";
 			this.barButtonItemExport.Id = 6;
 			this.barButtonItemExport.Name = "barButtonItemExport";
+			this.barButtonItemExport.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemExport_ItemClick);
 			// 
 			// barButtonItemExit
 			// 
@@ -269,31 +271,34 @@
 			this.panelSensors.AutoScroll = true;
 			this.panelSensors.AutoScrollMinSize = new System.Drawing.Size(180, 0);
 			this.panelSensors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelSensors.Controls.Add(this.panelJunk);
+			this.panelSensors.Controls.Add(this.groupControlDbList);
+			this.panelSensors.Controls.Add(this.groupControlSensors);
 			this.panelSensors.Location = new System.Drawing.Point(0, 88);
 			this.panelSensors.Name = "panelSensors";
 			this.panelSensors.Size = new System.Drawing.Size(205, 762);
 			this.panelSensors.TabIndex = 13;
 			// 
-			// panelJunk
+			// groupControlDbList
 			// 
-			this.panelJunk.BackColor = System.Drawing.SystemColors.ActiveCaption;
-			this.panelJunk.Controls.Add(this.label1);
-			this.panelJunk.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelJunk.Location = new System.Drawing.Point(0, 0);
-			this.panelJunk.Name = "panelJunk";
-			this.panelJunk.Size = new System.Drawing.Size(203, 760);
-			this.panelJunk.TabIndex = 0;
+			this.groupControlDbList.AutoSize = true;
+			this.groupControlDbList.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.groupControlDbList.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupControlDbList.Location = new System.Drawing.Point(0, 24);
+			this.groupControlDbList.Name = "groupControlDbList";
+			this.groupControlDbList.Size = new System.Drawing.Size(203, 24);
+			this.groupControlDbList.TabIndex = 2;
+			this.groupControlDbList.Text = "Available Sensor Data Databases";
 			// 
-			// label1
+			// groupControlSensors
 			// 
-			this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label1.Location = new System.Drawing.Point(0, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(203, 760);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "This control intentionally left blank";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.groupControlSensors.AutoSize = true;
+			this.groupControlSensors.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.groupControlSensors.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupControlSensors.Location = new System.Drawing.Point(0, 0);
+			this.groupControlSensors.Name = "groupControlSensors";
+			this.groupControlSensors.Size = new System.Drawing.Size(203, 24);
+			this.groupControlSensors.TabIndex = 1;
+			this.groupControlSensors.Text = "Available Sensors";
 			// 
 			// simpleButtonFindSensors
 			// 
@@ -405,7 +410,9 @@
 			this.Text = "Atmo 2";
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
 			this.panelSensors.ResumeLayout(false);
-			this.panelJunk.ResumeLayout(false);
+			this.panelSensors.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.groupControlDbList)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControlSensors)).EndInit();
 			this.mainScrollableControl.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -437,8 +444,6 @@
 		private Controls.LiveAtmosphericGraph liveAtmosphericGraph;
 		private System.Windows.Forms.Timer timerTesting;
 		private System.Windows.Forms.Panel panelSensors;
-		private System.Windows.Forms.Panel panelJunk;
-		private System.Windows.Forms.Label label1;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonFindSensors;
 		private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonDownloadData;
@@ -447,6 +452,8 @@
 		private Controls.HistoricalTimeSelectHeader historicalTimeSelectHeader;
 		private DevExpress.XtraEditors.XtraScrollableControl mainScrollableControl;
 		private Controls.LiveAtmosphericHeader liveAtmosphericHeader;
+		private DevExpress.XtraEditors.GroupControl groupControlDbList;
+		private DevExpress.XtraEditors.GroupControl groupControlSensors;
 
 	}
 }

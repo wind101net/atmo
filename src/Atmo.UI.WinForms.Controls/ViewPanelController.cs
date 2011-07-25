@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -36,6 +37,7 @@ namespace Atmo.UI.WinForms.Controls {
 		public bool SensorsFirst { get; set; }
 		public bool ReverseSync { get; set; }
 		public bool DefaultSelected { get; set; }
+		public bool ResizeContainer { get; set; }
 
 		protected ViewPanelController(Control container) {
 			if (null == container) {
@@ -45,6 +47,7 @@ namespace Atmo.UI.WinForms.Controls {
 			DockStyle = DockStyle.Top;
 			SensorsFirst = false;
 			ReverseSync = true;
+			ResizeContainer = false;
 		}
 
 		public bool UpdateView(IEnumerable<TModel> sensors) {
@@ -110,6 +113,11 @@ namespace Atmo.UI.WinForms.Controls {
 			}
 
 			Synchronize(sync, sensors);
+
+			if (ResizeContainer) {
+				ResizeForChildren();
+			}
+
 			return true;
 		}
 
@@ -125,6 +133,14 @@ namespace Atmo.UI.WinForms.Controls {
 				var view = ReverseSync ? views[views.Length - 1 - i] : views[i];
 				UpdateView(view, models[i]);
 			}
+		}
+
+		private void ResizeForChildren() {
+			int h = 0;
+			foreach(var ctl in Container.Controls.OfType<Control>()) {
+				h += ctl.ClientSize.Height;
+			}
+			Container.Size = new Size(Container.Size.Width, h);
 		}
 
 

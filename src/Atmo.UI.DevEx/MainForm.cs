@@ -66,11 +66,11 @@ namespace Atmo.UI.DevEx {
 
 			_memoryDataStore = new MemoryDataStore();
 
-			_sensorViewPanelControler = new SensorViewPanelController(panelSensors) {
+			_sensorViewPanelControler = new SensorViewPanelController(groupControlSensors) {
 				DefaultSelected = true
 			};
-			_historicSensorViewPanelController = new HistoricSensorViewPanelController(panelSensors) {
-				DefaultSelected = true
+			_historicSensorViewPanelController = new HistoricSensorViewPanelController(groupControlDbList) {
+				DefaultSelected = true,
 			};
 
 			historicalTimeSelectHeader.CheckEdit.CheckedChanged += histNowChk_CheckedChanged;
@@ -124,7 +124,7 @@ namespace Atmo.UI.DevEx {
 			}
 			
 			var liveDataEnabled = true;
-			var liveDataTimeSpan = new TimeSpan(0, 1, 0);
+			var liveDataTimeSpan = liveAtmosphericHeader.TimeRange.SelectedSpan;
 
 			// pass it off to the live data graphs/tables
 			if(liveDataEnabled) {
@@ -163,14 +163,6 @@ namespace Atmo.UI.DevEx {
 				liveAtmosphericGraph.State = AppContext.PersistentState;
 				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
 			}
-
-			// TODO: remove this crap and replace with the real thing later
-			// HACK: testing only below here ---------------------------------------------------
-
-			/*var hackForwardTimeSpan = new TimeSpan(365, 0, 0, 0);
-			var hackBackTimeSpan = -hackForwardTimeSpan;
-			var then = now.Subtract(hackForwardTimeSpan);*/
-
 
 			var histTimeRangeSelector = historicalTimeSelectHeader.TimeRange;
 			var histDateChooser = historicalTimeSelectHeader.DateEdit;
@@ -287,6 +279,11 @@ namespace Atmo.UI.DevEx {
 		private void barButtonItemTimeCorrection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
 			var timeCorrectionDialog = new TimeCorrection(_dbStore);
 			timeCorrectionDialog.ShowDialog(this);
+		}
+
+		private void barButtonItemExport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			var exportForm = new ExportForm(_dbStore);
+			exportForm.ShowDialog(this);
 		}
 
 

@@ -163,6 +163,12 @@
     <Compile Include="Controls\WindResourceGraph.Designer.cs">
       <DependentUpon>WindResourceGraph.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExportForm.designer.cs">
+      <DependentUpon>ExportForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImportDataForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -252,6 +258,9 @@
     <EmbeddedResource Include="Controls\WindResourceGraph.resx">
       <DependentUpon>WindResourceGraph.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ExportForm.resx">
+      <DependentUpon>ExportForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ImportDataForm.resx">
       <DependentUpon>ImportDataForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -274,9 +283,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ClearStorage.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="ClearStorage.db" />
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindDirectionEnergy.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindSpeedFrequency.datasource" />
