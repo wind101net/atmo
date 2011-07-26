@@ -22,16 +22,27 @@
 // ================================================================================
 
 using System.Windows.Forms;
+using System;
 
 namespace Atmo.UI.WinForms.Controls {
 	public class HistoricSensorViewPanelController : ViewPanelController<HistoricSensorView, ISensorInfo> {
 
 		public HistoricSensorViewPanelController(Control container) : base(container) { }
 
+		public event Action<ISensorInfo> OnDeleteRequested;
+
 		protected override HistoricSensorView CreateNewView() {
-			return new HistoricSensorView() {
-				IsSelected = DefaultSelected
+			var view = new HistoricSensorView() {
+				IsSelected = DefaultSelected,
 			};
+			view.OnDeleteRequest += TriggerOnDeleteRequested;
+			return view;
+		}
+
+		private void TriggerOnDeleteRequested(ISensorInfo sensorInfo) {
+			if(null != OnDeleteRequested) {
+				OnDeleteRequested(sensorInfo);
+			}
 		}
 
 		protected override void UpdateView(HistoricSensorView view, ISensorInfo model) {

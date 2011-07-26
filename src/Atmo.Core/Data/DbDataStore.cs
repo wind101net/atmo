@@ -1296,11 +1296,58 @@ namespace Atmo.Data {
 			return true;
 		}
 
+		public bool DeleteSensor(string name) {
+			if (!ForceConnectionOpen()) {
+				throw new Exception("Could not open database.");
+			}
+
+			// find the sensor ID
+			int sensorIdKey;
+			using (var command = _connection.CreateCommand()) {
+				command.CommandType = CommandType.Text;
+				command.CommandText = "SELECT sensorId FROM Sensor WHERE nameKey=@nameKey";
+				var sensorNameParam = command.CreateParameter() as DbParameter;
+				sensorNameParam.Value = name;
+				sensorNameParam.DbType = DbType.String;
+				sensorNameParam.ParameterName = "nameKey";
+				command.Parameters.Add(sensorNameParam);
+				using(var reader = command.ExecuteReader()) {
+					if(reader.Read()) {
+						sensorIdKey = reader.GetInt32(0);
+					}else {
+						return false;
+					}
+				}
+			}
+
+			bool result = true;
+
+			// purge all data from tables
+			using(var command = _connection.CreateCommand()) {
+				var sensorId = command.CreateParameter() as DbParameter;
+				sensorId.DbType = DbType.Int32;
+				sensorId.ParameterName = "sensorID";
+				sensorId.Value = sensorIdKey;
+				command.Parameters.Add(sensorId);
+				command.CommandType = CommandType.Text;
+				foreach (var tableName in new[] {"hourrecord", "dayrecord", "record", "sensor"}) {
+					command.CommandText = String.Format("DELETE FROM {0} WHERE sensorID=@sensorID",tableName);
+					try {
+						command.ExecuteNonQuery();
+					}catch {
+						result = false;
+					}
+				}
+			}
+
+			return result;
+		}
+
 		#endregion
 
 		public void Dispose() {
-			if (_connection is IDisposable) {
-				(_connection as IDisposable).Dispose();
+			if (null != _connection) {
+				_connection.Dispose();
 			}
 		}
 

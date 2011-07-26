@@ -145,6 +145,10 @@ namespace Atmo.Data {
 			return true;
 		}
 
+		public bool DeleteSensor(string name) {
+			return _sensors.RemoveAll(s => s.Name == name) > 0;
+		}
+
 		public bool Push(string sensor, IEnumerable<IReading> readings) {
 			var sensorStorage = this.GetSensorStorageByName(sensor);
 			if (null == sensorStorage) {

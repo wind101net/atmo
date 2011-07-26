@@ -64,6 +64,13 @@ namespace Atmo.Data {
 		bool AddSensor(ISensorInfo sensor);
 
 		/// <summary>
+		/// Deletes a sensor if found, including all data that is associated with it.
+		/// </summary>
+		/// <param name="name">The name of the sensor to delete.</param>
+		/// <returns>True if found and deleted, otherwise, False.</returns>
+		bool DeleteSensor(string name);
+
+		/// <summary>
 		/// Adds readings to the data store.
 		/// </summary>
 		/// <param name="sensor">The sensor name to add readings for.</param>

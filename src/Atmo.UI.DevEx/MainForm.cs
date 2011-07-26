@@ -30,6 +30,7 @@ using Atmo.UI.DevEx.Controls;
 using Atmo.UI.WinForms.Controls;
 using Atmo.Units;
 using DevExpress.XtraEditors;
+using System.Windows.Forms;
 
 namespace Atmo.UI.DevEx {
 	public partial class MainForm : XtraForm {
@@ -72,6 +73,7 @@ namespace Atmo.UI.DevEx {
 			_historicSensorViewPanelController = new HistoricSensorViewPanelController(groupControlDbList) {
 				DefaultSelected = true,
 			};
+			_historicSensorViewPanelController.OnDeleteRequested += OnDeleteRequested;
 
 			historicalTimeSelectHeader.CheckEdit.CheckedChanged += histNowChk_CheckedChanged;
 			ReloadHistoric();
@@ -85,6 +87,30 @@ namespace Atmo.UI.DevEx {
 		public ReadingValuesConverterCache<IReadingValues, ReadingValues> ConverterCache { get; set; }
 		public ReadingValuesConverterCache<ReadingValues> ConverterCacheReadingValues { get; set; }
 		public ReadingValuesConverterCache<ReadingAggregate> ConverterCacheReadingAggregate { get; set; }
+
+		private void OnDeleteRequested(ISensorInfo sensorInfo) {
+			if (null == sensorInfo || String.IsNullOrEmpty(sensorInfo.Name) || null == _dbStore) {
+				MessageBox.Show("Invalid target", "Error");
+				return;
+			}
+
+			var result = MessageBox.Show(
+				String.Format("Are you sure you want to delete the sensor named '{0}'?", sensorInfo.Name), "Delete?",
+			    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question
+			);
+			if(result != DialogResult.Yes) {
+				return;
+			}
+			result = MessageBox.Show(
+				String.Format("Are you really sure you want to delete the sensor named '{0}'? All data for this sensor will be removed without possibility of retrieval.", sensorInfo.Name), "DELETE?",
+				MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation
+			);
+			if (result != DialogResult.Yes) {
+				return;
+			}
+			_dbStore.DeleteSensor(sensorInfo.Name);
+			ReloadHistoric();
+		}
 
 		private void timerTesting_Tick(object sender, EventArgs e) {
 			

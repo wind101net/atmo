@@ -21,6 +21,7 @@
 //
 // ================================================================================
 
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -28,6 +29,7 @@ namespace Atmo.UI.WinForms.Controls {
 	public partial class HistoricSensorView : UserControl {
 
 		private bool _selected;
+		public event Action<ISensorInfo> OnDeleteRequest;
 
 		public HistoricSensorView() {
 			_selected = false;
@@ -64,7 +66,20 @@ namespace Atmo.UI.WinForms.Controls {
 		}
 
 		private void labelSensorName_Click(object sender, System.EventArgs e) {
+			if(e is MouseEventArgs) {
+				var me = e as MouseEventArgs;
+				if(me.Button == MouseButtons.Right) {
+					contextMenuStrip1.Show(this,me.X,me.Y);
+					return;
+				}
+			}
 			IsSelected = !IsSelected;
+		}
+
+		private void deleteToolStripMenuItem_Click(object sender, System.EventArgs e) {
+			if(null != OnDeleteRequest) {
+				OnDeleteRequest(SensorInfo);
+			}
 		}
 
 	}
