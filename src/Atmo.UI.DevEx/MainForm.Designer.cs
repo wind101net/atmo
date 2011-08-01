@@ -142,6 +142,7 @@
 			this.barButtonItemExit.Caption = "Exit";
 			this.barButtonItemExit.Id = 16;
 			this.barButtonItemExit.Name = "barButtonItemExit";
+			this.barButtonItemExit.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemExit_ItemClick);
 			// 
 			// barSubItem3
 			// 
@@ -174,6 +175,7 @@
 			this.barButtonItemFirmwareUpdate.Caption = "Firmware Update...";
 			this.barButtonItemFirmwareUpdate.Id = 9;
 			this.barButtonItemFirmwareUpdate.Name = "barButtonItemFirmwareUpdate";
+			this.barButtonItemFirmwareUpdate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemFirmwareUpdate_ItemClick);
 			// 
 			// barButtonItemTimeCorrection
 			// 

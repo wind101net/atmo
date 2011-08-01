@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Atmo.Data;
+using Atmo.Device;
 using Atmo.Units;
 
 namespace Atmo.Daq.Win32 {
@@ -608,6 +609,21 @@ namespace Atmo.Daq.Win32 {
 			return sumOk;
 		}
 
+		public bool EnterBootMode() {
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+				byte[] queryPacket = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				queryPacket[0] = 0;
+				queryPacket[1] = 0x77;
+				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public bool ReconnectMedia() {
 			lock (_connLock) {
 				if (!IsConnected) {
@@ -622,5 +638,210 @@ namespace Atmo.Daq.Win32 {
 			}
 			return false;
 		}
+
+		public CorrectionFactors GetCorrectionFactors(int nid) {
+			CorrectionFactors factors = null;
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+
+				bool ok = true;
+				byte[] packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				packet[0] = 0;
+				packet[1] = 0x74;
+				packet[2] = checked((byte)nid);
+				if (UsbConn.WritePacket(packet)) {
+					packet = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
+					if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte)nid) || packet[3] != 0x4f || packet[4] != 0x4b) {
+						ok = false;
+					}
+				}
+
+				try {
+					if (ok) {
+						packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+						packet[0] = 0;
+						packet[1] = 0x71;
+						packet[2] = checked((byte)nid);
+						if (UsbConn.WritePacket(packet)) {
+							byte[] res = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
+							if (null != res) {
+								factors = CorrectionFactors.ToCorrectionFactors(res, 3);
+							}
+						}
+					}
+				}
+				finally {
+					packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+					packet[0] = 0;
+					packet[1] = 0x76;
+					packet[2] = checked((byte)nid);
+					if (UsbConn.WritePacket(packet)) {
+						byte[] res = UsbConn.ReadPacket();
+					}
+				}
+			}
+			return factors;
+		}
+
+		public bool PutCorrectionFactors(int nid, CorrectionFactors factors) {
+			bool ok = true;
+			lock (_connLock) {
+				if (!IsConnected) {
+					Connect();
+				}
+
+
+				byte[] packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+				packet[0] = 0;
+				packet[1] = 0x74;
+				packet[2] = checked((byte)nid);
+				if (UsbConn.WritePacket(packet)) {
+					packet = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
+					if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte)nid) || packet[3] != 0x4f || packet[4] != 0x4b) {
+						ok = false;
+					}
+				}
+
+				try {
+					Thread.Sleep(400);
+					packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+					packet[0] = 0;
+					packet[1] = 0x70;
+					packet[2] = checked((byte)nid);
+					CorrectionFactors.ToBytes(factors, packet, 3);
+					if (UsbConn.WritePacket(packet)) {
+						byte[] res = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 1));
+						if (null == res || res[3] != 0x4f || res[4] != 0x4b) {
+							ok = false;
+						}
+					}
+				}
+				finally {
+					Thread.Sleep(500);
+					packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+					packet[0] = 0;
+					packet[1] = 0x76;
+					packet[2] = checked((byte)nid);
+					if (UsbConn.WritePacket(packet)) {
+						byte[] res = UsbConn.ReadPacket();
+						;
+					}
+
+				}
+			}
+			return ok;
+		}
+
+		public bool ProgramAnem(int nid, MemoryRegionDataCollection memoryRegionDataBlocks, Action<double, string> progressUpdated) {
+			try {
+				if (nid < 0 || nid > 255) {
+					throw new ArgumentOutOfRangeException("nid");
+				}
+				if (!UsbConn.IsConnected) {
+					return false;
+				}
+				if (null != progressUpdated) {
+					progressUpdated(0, "Entering boot mode.");
+				}
+				bool result = true;
+				lock (_connLock) {
+
+					byte[] packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+					packet[0] = 0;
+					packet[1] = 0x74;
+					packet[2] = checked((byte)nid);
+					if (!UsbConn.WritePacket(packet)) {
+						progressUpdated(0, "Boot failure.");
+						return false;
+					}
+					Thread.Sleep(500);
+					packet = UsbConn.ReadPacket();
+					if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte)nid) || packet[3] != 0x4f || packet[4] != 0x4b) {
+						progressUpdated(0, "Bad boot response.");
+						if (0xff != nid) {
+							result = false;
+						}
+					}
+					progressUpdated(0, "Writing.");
+					int totalBytes = memoryRegionDataBlocks.Sum(b => (int)b.Size);
+					int bytesSent = 0;
+					int lastNoticeByte = 0;
+					int noticeInterval = 128;
+					int dotCount = 1;
+					if (result) {
+						foreach (MemoryRegionData block in memoryRegionDataBlocks) {
+							byte[] data = block.Data.ToArray();
+							int checksumFails = 0;
+							int macChecksumFails = 100;
+							for (int i = 0; i < data.Length; i += 32) {
+								int bytesToWrite = Math.Min(32, data.Length - i);
+								int address = i + (int)block.Address;
+								packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
+								packet[0] = 0;
+								packet[1] = 0x75;
+								packet[2] = checked((byte)nid);
+								Array.Copy(BitConverter.GetBytes(address).Reverse().ToArray(), 0, packet, 3, 4);
+								packet[7] = (byte)bytesToWrite;
+								byte checkSum = data[i];
+								int endIndex = i + bytesToWrite;
+								for (int csi = i + 1; csi < endIndex; csi++) {
+									checkSum = unchecked((byte)(checkSum + data[csi]));
+								}
+								packet[8] = checkSum;
+								Array.Copy(data, i, packet, 9, bytesToWrite);
+								if (!UsbConn.WritePacket(packet)) {
+									progressUpdated(0, "Write failure!");
+									result = false; break;//return false;
+								}
+								packet = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
+
+								if (null == packet || packet[3] != checkSum) {
+									checksumFails++;
+									if (checksumFails <= macChecksumFails) {
+										i--;
+										continue;
+									}
+									progressUpdated(0, "Checksum failure.");
+									result = false;
+									break;
+								}
+								checksumFails = 0;
+
+								bytesSent += bytesToWrite;
+								if ((bytesSent - lastNoticeByte) > noticeInterval) {
+									lastNoticeByte = bytesSent;
+									dotCount++;
+									if (dotCount > 3) {
+										dotCount = 1;
+									}
+									progressUpdated((double)(bytesSent) / (double)(totalBytes), String.Concat("Writing", new String(Enumerable.Repeat('.', dotCount).ToArray())));
+								}
+							}
+						}
+					}
+
+					packet[0] = 0;
+					packet[1] = 0x76;
+					packet[2] = checked((byte)nid);
+					if (!UsbConn.WritePacket(packet)) {
+						progressUpdated(0, "Reboot failure.");
+						return false;
+					}
+					packet = UsbConn.ReadPacket();
+					if (null == packet || packet[3] != 0x4f || packet[4] != 0x4b) {
+						progressUpdated(0, "Bad reboot response.");
+						return false;
+					}
+					return result;
+				}
+			}
+			catch (Exception ex) {
+				progressUpdated(0, ex.ToString());
+				return false;
+			}
+		}
+
 	}
 }

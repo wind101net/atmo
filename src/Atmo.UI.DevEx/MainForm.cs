@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Atmo.Daq.Win32;
 using Atmo.Data;
 using Atmo.Stats;
 using Atmo.UI.DevEx.Controls;
@@ -278,26 +279,6 @@ namespace Atmo.UI.DevEx {
 			_updateHistorical = true;
 		}
 
-		private void drillTimeChooser_Properties_Spin(object sender, DevExpress.XtraEditors.Controls.SpinEventArgs e) {
-
-		}
-
-		private void drillTimeChooser_Properties_EditValueChanged(object sender, EventArgs e) {
-
-		}
-
-		private void drillTimeChooser_Properties_EditValueChanging(object sender, DevExpress.XtraEditors.Controls.ChangingEventArgs e) {
-
-		}
-
-		private void drillTimeChooser_Properties_ParseEditValue(object sender, DevExpress.XtraEditors.Controls.ConvertEditValueEventArgs e) {
-
-		}
-
-		private void drillDateChooser_Properties_EditValueChanged(object sender, EventArgs e) {
-
-		}
-
 		private void histNowChk_CheckedChanged(object sender, EventArgs e) {
 			TriggerHistoricalUpdate();
 		}
@@ -315,7 +296,19 @@ namespace Atmo.UI.DevEx {
 		private void barButtonItemTimeSync_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
 			var timeSync = new TimeSync(_deviceConnection,_dbStore);
 			timeSync.ShowDialog(this);
+		}
 
+		private void barButtonItemExit_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			Close();
+		}
+
+		private void barButtonItemFirmwareUpdate_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			if(!(_deviceConnection is UsbDaqConnection)) {
+				MessageBox.Show("Device is not supported", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			var patchForm = new PatcherForm(_deviceConnection as UsbDaqConnection);
+			patchForm.ShowDialog();
 		}
 
 

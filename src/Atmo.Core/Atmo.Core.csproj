@@ -51,6 +51,12 @@
     <Compile Include="Data\MemoryDataStore.cs" />
     <Compile Include="Data\PersistentState.cs" />
     <Compile Include="Demo\DemoDaqConnection.cs" />
+    <Compile Include="Device\CorrectionFactors.cs" />
+    <Compile Include="Device\HexParser.cs" />
+    <Compile Include="Device\MemoryRegionData.cs" />
+    <Compile Include="Device\MemoryRegionDataCollection.cs" />
+    <Compile Include="Device\MemoryRegionInfo.cs" />
+    <Compile Include="Device\QueryResult.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="ReadingAttributeType.cs" />
     <Compile Include="SensorInfo.cs" />
