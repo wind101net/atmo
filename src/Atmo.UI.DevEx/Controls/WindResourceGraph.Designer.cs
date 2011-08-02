@@ -121,9 +121,11 @@
 			series1.Name = "Wind Power";
 			series1.ValueDataMembersSerializable = "Power";
 			splineAreaSeriesView1.AxisYName = "Secondary AxisY 1";
-			splineAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(64)))));
+			splineAreaSeriesView1.Border.Color = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(64)))));
+			splineAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(64)))));
 			splineAreaSeriesView1.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
 			splineAreaSeriesView1.MarkerOptions.Visible = false;
+			splineAreaSeriesView1.Transparency = ((byte)(64));
 			series1.View = splineAreaSeriesView1;
 			series2.ArgumentDataMember = "SpeedPropertty";
 			series2.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
@@ -135,9 +137,10 @@
 			series2.Name = "Wind Speed Frequency";
 			series2.ValueDataMembersSerializable = "FrequencyProperty";
 			sideBySideBarSeriesView1.BarWidth = 1D;
-			sideBySideBarSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
+			sideBySideBarSeriesView1.Border.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
+			sideBySideBarSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
 			sideBySideBarSeriesView1.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
-			sideBySideBarSeriesView1.Transparency = ((byte)(135));
+			sideBySideBarSeriesView1.Transparency = ((byte)(196));
 			series2.View = sideBySideBarSeriesView1;
 			series3.ArgumentDataMember = "SpeedPropertty";
 			series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
@@ -189,8 +192,10 @@
 			series4.Label = radarPointSeriesLabel1;
 			series4.Name = "Power From Direction";
 			series4.ValueDataMembersSerializable = "PowerProperty";
-			polarAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(64)))));
+			polarAreaSeriesView1.Border.Color = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(64)))));
+			polarAreaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(64)))));
 			polarAreaSeriesView1.MarkerOptions.Visible = false;
+			polarAreaSeriesView1.Transparency = ((byte)(64));
 			series4.View = polarAreaSeriesView1;
 			series5.ArgumentDataMember = "DirectionProperty";
 			series5.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
@@ -199,10 +204,11 @@
 			series5.Label = radarPointSeriesLabel2;
 			series5.Name = "Wind From Direction";
 			series5.ValueDataMembersSerializable = "FrequencyProperty";
-			polarAreaSeriesView2.Border.Visible = false;
-			polarAreaSeriesView2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
+			polarAreaSeriesView2.Border.Color = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
+			polarAreaSeriesView2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
 			polarAreaSeriesView2.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Solid;
 			polarAreaSeriesView2.MarkerOptions.Visible = false;
+			polarAreaSeriesView2.Transparency = ((byte)(196));
 			series5.View = polarAreaSeriesView2;
 			this.chartControlWindDir.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
         series4,

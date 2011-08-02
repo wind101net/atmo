@@ -21,6 +21,7 @@
 //
 // ================================================================================
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Atmo.Data;
@@ -73,9 +74,38 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 
 			var speedFrequencyData = windCalc.WindSpeedFrequencyData;
-			chartControlWindDir.DataSource = windCalc.WindDirectionEnergyData;
+			chartControlWindDir.DataSource = PercentageOfMax(windCalc.WindDirectionEnergyData);
 			chartControlWindSpeedFreq.DataSource = speedFrequencyData;
+		}
 
+		private static List<WindDirectionEnergy> PercentageOfMax(List<WindDirectionEnergy> records) {
+			var result = new List<WindDirectionEnergy>(records.Count);
+			double maxPower;
+			double maxFrequency;
+			if(records.Count == 0) {
+				return result;
+			}
+			maxPower = records[0].Power;
+			maxFrequency = records[0].Frequency;
+			for(int i = 1; i < records.Count; i++) {
+				var record = records[i];
+				if(record.Power > maxPower) {
+					maxPower = record.Power;
+				}
+				if(record.Frequency > maxFrequency) {
+					maxFrequency = record.Frequency;
+				}
+			}
+
+			for (int i = 0; i < records.Count; i++) {
+				var record = records[i];
+				result.Add(new WindDirectionEnergy(
+					record.Direction,
+					record.Frequency / maxFrequency,
+					record.Power / maxPower
+				));
+			}
+			return result;
 		}
 
 	}
