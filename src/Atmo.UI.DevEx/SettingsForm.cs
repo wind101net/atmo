@@ -41,8 +41,9 @@ namespace Atmo.UI.DevEx {
 			var userGraphValues = (PersistentState.UserCalculatedAttribute[])Enum.GetValues(typeof (PersistentState.UserCalculatedAttribute));
 			comboBoxEditUserGraph.Properties.Items.AddRange(userGraphValues);
 
-			var unitGroupValues = (UnitGroupType[]) Enum.GetValues(typeof (UnitGroupType));
-			comboBoxEditUnitGroup.Properties.Items.AddRange(unitGroupValues);
+			comboBoxEditTemp.Properties.Items.AddRange(Enum.GetValues(typeof(TemperatureUnit)));
+			comboBoxEditPress.Properties.Items.AddRange(Enum.GetValues(typeof(PressureUnit)));
+			comboBoxEditSpeed.Properties.Items.AddRange(Enum.GetValues(typeof(SpeedUnit)));
 
 			SetValuesFromState();
 		}
@@ -50,13 +51,13 @@ namespace Atmo.UI.DevEx {
 		public void SetValuesFromState() {
 			SetGraphRangeValues();
 			SetUserGraphFormValue();
-			SetUnitGroupFormValue();
+			SetUnitsFormValue();
 		}
 
 		public void SetStateFromForm() {
 			SetStateGraphRangeValues();
 			SetStateUserGraphType();
-			SetStateUnitGroup();
+			SetStateUnits();
 		}
 
 		public void SetGraphRangeValues() {
@@ -93,20 +94,25 @@ namespace Atmo.UI.DevEx {
 			}
 		}
 
-		public void SetUnitGroupFormValue() {
+		public void SetUnitsFormValue() {
 			try {
-				comboBoxEditUnitGroup.SelectedItem = State.UnitGroup;
-				comboBoxEditUnitGroup_SelectedIndexChanged(null, null);
+				comboBoxEditTemp.SelectedItem = State.TemperatureUnit;
+				comboBoxEditPress.SelectedItem = State.PressureUnit;
+				comboBoxEditSpeed.SelectedItem = State.SpeedUnit;
 			}catch {
 				;
 			}
 		}
 
-		public void SetStateUnitGroup() {
+		public void SetStateUnits() {
 			try {
-				State.UnitGroup = (UnitGroupType)comboBoxEditUnitGroup.SelectedItem;
+				State.TemperatureUnit = (TemperatureUnit)comboBoxEditTemp.SelectedItem;
+				State.PressureUnit = (PressureUnit) comboBoxEditPress.SelectedItem;
+				State.SpeedUnit = (SpeedUnit) comboBoxEditSpeed.SelectedItem;
 			}catch {
-				State.UnitGroup = default(UnitGroupType);
+				State.TemperatureUnit = default(TemperatureUnit);
+				State.PressureUnit = default(PressureUnit);
+				State.SpeedUnit = default(SpeedUnit);
 			}
 		}
 
@@ -121,36 +127,6 @@ namespace Atmo.UI.DevEx {
 
 		private void simpleButtonApply_Click(object sender, EventArgs e) {
 			SetStateFromForm();
-		}
-
-		private void comboBoxEditUnitGroup_SelectedIndexChanged(object sender, EventArgs e) {
-			const string na = "N/A";
-			string pressName;
-			string speedName;
-			string tempName;
-			try {
-				var selected = (UnitGroupType) comboBoxEditUnitGroup.SelectedItem;
-				try {
-					pressName = UnitUtility.GetPressureUnitForGroup(selected).ToString();
-				}catch {
-					pressName = null;
-				}
-				try {
-					speedName = UnitUtility.GetSpeedUnitForGroup(selected).ToString();
-				}catch {
-					speedName = null;
-				}
-				try {
-					tempName = UnitUtility.GetTemperatureUnitForGroup(selected).ToString();
-				}catch {
-					tempName = null;
-				}
-			}catch {
-				pressName = speedName = tempName = null;
-			}
-			labelControlPressUnit.Text = pressName ?? na;
-			labelControlSpeedUnit.Text = speedName ?? na;
-			labelControlTempUnit.Text = tempName ?? na;
 		}
 
 	}

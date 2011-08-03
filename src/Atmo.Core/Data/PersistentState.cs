@@ -90,9 +90,12 @@ namespace Atmo.Data {
 			MinRangeSizeAirDensity = 0.05;
 			HeightAboveSeaLevel = Double.NaN;
 			UserGraphAttribute = default(UserCalculatedAttribute);
-			UnitGroup = default(UnitGroupType);
+			PressureUnit = default(PressureUnit);
+			TemperatureUnit = default(TemperatureUnit);
+			SpeedUnit = default(SpeedUnit);
 		}
 
+		[XmlIgnore]
 		public bool IsDirty { get; set; }
 
 		[XmlElement("MinRangeSizes")]
@@ -110,17 +113,14 @@ namespace Atmo.Data {
 		[XmlElement("HeightAboveSeaLevel")]
 		public double HeightAboveSeaLevel { get; set; }
 
-		[XmlElement("UnitGroupType")]
-		public UnitGroupType UnitGroup { get; set; }
+		[XmlElement("PressureUnit")]
+		public PressureUnit PressureUnit { get; set; }
 
-		[XmlIgnore]
-		public PressureUnit PressureUnit { get { return UnitUtility.GetPressureUnitForGroup(UnitGroup); } }
+		[XmlElement("TemperatureUnit")]
+		public TemperatureUnit TemperatureUnit { get; set; }
 
-		[XmlIgnore]
-		public TemperatureUnit TemperatureUnit { get { return UnitUtility.GetTemperatureUnitForGroup(UnitGroup); } }
-
-		[XmlIgnore]
-		public SpeedUnit SpeedUnit { get { return UnitUtility.GetSpeedUnitForGroup(UnitGroup); } }
+		[XmlElement("SpeedUnit")]
+		public SpeedUnit SpeedUnit { get; set; }
 
 	}
 }
