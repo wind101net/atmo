@@ -31,12 +31,34 @@ namespace Atmo.Units {
 			if (from == to) {
 				return input;
 			}
-			else if (from == SpeedUnit.MetersPerSec) {
-				return Expression.Multiply(input, Expression.Constant(2.23693629));
+			// TODO: this would be better as a factor lookup using division or multiplication
+			switch (from) {
+				case SpeedUnit.MetersPerSec:
+					switch (to) {
+						case SpeedUnit.MilesPerHour:
+							return Expression.Multiply(input, Expression.Constant(2.23693629));
+						case SpeedUnit.Knot:
+							return Expression.Multiply(input, Expression.Constant(1.94384449));
+					}
+					break;
+				case SpeedUnit.MilesPerHour:
+					switch (to) {
+						case SpeedUnit.MetersPerSec:
+							return Expression.Multiply(input, Expression.Constant(0.44704));
+						case SpeedUnit.Knot:
+							return Expression.Multiply(input, Expression.Constant(0.868976242));
+					}
+					break;
+				case SpeedUnit.Knot:
+					switch (to) {
+						case SpeedUnit.MetersPerSec:
+							return Expression.Multiply(input, Expression.Constant(0.514444444));
+						case SpeedUnit.MilesPerHour:
+							return Expression.Multiply(input, Expression.Constant(1.15077945));
+					}
+					break;
 			}
-			else {
-				return Expression.Multiply(input, Expression.Constant(0.44704));
-			}
+			throw new NotSupportedException(String.Format("No conversion from {0} to {1}.",from,to));
 		}
 
 		public readonly Func<double, double> Conversion;

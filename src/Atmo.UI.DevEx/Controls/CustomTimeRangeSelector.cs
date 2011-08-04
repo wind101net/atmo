@@ -10,6 +10,8 @@ namespace Atmo.UI.DevEx.Controls {
 
 		private static readonly List<TimeSpan> DefaultTimeSpanValues;
 
+		public event EventHandler ValueChanged;
+
 		static CustomTimeRangeSelector() {
 			DefaultTimeSpanValues = new List<TimeSpan>() {
 				new TimeSpan(0, 0, 30),
@@ -55,6 +57,25 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 		}
 
+		public int FindNearestIndex(TimeSpan span) {
+			if (_timeSpans.Count == 0)
+				return -1;
+			long bestDistance = long.MaxValue;
+			int bestIndex = 0;
+			for(int i = 0; i < _timeSpans.Count; i++) {
+				long d = Math.Abs(span.Subtract(_timeSpans[i]).Ticks);
+				if(0 == d) {
+					return i;
+				}
+				if (d >= bestDistance) {
+					continue;
+				}
+				bestDistance = d;
+				bestIndex = i;
+			}
+			return bestIndex;
+		}
+
 		public TimeSpan SelectedSpan {
 			get {
 				var selectedIndex = SelectedIndex;
@@ -81,12 +102,11 @@ namespace Atmo.UI.DevEx.Controls {
 			get { return UnitUtility.TimeSpanLabelString(SelectedSpan); }
 		}
 
-		public void AddChangeHandler(EventHandler handler) {
-			rangeSlider.ValueChanged += handler;
-		}
-
 		private void rangeSlider_ValueChanged(object sender, EventArgs e) {
 			rangeValue.Text = TimeLabel;
+			if(null != ValueChanged) {
+				ValueChanged(sender, e);
+			}
 		}
 
 	}

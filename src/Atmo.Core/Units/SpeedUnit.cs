@@ -33,6 +33,10 @@ namespace Atmo.Units {
 		/// <summary>
 		/// Miles/Hour.
 		/// </summary>
-		MilesPerHour
+		MilesPerHour,
+		/// <summary>
+		/// Knots
+		/// </summary>
+		Knot
 	}
 }

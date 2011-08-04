@@ -397,7 +397,7 @@
 			// 
 			this.xtraTabPageData.Controls.Add(this.groupControl1);
 			this.xtraTabPageData.Name = "xtraTabPageData";
-			this.xtraTabPageData.Size = new System.Drawing.Size(421, 265);
+			this.xtraTabPageData.Size = new System.Drawing.Size(426, 271);
 			this.xtraTabPageData.Text = "Data";
 			// 
 			// groupControl1
@@ -406,7 +406,7 @@
 			this.groupControl1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.groupControl1.Location = new System.Drawing.Point(0, 0);
 			this.groupControl1.Name = "groupControl1";
-			this.groupControl1.Size = new System.Drawing.Size(421, 95);
+			this.groupControl1.Size = new System.Drawing.Size(426, 95);
 			this.groupControl1.TabIndex = 2;
 			this.groupControl1.Text = "Data Units";
 			// 
@@ -434,7 +434,7 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(417, 71);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(422, 71);
 			this.tableLayoutPanel2.TabIndex = 5;
 			// 
 			// labelControl4
@@ -482,7 +482,7 @@
 			this.comboBoxEditTemp.Name = "comboBoxEditTemp";
 			this.comboBoxEditTemp.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.comboBoxEditTemp.Size = new System.Drawing.Size(311, 20);
+			this.comboBoxEditTemp.Size = new System.Drawing.Size(316, 20);
 			this.comboBoxEditTemp.TabIndex = 3;
 			// 
 			// comboBoxEditPress
@@ -492,7 +492,7 @@
 			this.comboBoxEditPress.Name = "comboBoxEditPress";
 			this.comboBoxEditPress.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.comboBoxEditPress.Size = new System.Drawing.Size(311, 20);
+			this.comboBoxEditPress.Size = new System.Drawing.Size(316, 20);
 			this.comboBoxEditPress.TabIndex = 4;
 			// 
 			// comboBoxEditSpeed
@@ -502,7 +502,7 @@
 			this.comboBoxEditSpeed.Name = "comboBoxEditSpeed";
 			this.comboBoxEditSpeed.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.comboBoxEditSpeed.Size = new System.Drawing.Size(311, 20);
+			this.comboBoxEditSpeed.Size = new System.Drawing.Size(316, 20);
 			this.comboBoxEditSpeed.TabIndex = 5;
 			// 
 			// SettingsForm

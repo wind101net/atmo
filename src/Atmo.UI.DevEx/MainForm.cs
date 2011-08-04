@@ -41,7 +41,7 @@ namespace Atmo.UI.DevEx {
 		private SensorViewPanelController _sensorViewPanelControler = null;
 		private HistoricSensorViewPanelController _historicSensorViewPanelController = null;
 		private System.Data.SQLite.SQLiteConnection _dbConnection = null;
-		private IDataStore _dbStore = null;
+		private IDataStore _dbStore;
 		private bool _updateHistorical = false;
 
 		private ProgramContext AppContext { get; set; }
@@ -79,6 +79,32 @@ namespace Atmo.UI.DevEx {
 			historicalTimeSelectHeader.CheckEdit.CheckedChanged += histNowChk_CheckedChanged;
 			ReloadHistoric();
 
+			historicalTimeSelectHeader.TimeRange.SelectedIndex = historicalTimeSelectHeader.TimeRange.FindNearestIndex(AppContext.PersistentState.HistoricalTimeScale);
+			liveAtmosphericHeader.TimeRange.SelectedIndex = liveAtmosphericHeader.TimeRange.FindNearestIndex(AppContext.PersistentState.LiveTimeScale);
+
+			historicalTimeSelectHeader.TimeRange.ValueChanged += historicalTimeSelectHeader_TimeRangeValueChanged;
+			liveAtmosphericHeader.TimeRange.ValueChanged += liveTimeSelectHeader_TimeRangeValueChanged;
+
+			foreach(var view in _historicSensorViewPanelController.Views) {
+				bool selected = false;
+				if(
+					null != view && null != view.SensorInfo
+					&& AppContext.PersistentState.SelectedDatabases.Contains(view.SensorInfo.Name)
+				) {
+					selected = true;
+				}
+				view.IsSelected = selected;
+			}
+		}
+
+		public void historicalTimeSelectHeader_TimeRangeValueChanged(object sender, EventArgs args) {
+			AppContext.PersistentState.HistoricalTimeScale = historicalTimeSelectHeader.TimeRange.SelectedSpan;
+			AppContext.PersistentState.IsDirty = true;
+		}
+
+		public void liveTimeSelectHeader_TimeRangeValueChanged(object sender, EventArgs args) {
+			AppContext.PersistentState.LiveTimeScale = liveAtmosphericHeader.TimeRange.SelectedSpan;
+			AppContext.PersistentState.IsDirty = true;
 		}
 
 		public TemperatureUnit TemperatureUnit { get { return AppContext.PersistentState.TemperatureUnit; } }
@@ -309,6 +335,22 @@ namespace Atmo.UI.DevEx {
 			}
 			var patchForm = new PatcherForm(_deviceConnection as UsbDaqConnection);
 			patchForm.ShowDialog();
+		}
+
+		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+			
+		}
+
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+			if(null != AppContext) {
+				var selectedNames = _historicSensorViewPanelController.Views
+					.Where(v => v.IsSelected && null != v.SensorInfo)
+					.Select(v => v.SensorInfo.Name)
+					.ToList();
+
+				AppContext.PersistentState.SelectedDatabases = selectedNames;
+				AppContext.PersistentState.IsDirty = true;
+			}
 		}
 
 

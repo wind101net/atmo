@@ -98,7 +98,6 @@ namespace Atmo.UI.DevEx {
 			Application.SetCompatibleTextRenderingDefault(false);
 			var context = new ProgramContext();
 			Application.Run(context);
-
 		}
 
 	}

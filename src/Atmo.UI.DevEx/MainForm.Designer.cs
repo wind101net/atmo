@@ -420,6 +420,8 @@
 			this.MinimumSize = new System.Drawing.Size(800, 600);
 			this.Name = "MainForm";
 			this.Text = "Atmo 2";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
 			this.panelSensors.ResumeLayout(false);
 			this.panelSensors.PerformLayout();

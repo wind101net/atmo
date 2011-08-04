@@ -22,6 +22,8 @@
 // ================================================================================
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Xml.Serialization;
 using Atmo.Units;
@@ -93,34 +95,65 @@ namespace Atmo.Data {
 			PressureUnit = default(PressureUnit);
 			TemperatureUnit = default(TemperatureUnit);
 			SpeedUnit = default(SpeedUnit);
+			SelectedDatabases = null;
 		}
 
 		[XmlIgnore]
 		public bool IsDirty { get; set; }
 
-		[XmlElement("MinRangeSizes")]
+		[XmlElement]
 		public ReadingValues MinRangeSizes { get; set; }
 		
-		[XmlElement("MinRangeSizeDewPoint")]
+		[XmlElement]
 		public double MinRangeSizeDewPoint { get; set; }
 		
-		[XmlElement("MinRangeSizeAirDensity")]
+		[XmlElement]
 		public double MinRangeSizeAirDensity { get; set; }
 		
-		[XmlElement("UserGraphAttribute")]
+		[XmlElement]
 		public UserCalculatedAttribute UserGraphAttribute { get; set; }
 
-		[XmlElement("HeightAboveSeaLevel")]
+		[XmlElement]
 		public double HeightAboveSeaLevel { get; set; }
 
-		[XmlElement("PressureUnit")]
+		[XmlElement]
 		public PressureUnit PressureUnit { get; set; }
 
-		[XmlElement("TemperatureUnit")]
+		[XmlElement]
 		public TemperatureUnit TemperatureUnit { get; set; }
 
-		[XmlElement("SpeedUnit")]
+		[XmlElement]
 		public SpeedUnit SpeedUnit { get; set; }
+
+		[XmlIgnore]
+		public TimeSpan LiveTimeScale { get; set; }
+
+		[XmlElement]
+		[Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+		public long LiveTimeScaleTicks {
+			get { return LiveTimeScale.Ticks; }
+			set { LiveTimeScale = new TimeSpan(value); }
+		}
+
+		[XmlIgnore]
+		public TimeSpan HistoricalTimeScale { get; set; }
+
+		[XmlElement]
+		[Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+		public long HistoricalTimeScaleTicks {
+			get { return HistoricalTimeScale.Ticks; }
+			set { HistoricalTimeScale = new TimeSpan(value); }
+		}
+
+
+		private List<string> _selectedDatabases;
+
+		[XmlArray]
+		[XmlArrayItem(ElementName = "Database")]
+		public List<string> SelectedDatabases {
+			get { return _selectedDatabases; }
+			set { _selectedDatabases = value ?? new List<string>(); }
+		}
 
 	}
 }
