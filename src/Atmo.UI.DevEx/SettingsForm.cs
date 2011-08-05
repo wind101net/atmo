@@ -22,9 +22,12 @@
 // ================================================================================
 
 using System;
+using System.Linq;
+using System.Windows.Forms;
 using Atmo.Data;
 using Atmo.Units;
 using DevExpress.XtraEditors;
+using System.Collections.Generic;
 
 namespace Atmo.UI.DevEx {
 	public partial class SettingsForm : XtraForm {
@@ -52,12 +55,43 @@ namespace Atmo.UI.DevEx {
 			SetGraphRangeValues();
 			SetUserGraphFormValue();
 			SetUnitsFormValue();
+			SetPwsFormValues();
 		}
 
 		public void SetStateFromForm() {
 			SetStateGraphRangeValues();
 			SetStateUserGraphType();
 			SetStateUnits();
+			SetStatePws();
+		}
+
+		public void SetPwsFormValues() {
+			var stationTextFields = new[] {
+				textEditStationA,
+				textEditStationB,
+				textEditStationC,
+				textEditStationD
+			};
+
+			for (int i = 0; i < stationTextFields.Length; i++ ) {
+				stationTextFields[i].Text = i < State.StationNames.Count
+					? (State.StationNames[i] ?? String.Empty)
+					: String.Empty;
+			}
+			textEditPwsPass.Text = State.StationPassword;
+			checkButtonPwsEnabled.Checked = State.PwsEnabled;
+		}
+
+		public void SetStatePws() {
+			var stationTextFields = new[] {
+				textEditStationA,
+				textEditStationB,
+				textEditStationC,
+				textEditStationD
+			};
+			State.StationNames = stationTextFields.Select(tf => tf.Text ?? String.Empty).ToList();
+			State.StationPassword = textEditPwsPass.Text;
+			State.PwsEnabled = checkButtonPwsEnabled.Checked;
 		}
 
 		public void SetGraphRangeValues() {
@@ -127,6 +161,24 @@ namespace Atmo.UI.DevEx {
 
 		private void simpleButtonApply_Click(object sender, EventArgs e) {
 			SetStateFromForm();
+		}
+
+		private void checkButtonPwsEnabled_CheckedChanged(object sender, EventArgs e) {
+			var message = checkButtonPwsEnabled.Checked
+				? "PWS Enabled (click to disable then click apply)"
+				: "PWS Disabled (click to enable then click apply)"
+			;
+			checkButtonPwsEnabled.Text = message;
+		}
+
+		private void labelControl16_Click(object sender, EventArgs e) {
+			try {
+				System.Diagnostics.Process.Start("http://www.wunderground.com/wxstation/signup.html");
+			}
+			catch (Exception exceptionMonster) {
+				; // eat it... just alert the user
+				MessageBox.Show("Navigate to http://www.wunderground.com/wxstation/signup.html", "Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
 		}
 
 	}

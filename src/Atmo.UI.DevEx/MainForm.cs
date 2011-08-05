@@ -291,6 +291,7 @@ namespace Atmo.UI.DevEx {
 			var importForm = new ImportDataForm(_dbStore, _deviceConnection) {
 				AutoImport = true
 			};
+			importForm.PersistentState = AppContext.PersistentState;
 			importForm.ShowDialog(this);
 			ReloadHistoric();
 		}

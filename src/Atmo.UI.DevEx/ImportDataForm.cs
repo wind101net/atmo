@@ -41,6 +41,10 @@ namespace Atmo.UI.DevEx {
 		private Dictionary<int, List<DaqDataFileInfo>> _fileInfosLookup;
 		public bool AutoImport { get; set; }
 
+		public string DataFolderPath { get; set; }
+
+		public PersistentState PersistentState  { get; set; }
+
 
 		public ImportDataForm(IDataStore dataStore, IDaqConnection device)
             : base() {
@@ -59,20 +63,24 @@ namespace Atmo.UI.DevEx {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.Description = "Select a folder containing the data files";
             fbd.ShowNewFolderButton = false;
+        	fbd.RootFolder = Environment.SpecialFolder.MyComputer;
+			if(null != PersistentState && !String.IsNullOrEmpty(PersistentState.LastDaqFileLoadPath)) {
+				fbd.SelectedPath = PersistentState.LastDaqFileLoadPath;
+			}
 
             DialogResult result = fbd.ShowDialog();
             if (result == DialogResult.OK) {
-
-                textEditFolderPath.Text = fbd.SelectedPath;
+				DataFolderPath = fbd.SelectedPath;
+				textEditFolderPath.Text = DataFolderPath;
 				var fileInfos = new List<DaqDataFileInfo>(
-                    GetAnemFileInfos(GetAnemFiles(new DirectoryInfo(fbd.SelectedPath))).Where(afi => null != afi)
+					GetAnemFileInfos(GetAnemFiles(new DirectoryInfo(DataFolderPath))).Where(afi => null != afi)
                 );
 
                 SetAnemFileList(fileInfos);
 
                 _fileInfosLookup = fileInfos
                     .GroupBy(afi => afi.Nid)
-					.ToDictionary<IGrouping<int, DaqDataFileInfo>, int, List<DaqDataFileInfo>>(
+					.ToDictionary(
                         g => g.Key,
                         g => g.ToList()
                     )
@@ -184,6 +192,12 @@ namespace Atmo.UI.DevEx {
                     MessageBoxIcon.Information
                 );
             }else{
+
+				if (null != PersistentState && !String.IsNullOrEmpty(DataFolderPath)) {
+					PersistentState.LastDaqFileLoadPath = DataFolderPath;
+					PersistentState.IsDirty = true;
+				}
+
                 if (syncChk.Checked && null != _device && _device.IsConnected) {
                     DateTime cpuTime = DateTime.Now;
                     bool clockOk = _device.SetClock(cpuTime);

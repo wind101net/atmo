@@ -96,6 +96,7 @@ namespace Atmo.Data {
 			TemperatureUnit = default(TemperatureUnit);
 			SpeedUnit = default(SpeedUnit);
 			SelectedDatabases = null;
+			StationNames = null;
 		}
 
 		[XmlIgnore]
@@ -154,6 +155,24 @@ namespace Atmo.Data {
 			get { return _selectedDatabases; }
 			set { _selectedDatabases = value ?? new List<string>(); }
 		}
+
+		[XmlElement]
+		public string LastDaqFileLoadPath { get; set; }
+
+		private List<string> _stationNames;
+
+		[XmlArray]
+		[XmlArrayItem(ElementName = "StationNames")]
+		public List<string> StationNames {
+			get { return _stationNames; }
+			set { _stationNames = value ?? new List<string>(); }
+		}
+
+		[XmlElement]
+		public string StationPassword { get; set; }
+
+		[XmlElement]
+		public bool PwsEnabled { get; set; }
 
 	}
 }
