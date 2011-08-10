@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Atmo.Daq.Win32;
 using Atmo.Data;
@@ -352,6 +353,50 @@ namespace Atmo.UI.DevEx {
 				AppContext.PersistentState.SelectedDatabases = selectedNames;
 				AppContext.PersistentState.IsDirty = true;
 			}
+		}
+
+		private void timerQueryTime_Tick(object sender, EventArgs e) {
+
+			UpdateDaqTimes();
+			UpdateDaqStats();
+
+		}
+
+		private void UpdateDaqStats() {
+			const string na = "N/A";
+
+			var temp = _deviceConnection.Temperature;
+			var volBat = _deviceConnection.VoltageBattery;
+			var volUsb = _deviceConnection.VoltageUsb;
+
+			labelTmpDaq.Text = Double.IsNaN(temp) ? na : temp.ToString("F2");
+			labelVolBat.Text = Double.IsNaN(volBat) ? na : volBat.ToString("F2");
+			labelVolUsb.Text = Double.IsNaN(volUsb) ? na : volUsb.ToString("F2");
+		}
+
+		private void UpdateDaqTimes() {
+			var now = DateTime.Now;
+			labelLocalTime.Text = now.ToString();
+
+			if(null != _deviceConnection) {
+				var deviceTime = _deviceConnection.QueryClock();
+				if(default(DateTime) != deviceTime) {
+					labelDaqTime.Text = deviceTime.ToString();
+					var diff = deviceTime.Subtract(now);
+					if (diff < TimeSpan.Zero) {
+						diff = TimeSpan.Zero - diff;
+					}
+					labelDaqTime.ForeColor = (
+						(diff >= new TimeSpan(0, 0, 5) && (0 == (now.Second % 2)))
+						? Color.Red
+						: ForeColor
+					);
+					return;
+				}
+			}
+
+			labelDaqTime.Text = "N/A";
+			labelDaqTime.ForeColor = ForeColor;
 		}
 
 
