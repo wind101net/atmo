@@ -106,7 +106,7 @@ namespace Atmo.Stats {
 				if (reading.IsWindSpeedValid) {
 					speedValues.Add(value = reading.WindSpeed);
 					speedSum += value;
-					value = Math.Round(value);
+					value = Math.Round(value * 2.0) / 2; // round to nearest .5
 					speedCounts[value] = (speedCounts.TryGetValue(value, out count)) ? count + 1 : 1;
 				}
 				if (reading.IsWindDirectionValid) {

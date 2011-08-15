@@ -80,6 +80,7 @@ namespace Atmo.UI.DevEx {
 			}
 			textEditPwsPass.Text = State.StationPassword;
 			checkButtonPwsEnabled.Checked = State.PwsEnabled;
+			checkButtonPwsEnabled_CheckedChanged(null, null);
 		}
 
 		public void SetStatePws() {
@@ -179,6 +180,10 @@ namespace Atmo.UI.DevEx {
 				; // eat it... just alert the user
 				MessageBox.Show("Navigate to http://www.wunderground.com/wxstation/signup.html", "Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
+		}
+
+		private void SettingsForm_Load(object sender, EventArgs e) {
+
 		}
 
 	}

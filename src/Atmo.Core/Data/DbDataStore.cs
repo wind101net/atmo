@@ -537,7 +537,7 @@ namespace Atmo.Data {
 				throw new Exception("Could not open database.");
 			}
 			using (IDbCommand command = _connection.CreateCommand()) {
-				command.CommandText = "SELECT nameKey FROM Sensor LEFT JOIN dayrecord on dayrecord.sensorId = Sensor.sensorId WHERE Sensor.lastLoadHardwareId = @hardwareId GROUP BY dayrecord.sensorId ORDER BY MAX(dayrecord.stamp) DESC";
+				command.CommandText = "SELECT nameKey FROM Sensor LEFT JOIN dayrecord on dayrecord.sensorId = Sensor.sensorId WHERE Sensor.lastLoadHardwareId = @hardwareId GROUP BY dayrecord.sensorId ORDER BY MAX(dayrecord.stamp),Sensor.SensorID DESC";
 				command.CommandType = CommandType.Text;
 				DbParameter hardwareIdParam = command.CreateParameter() as DbParameter;
 				hardwareIdParam.DbType = DbType.String;
@@ -1006,10 +1006,6 @@ namespace Atmo.Data {
 					}
 				}
 
-				/*DateTime hourAlignedMinStamp = UnitUtility.StripToUnit(minStamp, TimeUnit.Hour);
-				DateTime hourAlignedMaxStamp = UnitUtility.StripToUnit(maxStamp, TimeUnit.Hour).AddHours(1.0);
-				DateTime dayAlignedMinStamp = UnitUtility.StripToUnit(minStamp, TimeUnit.Day);
-				DateTime dayAlignedMaxStamp = UnitUtility.StripToUnit(maxStamp, TimeUnit.Day).AddDays(1.0);*/
 				DateTime dayAlignedMinStamp = UnitUtility.StripToUnit(minStamp, TimeUnit.Day);
 				DateTime dayAlignedMaxStamp = UnitUtility.StripToUnit(maxStamp, TimeUnit.Day).AddDays(1.0);
 

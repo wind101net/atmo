@@ -189,7 +189,7 @@ namespace Atmo.Daq.Win32 {
                 new Sensor(3,this)
             };
         	PauseQuery();
-			_queryTimer = new Timer(new TimerCallback(QueryThreadBody), null, Timeout.Infinite, DefaultMsPeriodValue);
+			_queryTimer = new Timer(QueryThreadBody, null, Timeout.Infinite, DefaultMsPeriodValue);
 			InitiateDeviceQuery();
 		}
 
@@ -214,12 +214,14 @@ namespace Atmo.Daq.Win32 {
 			get { return _sensors[i]; }
 		}
 
-		private bool InitiateDeviceQuery() {
-			return _queryTimer.Change(1, DefaultMsPeriodValue);
+		private void InitiateDeviceQuery() {
+			ResumeQuery();
+			_queryTimer.Change(1, DefaultMsPeriodValue);
 		}
 
 		private void TerminateDeviceQuery() {
 			if (null != _queryTimer) {
+				PauseQuery();
 				_queryTimer.Change(Timeout.Infinite, DefaultMsPeriodValue);
 				_queryTimer.Dispose();
 				_queryTimer = null;

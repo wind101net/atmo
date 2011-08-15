@@ -40,81 +40,85 @@ namespace Atmo.UI.DevEx {
 		private IDaqConnection _device;
 		private Dictionary<int, List<DaqDataFileInfo>> _fileInfosLookup;
 		public bool AutoImport { get; set; }
+    	private ImportAnemMap[] _importAnemMaps;
+    	private FolderBrowserDialog _fbd;
 
 		public string DataFolderPath { get; set; }
 
 		public PersistentState PersistentState  { get; set; }
 
 
-		public ImportDataForm(IDataStore dataStore, IDaqConnection device)
-            : base() {
+		public ImportDataForm(IDataStore dataStore, IDaqConnection device) {
 			AutoImport = false;
             _dataStore = dataStore;
             _device = device;
             _fileInfosLookup = null;
             InitializeComponent();
-        }
+			_importAnemMaps = new[] {
+				importAnemMap0,
+				importAnemMap1,
+				importAnemMap2,
+				importAnemMap3
+			};
+			
+			_fbd = new FolderBrowserDialog();
+		}
 
         private void buttonCancel_Click(object sender, EventArgs e) {
-            this.Close();
+            Close();
         }
 
         private void buttonSelectDataFolder_Click(object sender, EventArgs e) {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = "Select a folder containing the data files";
-            fbd.ShowNewFolderButton = false;
-        	fbd.RootFolder = Environment.SpecialFolder.MyComputer;
+            
+            _fbd.Description = "Select a folder containing the data files";
+            _fbd.ShowNewFolderButton = false;
+        	_fbd.RootFolder = Environment.SpecialFolder.MyComputer;
 			if(null != PersistentState && !String.IsNullOrEmpty(PersistentState.LastDaqFileLoadPath)) {
-				fbd.SelectedPath = PersistentState.LastDaqFileLoadPath;
+				_fbd.SelectedPath = PersistentState.LastDaqFileLoadPath;
 			}
 
-            DialogResult result = fbd.ShowDialog();
+            DialogResult result = _fbd.ShowDialog();
             if (result == DialogResult.OK) {
-				DataFolderPath = fbd.SelectedPath;
-				textEditFolderPath.Text = DataFolderPath;
-				var fileInfos = new List<DaqDataFileInfo>(
-					GetAnemFileInfos(GetAnemFiles(new DirectoryInfo(DataFolderPath))).Where(afi => null != afi)
-                );
-
-                SetAnemFileList(fileInfos);
-
-                _fileInfosLookup = fileInfos
-                    .GroupBy(afi => afi.Nid)
-					.ToDictionary(
-                        g => g.Key,
-                        g => g.ToList()
-                    )
-                ;
-
-                ActivateAnemImportMaps(_fileInfosLookup, _dataStore);
-
-                buttonImport.Enabled = true;
-                daqCheckTimer_Tick(null, null);
-
+            	HandleFolderSelected(_fbd.SelectedPath);
             }
             else {
-                ;
+                ; // user cancel
             }
         }
 
-		private void ActivateAnemImportMaps(Dictionary<int, List<DaqDataFileInfo>> fileInfos, IDataStore dataStore) {
+		private void HandleFolderSelected(string dataFolderPath) {
+			DataFolderPath = dataFolderPath;
+			textEditFolderPath.Text = DataFolderPath;
+			var fileInfos = new List<DaqDataFileInfo>(
+				GetAnemFileInfos(GetAnemFiles(new DirectoryInfo(DataFolderPath))).Where(afi => null != afi)
+			);
 
-            var importAnemMaps = new[] {
-                importAnemMap0,
-                importAnemMap1,
-                importAnemMap2,
-                importAnemMap3
-            };
+			SetAnemFileList(fileInfos);
+
+			_fileInfosLookup = fileInfos
+				.GroupBy(afi => afi.Nid)
+				.ToDictionary(
+					g => g.Key,
+					g => g.ToList()
+				);
+
+			ActivateAnemImportMaps(_fileInfosLookup, _dataStore);
+
+			buttonImport.Enabled = true;
+			daqCheckTimer_Tick(null, null);
+		}
+
+		private void ActivateAnemImportMaps(Dictionary<int, List<DaqDataFileInfo>> fileInfos, IDataStore dataStore) {
             List<ISensorInfo> dbSensorInfos = dataStore.GetAllSensorInfos().ToList();
             string[] dbSensorNamesArray = dbSensorInfos.Select(sim => sim.Name).ToArray();
-            for (int i = 0; i < importAnemMaps.Length; i++) {
-                var anemMapControl = importAnemMaps[i];
+			for (int i = 0; i < _importAnemMaps.Length; i++) {
+				var anemMapControl = _importAnemMaps[i];
 				List<DaqDataFileInfo> afiCollection = null;
                 anemMapControl.AnemId = ((char)((byte)('A') + i)).ToString();
                 if (fileInfos.TryGetValue(i, out afiCollection) && null != afiCollection && afiCollection.Count > 0) {
                     var minFileStamp = afiCollection.Min(afi => afi.FirstStamp);
                     anemMapControl.StartStamp = minFileStamp;
-                    anemMapControl.DatabaseSensorId = dataStore.GetLatestSensorNameForHardwareId(i.ToString()) ?? String.Empty;
+                    anemMapControl.DatabaseSensorId = dataStore.GetLatestSensorNameForHardwareId(anemMapControl.AnemId) ?? String.Empty;
                     anemMapControl.SetNameSuggestions(dbSensorNamesArray);
                     anemMapControl.Enabled = true;
                 }
@@ -122,7 +126,6 @@ namespace Atmo.UI.DevEx {
                     anemMapControl.Enabled = false;
                 }
             }
-
         }
 
 		private void SetAnemFileList(IEnumerable<DaqDataFileInfo> fileInfos) {
@@ -133,17 +136,10 @@ namespace Atmo.UI.DevEx {
         }
 
         private void buttonImport_Click(object sender, EventArgs e) {
-
-            var importAnemMaps = new[] {
-                importAnemMap0,
-                importAnemMap1,
-                importAnemMap2,
-                importAnemMap3
-            };
             var validMaps = new List<ImportAnemMap>();
             var invalidMaps = new List<ImportAnemMap>();
-            for (int i = 0; i < importAnemMaps.Length; i++) {
-                var anemMapControl = importAnemMaps[i];
+			for (int i = 0; i < _importAnemMaps.Length; i++) {
+				var anemMapControl = _importAnemMaps[i];
                 if (anemMapControl.Enabled && anemMapControl.Checked) {
                     if (anemMapControl.IsValid) {
                         validMaps.Add(anemMapControl);
@@ -246,9 +242,6 @@ namespace Atmo.UI.DevEx {
                     );
                 }
             }
-
-
-
         }
 
         private void daqCheckTimer_Tick(object sender, EventArgs e) {
@@ -261,10 +254,11 @@ namespace Atmo.UI.DevEx {
 
         private void ImportDataForm_Load(object sender, EventArgs e) {
             //syncChk.Checked = null != _device && _device.IsConnected;
-            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ReconnectSD), _device);
-
+            System.Threading.ThreadPool.QueueUserWorkItem(ReconnectSD, _device);
+			if (null != PersistentState && !String.IsNullOrEmpty(PersistentState.LastDaqFileLoadPath)) {
+				HandleFolderSelected(PersistentState.LastDaqFileLoadPath);
+			}
         }
-
 
         public void ReconnectSD(object state)
         {

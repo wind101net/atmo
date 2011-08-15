@@ -48,12 +48,8 @@ namespace Atmo.Stats {
 			_weibullCalcNeeded = true;
 			_beta = 0;
 			_theta = 0;
-			_speedStep = 1.0;
+			_speedStep = 0.5;
 			_speedHalfStep = _speedStep/2;
-			//_speedFrequency = new List<WindSpeedFrequency>();
-			//_directionEnergy = new List<WindDirectionEnergy>();
-			//_validSpeeds = new List<double>();
-			//_minSpeed = _maxSpeed = Double.NaN;
 			_maxAlgorithmIterations = 16;
 			_angleStep = 22.5 / 2.0;
 			_angleHalfStep = _angleStep/2;
@@ -153,9 +149,7 @@ namespace Atmo.Stats {
 		}
 
 		private void FinalizeWeibull() {
-			//var delta = 0.0;
 			var sum = 0.0;
-			//var rawSum = 0.0;
 			_beta = 2.0;
 			_theta = 0;
 			foreach(var reading in _speedLookup.Values) {

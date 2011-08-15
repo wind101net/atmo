@@ -30,10 +30,6 @@
 			this.textEditFolderPath = new DevExpress.XtraEditors.TextEdit();
 			this.buttonSelectDataFolder = new DevExpress.XtraEditors.SimpleButton();
 			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
-			this.importAnemMap3 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
-			this.importAnemMap2 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
-			this.importAnemMap1 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
-			this.importAnemMap0 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
 			this.buttonCancel = new DevExpress.XtraEditors.SimpleButton();
 			this.buttonImport = new DevExpress.XtraEditors.SimpleButton();
 			this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
@@ -42,6 +38,10 @@
 			this.daqCheckTimer = new System.Windows.Forms.Timer(this.components);
 			this.groupControl4 = new DevExpress.XtraEditors.GroupControl();
 			this.chkOverwrite = new DevExpress.XtraEditors.CheckEdit();
+			this.importAnemMap3 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
+			this.importAnemMap2 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
+			this.importAnemMap1 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
+			this.importAnemMap0 = new Atmo.UI.DevEx.Controls.ImportAnemMap();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
 			this.groupControl1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.listBoxAnemFiles)).BeginInit();
@@ -114,62 +114,6 @@
 			this.groupControl2.Size = new System.Drawing.Size(563, 153);
 			this.groupControl2.TabIndex = 1;
 			this.groupControl2.Text = "2. Select Anemometers For Import";
-			// 
-			// importAnemMap3
-			// 
-			this.importAnemMap3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.importAnemMap3.AnemId = null;
-			this.importAnemMap3.Checked = true;
-			this.importAnemMap3.DatabaseSensorId = "";
-			this.importAnemMap3.Enabled = false;
-			this.importAnemMap3.Location = new System.Drawing.Point(5, 121);
-			this.importAnemMap3.Name = "importAnemMap3";
-			this.importAnemMap3.Size = new System.Drawing.Size(553, 26);
-			this.importAnemMap3.StartStamp = new System.DateTime(((long)(0)));
-			this.importAnemMap3.TabIndex = 3;
-			// 
-			// importAnemMap2
-			// 
-			this.importAnemMap2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.importAnemMap2.AnemId = null;
-			this.importAnemMap2.Checked = true;
-			this.importAnemMap2.DatabaseSensorId = "";
-			this.importAnemMap2.Enabled = false;
-			this.importAnemMap2.Location = new System.Drawing.Point(5, 89);
-			this.importAnemMap2.Name = "importAnemMap2";
-			this.importAnemMap2.Size = new System.Drawing.Size(553, 26);
-			this.importAnemMap2.StartStamp = new System.DateTime(((long)(0)));
-			this.importAnemMap2.TabIndex = 2;
-			// 
-			// importAnemMap1
-			// 
-			this.importAnemMap1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.importAnemMap1.AnemId = null;
-			this.importAnemMap1.Checked = true;
-			this.importAnemMap1.DatabaseSensorId = "";
-			this.importAnemMap1.Enabled = false;
-			this.importAnemMap1.Location = new System.Drawing.Point(5, 57);
-			this.importAnemMap1.Name = "importAnemMap1";
-			this.importAnemMap1.Size = new System.Drawing.Size(553, 26);
-			this.importAnemMap1.StartStamp = new System.DateTime(((long)(0)));
-			this.importAnemMap1.TabIndex = 1;
-			// 
-			// importAnemMap0
-			// 
-			this.importAnemMap0.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.importAnemMap0.AnemId = null;
-			this.importAnemMap0.Checked = true;
-			this.importAnemMap0.DatabaseSensorId = "";
-			this.importAnemMap0.Enabled = false;
-			this.importAnemMap0.Location = new System.Drawing.Point(5, 25);
-			this.importAnemMap0.Name = "importAnemMap0";
-			this.importAnemMap0.Size = new System.Drawing.Size(553, 26);
-			this.importAnemMap0.StartStamp = new System.DateTime(((long)(0)));
-			this.importAnemMap0.TabIndex = 0;
 			// 
 			// buttonCancel
 			// 
@@ -246,6 +190,62 @@
 			this.chkOverwrite.Properties.Caption = "Overwrite";
 			this.chkOverwrite.Size = new System.Drawing.Size(75, 18);
 			this.chkOverwrite.TabIndex = 0;
+			// 
+			// importAnemMap3
+			// 
+			this.importAnemMap3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.importAnemMap3.AnemId = null;
+			this.importAnemMap3.Checked = true;
+			this.importAnemMap3.DatabaseSensorId = "";
+			this.importAnemMap3.Enabled = false;
+			this.importAnemMap3.Location = new System.Drawing.Point(5, 121);
+			this.importAnemMap3.Name = "importAnemMap3";
+			this.importAnemMap3.Size = new System.Drawing.Size(553, 26);
+			this.importAnemMap3.StartStamp = new System.DateTime(((long)(0)));
+			this.importAnemMap3.TabIndex = 3;
+			// 
+			// importAnemMap2
+			// 
+			this.importAnemMap2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.importAnemMap2.AnemId = null;
+			this.importAnemMap2.Checked = true;
+			this.importAnemMap2.DatabaseSensorId = "";
+			this.importAnemMap2.Enabled = false;
+			this.importAnemMap2.Location = new System.Drawing.Point(5, 89);
+			this.importAnemMap2.Name = "importAnemMap2";
+			this.importAnemMap2.Size = new System.Drawing.Size(553, 26);
+			this.importAnemMap2.StartStamp = new System.DateTime(((long)(0)));
+			this.importAnemMap2.TabIndex = 2;
+			// 
+			// importAnemMap1
+			// 
+			this.importAnemMap1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.importAnemMap1.AnemId = null;
+			this.importAnemMap1.Checked = true;
+			this.importAnemMap1.DatabaseSensorId = "";
+			this.importAnemMap1.Enabled = false;
+			this.importAnemMap1.Location = new System.Drawing.Point(5, 57);
+			this.importAnemMap1.Name = "importAnemMap1";
+			this.importAnemMap1.Size = new System.Drawing.Size(553, 26);
+			this.importAnemMap1.StartStamp = new System.DateTime(((long)(0)));
+			this.importAnemMap1.TabIndex = 1;
+			// 
+			// importAnemMap0
+			// 
+			this.importAnemMap0.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.importAnemMap0.AnemId = null;
+			this.importAnemMap0.Checked = true;
+			this.importAnemMap0.DatabaseSensorId = "";
+			this.importAnemMap0.Enabled = false;
+			this.importAnemMap0.Location = new System.Drawing.Point(5, 25);
+			this.importAnemMap0.Name = "importAnemMap0";
+			this.importAnemMap0.Size = new System.Drawing.Size(553, 26);
+			this.importAnemMap0.StartStamp = new System.DateTime(((long)(0)));
+			this.importAnemMap0.TabIndex = 0;
 			// 
 			// ImportDataForm
 			// 

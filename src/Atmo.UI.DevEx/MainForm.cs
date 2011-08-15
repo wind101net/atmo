@@ -24,7 +24,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
 using Atmo.Daq.Win32;
 using Atmo.Data;
 using Atmo.Stats;
@@ -60,7 +62,7 @@ namespace Atmo.UI.DevEx {
 			ConverterCacheReadingAggregate = ReadingValuesConverterCache<ReadingAggregate>.Default;
 			liveAtmosphericGraph.ConverterCacheReadingValues = ConverterCacheReadingValues;
 
-			_deviceConnection = new Demo.DemoDaqConnection();
+			_deviceConnection = new UsbDaqConnection(); // new Demo.DemoDaqConnection();
 
 			_dbConnection = new System.Data.SQLite.SQLiteConnection(
 				@"data source=ClearStorage.db;page size=4096;cache size=4000;journal mode=Off"
@@ -95,6 +97,17 @@ namespace Atmo.UI.DevEx {
 					selected = true;
 				}
 				view.IsSelected = selected;
+			}
+
+			HandleRapidFireSetup();
+
+		}
+
+		private void HandleRapidFireSetup() {
+			if (AppContext.PersistentState.PwsEnabled) {
+				StartRapidFire();
+			}else {
+				CancelRapidFire("Not enabled.");
 			}
 		}
 
@@ -257,14 +270,13 @@ namespace Atmo.UI.DevEx {
 			historicalGraphBreakdown.CumulativeTimeSpan = histTimeSpan;
 
 			historicalGraphBreakdown.SetDataSource(historicalSummaries);
-			
-
 
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
 			var settingsForm = new SettingsForm(AppContext.PersistentState);
 			settingsForm.ShowDialog(this);
+			HandleRapidFireSetup();
 		}
 
 		private void simpleButtonFindSensors_Click(object sender, EventArgs e) {
@@ -276,8 +288,17 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void FindSensors() {
+			var rapidFireEnabled = timerRapidFire.Enabled;
+			if(rapidFireEnabled) {
+				timerRapidFire.Enabled = false;
+			}
+			timerTesting.Enabled = false;
 			var findSensorForm = new FindSensorsDialog(_deviceConnection);
 			findSensorForm.ShowDialog(this);
+			timerTesting.Enabled = true;
+			if(rapidFireEnabled) {
+				timerRapidFire.Enabled = true;
+			}
 		}
 
 		private void barButtonItemImport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -397,6 +418,166 @@ namespace Atmo.UI.DevEx {
 
 			labelDaqTime.Text = "N/A";
 			labelDaqTime.ForeColor = ForeColor;
+		}
+
+		private void simpleButtonPwsAction_Click(object sender, EventArgs e) {
+			if(timerRapidFire.Enabled) {
+				CancelRapidFire("User canceled.");
+			}
+			else {
+				AutoStartRapidFire();
+			}
+		}
+
+		private void AutoStartRapidFire() {
+			var stationNames = AppContext.PersistentState.StationNames;
+			var stationPassword = AppContext.PersistentState.StationPassword;
+			bool isValid = stationNames.Any(sn => !String.IsNullOrEmpty(sn))
+				&& !String.IsNullOrEmpty(stationPassword);
+
+			if (timerRapidFire.Enabled != isValid) {
+				if(isValid) {
+					StartRapidFire();
+					timerRapidFire_Tick(null, null);
+				}
+			}
+		}
+
+		private const string RunningText = "Running";
+
+		private void StartRapidFire() {
+			timerRapidFire.Enabled = true;
+			AppContext.PersistentState.PwsEnabled = true;
+
+			//labelControlPwsStatus.Text = "Running";
+			labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, RunningText);
+			//simpleButtonPwsAction.Text = "Running";
+			simpleButtonPwsAction.SetPropertyThreadSafe(() => simpleButtonPwsAction.Text, RunningText + " (click to stop).");
+			//simpleButtonPwsAction.BackColor = Color.LightGreen;
+			simpleButtonPwsAction.SetPropertyThreadSafe(() => simpleButtonPwsAction.ForeColor, ForeColor);
+
+		}
+
+		private void CancelRapidFire(string message) {
+			timerRapidFire.Enabled = false;
+			AppContext.PersistentState.PwsEnabled = false;
+
+			//labelControlPwsStatus.Text = message;
+			labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, message);
+			//simpleButtonPwsAction.Text = "Disabled";
+			simpleButtonPwsAction.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, "Stopped (click to start).");
+			//simpleButtonPwsAction.BackColor = Color.LightPink;
+			simpleButtonPwsAction.SetPropertyThreadSafe(() => labelControlPwsStatus.ForeColor, Color.Red);
+		}
+
+		private void timerRapidFire_Tick(object sender, EventArgs e) {
+			ISensor[] sensors = _deviceConnection.ToArray();
+
+			IReading[] readings = sensors
+				.Select(sensor => sensor.IsValid ? sensor.GetCurrentReading() : null)
+				.ToArray()
+			;
+
+			if(readings.All(r => null == r)) {
+				labelControlPwsStatus.Text = "No sensors.";
+			}else {
+				labelControlPwsStatus.Text = RunningText;
+			}
+
+			var stationNames = AppContext.PersistentState.StationNames;
+			var stationPassword = AppContext.PersistentState.StationPassword;
+			if (String.IsNullOrEmpty(stationPassword)) {
+				CancelRapidFire("No PWS password.");
+				return;
+			}
+			if(stationNames == null || stationNames.Count == 0) {
+				CancelRapidFire("No PWS stations.");
+				return;
+			}
+			for (int i = 0; i < readings.Length; i++) {
+				string id = stationNames[i];
+				if (String.IsNullOrEmpty(id)) {
+					continue;
+				}
+				IReading reading = readings[i];
+				if (null == reading || !reading.IsValid) {
+					continue;
+				}
+				Dictionary<string, string> queryParams = new Dictionary<string, string>();
+				queryParams.Add("action", "updateraw");
+				queryParams.Add("ID", id);
+				queryParams.Add("PASSWORD", stationPassword);
+				DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+				queryParams.Add("dateutc", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
+				queryParams.Add("realtime", "1");
+				queryParams.Add("rtfreq", ((timerRapidFire.Interval / 1000.0).ToString()));
+				if (reading.IsWindDirectionValid && reading.WindDirection <= 360.0) {
+					queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
+				}
+				if (reading.IsWindSpeedValid) {
+					queryParams.Add(
+						"windspeedmph",
+						UnitUtility.ConvertUnit(reading.WindSpeed, sensors[i].SpeedUnit, SpeedUnit.MilesPerHour).ToString()
+					);
+				}
+				if (reading.IsHumidityValid) {
+					queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
+				}
+				if (reading.IsTemperatureValid) {
+					queryParams.Add(
+						"tempf",
+						UnitUtility.ConvertUnit(reading.Temperature, sensors[i].TemperatureUnit, TemperatureUnit.Fahrenheit).ToString()
+					);
+				}
+				if (reading.IsPressureValid) {
+					queryParams.Add(
+						"baromin",
+						UnitUtility.ConvertUnit(reading.Pressure, sensors[i].PressureUnit, PressureUnit.InchOfMercury).ToString()
+					);
+				}
+				queryParams.Add(
+					"softwaretype",
+					"Atmo"
+				);
+
+				var builder = new UriBuilder("http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php");
+				builder.Query = String.Join(
+					"&",
+					queryParams
+						.Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
+						.ToArray()
+				);
+
+				//MessageBox.Show(builder.Uri.ToString());
+				var reqSent = HttpWebRequest.Create(builder.Uri);
+
+				reqSent.BeginGetResponse(HandleRapidFireResult, reqSent);
+
+			}
+
+		}
+
+		private void HandleRapidFireResult(IAsyncResult result) {
+			var req = (WebRequest)result.AsyncState;
+			try {
+				using (WebResponse res = req.EndGetResponse(result)) {
+					using (var reader = new StreamReader(res.GetResponseStream())) {
+						string responseMessage = reader.ReadToEnd().ToUpperInvariant();
+						if (responseMessage.StartsWith("SUCCESS")) {
+							; // OK
+						}
+						else if (responseMessage.Contains("PASSWORD")) {
+							CancelRapidFire("PWS Station ID or password is invalid.");
+						}
+						else {
+							CancelRapidFire("PWS protocol error.");
+						}
+					}
+				}
+			}
+			catch (WebException webEx) {
+				CancelRapidFire("PWS Communication failure.");
+			}
 		}
 
 

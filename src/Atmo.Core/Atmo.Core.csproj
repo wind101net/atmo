@@ -66,6 +66,8 @@
     <Compile Include="Stats\PackedRadingsSummary.cs" />
     <Compile Include="Stats\PackedReadingsDaySummary.cs" />
     <Compile Include="Stats\PackedReadingsHourSummary.cs" />
+    <Compile Include="Stats\PackedReadingsMinuteSummary.cs" />
+    <Compile Include="Stats\PackedReadingsTenMinutesSummary.cs" />
     <Compile Include="Stats\ReadingAggregate.cs" />
     <Compile Include="IDaqConnection.cs" />
     <Compile Include="IReadingValues.cs" />

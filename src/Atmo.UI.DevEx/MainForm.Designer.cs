@@ -72,6 +72,10 @@
 			this.labelDaqTime = new DevExpress.XtraEditors.LabelControl();
 			this.labelLocalTime = new DevExpress.XtraEditors.LabelControl();
 			this.timerQueryTime = new System.Windows.Forms.Timer(this.components);
+			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+			this.simpleButtonPwsAction = new DevExpress.XtraEditors.SimpleButton();
+			this.labelControlPwsStatus = new DevExpress.XtraEditors.LabelControl();
+			this.timerRapidFire = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControlDbList)).BeginInit();
@@ -80,6 +84,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
 			this.groupControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
+			this.groupControl2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// barManager
@@ -303,7 +309,7 @@
 			this.panelSensors.Controls.Add(this.groupControlSensors);
 			this.panelSensors.Location = new System.Drawing.Point(0, 88);
 			this.panelSensors.Name = "panelSensors";
-			this.panelSensors.Size = new System.Drawing.Size(206, 640);
+			this.panelSensors.Size = new System.Drawing.Size(206, 548);
 			this.panelSensors.TabIndex = 13;
 			// 
 			// groupControlDbList
@@ -555,11 +561,51 @@
 			this.timerQueryTime.Interval = 250;
 			this.timerQueryTime.Tick += new System.EventHandler(this.timerQueryTime_Tick);
 			// 
+			// groupControl2
+			// 
+			this.groupControl2.Controls.Add(this.simpleButtonPwsAction);
+			this.groupControl2.Controls.Add(this.labelControlPwsStatus);
+			this.groupControl2.Location = new System.Drawing.Point(0, 642);
+			this.groupControl2.Name = "groupControl2";
+			this.groupControl2.Size = new System.Drawing.Size(205, 86);
+			this.groupControl2.TabIndex = 59;
+			this.groupControl2.Text = "PWS Status";
+			// 
+			// simpleButtonPwsAction
+			// 
+			this.simpleButtonPwsAction.Appearance.ForeColor = System.Drawing.Color.Red;
+			this.simpleButtonPwsAction.Appearance.Options.UseForeColor = true;
+			this.simpleButtonPwsAction.Location = new System.Drawing.Point(5, 58);
+			this.simpleButtonPwsAction.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.UltraFlat;
+			this.simpleButtonPwsAction.Name = "simpleButtonPwsAction";
+			this.simpleButtonPwsAction.Size = new System.Drawing.Size(196, 23);
+			this.simpleButtonPwsAction.TabIndex = 1;
+			this.simpleButtonPwsAction.Text = "N/A";
+			this.simpleButtonPwsAction.Click += new System.EventHandler(this.simpleButtonPwsAction_Click);
+			// 
+			// labelControlPwsStatus
+			// 
+			this.labelControlPwsStatus.Appearance.Options.UseTextOptions = true;
+			this.labelControlPwsStatus.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top;
+			this.labelControlPwsStatus.AutoEllipsis = true;
+			this.labelControlPwsStatus.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelControlPwsStatus.Location = new System.Drawing.Point(5, 25);
+			this.labelControlPwsStatus.Name = "labelControlPwsStatus";
+			this.labelControlPwsStatus.Size = new System.Drawing.Size(195, 27);
+			this.labelControlPwsStatus.TabIndex = 0;
+			this.labelControlPwsStatus.Text = "N/A";
+			// 
+			// timerRapidFire
+			// 
+			this.timerRapidFire.Interval = 5000;
+			this.timerRapidFire.Tick += new System.EventHandler(this.timerRapidFire_Tick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(813, 862);
+			this.Controls.Add(this.groupControl2);
 			this.Controls.Add(this.groupControl1);
 			this.Controls.Add(this.mainScrollableControl);
 			this.Controls.Add(this.simpleButtonDownloadData);
@@ -584,6 +630,8 @@
 			this.groupControl1.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
+			this.groupControl2.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -638,6 +686,10 @@
 		private DevExpress.XtraEditors.LabelControl labelDaqTime;
 		private DevExpress.XtraEditors.LabelControl labelLocalTime;
 		private System.Windows.Forms.Timer timerQueryTime;
+		private DevExpress.XtraEditors.GroupControl groupControl2;
+		private DevExpress.XtraEditors.SimpleButton simpleButtonPwsAction;
+		private DevExpress.XtraEditors.LabelControl labelControlPwsStatus;
+		private System.Windows.Forms.Timer timerRapidFire;
 
 	}
 }

@@ -64,8 +64,7 @@ namespace Atmo.UI.DevEx.Controls {
 		}
 
 		public void SetDataSource(List<ReadingsSummary> items) {
-			// todo: can this copy be eliminated?
-			
+			// todo: can this list copy be eliminated?
 
 			var windCalc = new WindDataSummaryCalculator<IReadingsSummary>();
 			

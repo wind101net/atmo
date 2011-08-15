@@ -152,7 +152,7 @@ namespace Atmo {
 		}
 
 		private static byte[] ConvertToPackedBytes(Dictionary<ushort, int> countValues) {
-			int stride = sizeof(ushort) + sizeof(int);
+			const int stride = sizeof(ushort) + sizeof(int);
 			byte[] result = new byte[countValues.Count * stride];
 			IEnumerator<KeyValuePair<ushort, int>> enumerator = countValues.GetEnumerator();
 			for (int i = 0; enumerator.MoveNext(); i++) {
@@ -165,7 +165,7 @@ namespace Atmo {
 		}
 
 		private static byte[] ConvertToPackedBytes(Dictionary<byte, int> countValues) {
-			int stride = sizeof(byte) + sizeof(int);
+			const int stride = sizeof(byte) + sizeof(int);
 			byte[] result = new byte[countValues.Count * stride];
 			IEnumerator<KeyValuePair<byte, int>> enumerator = countValues.GetEnumerator();
 			for (int i = 0; enumerator.MoveNext(); i++) {
@@ -177,7 +177,7 @@ namespace Atmo {
 		}
 
 		public static Dictionary<ushort, int> PackedCountsToHashUnsigned16(byte[] data) {
-			int stride = sizeof(ushort) + sizeof(int);
+			const int stride = sizeof(ushort) + sizeof(int);
 			Dictionary<ushort, int> result = new Dictionary<ushort, int>(data.Length / stride);
 			for (int i = 0; i < data.Length; i += stride) {
 				ushort key = BitConverter.ToUInt16(data, i);
@@ -188,7 +188,7 @@ namespace Atmo {
 		}
 
 		public static Dictionary<byte, int> PackedCountsToHashUnsigned8(byte[] data) {
-			int stride = sizeof(byte) + sizeof(int);
+			const int stride = sizeof(byte) + sizeof(int);
 			Dictionary<byte, int> result = new Dictionary<byte, int>(data.Length / stride);
 			for (int i = 0; i < data.Length; i += stride) {
 				byte key = data[i];

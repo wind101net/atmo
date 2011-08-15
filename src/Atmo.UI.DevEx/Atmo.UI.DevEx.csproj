@@ -224,6 +224,7 @@
     <Compile Include="TimeSync.designer.cs">
       <DependentUpon>TimeSync.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinFormsUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">
