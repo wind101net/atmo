@@ -548,11 +548,8 @@ namespace Atmo.UI.DevEx {
 						.ToArray()
 				);
 
-				//MessageBox.Show(builder.Uri.ToString());
 				var reqSent = HttpWebRequest.Create(builder.Uri);
-
 				reqSent.BeginGetResponse(HandleRapidFireResult, reqSent);
-
 			}
 
 		}
@@ -578,6 +575,22 @@ namespace Atmo.UI.DevEx {
 			catch (WebException webEx) {
 				CancelRapidFire("PWS Communication failure.");
 			}
+		}
+
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing) {
+			if (disposing) {
+				if (components != null) {
+					components.Dispose();
+				}
+				if(_deviceConnection is IDisposable) {
+					(_deviceConnection as IDisposable).Dispose();
+				}
+			}
+			base.Dispose(disposing);
 		}
 
 

@@ -26,6 +26,7 @@
 			this.components = new System.ComponentModel.Container();
 			DevExpress.XtraCharts.XYDiagram xyDiagram1 = new DevExpress.XtraCharts.XYDiagram();
 			DevExpress.XtraCharts.SecondaryAxisY secondaryAxisY1 = new DevExpress.XtraCharts.SecondaryAxisY();
+			DevExpress.XtraCharts.SecondaryAxisY secondaryAxisY2 = new DevExpress.XtraCharts.SecondaryAxisY();
 			DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
 			DevExpress.XtraCharts.PointSeriesLabel pointSeriesLabel1 = new DevExpress.XtraCharts.PointSeriesLabel();
 			DevExpress.XtraCharts.SplineAreaSeriesView splineAreaSeriesView1 = new DevExpress.XtraCharts.SplineAreaSeriesView();
@@ -55,6 +56,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.chartControlWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(secondaryAxisY2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(splineAreaSeriesView1)).BeginInit();
@@ -102,8 +104,14 @@
 			secondaryAxisY1.Range.ScrollingRange.SideMarginsEnabled = true;
 			secondaryAxisY1.Range.SideMarginsEnabled = true;
 			secondaryAxisY1.VisibleInPanesSerializable = "-1";
+			secondaryAxisY2.AxisID = 1;
+			secondaryAxisY2.Name = "Secondary AxisY 2";
+			secondaryAxisY2.Range.ScrollingRange.SideMarginsEnabled = true;
+			secondaryAxisY2.Range.SideMarginsEnabled = true;
+			secondaryAxisY2.VisibleInPanesSerializable = "-1";
 			xyDiagram1.SecondaryAxesY.AddRange(new DevExpress.XtraCharts.SecondaryAxisY[] {
-            secondaryAxisY1});
+            secondaryAxisY1,
+            secondaryAxisY2});
 			this.chartControlWindSpeedFreq.Diagram = xyDiagram1;
 			this.chartControlWindSpeedFreq.Dock = System.Windows.Forms.DockStyle.Top;
 			this.chartControlWindSpeedFreq.Legend.AlignmentHorizontal = DevExpress.XtraCharts.LegendAlignmentHorizontal.Right;
@@ -150,6 +158,7 @@
 			series3.LegendText = "Beta: NaN Theta: NaN";
 			series3.Name = "Weibull";
 			series3.ValueDataMembersSerializable = "WeibullProperty";
+			splineSeriesView1.AxisYName = "Secondary AxisY 2";
 			splineSeriesView1.Color = System.Drawing.Color.Red;
 			splineSeriesView1.LineMarkerOptions.Visible = false;
 			splineSeriesView1.LineStyle.Thickness = 1;
@@ -245,6 +254,7 @@
 			this.Size = new System.Drawing.Size(898, 879);
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(secondaryAxisY1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(secondaryAxisY2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(splineAreaSeriesView1)).EndInit();

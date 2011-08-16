@@ -50,7 +50,7 @@ namespace Atmo.Stats {
 			_theta = 0;
 			_speedStep = 0.5;
 			_speedHalfStep = _speedStep/2;
-			_maxAlgorithmIterations = 16;
+			_maxAlgorithmIterations = 64;
 			_angleStep = 22.5 / 2.0;
 			_angleHalfStep = _angleStep/2;
 
@@ -149,34 +149,50 @@ namespace Atmo.Stats {
 		}
 
 		private void FinalizeWeibull() {
-			var sum = 0.0;
 			_beta = 2.0;
 			_theta = 0;
+			var frequencyTotal = 0.0;
 			foreach(var reading in _speedLookup.Values) {
-				sum += reading.Frequency;
+				frequencyTotal += reading.Frequency;
 			}
 			for (int algorithmIterations = 0; algorithmIterations < _maxAlgorithmIterations; algorithmIterations++) {
-				_beta = WeibullFitBetterBeta(sum, _beta);
+				_beta = WeibullFitBetterBeta(frequencyTotal, _beta);
+				;
 			}
-			foreach(var reading in _speedLookup.Values){
-				_theta += (Math.Pow(reading.Speed, _beta) / sum) * reading.Frequency;
+			foreach(var reading in _speedLookup.Values) {
+				const double delta = 0.0;
+				var speed = reading.Speed;
+				if (speed <= 0) {
+					speed = 0.001;
+				}
+				speed -= delta;
+				var occurrences = reading.Frequency;
+				var speedToTheBeta = Math.Pow(speed, _beta);
+				double localTheta = (speedToTheBeta/frequencyTotal)*occurrences;
+				_theta += localTheta;
+				//_theta += (Math.Pow(reading.Speed, _beta) / frequencyTotal) * reading.Frequency;
 			}
 			_theta = Math.Pow(_theta, 1.0 / _beta);
 			var thetaToTheBeta = Math.Pow(_theta, _beta);
-			foreach(var reading in _speedLookup.Values) {
-				var speed = reading.Speed;
-				reading.Weibull =
-					_beta
-					* (Math.Pow(speed, _beta - 1.0) / thetaToTheBeta)
-					* Math.Pow(Math.E, -Math.Pow(speed / _theta, _beta))
-				;
-			}
 			double weibullSum = 0;
-			foreach (var reading in _speedLookup.Values) {
+			foreach(var reading in _speedLookup.Values) {
+				const double delta = 0.0;
+				var speed = reading.Speed;
+				if (speed <= 0) {
+					speed = 0.001;
+				}
+				speed -= delta;
+
+				reading.Weibull =
+					(_beta * Math.Pow(speed, _beta - 1.0))
+					/
+					(thetaToTheBeta * Math.Pow(Math.E, -Math.Pow(speed / _theta, _beta)))
+				;
 				weibullSum += reading.Weibull;
 			}
+
 			var correction = 1.0 / weibullSum;
-			var correctedSum = correction*sum;
+			var correctedSum = correction*frequencyTotal;
 			foreach (var reading in _speedLookup.Values) {
 				reading.Weibull *= correctedSum;
 			}
@@ -184,12 +200,52 @@ namespace Atmo.Stats {
 		}
 
 		private double WeibullFitBetterBeta(double sum, double beta) {
-			double cSum = 0;
+
+			double betaMinusOne = beta - 1;
+			double delta = 0;
+
+			double partCSum = 0;
+			double partDSum = 0;
+			double partESum = 0;
+			double thetaSum = 0;
+
+			foreach (var reading in _speedLookup.Values) {
+				var speed = reading.Speed;
+				if(speed <= 0) {
+					speed = 0.001;
+				}
+				speed -= delta;
+				var inverseSpeed = 1.0/speed;
+				var occurrences = reading.Frequency;
+				var occurrenceBeta = occurrences*beta;
+				var logSpeed = Math.Log(speed);
+				var occurrenceRatio = occurrences / sum;
+				var speedToTheBeta = Math.Pow(speed, beta);
+
+				var partC = speedToTheBeta * logSpeed * occurrences;
+				var partD = speedToTheBeta * occurrences;
+				var partE = (logSpeed / sum) * occurrences;
+
+				var thetaCalc = speedToTheBeta*occurrenceRatio;
+
+				partCSum += partC;
+				partDSum += partD;
+				partESum += partE;
+				thetaSum += thetaCalc;
+
+			}
+
+			var betaDelta = partESum - ((partCSum / partDSum) - (1.0 / beta));
+			var newBeta = beta + betaDelta;
+			return newBeta;
+
+			
+			/*double cSum = 0;
 			double dSum = 0;
 			double eSum = 0;
 			foreach (var reading in _speedLookup.Values) {
 
-				var speedLog = Math.Log(reading.Speed);
+				var speedLog = 0 == reading.Speed ? 0.001 : Math.Log(reading.Speed);
 				var speedToTheBeta = Math.Pow(reading.Speed, beta);
 
 				var d = speedToTheBeta * reading.Frequency;
@@ -208,7 +264,8 @@ namespace Atmo.Stats {
 				}
 			}
 			var betaDelta = eSum - (cSum / dSum) + (1.0 / beta);
-			return beta + betaDelta;
+			return beta + betaDelta;*/
+
 		}
 
 

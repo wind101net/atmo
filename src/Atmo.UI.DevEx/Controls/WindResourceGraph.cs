@@ -73,9 +73,42 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 
 			var speedFrequencyData = windCalc.WindSpeedFrequencyData;
+
+			double meanWindSpeed = CalculateMeanWindSpeed(speedFrequencyData);
+
+			double betaInv = 1.0 - (1.0/windCalc.Beta);
+			double betaInv2 = betaInv*betaInv;
+			double betaInv3 = betaInv2*betaInv;
+			double betaInv4 = betaInv2*betaInv2;
+			double betaInv5 = betaInv3*betaInv2;
+			double betaInv6 = betaInv3*betaInv3;
+			double gamma = 4.4077
+				- (9.6053 * betaInv)
+				+ (11.609 * betaInv2)
+				- (8.0669 * betaInv3)
+				+ (3.3393 * betaInv4)
+				- (0.75730 * betaInv5)
+				+ (0.073564 * betaInv6);
+
+			double weibulAverage = windCalc.Theta*gamma;
+
 			chartControlWindDir.DataSource = PercentageOfMax(windCalc.WindDirectionEnergyData);
 			chartControlWindSpeedFreq.DataSource = speedFrequencyData;
 		}
+
+		private double CalculateMeanWindSpeed(List<WindSpeedFrequency> speedFrequencyData) {
+			double meanWindSpeed = 0;
+			double windReadingsCount = 0;
+			foreach (var item in speedFrequencyData) {
+				windReadingsCount += item.Frequency;
+				meanWindSpeed += (item.Speed*item.Frequency);
+			}
+
+			meanWindSpeed /= windReadingsCount;
+			return meanWindSpeed;
+		}
+
+
 
 		private static List<WindDirectionEnergy> PercentageOfMax(List<WindDirectionEnergy> records) {
 			var result = new List<WindDirectionEnergy>(records.Count);

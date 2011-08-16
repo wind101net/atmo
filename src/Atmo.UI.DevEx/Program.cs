@@ -46,10 +46,12 @@ namespace Atmo.UI.DevEx {
 
 		public ProgramContext() {
 			_mainForm = new MainForm(this);
-			_mainForm.Closed += OnMainFormClosed;
 			_splashForm = new SplashForm(_mainForm);
-			_splashForm.Show(_mainForm);
+			MainForm = _mainForm;
+		}
 
+		public void Start() {
+			_splashForm.Show(_mainForm);
 			// TODO: replace with fade in
 			_mainForm.Show();
 			_splashForm.Close();
@@ -79,6 +81,11 @@ namespace Atmo.UI.DevEx {
 			}
 		}
 
+		protected override void Dispose(bool disposing) {
+			_mainForm.Dispose();
+			base.Dispose(disposing);
+		}
+
 	}
 
 	static class Program {
@@ -96,8 +103,9 @@ namespace Atmo.UI.DevEx {
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			var context = new ProgramContext();
-			Application.Run(context);
+			using (var context = new ProgramContext()) {
+				Application.Run(context);
+			}
 		}
 
 	}

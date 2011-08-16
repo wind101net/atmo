@@ -5,16 +5,7 @@
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing) {
-			if (disposing && (components != null)) {
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+		
 
 		#region Windows Form Designer generated code
 
@@ -563,6 +554,7 @@
 			// 
 			// groupControl2
 			// 
+			this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.groupControl2.Controls.Add(this.simpleButtonPwsAction);
 			this.groupControl2.Controls.Add(this.labelControlPwsStatus);
 			this.groupControl2.Location = new System.Drawing.Point(0, 642);
