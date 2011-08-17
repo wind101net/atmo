@@ -74,26 +74,21 @@ namespace Atmo.UI.DevEx.Controls {
 
 			var speedFrequencyData = windCalc.WindSpeedFrequencyData;
 
-			double meanWindSpeed = CalculateMeanWindSpeed(speedFrequencyData);
-
-			double betaInv = 1.0 - (1.0/windCalc.Beta);
-			double betaInv2 = betaInv*betaInv;
-			double betaInv3 = betaInv2*betaInv;
-			double betaInv4 = betaInv2*betaInv2;
-			double betaInv5 = betaInv3*betaInv2;
-			double betaInv6 = betaInv3*betaInv3;
-			double gamma = 4.4077
-				- (9.6053 * betaInv)
-				+ (11.609 * betaInv2)
-				- (8.0669 * betaInv3)
-				+ (3.3393 * betaInv4)
-				- (0.75730 * betaInv5)
-				+ (0.073564 * betaInv6);
-
-			double weibulAverage = windCalc.Theta*gamma;
+			SetGraphParameterLabels(
+				windCalc.Beta,
+				windCalc.Theta,
+				windCalc.CalculateWeibulAverage(),
+			    CalculateMeanWindSpeed(speedFrequencyData)
+			);
 
 			chartControlWindDir.DataSource = PercentageOfMax(windCalc.WindDirectionEnergyData);
 			chartControlWindSpeedFreq.DataSource = speedFrequencyData;
+		}
+
+		private void SetGraphParameterLabels(double beta, double theta, double weibullMean, double mean) {
+			var chart = chartControlWindSpeedFreq;
+			chart.Series[2].LegendText = String.Format("Beta: {0} Theta: {1} Mean: {2}", beta.ToString("F2"), theta.ToString("F1"), weibullMean.ToString("F2"));
+			chart.Series[1].LegendText = String.Format("Mean: {0}", mean.ToString("F2"));
 		}
 
 		private double CalculateMeanWindSpeed(List<WindSpeedFrequency> speedFrequencyData) {

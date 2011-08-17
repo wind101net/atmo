@@ -148,18 +148,24 @@ namespace Atmo.Stats {
 			}
 		}
 
-		private const double ZeroReplace = 0.00001;
+		private const double ZeroReplace = 0.001;
 
 		private void FinalizeWeibull() {
 			_beta = 2.0;
 			_theta = 0;
+
+			// get a quick frequency sum
 			var frequencyTotal = 0.0;
 			foreach(var reading in _speedLookup.Values) {
 				frequencyTotal += reading.Frequency;
 			}
+
+			// calc beta
 			for (int algorithmIterations = 0; algorithmIterations < _maxAlgorithmIterations; algorithmIterations++) {
 				_beta = WeibullFitBetterBeta(frequencyTotal, _beta);
 			}
+
+			// calc theta
 			foreach(var reading in _speedLookup.Values) {
 				var speed = reading.Speed;
 				if (speed <= 0) {
@@ -168,25 +174,27 @@ namespace Atmo.Stats {
 				_theta += (Math.Pow(speed, _beta) / frequencyTotal) * reading.Frequency;
 			}
 			_theta = Math.Pow(_theta, 1.0 / _beta);
+
+			// find probability density
+			var betaMinusOne = _beta - 1.0;
 			var thetaToTheBeta = Math.Pow(_theta, _beta);
-			double weibullSum = 0;
-			foreach(var reading in _speedLookup.Values) {
+			var weibullSum = 0.0;
+			foreach (var reading in _speedLookup.Values) {
 				var speed = reading.Speed;
 				if (speed <= 0) {
 					speed = ZeroReplace;
 				}
-				reading.Weibull =
-					(_beta * Math.Pow(speed, _beta - 1.0))
-					/
-					(thetaToTheBeta * Math.Pow(Math.E, -Math.Pow(speed / _theta, _beta)))
-				;
-				weibullSum += reading.Weibull;
+				var density = ((_beta * Math.Pow(speed, betaMinusOne)) / thetaToTheBeta) * Math.Exp(-Math.Pow((speed / _theta), _beta));
+				reading.Weibull = density;
+				weibullSum += density;
+
 			}
 
-			var correction = 1.0 / weibullSum;
-			var correctedSum = correction*frequencyTotal;
-			foreach (var reading in _speedLookup.Values) {
-				reading.Weibull *= correctedSum;
+			// to density percentages
+			if (0 != weibullSum) {
+				foreach (var reading in _speedLookup.Values) {
+					reading.Weibull /= weibullSum;
+				}
 			}
 			_weibullCalcNeeded = false;
 		}
@@ -213,6 +221,33 @@ namespace Atmo.Stats {
 			var betaDelta = partESum - ((partCSum / partDSum) - (1.0 / beta));
 			var newBeta = beta + betaDelta;
 			return newBeta;
+		}
+
+		public double CalculateWeibulAverage() {
+
+			const double a = 4.4077244121442000;
+			const double b = -9.6053431539960600;
+			const double c = 11.6090395731482000;
+			const double d = -8.0669467702440900;
+			const double f = 3.3392518484921100;
+			const double g = -0.7573045379983490;
+			const double h = 0.0735641628942245;
+
+			double betaInv = 1.0 + (1.0 / Beta);
+			double betaInv2 = betaInv * betaInv;
+			double betaInv3 = betaInv2 * betaInv;
+			double betaInv4 = betaInv2 * betaInv2;
+			double betaInv5 = betaInv3 * betaInv2;
+			double betaInv6 = betaInv3 * betaInv3;
+			double gamma = a
+						   + (b * betaInv)
+						   + (c * betaInv2)
+						   + (d * betaInv3)
+						   + (f * betaInv4)
+						   + (g * betaInv5)
+						   + (h * betaInv6);
+
+			return Theta * gamma;
 		}
 
 
