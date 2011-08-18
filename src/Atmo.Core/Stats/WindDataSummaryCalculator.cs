@@ -45,6 +45,7 @@ namespace Atmo.Stats {
 		private readonly Dictionary<double, WindDirectionEnergy> _directionLookup;
 
 		public WindDataSummaryCalculator() {
+			IgnoreZeroValuesForWeibullCalculation = false;
 			_weibullCalcNeeded = true;
 			_beta = 0;
 			_theta = 0;
@@ -64,6 +65,8 @@ namespace Atmo.Stats {
 			}
 
 		}
+
+		public bool IgnoreZeroValuesForWeibullCalculation { get; set; }
 
 		public void Process(T readings) {
 
@@ -157,18 +160,47 @@ namespace Atmo.Stats {
 			// get a quick frequency sum
 			var frequencyTotal = 0.0;
 			foreach(var reading in _speedLookup.Values) {
+				if (IgnoreZeroValuesForWeibullCalculation && reading.Speed == 0) {
+					continue;
+				}
 				frequencyTotal += reading.Frequency;
 			}
 
-			// calc beta
+			double betaMin = 0.0;
+			double betaMax = 2;
+			// find the max bound (betaMax must be > 1 to start)
 			for (int algorithmIterations = 0; algorithmIterations < _maxAlgorithmIterations; algorithmIterations++) {
-				_beta = WeibullFitBetterBeta(frequencyTotal, _beta);
+				double betaDelta = CalculateWeibullFitBetterBetaDelta(frequencyTotal, betaMax);
+				if (betaDelta > 0 && !Double.IsInfinity(betaDelta) && !Double.IsNaN(betaDelta)) {
+					betaMax *= betaMax;
+				}else {
+					break;
+				}
 			}
+
+			// now search between min and max for the best value
+			double betaCurrent = Double.NaN;
+			for (int algorithmIterations = 0; algorithmIterations < _maxAlgorithmIterations; algorithmIterations++) {
+				betaCurrent = (betaMax + betaMin) / 2.0;
+				double betaDelta = CalculateWeibullFitBetterBetaDelta(frequencyTotal, betaCurrent);
+				if(betaDelta < 0) {
+					betaMax = betaCurrent;
+				}else if(betaDelta > 0) {
+					betaMin = betaCurrent;
+				}else {
+					break;
+				}
+			}
+
+			_beta = betaCurrent;
 
 			// calc theta
 			foreach(var reading in _speedLookup.Values) {
 				var speed = reading.Speed;
 				if (speed <= 0) {
+					if (IgnoreZeroValuesForWeibullCalculation) {
+						continue;
+					}
 					speed = ZeroReplace;
 				}
 				_theta += (Math.Pow(speed, _beta) / frequencyTotal) * reading.Frequency;
@@ -199,17 +231,20 @@ namespace Atmo.Stats {
 			_weibullCalcNeeded = false;
 		}
 
-		private double WeibullFitBetterBeta(double sum, double beta) {
+		private double CalculateWeibullFitBetterBetaDelta(double sum, double beta) {
 			double partCSum = 0;
 			double partDSum = 0;
 			double partESum = 0;
 
 			foreach (var reading in _speedLookup.Values) {
 				var speed = reading.Speed;
-				if(speed <= 0) {
+				if (speed <= 0) {
+					if (IgnoreZeroValuesForWeibullCalculation) {
+						continue;
+					}
 					speed = ZeroReplace;
 				}
-				
+
 				var logSpeed = Math.Log(speed);
 				var speedToTheBetaOccurrences = Math.Pow(speed, beta) * reading.Frequency;
 				partCSum += speedToTheBetaOccurrences * logSpeed;
@@ -219,11 +254,16 @@ namespace Atmo.Stats {
 			}
 
 			var betaDelta = partESum - ((partCSum / partDSum) - (1.0 / beta));
-			var newBeta = beta + betaDelta;
-			return newBeta;
+			return betaDelta;
 		}
 
-		public double CalculateWeibulAverage() {
+		[Obsolete]
+		private double WeibullFitBetterBeta(double sum, double beta) {
+			return CalculateWeibullFitBetterBetaDelta(sum, beta)
+				+ beta;
+		}
+
+		public double CalculateWeibullAverage() {
 
 			const double a = 4.4077244121442000;
 			const double b = -9.6053431539960600;

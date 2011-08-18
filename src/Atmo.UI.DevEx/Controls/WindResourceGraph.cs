@@ -66,8 +66,10 @@ namespace Atmo.UI.DevEx.Controls {
 		public void SetDataSource(List<ReadingsSummary> items) {
 			// todo: can this list copy be eliminated?
 
-			var windCalc = new WindDataSummaryCalculator<IReadingsSummary>();
-			
+			var windCalc = new WindDataSummaryCalculator<IReadingsSummary>() {
+				IgnoreZeroValuesForWeibullCalculation = checkEditIgnoreWeibullZero.Checked
+			};
+
 			foreach (var item in items) {
 				windCalc.Process(item);
 			}
@@ -77,17 +79,16 @@ namespace Atmo.UI.DevEx.Controls {
 			SetGraphParameterLabels(
 				windCalc.Beta,
 				windCalc.Theta,
-				windCalc.CalculateWeibulAverage(),
+				windCalc.CalculateWeibullAverage(),
 			    CalculateMeanWindSpeed(speedFrequencyData)
 			);
-
 			chartControlWindDir.DataSource = PercentageOfMax(windCalc.WindDirectionEnergyData);
 			chartControlWindSpeedFreq.DataSource = speedFrequencyData;
 		}
 
 		private void SetGraphParameterLabels(double beta, double theta, double weibullMean, double mean) {
 			var chart = chartControlWindSpeedFreq;
-			chart.Series[2].LegendText = String.Format("Beta: {0} Theta: {1} Mean: {2}", beta.ToString("F2"), theta.ToString("F1"), weibullMean.ToString("F2"));
+			chart.Series[2].LegendText = String.Format("W-Scale: {0} W-Shape: {1} W-Mean: {2}", beta.ToString("F2"), theta.ToString("F1"), weibullMean.ToString("F2"));
 			chart.Series[1].LegendText = String.Format("Mean: {0}", mean.ToString("F2"));
 		}
 

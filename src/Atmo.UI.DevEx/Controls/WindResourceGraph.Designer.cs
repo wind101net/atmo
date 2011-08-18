@@ -52,6 +52,7 @@
 			this.chartControlWindDir = new DevExpress.XtraCharts.ChartControl();
 			this.bindingSourceWindDir = new System.Windows.Forms.BindingSource(this.components);
 			this.groupControl = new DevExpress.XtraEditors.GroupControl();
+			this.checkEditIgnoreWeibullZero = new DevExpress.XtraEditors.CheckEdit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControlWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
@@ -81,6 +82,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindDir)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
 			this.groupControl.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.checkEditIgnoreWeibullZero.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// bindingSourceWindSpeedFreq
@@ -236,6 +238,7 @@
 			// 
 			// groupControl
 			// 
+			this.groupControl.Controls.Add(this.checkEditIgnoreWeibullZero);
 			this.groupControl.Controls.Add(this.chartControlWindDir);
 			this.groupControl.Controls.Add(this.chartControlWindSpeedFreq);
 			this.groupControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -244,6 +247,17 @@
 			this.groupControl.Size = new System.Drawing.Size(898, 879);
 			this.groupControl.TabIndex = 2;
 			this.groupControl.Text = "Wind Resource Analysis";
+			// 
+			// checkEditIgnoreWeibullZero
+			// 
+			this.checkEditIgnoreWeibullZero.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.checkEditIgnoreWeibullZero.Location = new System.Drawing.Point(766, 3);
+			this.checkEditIgnoreWeibullZero.Name = "checkEditIgnoreWeibullZero";
+			this.checkEditIgnoreWeibullZero.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
+			this.checkEditIgnoreWeibullZero.Properties.Appearance.BackColor2 = System.Drawing.Color.Transparent;
+			this.checkEditIgnoreWeibullZero.Properties.Caption = "Ignore Zero in Weibull";
+			this.checkEditIgnoreWeibullZero.Size = new System.Drawing.Size(130, 19);
+			this.checkEditIgnoreWeibullZero.TabIndex = 2;
 			// 
 			// WindResourceGraph
 			// 
@@ -281,6 +295,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindDir)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).EndInit();
 			this.groupControl.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.checkEditIgnoreWeibullZero.Properties)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -292,5 +307,6 @@
 		private DevExpress.XtraCharts.ChartControl chartControlWindDir;
 		private System.Windows.Forms.BindingSource bindingSourceWindDir;
 		private DevExpress.XtraEditors.GroupControl groupControl;
+		private DevExpress.XtraEditors.CheckEdit checkEditIgnoreWeibullZero;
 	}
 }
