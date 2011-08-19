@@ -189,7 +189,7 @@ namespace Atmo.Daq.Win32 {
                 new Sensor(3,this)
             };
         	PauseQuery();
-			_queryTimer = new Timer(QueryThreadBody, null, Timeout.Infinite, DefaultMsPeriodValue);
+			_queryTimer = new Timer(QueryThreadBodyTrigger, null, Timeout.Infinite, DefaultMsPeriodValue);
 			InitiateDeviceQuery();
 		}
 
@@ -232,14 +232,32 @@ namespace Atmo.Daq.Win32 {
 			QueryThreadBody();
 		}
 
+		private void QueryThreadBodyTrigger(object bs) {
+			QueryThreadBodyTrigger();
+		}
+
+		private object _queryBodylock = new object();
+
+		private void QueryThreadBodyTrigger() {
+
+			if(Monitor.TryEnter(_queryBodylock)) {
+				try {
+					QueryThreadBody();
+				}
+				finally {
+					Monitor.Exit(_queryBodylock);
+				}
+			}
+		}
+
 		private void QueryThreadBody() {
 			if (!_queryActive) {
 				return;
 			}
 
-			var values = new PackedReadingValues[1];
-			bool? usingDaqTemp = null;
 			int networkSize = 4;
+			var values = new PackedReadingValues[networkSize];
+			bool? usingDaqTemp = null;
 			int highestValid = -1;
 			var now = DateTime.Now;
 			var daqSafeTime = now;
@@ -250,7 +268,7 @@ namespace Atmo.Daq.Win32 {
 			}
 
 			for (int i = 0; i < values.Length; i++) {
-					
+
 				if (!values[i].IsValid) {
 					continue;
 				}

@@ -23,11 +23,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Atmo.Data;
 using Atmo.Stats;
 using Atmo.Units;
-using DevExpress.XtraCharts;
 
 namespace Atmo.UI.DevEx.Controls {
 	public partial class WindResourceGraph : DevExpress.XtraEditors.XtraUserControl {
@@ -66,7 +64,7 @@ namespace Atmo.UI.DevEx.Controls {
 		public void SetDataSource(List<ReadingsSummary> items) {
 			// todo: can this list copy be eliminated?
 
-			var windCalc = new WindDataSummaryCalculator<IReadingsSummary>() {
+			var windCalc = new WindDataSummaryCalculator<IReadingsSummary> {
 				IgnoreZeroValuesForWeibullCalculation = checkEditIgnoreWeibullZero.Checked
 			};
 

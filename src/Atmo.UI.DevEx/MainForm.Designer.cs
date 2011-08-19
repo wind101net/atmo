@@ -291,8 +291,8 @@
 			// 
 			// panelSensors
 			// 
-			this.panelSensors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
+			this.panelSensors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
 			this.panelSensors.AutoScroll = true;
 			this.panelSensors.AutoScrollMinSize = new System.Drawing.Size(180, 0);
 			this.panelSensors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -403,9 +403,9 @@
 			// 
 			// mainScrollableControl
 			// 
-			this.mainScrollableControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.mainScrollableControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.mainScrollableControl.Controls.Add(this.windResourceGraph);
 			this.mainScrollableControl.Controls.Add(this.historicalGraphBreakdown);
 			this.mainScrollableControl.Controls.Add(this.historicalTimeSelectHeader);

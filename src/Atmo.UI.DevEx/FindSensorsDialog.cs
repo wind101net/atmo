@@ -23,6 +23,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows.Forms;
 using Atmo.UI.DevEx.Controls;
 
@@ -152,6 +153,7 @@ namespace Atmo.UI.DevEx {
             bool ok = false;
             if (_pendingOperation == PendingOperation.Add) {
                 _pendingOperation = PendingOperation.None;
+				Thread.Sleep(500);
                 if (null != sensor && sensor.IsValid) {
                     MessageBox.Show("Success", "Sensor assignment successful.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -161,6 +163,7 @@ namespace Atmo.UI.DevEx {
             }
             else if (_pendingOperation == PendingOperation.Rem) {
                 _pendingOperation = PendingOperation.None;
+				Thread.Sleep(500);
                 if (null == sensor || !sensor.IsValid) {
                     MessageBox.Show("Success", "Sensor removal successful.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
