@@ -47,6 +47,7 @@
     <Compile Include="Data\DaqDataFileInfo.cs" />
     <Compile Include="Data\DaqDataFileReader.cs" />
     <Compile Include="Data\DbDataStore.cs" />
+    <Compile Include="Data\DbHelper.cs" />
     <Compile Include="Data\IDataStore.cs" />
     <Compile Include="Data\MemoryDataStore.cs" />
     <Compile Include="Data\PersistentState.cs" />
@@ -108,7 +109,9 @@
     <Compile Include="Units\ValueConverterCache.cs" />
     <Compile Include="Vector2D.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ClearStorage.db" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

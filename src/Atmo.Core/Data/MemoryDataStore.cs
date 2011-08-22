@@ -190,21 +190,11 @@ namespace Atmo.Data {
 			return GetReadings(sensor, from, span).Cast<IReading>();
 		}
 
-		public IEnumerable<Stats.IReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
+		public IEnumerable<Stats.IReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeSpan desiredSummaryUnitSpan) {
 			throw new NotImplementedException();
 		}
 
-		/*
-		IEnumerable<IReading> IDataStore.GetReadings(string sensor, DateTime from, TimeSpan span) {
-			return this.GetReadings(sensor, from, span).OfType<IReading>();
-		}
+		public IEnumerable<TimeSpan> SupportedSummaryUnitSpans { get { return Enumerable.Empty<TimeSpan>(); } }
 
-		public IEnumerable<ReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
-			return StatsUtility.Summarize<Reading>(this.GetReadings(sensor, from, span), summaryUnit);
-		}
-
-		IEnumerable<IReadingsSummary> IDataStore.GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit) {
-			return this.GetReadingSummaries(sensor, from, span, summaryUnit).OfType<IReadingsSummary>();
-		}*/
 	}
 }

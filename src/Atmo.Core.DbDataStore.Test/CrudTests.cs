@@ -21,20 +21,14 @@
 //
 // ================================================================================
 
-using System.Reflection;
-using System.Runtime.InteropServices;
+using NUnit.Framework;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Atmo.Core.Test")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+namespace Atmo.Core.DbDataStore.Test {
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+	[TestFixture]
+	public class CrudTests : CrudTestBase {
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9fcf3c52-def7-4381-9132-6fdf8017f95d")]
+		
+
+	}
+}

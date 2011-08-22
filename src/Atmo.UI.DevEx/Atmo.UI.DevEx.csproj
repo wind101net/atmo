@@ -302,7 +302,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ClearStorage.db" />
+    <None Include="..\Atmo.Core\ClearStorage.db">
+      <Link>ClearStorage.db</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindDirectionEnergy.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindSpeedFrequency.datasource" />

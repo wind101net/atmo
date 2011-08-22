@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Atmo.Core.Test")]
+[assembly: AssemblyTitle("Atmo.Core.DbDataStore.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 
@@ -37,4 +37,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9fcf3c52-def7-4381-9132-6fdf8017f95d")]
+[assembly: Guid("a11a6a7d-619d-4f77-962c-0715d5e4148a")]

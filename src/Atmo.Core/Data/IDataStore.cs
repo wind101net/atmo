@@ -52,9 +52,15 @@ namespace Atmo.Data {
 		/// <param name="from">The date to start retrieving from.</param>
 		/// <param name="span">The direction and magnitude of time to retrieve records for, usually a negative value.</param>
 		/// <param name="summaryUnit">The time span of each summary.</param>
+		/// <param name="desiredSummaryUnitSpan">The desired summary unit span.</param>
 		/// <returns>A collection of sensor reading summaries.</returns>
 		/// <remarks>Summaries are zero aligned.</remarks>
-		IEnumerable<IReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeUnit summaryUnit);
+		IEnumerable<IReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeSpan desiredSummaryUnitSpan);
+
+		/// <summary>
+		/// Returns a list of time spans supported by the data store.
+		/// </summary>
+		IEnumerable<TimeSpan> SupportedSummaryUnitSpans { get; }
 
 		/// <summary>
 		/// Adds a sensor info record to the data store.

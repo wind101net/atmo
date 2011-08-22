@@ -250,7 +250,7 @@ namespace Atmo.UI.DevEx {
 			var historicalSelected = _dbStore.GetAllSensorInfos().Where(si => _historicSensorViewPanelController.IsSensorSelected(si)).ToList();
 			var sensorReadings = historicalSelected.Select(
 				sensor =>
-				_dbStore.GetReadingSummaries(sensor.Name, cumTimeInfo.MaxStamp, cumTimeInfo.MinStamp - cumTimeInfo.MaxStamp, UnitUtility.ChooseBestUnit(histTimeSpan))
+				_dbStore.GetReadingSummaries(sensor.Name, cumTimeInfo.MaxStamp, cumTimeInfo.MinStamp - cumTimeInfo.MaxStamp, UnitUtility.TimeUnitToTimeSpan(UnitUtility.ChooseBestUnit(histTimeSpan)))
 			);
 
 			var historicalSummaries = StatsUtil.JoinReadingSummaryEnumerable(sensorReadings).ToList();

@@ -660,6 +660,18 @@ namespace Atmo.Units {
 			}
 		}
 
+		public static TimeSpan TimeUnitToTimeSpan(TimeUnit unit) {
+			switch (unit) {
+			case TimeUnit.Second: return new TimeSpan(0,0,1);
+			case TimeUnit.Minute: return new TimeSpan(0,1,0);
+			case TimeUnit.Hour: return new TimeSpan(1, 0, 0);
+			case TimeUnit.Day: return new TimeSpan(1,0,0,0);
+			case TimeUnit.Month: return new TimeSpan(30,0,0,0);
+			case TimeUnit.Year: return new TimeSpan(365,0,0,0);
+			default: throw new ArgumentOutOfRangeException("unit");
+			}
+		}
+
 		public static TimeSpan ChooseBestUpdateInterval(TimeUnit unit) {
 			switch (unit) {
 			case TimeUnit.Second:
