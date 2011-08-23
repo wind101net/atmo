@@ -28,6 +28,7 @@ using System.Data.Common;
 using System.Linq;
 using Atmo.Stats;
 using Atmo.Units;
+using System.Threading;
 
 namespace Atmo.Data {
 
@@ -40,7 +41,7 @@ namespace Atmo.Data {
 		private static readonly TimeSpan TenMinutes = new TimeSpan(0,10,0);
 		private static readonly TimeSpan OneHour = new TimeSpan(1,0,0);
 		private static readonly TimeSpan OneDay = new TimeSpan(1,0,0,0);
-		private static readonly int RecordBatchQuantity = 65536;
+		private const int RecordBatchQuantity = Int16.MaxValue; // this value gives good results
 
 		private class DbSensorInfo : ISensorInfo {
 
@@ -620,13 +621,26 @@ namespace Atmo.Data {
 					int ordStamp = reader.GetOrdinal("stamp");
 					int ordValues = reader.GetOrdinal("values");
 					byte[] values = new byte[8];
-					while (reader.Read()) {
-						reader.GetBytes(ordValues, 0, values, 0, values.Length);
-						// TODO: maybe some kind of thread safe queue of chunks here?
-						yield return new PackedReading(
-							UnitUtility.ConvertFromPosixTime(reader.GetInt32(ordStamp)),
-							PackedReadingValues.ConvertFromPackedBytes(values, 0)
-						);
+					const int chunkSize = 256;
+					bool isReading = true;
+					var cache = new List<PackedReading>(chunkSize);
+
+					while (isReading) {
+						cache.Clear();
+						for (int i = 0; i < chunkSize; i++) {
+							if(!reader.Read()) {
+								isReading = false;
+								break;
+							}
+							reader.GetBytes(ordValues, 0, values, 0, values.Length);
+							cache.Add(new PackedReading(
+								UnitUtility.ConvertFromPosixTime(reader.GetInt32(ordStamp)),
+								PackedReadingValues.ConvertFromPackedBytes(values, 0)
+							));
+						}
+						foreach(var item in cache) {
+							yield return item;
+						}
 					}
 				}
 			}
@@ -679,7 +693,8 @@ namespace Atmo.Data {
 		private TimeRange PushReadings<T>(
 			IDbCommand command, IEnumerable<T> readings, Func<T,byte[]> conversion,
 			DbParameter stampParam, DbParameter valuesParam
-		) where T:IReading
+		)
+			where T:IReading
 		{
 			DateTime minStamp = new DateTime(9999, 1, 1);
 			DateTime maxStamp = new DateTime(0);
@@ -704,15 +719,10 @@ namespace Atmo.Data {
 				}
 			}
 			if(command.Transaction != null) {
-				try {
-					command.Transaction.Commit();
-				}
-				catch {
-					; // ?
-				}
+				command.Transaction.Commit();
 			}
 
-			throw new NotImplementedException();
+			return new TimeRange(minStamp,maxStamp);
 		}
 
 		public bool Push<T>(string sensor, IEnumerable<T> readings, bool replace) where T : IReading {
@@ -734,8 +744,9 @@ namespace Atmo.Data {
 			if (!sensorRecordId.HasValue)
 				return false;
 			
-			DateTime minStamp = new DateTime(9999, 1, 1);
-			DateTime maxStamp = new DateTime(0);
+			TimeRange insertTimeRange = default(TimeRange);
+			
+			// insert the initial values
 			using (var pushRecordCommand = _connection.CreateTextCommand(
 				"INSERT OR " + (replace ? "REPLACE" : "IGNORE") +
 				" INTO Record (sensorId,stamp,[values])" +
@@ -744,300 +755,137 @@ namespace Atmo.Data {
 				pushRecordCommand.AddParameter("sensorId", DbType.Int32, sensorRecordId.Value);
 				DbParameter stampParam = pushRecordCommand.AddParameter("stamp", DbType.Int32, null);
 				DbParameter valuesParam = pushRecordCommand.AddParameter("values", DbType.Binary, null);
-				//DbParameter stampParam = pushRecordCommand.AddParameter("stamp", DbType.Int32, null);
-				//DbParameter valuesParam = pushRecordCommand.AddParameter("values", DbType.Binary, null);
-				//valuesParam.Size = 8;
-				//int counter = 0;
-				if (typeof(T) == typeof(PackedReading)) {
-					PushReadings(
+				insertTimeRange = typeof(T) == typeof(PackedReading)
+					? PushReadings(
 						pushRecordCommand, readings.Cast<PackedReading>(),
 						r => PackedReadingValues.ConvertToPackedBytes(r.Values),
 						stampParam, valuesParam
-					);
-					//pushRecordCommand.Transaction = _connection.BeginTransaction();
-					//foreach (var reading in readings.Cast<PackedReading>()) {
-						//stampParam.Value = UnitUtility.ConvertToPosixTime(reading.TimeStamp);
-						//valuesParam.Value = PackedReadingValues.ConvertToPackedBytes(reading.Values);
-						//pushRecordCommand.ExecuteNonQuery();
-						//counter++;
-						/*if (counter >= RecordBatchQuantity) {
-							counter = 0;
-							pushRecordCommand.Transaction.Commit();
-							pushRecordCommand.Transaction = _connection.BeginTransaction();
-						}
-						if (reading.TimeStamp < minStamp) {
-							minStamp = reading.TimeStamp;
-						}
-						if (reading.TimeStamp > maxStamp) {
-							maxStamp = reading.TimeStamp;
-						}*/
-					//}
-				}
-				else {
-					PushReadings(
+					)
+					: PushReadings(
 						pushRecordCommand, readings.Cast<PackedReading>(),
 						r => PackedReadingValues.ConvertToPackedBytes(r),
 						stampParam, valuesParam
 					);
-					//pushRecordCommand.Transaction = _connection.BeginTransaction();
-					//foreach (IReading reading in readings) {
-						//stampParam.Value = UnitUtility.ConvertToPosixTime(reading.TimeStamp);
-						//valuesParam.Value = PackedReadingValues.ConvertToPackedBytes(reading);
-						//pushRecordCommand.ExecuteNonQuery();
-						//counter++;
-						/*if (counter >= 65536) {
-							counter = 0;
-							pushRecordCommand.Transaction.Commit();
-							pushRecordCommand.Transaction = _connection.BeginTransaction();
-						}
-						if (reading.TimeStamp < minStamp) {
-							minStamp = reading.TimeStamp;
-						}
-						if (reading.TimeStamp > maxStamp) {
-							maxStamp = reading.TimeStamp;
-						}*/
-					//}
-				}
+			}
 
-				pushRecordCommand.Transaction = _connection.BeginTransaction();
+			return UpdateSummaryRecords(insertTimeRange, sensor, sensorRecordId.Value);
+		}
 
-				DateTime dayAlignedMinStamp = UnitUtility.StripToUnit(minStamp, TimeUnit.Day);
-				DateTime dayAlignedMaxStamp = UnitUtility.StripToUnit(maxStamp, TimeUnit.Day).AddDays(1.0);
+		private bool PushSummaries(int sensorId, string tableName, IEnumerable<ReadingsSummary> summaries) {
+			using (var command = _connection.CreateTextCommand(String.Format(
+				"INSERT OR REPLACE INTO {0} (sensorId,stamp,minValues,maxValues,meanValues,medianValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount)"
+				+ " VALUES (@sensorId,@stamp,@minValues,@maxValues,@meanValues,@medianValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)",
+				tableName
+			))) {
+				command.Transaction = _connection.BeginTransaction();
 
-				List<ReadingsSummary> hourSummaries = new List<ReadingsSummary>(
-					StatsUtil.Summarize(
-						GetReadings(sensor, dayAlignedMinStamp, dayAlignedMaxStamp.Subtract(dayAlignedMinStamp)), TimeUnit.Hour)
-					);
-
-				List<ReadingsSummary> updates = new List<ReadingsSummary>();
-
-				pushRecordCommand.CommandType = CommandType.Text;
-				pushRecordCommand.CommandText = "SELECT stamp FROM HourRecord"
-												+ " INNER JOIN Sensor ON (Sensor.sensorId = HourRecord.sensorId)"
-												+ " WHERE Sensor.nameKey = @sensorNameKey"
-												+ " AND HourRecord.stamp >= @minPosixStamp"
-												+ " AND HourRecord.stamp <= @maxPosixStamp";
-				pushRecordCommand.AddParameter("minPosixStamp", DbType.Int32, UnitUtility.ConvertToPosixTime(dayAlignedMinStamp));
-				pushRecordCommand.AddParameter("maxPosixStamp", DbType.Int32, UnitUtility.ConvertToPosixTime(dayAlignedMaxStamp));
-				pushRecordCommand.AddParameter("sensorNameKey", DbType.String, sensor);
-
-				var minValuesParam = pushRecordCommand.AddParameter("minValues", DbType.Binary, null);
+				var stampParam = command.AddParameter("stamp", DbType.Int32, null);
+				var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
+				var minValuesParam = command.AddParameter("minValues", DbType.Binary, null);
 				minValuesParam.Size = 8;
-				var maxValuesParam = pushRecordCommand.AddParameter("maxValues", DbType.Binary, null);
+				var maxValuesParam = command.AddParameter("maxValues", DbType.Binary, null);
 				maxValuesParam.Size = 8;
-				var meanValuesParam = pushRecordCommand.AddParameter("meanValues", DbType.Binary, null);
+				var meanValuesParam = command.AddParameter("meanValues", DbType.Binary, null);
 				meanValuesParam.Size = 8;
-				var medianValuesParam = pushRecordCommand.AddParameter("medianValues", DbType.Binary, null);
+				var medianValuesParam = command.AddParameter("medianValues", DbType.Binary, null);
 				medianValuesParam.Size = 8;
-				var recordCountParam = pushRecordCommand.AddParameter("recordCount", DbType.Int32, null);
+				var recordCountParam = command.AddParameter("recordCount", DbType.Int32, null);
 				recordCountParam.ParameterName = "recordCount";
-				var tempCountParam = pushRecordCommand.AddParameter("tempCount", DbType.Binary, null);
+				var tempCountParam = command.AddParameter("tempCount", DbType.Binary, null);
 				tempCountParam.Size = 0;
-				var pressCountParam = pushRecordCommand.AddParameter("pressCount", DbType.Binary, null);
+				var pressCountParam = command.AddParameter("pressCount", DbType.Binary, null);
 				pressCountParam.Size = 0;
-				var humCountParam = pushRecordCommand.AddParameter("humCount", DbType.Binary, null);
+				var humCountParam = command.AddParameter("humCount", DbType.Binary, null);
 				humCountParam.Size = 0;
-				var speedCountParam = pushRecordCommand.AddParameter("speedCount", DbType.Binary, null);
+				var speedCountParam = command.AddParameter("speedCount", DbType.Binary, null);
 				speedCountParam.Size = 0;
-				var dirCountParam = pushRecordCommand.AddParameter("dirCount", DbType.Binary, null);
+				var dirCountParam = command.AddParameter("dirCount", DbType.Binary, null);
 				dirCountParam.Size = 0;
 
-				{
+				int counter = 0;
+				foreach (var summary in summaries) {
+					stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
+					minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
+					maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
+					meanValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Mean);
+					medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Median);
+					recordCountParam.Value = summary.Count;
 
-					List<DateTime> existingHourStamps = new List<DateTime>();
-					using (IDataReader existingDatesReader = pushRecordCommand.ExecuteReader()) {
-						int ordStamp = existingDatesReader.GetOrdinal("stamp");
-						while (existingDatesReader.Read()) {
-							existingHourStamps.Add(UnitUtility.ConvertFromPosixTime(existingDatesReader.GetInt32(ordStamp)));
-						}
-					}
+					byte[] data;
+					tempCountParam.Value =
+						data = PackedReadingValues.ConvertTemperatureCountsToPackedBytes(summary.TemperatureCounts);
+					tempCountParam.Size = data.Length;
+					pressCountParam.Value = data = PackedReadingValues.ConvertPressureCountsToPackedBytes(summary.PressureCounts);
+					pressCountParam.Size = data.Length;
+					humCountParam.Value = data = PackedReadingValues.ConvertHumidityCountsToPackedBytes(summary.HumidityCounts);
+					humCountParam.Size = data.Length;
+					speedCountParam.Value = data = PackedReadingValues.ConvertWindSpeedCountsToPackedBytes(summary.WindSpeedCounts);
+					speedCountParam.Size = data.Length;
+					dirCountParam.Value =
+						data = PackedReadingValues.ConvertWindDirectionCountsToPackedBytes(summary.WindDirectionCounts);
+					dirCountParam.Size = data.Length;
 
-					pushRecordCommand.CommandText =
-						"INSERT INTO HourRecord(sensorId,stamp,minValues,maxValues,meanValues,medianValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount) VALUES " +
-						"(@sensorId,@stamp,@minValues,@maxValues,@meanValues,@medianValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)";
-
-					// todo: try to get this into a single query as above they are.
-
-					foreach (ReadingsSummary summary in hourSummaries) {
-						if (existingHourStamps.Contains(summary.BeginStamp)) {
-							updates.Add(summary);
-						}
-						else {
-
-							stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
-							minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
-							maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
-							meanValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Mean);
-							medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Median);
-							recordCountParam.Value = summary.Count;
-
-							byte[] data;
-							tempCountParam.Value =
-								data = PackedReadingValues.ConvertTemperatureCountsToPackedBytes(summary.TemperatureCounts);
-							tempCountParam.Size = data.Length;
-							pressCountParam.Value = data = PackedReadingValues.ConvertPressureCountsToPackedBytes(summary.PressureCounts);
-							pressCountParam.Size = data.Length;
-							humCountParam.Value = data = PackedReadingValues.ConvertHumidityCountsToPackedBytes(summary.HumidityCounts);
-							humCountParam.Size = data.Length;
-							speedCountParam.Value = data = PackedReadingValues.ConvertWindSpeedCountsToPackedBytes(summary.WindSpeedCounts);
-							speedCountParam.Size = data.Length;
-							dirCountParam.Value =
-								data = PackedReadingValues.ConvertWindDirectionCountsToPackedBytes(summary.WindDirectionCounts);
-							dirCountParam.Size = data.Length;
-
-							pushRecordCommand.ExecuteNonQuery();
-						}
-					}
-
-					if (updates.Count > 0) {
-						pushRecordCommand.CommandText = "UPDATE HourRecord SET"
-														+
-														" minValues=@minValues,maxValues=@maxValues,meanValues=@meanValues,medianValues=@medianValues,recordCount=@recordCount"
-														+ " WHERE sensorId=@sensorId AND stamp=@stamp";
-						foreach (ReadingsSummary summary in updates) {
-							stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
-							minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
-							maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
-							meanValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Mean);
-							medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Median);
-							recordCountParam.Value = summary.Count;
-
-							byte[] data;
-							tempCountParam.Value =
-								data = PackedReadingValues.ConvertTemperatureCountsToPackedBytes(summary.TemperatureCounts);
-							tempCountParam.Size = data.Length;
-							pressCountParam.Value = data = PackedReadingValues.ConvertPressureCountsToPackedBytes(summary.PressureCounts);
-							pressCountParam.Size = data.Length;
-							humCountParam.Value = data = PackedReadingValues.ConvertHumidityCountsToPackedBytes(summary.HumidityCounts);
-							humCountParam.Size = data.Length;
-							speedCountParam.Value = data = PackedReadingValues.ConvertWindSpeedCountsToPackedBytes(summary.WindSpeedCounts);
-							speedCountParam.Size = data.Length;
-							dirCountParam.Value =
-								data = PackedReadingValues.ConvertWindDirectionCountsToPackedBytes(summary.WindDirectionCounts);
-							dirCountParam.Size = data.Length;
-
-							pushRecordCommand.ExecuteNonQuery();
-						}
-					}
-
-				}
-
-				updates.Clear();
-
-
-
-				List<ReadingsSummary> daySummaries = new List<ReadingsSummary>();
-				{
-					List<List<ReadingsSummary>> dailyHourSummaries = new List<List<ReadingsSummary>>();
-					List<ReadingsSummary> currentHourSummaries = new List<ReadingsSummary>();
-					foreach (ReadingsSummary hourSummary in hourSummaries) {
-						if (
-							currentHourSummaries.Count == 0
-							||
-							currentHourSummaries[0].BeginStamp.Date.Equals(hourSummary.BeginStamp.Date)
-							) {
-							currentHourSummaries.Add(hourSummary);
-						}
-						else {
-							dailyHourSummaries.Add(currentHourSummaries);
-							currentHourSummaries = new List<ReadingsSummary>();
-						}
-					}
-					if (currentHourSummaries.Count > 0) {
-						dailyHourSummaries.Add(currentHourSummaries);
-					}
-					foreach (List<ReadingsSummary> hourlyForCondensing in dailyHourSummaries) {
-						ReadingsSummary summary = StatsUtil.Combine(hourlyForCondensing);
-						summary.BeginStamp = summary.BeginStamp.Date;
-						summary.EndStamp = summary.BeginStamp.AddDays(1).AddTicks(-1);
-						daySummaries.Add(summary);
+					command.ExecuteNonQuery();
+					counter++;
+					if (counter >= RecordBatchQuantity) {
+						counter = 0;
+						command.Transaction.Commit();
+						command.Transaction = _connection.BeginTransaction();
 					}
 				}
-				{
-					pushRecordCommand.CommandText = "SELECT stamp FROM DayRecord"
-													+ " INNER JOIN Sensor ON (Sensor.sensorId = DayRecord.sensorId)"
-													+ " WHERE Sensor.nameKey = @sensorNameKey"
-													+ " AND DayRecord.stamp >= @minPosixStamp"
-													+ " AND DayRecord.stamp <= @maxPosixStamp";
+				command.Transaction.Commit();
 
-					List<DateTime> existingDayStamps = new List<DateTime>();
-					using (IDataReader existingDatesReader = pushRecordCommand.ExecuteReader()) {
-						int ordStamp = existingDatesReader.GetOrdinal("stamp");
-						while (existingDatesReader.Read()) {
-							existingDayStamps.Add(UnitUtility.ConvertFromPosixTime(existingDatesReader.GetInt32(ordStamp)));
-						}
-					}
-
-					pushRecordCommand.CommandText =
-						"INSERT INTO DayRecord(sensorId,stamp,minValues,maxValues,meanValues,medianValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount) VALUES " +
-						"(@sensorId,@stamp,@minValues,@maxValues,@meanValues,@medianValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)";
-					foreach (ReadingsSummary summary in daySummaries) {
-						if (existingDayStamps.Contains(summary.BeginStamp)) {
-							updates.Add(summary);
-						}
-						else {
-
-							stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
-							minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
-							maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
-							meanValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Mean);
-							medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Median);
-							recordCountParam.Value = summary.Count;
-
-							byte[] data;
-							tempCountParam.Value =
-								data = PackedReadingValues.ConvertTemperatureCountsToPackedBytes(summary.TemperatureCounts);
-							tempCountParam.Size = data.Length;
-							pressCountParam.Value = data = PackedReadingValues.ConvertPressureCountsToPackedBytes(summary.PressureCounts);
-							pressCountParam.Size = data.Length;
-							humCountParam.Value = data = PackedReadingValues.ConvertHumidityCountsToPackedBytes(summary.HumidityCounts);
-							humCountParam.Size = data.Length;
-							speedCountParam.Value = data = PackedReadingValues.ConvertWindSpeedCountsToPackedBytes(summary.WindSpeedCounts);
-							speedCountParam.Size = data.Length;
-							dirCountParam.Value =
-								data = PackedReadingValues.ConvertWindDirectionCountsToPackedBytes(summary.WindDirectionCounts);
-							dirCountParam.Size = data.Length;
-
-							pushRecordCommand.ExecuteNonQuery();
-						}
-					}
-
-					if (updates.Count > 0) {
-						pushRecordCommand.CommandText = "UPDATE DayRecord SET"
-														+
-														" minValues=@minValues,maxValues=@maxValues,meanValues=@meanValues,medianValues=@medianValues,recordCount=@recordCount"
-														+ " WHERE sensorId=@sensorId AND stamp=@stamp";
-						foreach (ReadingsSummary summary in updates) {
-							stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
-							minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
-							maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
-							meanValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Mean);
-							medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Median);
-							recordCountParam.Value = summary.Count;
-
-							byte[] data;
-							tempCountParam.Value =
-								data = PackedReadingValues.ConvertTemperatureCountsToPackedBytes(summary.TemperatureCounts);
-							tempCountParam.Size = data.Length;
-							pressCountParam.Value = data = PackedReadingValues.ConvertPressureCountsToPackedBytes(summary.PressureCounts);
-							pressCountParam.Size = data.Length;
-							humCountParam.Value = data = PackedReadingValues.ConvertHumidityCountsToPackedBytes(summary.HumidityCounts);
-							humCountParam.Size = data.Length;
-							speedCountParam.Value = data = PackedReadingValues.ConvertWindSpeedCountsToPackedBytes(summary.WindSpeedCounts);
-							speedCountParam.Size = data.Length;
-							dirCountParam.Value =
-								data = PackedReadingValues.ConvertWindDirectionCountsToPackedBytes(summary.WindDirectionCounts);
-							dirCountParam.Size = data.Length;
-
-							pushRecordCommand.ExecuteNonQuery();
-						}
-					}
-				}
-
-
-				pushRecordCommand.Transaction.Commit();
 			}
 			return true;
+		}
+
+		private bool UpdateSummaryRecords(TimeRange rangeCovered, string sensorName, int sensorId) {
+			TimeRange hourAlignedRange = new TimeRange(
+				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.Hour),
+				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Hour) + new TimeSpan(1, 0, 0)
+			);
+			var hourSummaries = StatsUtil.Summarize(
+				GetReadings(sensorName, hourAlignedRange.Low, hourAlignedRange.Span), TimeUnit.Hour
+			).ToList();
+
+			bool hoursOk = PushSummaries(sensorId, "HourRecord", hourSummaries);
+			
+			// TODO: send the day summaries off to the dat summary calculator
+
+			TimeRange dayAlignedRange = new TimeRange(
+				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.Day),
+				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Day).AddDays(1.0)
+			);
+
+			var daySummaries = new List<ReadingsSummary>();
+			{
+				List<List<ReadingsSummary>> dailyHourSummaries = new List<List<ReadingsSummary>>();
+				List<ReadingsSummary> currentHourSummaries = new List<ReadingsSummary>();
+				foreach (ReadingsSummary hourSummary in hourSummaries) {
+					if (currentHourSummaries.Count == 0
+						|| currentHourSummaries[0].BeginStamp.Date.Equals(hourSummary.BeginStamp.Date)
+					) {
+						currentHourSummaries.Add(hourSummary);
+					}
+					else {
+						dailyHourSummaries.Add(currentHourSummaries);
+						currentHourSummaries = new List<ReadingsSummary>();
+					}
+				}
+				if (currentHourSummaries.Count > 0) {
+					dailyHourSummaries.Add(currentHourSummaries);
+				}
+				foreach (List<ReadingsSummary> hourlyForCondensing in dailyHourSummaries) {
+					ReadingsSummary summary = StatsUtil.Combine(hourlyForCondensing);
+					summary.BeginStamp = summary.BeginStamp.Date;
+					summary.EndStamp = summary.BeginStamp.AddDays(1).AddTicks(-1);
+					daySummaries.Add(summary);
+				}
+			}
+
+			bool daysOk = PushSummaries(sensorId, "DayRecord", daySummaries);
+
+			return hoursOk && daysOk;
 		}
 
 		public bool DeleteSensor(string name) {
