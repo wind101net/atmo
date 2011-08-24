@@ -30,6 +30,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace Atmo.Core.DbDataStore.Test {
+
 	public class CrudTestBase {
 
 		private string _fileName = null;
@@ -91,7 +92,7 @@ namespace Atmo.Core.DbDataStore.Test {
 				}
 			}
 			_connection = new System.Data.SQLite.SQLiteConnection(
-				String.Format(@"data source=""{0}"";page size=4096;cache size=4000;journal mode=Off", _fileName)
+				String.Format(@"data source=""{0}"";page size=65536;journal mode=OFF;ignore_check_constraints=ON;synchronous=OFF", _fileName)
 			);
 			_connection.Open();
 		}

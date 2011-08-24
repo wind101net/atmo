@@ -28,6 +28,8 @@ namespace Atmo {
 	/// <inheritdoc/>
 	public struct PackedReading : IReading {
 
+		public static readonly int SizeOf = PackedReadingValues.SizeOf + sizeof(long);
+
 		/// <summary>
 		/// The time stamp of the reading.
 		/// </summary>

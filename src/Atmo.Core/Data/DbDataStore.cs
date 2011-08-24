@@ -41,7 +41,7 @@ namespace Atmo.Data {
 		private static readonly TimeSpan TenMinutes = new TimeSpan(0,10,0);
 		private static readonly TimeSpan OneHour = new TimeSpan(1,0,0);
 		private static readonly TimeSpan OneDay = new TimeSpan(1,0,0,0);
-		private const int RecordBatchQuantity = Int16.MaxValue; // this value gives good results
+		private const int RecordBatchQuantity = UInt16.MaxValue;
 
 		private class DbSensorInfo : ISensorInfo {
 
@@ -705,7 +705,7 @@ namespace Atmo.Data {
 				stampParam.Value = UnitUtility.ConvertToPosixTime(reading.TimeStamp);
 				valuesParam.Value = conversion(reading);
 				command.ExecuteNonQuery();
-				counter++;
+				counter ++;
 				if (counter >= RecordBatchQuantity) {
 					counter = 0;
 					command.Transaction.Commit();

@@ -30,8 +30,9 @@ namespace Atmo {
 	public struct PackedReadingValues :
         IReadingValues,
         IEquatable<IReadingValues>,
-        IEquatable<PackedReadingValues>
-	{
+        IEquatable<PackedReadingValues> {
+
+		public static readonly int SizeOf = sizeof(ushort) + sizeof(ushort) + sizeof(uint);
 
 		/// <summary>
 		/// An invalid value.
