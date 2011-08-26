@@ -64,7 +64,7 @@
     <Compile Include="SensorStatus.cs" />
     <Compile Include="Stats\IAggregateCalculator.cs" />
     <Compile Include="Stats\IReadingsSummary.cs" />
-    <Compile Include="Stats\PackedRadingsSummary.cs" />
+    <Compile Include="Stats\PackedReadingsSummary.cs" />
     <Compile Include="Stats\PackedReadingsDaySummary.cs" />
     <Compile Include="Stats\PackedReadingsHourSummary.cs" />
     <Compile Include="Stats\PackedReadingsMinuteSummary.cs" />

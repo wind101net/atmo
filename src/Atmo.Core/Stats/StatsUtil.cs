@@ -29,6 +29,9 @@ using Atmo.Units;
 namespace Atmo.Stats {
 	public static class StatsUtil {
 
+		private const double DegToRadFactor = Math.PI / 180.0;
+		private const double RadToDegFactor = 180.0 / Math.PI;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -64,100 +67,177 @@ namespace Atmo.Stats {
 		}
 
 		private static ReadingsSummary FormSummary<T>(DateTime dateRangeLow, DateTime dateRangeHigh, List<T> readings) where T : IReadingValues {
-			List<double> tempValues = new List<double>(readings.Count);
-			List<double> presValues = new List<double>(readings.Count);
-			List<double> humValues = new List<double>(readings.Count);
-			List<double> speedValues = new List<double>(readings.Count);
-			List<double> dirValues = new List<double>(readings.Count);
+			int tempCount = 0;
+			int presCount = 0;
+			int humCount = 0;
+			int speedCount = 0;
+			int dirCount = 0;
 			double tempSum = 0;
 			double presSum = 0;
 			double humSum = 0;
 			double speedSum = 0;
-			double dirSum = 0;
-			Dictionary<double, int> tempCounts = new Dictionary<double, int>();
-			Dictionary<double, int> presCounts = new Dictionary<double, int>();
-			Dictionary<double, int> humCounts = new Dictionary<double, int>();
-			Dictionary<double, int> speedCounts = new Dictionary<double, int>();
-			Dictionary<double, int> dirCounts = new Dictionary<double, int>();
-			// TODO: later direction values should be calculated using vectors
-			// TODO: take into account for missing sensors
-			double value;
+			double dirSinSum = 0;
+			double dirCosSum = 0;
+
+			var tempCounts = new Dictionary<double, int>();
+			var presCounts = new Dictionary<double, int>();
+			var humCounts = new Dictionary<double, int>();
+			var speedCounts = new Dictionary<double, int>();
+			var dirCounts = new Dictionary<double, int>();
+			
 			int count;
-			for (int i = 0; i < readings.Count; i++) {
-				T reading = readings[i];
-				if (reading.IsTemperatureValid) {
-					tempValues.Add(value = reading.Temperature);
-					tempSum += value;
-					value = Math.Round(value);
-					tempCounts[value] = (tempCounts.TryGetValue(value, out count)) ? count + 1 : 1;
+
+			ReadingValues minValues;
+			ReadingValues maxValues;
+			ReadingValues meanValues;
+			ReadingValues sampleStandardDeviationValues;
+
+			if (readings.Count > 0) {
+
+				minValues = new ReadingValues(readings[0]);
+				maxValues = new ReadingValues(readings[0]);
+
+				double value;
+
+				for (int i = 0; i < readings.Count; i++) {
+					T reading = readings[i];
+					
+					if (reading.IsTemperatureValid) {
+						tempCount++;
+						value = reading.Temperature;
+						tempSum += value;
+
+						if (minValues.Temperature > value) {
+							minValues.Temperature = value;
+						}
+						else if (maxValues.Temperature < value) {
+							maxValues.Temperature = value;
+						}
+
+						value = Math.Round(value);
+						tempCounts[value] = tempCounts.TryGetValue(value, out count) ? count + 1 : 1;
+					}
+					if (reading.IsPressureValid) {
+						presCount++;
+						value = reading.Pressure;
+						presSum += value;
+
+						if (minValues.Pressure > value) {
+							minValues.Pressure = value;
+						}
+						else if (maxValues.Pressure < value) {
+							maxValues.Pressure = value;
+						}
+
+						value = Math.Round(value);
+						presCounts[value] = presCounts.TryGetValue(value, out count) ? count + 1 : 1;
+					}
+					if (reading.IsHumidityValid) {
+						humCount++;
+						value = reading.Humidity;
+						humSum += value;
+
+						if (minValues.Humidity > value) {
+							minValues.Humidity = value;
+						}
+						else if (maxValues.Humidity < value) {
+							maxValues.Humidity = value;
+						}
+
+						value = Math.Round(value);
+						humCounts[value] = humCounts.TryGetValue(value, out count) ? count + 1 : 1;
+					}
+					if (reading.IsWindSpeedValid) {
+						speedCount++;
+						value = reading.WindSpeed;
+						speedSum += value;
+
+						if (minValues.WindSpeed > value) {
+							minValues.WindSpeed = value;
+						}
+						else if (maxValues.WindSpeed < value) {
+							maxValues.WindSpeed = value;
+						}
+
+						value = Math.Round(value*2.0)/2; // round to nearest .5
+						speedCounts[value] = speedCounts.TryGetValue(value, out count) ? count + 1 : 1;
+					}
+					if (reading.IsWindDirectionValid) {
+						dirCount++;
+						value = reading.WindDirection;
+						//dirSum += value;
+
+						double dirRad = value*DegToRadFactor;
+						dirSinSum += Math.Sin(dirRad);
+						dirCosSum += Math.Cos(dirRad);
+
+						if (minValues.WindDirection > value) {
+							minValues.WindDirection = value;
+						}
+						else if (maxValues.WindDirection < value) {
+							maxValues.WindDirection = value;
+						}
+
+						value = Math.Round(value);
+						dirCounts[value] = dirCounts.TryGetValue(value, out count) ? count + 1 : 1;
+					}
 				}
-				if (reading.IsPressureValid) {
-					presValues.Add(value = reading.Pressure);
-					presSum += value;
-					value = Math.Round(value);
-					presCounts[value] = (presCounts.TryGetValue(value, out count)) ? count + 1 : 1;
+
+				meanValues = new ReadingValues(
+					tempCount == 0 ? Double.NaN : (tempSum/tempCount),
+					presCount == 0 ? Double.NaN : (presSum/presCount),
+					humCount == 0 ? Double.NaN : (humSum/humCount),
+					(dirCount == 0 || Double.IsNaN(dirSinSum) || Double.IsNaN(dirCosSum))
+						? Double.NaN
+						: UnitUtility.WrapDegree(Math.Atan2(dirSinSum / dirCount, dirCosSum / dirCount) * RadToDegFactor),
+					speedCount == 0 ? Double.NaN : (speedSum/speedCount)
+				);
+
+				sampleStandardDeviationValues = new ReadingValues(0,0,0,0,0);
+
+				for (int i = 0; i < readings.Count; i++) {
+					T reading = readings[i];
+					
+					if (reading.IsTemperatureValid) {
+						value = reading.Temperature - meanValues.Temperature;
+						sampleStandardDeviationValues.Temperature += value * value;
+					}
+					if (reading.IsPressureValid) {
+						value = reading.Pressure - meanValues.Pressure;
+						sampleStandardDeviationValues.Pressure += value * value;
+					}
+					if (reading.IsHumidityValid) {
+						value = reading.Humidity - meanValues.Humidity;
+						sampleStandardDeviationValues.Humidity += value * value;
+					}
+					if (reading.IsWindSpeedValid) {
+						value = reading.WindSpeed - meanValues.WindSpeed;
+						sampleStandardDeviationValues.WindSpeed += value * value;
+					}
+					if (reading.IsWindDirectionValid) {
+						value = reading.WindDirection - meanValues.WindDirection;
+						sampleStandardDeviationValues.WindDirection += value * value;
+					}
 				}
-				if (reading.IsHumidityValid) {
-					humValues.Add(value = reading.Humidity);
-					humSum += value;
-					value = Math.Round(value);
-					humCounts[value] = (humCounts.TryGetValue(value, out count)) ? count + 1 : 1;
-				}
-				if (reading.IsWindSpeedValid) {
-					speedValues.Add(value = reading.WindSpeed);
-					speedSum += value;
-					value = Math.Round(value * 2.0) / 2; // round to nearest .5
-					speedCounts[value] = (speedCounts.TryGetValue(value, out count)) ? count + 1 : 1;
-				}
-				if (reading.IsWindDirectionValid) {
-					dirValues.Add(value = reading.WindDirection);
-					dirSum += value;
-					value = Math.Round(value);
-					dirCounts[value] = (dirCounts.TryGetValue(value, out count)) ? count + 1 : 1;
-				}
+
+				sampleStandardDeviationValues.Temperature = Math.Sqrt(sampleStandardDeviationValues.Temperature/tempCount);
+				sampleStandardDeviationValues.Pressure = Math.Sqrt(sampleStandardDeviationValues.Pressure / presCount);
+				sampleStandardDeviationValues.Humidity = Math.Sqrt(sampleStandardDeviationValues.Humidity / humCount);
+				sampleStandardDeviationValues.WindSpeed = Math.Sqrt(sampleStandardDeviationValues.WindSpeed / speedCount);
+				sampleStandardDeviationValues.WindDirection = Math.Sqrt(sampleStandardDeviationValues.WindDirection / dirCount);
+
+			}else {
+				minValues = ReadingValues.CreateInvalid();
+				maxValues = ReadingValues.CreateInvalid();
+				meanValues = ReadingValues.CreateInvalid();
+				sampleStandardDeviationValues = ReadingValues.CreateInvalid();
 			}
-			tempValues.Sort();
-			presValues.Sort();
-			humValues.Sort();
-			speedValues.Sort();
-			dirValues.Sort();
-			//int lasti = readings.Count - 1;
-			//int midi = readings.Count / 2;
-			//double dCount = (double)readings.Count;
-			ReadingValues minValues = new ReadingValues(
-				tempValues.Count == 0 ? Double.NaN : tempValues[0],
-				presValues.Count == 0 ? Double.NaN : presValues[0],
-				humValues.Count == 0 ? Double.NaN : humValues[0],
-				speedValues.Count == 0 ? Double.NaN : speedValues[0],
-				dirValues.Count == 0 ? Double.NaN : dirValues[0]
-			);
-			ReadingValues maxValues = new ReadingValues(
-				tempValues.Count == 0 ? Double.NaN : tempValues[tempValues.Count - 1],
-				presValues.Count == 0 ? Double.NaN : presValues[presValues.Count - 1],
-				humValues.Count == 0 ? Double.NaN : humValues[humValues.Count - 1],
-				speedValues.Count == 0 ? Double.NaN : speedValues[speedValues.Count - 1],
-				dirValues.Count == 0 ? Double.NaN : dirValues[dirValues.Count - 1]
-			);
-			ReadingValues meanValues = new ReadingValues(
-				tempValues.Count == 0 ? Double.NaN : (tempSum / (double)tempValues.Count),
-				presValues.Count == 0 ? Double.NaN : (presSum / (double)presValues.Count),
-				humValues.Count == 0 ? Double.NaN : (humSum / (double)humValues.Count),
-				speedValues.Count == 0 ? Double.NaN : (speedSum / (double)speedValues.Count),
-				dirValues.Count == 0 ? Double.NaN : (dirSum / (double)dirValues.Count)
-			);
-			ReadingValues medianValues = new ReadingValues(
-				tempValues.Count == 0 ? Double.NaN : tempValues[tempValues.Count / 2],
-				presValues.Count == 0 ? Double.NaN : presValues[presValues.Count / 2],
-				humValues.Count == 0 ? Double.NaN : humValues[humValues.Count / 2],
-				speedValues.Count == 0 ? Double.NaN : speedValues[speedValues.Count / 2],
-				dirValues.Count == 0 ? Double.NaN : dirValues[dirValues.Count / 2]
-			);
+
 			return new ReadingsSummary(
 				dateRangeLow,
 				dateRangeHigh.Subtract(new TimeSpan(1)),
-				minValues,
-				maxValues, meanValues,
-				medianValues,
+				minValues, maxValues,
+				meanValues, sampleStandardDeviationValues,
 				readings.Count,
 				tempCounts,
 				presCounts,
@@ -168,26 +248,50 @@ namespace Atmo.Stats {
 		}
 
 		public static ReadingsSummary Combine<TSummary>(List<TSummary> readings) where TSummary : IReadingsSummary {
+			int totalTempCount = 0;
+			int totalPresCount = 0;
+			int totalHumCount = 0;
+			int totalSpeedCount = 0;
+			int totalDirCount = 0;
+			int totalRecordCount = 0;
+			DateTime minStamp = DateTime.MaxValue;
+			DateTime maxStamp = DateTime.MinValue;
+			double dirSinSum = 0;
+			double dirCosSum = 0;
 
-
-
-			int totalCount = readings.Sum(r => r.Count);
 			var summary = new ReadingsSummary(
-				readings.Min(r => r.BeginStamp),
-				readings.Max(r => r.EndStamp),
-				new ReadingValues(Double.MaxValue, Double.MaxValue, Double.MaxValue, double.MaxValue, double.MaxValue),
-				new ReadingValues(Double.MinValue, Double.MinValue, Double.MinValue, double.MinValue, double.MinValue),
-				new ReadingValues(0, 0, 0, 0, 0),
-				new ReadingValues(0, 0, 0, 0, 0), // TODO: median
-				totalCount,
+				default(DateTime),
+				default(DateTime),
+				ReadingValues.CreateInvalid(),
+				ReadingValues.CreateInvalid(),
+				ReadingValues.CreateInvalid(),
+				ReadingValues.CreateInvalid(),
+				0,
 				new Dictionary<double, int>(),
 				new Dictionary<double, int>(),
 				new Dictionary<double, int>(),
 				new Dictionary<double, int>(),
 				new Dictionary<double, int>()
 			);
-			// TODO: use calculator?
+
+			if (0 == readings.Count) {
+				return summary;
+			}
+
+			summary.Min = new ReadingValues(Double.MaxValue, Double.MaxValue, Double.MaxValue, Double.MaxValue, Double.MaxValue);
+			summary.Max = new ReadingValues(Double.MinValue, Double.MinValue, Double.MinValue, Double.MinValue, Double.MinValue);
+			summary.Mean = new ReadingValues(0, 0, 0, 0, 0);
+			summary.SampleStandardDeviation = new ReadingValues(0, 0, 0, 0, 0);
+
 			foreach (var reading in readings) {
+
+				if(reading.BeginStamp < minStamp) {
+					minStamp = reading.BeginStamp;
+				}
+				if(reading.EndStamp > maxStamp) {
+					maxStamp = reading.EndStamp;
+				}
+
 				if (summary.Min.Temperature > reading.Min.Temperature) {
 					summary.Min.Temperature = reading.Min.Temperature;
 				}
@@ -218,101 +322,103 @@ namespace Atmo.Stats {
 				if (summary.Max.WindDirection < reading.Max.WindDirection) {
 					summary.Max.WindDirection = reading.Max.WindDirection;
 				}
-				var readingCountD = (double)reading.Count;
-				summary.Mean.Temperature += reading.Mean.Temperature * readingCountD;
-				summary.Mean.Pressure += reading.Mean.Pressure * readingCountD;
-				summary.Mean.Humidity += reading.Mean.Humidity * readingCountD;
-				summary.Mean.WindSpeed += reading.Mean.WindSpeed * readingCountD;
-				summary.Mean.WindDirection += reading.Mean.WindDirection * readingCountD;
-				AppendCounts(summary.TemperatureCounts, reading.GetTemperatureCounts());
-				AppendCounts(summary.PressureCounts, reading.GetPressureCounts());
-				AppendCounts(summary.HumidityCounts, reading.GetHumidityCounts());
-				AppendCounts(summary.WindSpeedCounts, reading.GetWindSpeedCounts());
-				AppendCounts(summary.WindDirectionCounts, reading.GetWindDirectionCounts());
+
+				int localTempCount = AppendCounts(summary.TemperatureCounts, reading.GetTemperatureCounts());
+				int localPresCount = AppendCounts(summary.PressureCounts, reading.GetPressureCounts());
+				int localHumCount = AppendCounts(summary.HumidityCounts, reading.GetHumidityCounts());
+				int localSpeedCount = AppendCounts(summary.WindSpeedCounts, reading.GetWindSpeedCounts());
+				int localDirCount = AppendCounts(summary.WindDirectionCounts, reading.GetWindDirectionCounts());
+
+				totalTempCount += localTempCount;
+				totalPresCount += localPresCount;
+				totalHumCount += localHumCount;
+				totalSpeedCount += localSpeedCount;
+				totalDirCount += localDirCount;
+				totalRecordCount += reading.Count;
+
+				summary.Mean.Temperature += reading.Mean.Temperature * localTempCount;
+				summary.Mean.Pressure += reading.Mean.Pressure * localPresCount;
+				summary.Mean.Humidity += reading.Mean.Humidity * localHumCount;
+				summary.Mean.WindSpeed += reading.Mean.WindSpeed * localSpeedCount;
+
+				double dirRad = reading.Mean.WindDirection * DegToRadFactor;
+				dirSinSum += Math.Sin(dirRad) * localDirCount;
+				dirCosSum += Math.Cos(dirRad) * localDirCount;
+
 			}
-			var totalCountD = (double)totalCount;
-			if (0 != totalCountD && 1 != totalCountD) {
-				summary.Mean.Temperature /= totalCountD;
-				summary.Mean.Pressure /= totalCountD;
-				summary.Mean.Humidity /= totalCountD;
-				summary.Mean.WindSpeed /= totalCountD;
-				summary.Mean.WindDirection /= totalCountD;
+
+			if (0 != totalTempCount && 1 != totalTempCount) {
+				summary.Mean.Temperature /= totalTempCount;
 			}
+			if (0 != totalPresCount && 1 != totalPresCount) {
+				summary.Mean.Pressure /= totalPresCount;
+			}
+			if (0 != totalHumCount && 1 != totalHumCount) {
+				summary.Mean.Humidity /= totalHumCount;
+			}
+			if (0 != totalSpeedCount && 1 != totalSpeedCount) {
+				summary.Mean.WindSpeed /= totalSpeedCount;
+			}
+			summary.Mean.WindDirection = (totalDirCount == 0 || Double.IsNaN(dirSinSum) || Double.IsNaN(dirCosSum))
+			    ? Double.NaN
+			    : UnitUtility.WrapDegree(Math.Atan2(dirSinSum/totalDirCount, dirCosSum/totalDirCount)*RadToDegFactor);
+
+
+			double dev;
+			foreach (var reading in readings) {
+
+				int localTempCount = reading.GetTemperatureCounts().Sum(c => c.Value);
+				int localPresCount = reading.GetPressureCounts().Sum(c => c.Value);
+				int localHumCount = reading.GetHumidityCounts().Sum(c => c.Value);
+				int localSpeedCount = reading.GetWindSpeedCounts().Sum(c => c.Value);
+				int localDirCount = reading.GetWindDirectionCounts().Sum(c => c.Value);
+
+				dev = (reading.Mean.Temperature - summary.Mean.Temperature);
+				summary.SampleStandardDeviation.Temperature += (dev*dev)*localTempCount;
+
+				dev = (reading.Mean.Pressure - summary.Mean.Pressure);
+				summary.SampleStandardDeviation.Pressure += (dev*dev)*localPresCount;
+
+				dev = (reading.Mean.Humidity - summary.Mean.Humidity);
+				summary.SampleStandardDeviation.Humidity += (dev*dev)*localHumCount;
+
+				dev = (reading.Mean.WindSpeed - summary.Mean.WindSpeed);
+				summary.SampleStandardDeviation.WindSpeed += (dev*dev)*localSpeedCount;
+
+				dev = (reading.Mean.WindDirection - summary.Mean.WindDirection);
+				summary.SampleStandardDeviation.WindDirection += (dev*dev)*localDirCount;
+			}
+
+			if (0 != totalTempCount && 1 != totalTempCount) {
+				summary.SampleStandardDeviation.Temperature = Math.Sqrt(summary.SampleStandardDeviation.Temperature / totalTempCount);
+			}
+			if (0 != totalPresCount && 1 != totalPresCount) {
+				summary.SampleStandardDeviation.Pressure = Math.Sqrt(summary.SampleStandardDeviation.Pressure / totalPresCount);
+			}
+			if (0 != totalHumCount && 1 != totalHumCount) {
+				summary.SampleStandardDeviation.Humidity = Math.Sqrt(summary.SampleStandardDeviation.Humidity / totalHumCount);
+			}
+			if (0 != totalSpeedCount && 1 != totalSpeedCount) {
+				summary.SampleStandardDeviation.WindSpeed = Math.Sqrt(summary.SampleStandardDeviation.WindSpeed / totalSpeedCount);
+			}
+			if (0 != totalDirCount && 1 != totalDirCount) {
+				summary.SampleStandardDeviation.WindDirection = Math.Sqrt(summary.SampleStandardDeviation.WindDirection / totalDirCount);
+			}
+
+			summary.Count = totalRecordCount;
+			summary.BeginStamp = minStamp;
+			summary.EndStamp = maxStamp;
 			return summary;
 		}
 
+		[Obsolete("Should replace this with a specialized version?")]
 		public static ReadingsSummary Combine(List<ReadingsSummary> readings) {
-			int totalCount = readings.Sum(r => r.Count);
-			var summary = new ReadingsSummary(
-				readings.Min(r => r.BeginStamp),
-				readings.Max(r => r.EndStamp),
-				new ReadingValues(Double.MaxValue, Double.MaxValue, Double.MaxValue, double.MaxValue, double.MaxValue),
-				new ReadingValues(Double.MinValue, Double.MinValue, Double.MinValue, double.MinValue, double.MinValue),
-				new ReadingValues(0, 0, 0, 0, 0),
-				new ReadingValues(0, 0, 0, 0, 0), // TODO: median
-				totalCount,
-				new Dictionary<double, int>(),
-				new Dictionary<double, int>(),
-				new Dictionary<double, int>(),
-				new Dictionary<double, int>(),
-				new Dictionary<double, int>()
-			);
-			// TODO: use calculator?
-			foreach (var reading in readings) {
-				if (summary.Min.Temperature > reading.Min.Temperature) {
-					summary.Min.Temperature = reading.Min.Temperature;
-				}
-				if (summary.Min.Pressure > reading.Min.Pressure) {
-					summary.Min.Pressure = reading.Min.Pressure;
-				}
-				if (summary.Min.Humidity > reading.Min.Humidity) {
-					summary.Min.Humidity = reading.Min.Humidity;
-				}
-				if (summary.Min.WindSpeed > reading.Min.WindSpeed) {
-					summary.Min.WindSpeed = reading.Min.WindSpeed;
-				}
-				if (summary.Min.WindDirection > reading.Min.WindDirection) {
-					summary.Min.WindDirection = reading.Min.WindDirection;
-				}
-				if (summary.Max.Temperature < reading.Max.Temperature) {
-					summary.Max.Temperature = reading.Max.Temperature;
-				}
-				if (summary.Max.Pressure < reading.Max.Pressure) {
-					summary.Max.Pressure = reading.Max.Pressure;
-				}
-				if (summary.Max.Humidity < reading.Max.Humidity) {
-					summary.Max.Humidity = reading.Max.Humidity;
-				}
-				if (summary.Max.WindSpeed < reading.Max.WindSpeed) {
-					summary.Max.WindSpeed = reading.Max.WindSpeed;
-				}
-				if (summary.Max.WindDirection < reading.Max.WindDirection) {
-					summary.Max.WindDirection = reading.Max.WindDirection;
-				}
-				var readingCountD = (double)reading.Count;
-				summary.Mean.Temperature += reading.Mean.Temperature * readingCountD;
-				summary.Mean.Pressure += reading.Mean.Pressure * readingCountD;
-				summary.Mean.Humidity += reading.Mean.Humidity * readingCountD;
-				summary.Mean.WindSpeed += reading.Mean.WindSpeed * readingCountD;
-				summary.Mean.WindDirection += reading.Mean.WindDirection * readingCountD;
-				AppendCounts(summary.TemperatureCounts, reading.TemperatureCounts);
-				AppendCounts(summary.PressureCounts, reading.PressureCounts);
-				AppendCounts(summary.HumidityCounts, reading.HumidityCounts);
-				AppendCounts(summary.WindSpeedCounts, reading.WindSpeedCounts);
-				AppendCounts(summary.WindDirectionCounts, reading.WindDirectionCounts);
-			}
-			var totalCountD = (double)totalCount;
-			if (0 != totalCountD && 1 != totalCountD) {
-				summary.Mean.Temperature /= totalCountD;
-				summary.Mean.Pressure /= totalCountD;
-				summary.Mean.Humidity /= totalCountD;
-				summary.Mean.WindSpeed /= totalCountD;
-				summary.Mean.WindDirection /= totalCountD;
-			}
-			return summary;
+			return Combine(readings.Cast<IReadingsSummary>().ToList());
 		}
 
-		public static void AppendCounts(Dictionary<double, int> destination, Dictionary<double, int> source) {
+		/// <returns>The total number of counts added.</returns>
+		public static int AppendCounts(Dictionary<double, int> destination, Dictionary<double, int> source) {
+			int totalCount = 0;
 			foreach (var kvp in source) {
 				int count;
 				if (destination.TryGetValue(kvp.Key, out count)) {
@@ -321,7 +427,9 @@ namespace Atmo.Stats {
 				else {
 					destination[kvp.Key] = kvp.Value;
 				}
+				totalCount += kvp.Value;
 			}
+			return totalCount;
 		}
 
 		public static IEnumerable<ReadingAggregate> AggregateMean<T>(IEnumerable<T> readings, TimeUnit unit)

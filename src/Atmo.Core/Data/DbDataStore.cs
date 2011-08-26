@@ -34,14 +34,8 @@ namespace Atmo.Data {
 
 	
 	public class DbDataStore : IDataStore, IDisposable {
-
+		
 		// TODO: do the finalize/dispose pattern right
-
-		private static readonly TimeSpan OneMinute = new TimeSpan(0,1,0);
-		private static readonly TimeSpan TenMinutes = new TimeSpan(0,10,0);
-		private static readonly TimeSpan OneHour = new TimeSpan(1,0,0);
-		private static readonly TimeSpan OneDay = new TimeSpan(1,0,0,0);
-		private const int RecordBatchQuantity = UInt16.MaxValue;
 
 		private class DbSensorInfo : ISensorInfo {
 
@@ -104,6 +98,26 @@ namespace Atmo.Data {
 
 			public int Span { get { return _high - _low; } }
 
+		}
+
+		private static readonly TimeSpan OneMinute = new TimeSpan(0,1,0);
+		private static readonly TimeSpan TenMinutes = new TimeSpan(0,10,0);
+		private static readonly TimeSpan OneHour = new TimeSpan(1,0,0);
+		private static readonly TimeSpan OneDay = new TimeSpan(1,0,0,0);
+		private const int RecordBatchQuantity = UInt16.MaxValue;
+
+		/// <summary>
+		/// THIS LIST MUST BE SORTED, SMALLEST TO LARGEST
+		/// </summary>
+		private static readonly TimeSpan[] ValidSummaryTimeSpans = new[] {
+			OneMinute, 
+			TenMinutes, 
+            OneHour,                                                	
+			OneDay, 
+		};
+
+		static DbDataStore() {
+			Array.Sort(ValidSummaryTimeSpans);
 		}
 
 		private readonly IDbConnection _connection;
@@ -808,7 +822,7 @@ namespace Atmo.Data {
 					minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
 					maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
 					meanValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Mean);
-					medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Median);
+					medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.SampleStandardDeviation);
 					recordCountParam.Value = summary.Count;
 
 					byte[] data;
@@ -1123,8 +1137,42 @@ namespace Atmo.Data {
 			}
 		}
 
+		private static TimeSpan ChooseBestSummaryTimeSpan(TimeSpan desiredTimeSpan) {
+			if(ValidSummaryTimeSpans.Length > 0) {
+				int lasti = ValidSummaryTimeSpans.Length - 1;
+				if(desiredTimeSpan <= ValidSummaryTimeSpans[0]) {
+					return ValidSummaryTimeSpans[0];
+				}
+				if (desiredTimeSpan >= ValidSummaryTimeSpans[lasti]) {
+					return ValidSummaryTimeSpans[lasti];
+				}
+				for (int i = 0, nexti = 1; i < lasti; i = nexti++) {
+					if (ValidSummaryTimeSpans[i] <= desiredTimeSpan) {
+						long distI = Math.Abs(ValidSummaryTimeSpans[i].Ticks - desiredTimeSpan.Ticks);
+						long distNextI = Math.Abs(ValidSummaryTimeSpans[nexti].Ticks - desiredTimeSpan.Ticks);
+						if(distI < distNextI) {
+							return ValidSummaryTimeSpans[i];
+						}
+						return ValidSummaryTimeSpans[nexti];
+					}
+				}
+
+			}
+			return default(TimeSpan);
+		}
+
 		public IEnumerable<IReadingsSummary> GetReadingSummaries(string sensor, DateTime from, TimeSpan span, TimeSpan desiredSummaryUnitSpan) {
-			throw new NotImplementedException();
+
+			var bestTimeSpan = ChooseBestSummaryTimeSpan(desiredSummaryUnitSpan);
+
+			if(bestTimeSpan == OneHour) {
+				return GetHourSummaries(sensor, from, span).Cast<IReadingsSummary>();
+			}
+			if(bestTimeSpan == OneDay) {
+				return GetDaySummaries(sensor, from, span).OfType<IReadingsSummary>();
+			}
+
+			throw new NotSupportedException(String.Format("Summaries for {0} are not supported.",bestTimeSpan));
 			/*
 			if (TimeUnit.Second == summaryUnit || TimeUnit.Minute == summaryUnit) {
 				return StatsUtil.Summarize<PackedReading>(GetReadings(sensor, from, span), summaryUnit).OfType<IReadingsSummary>();

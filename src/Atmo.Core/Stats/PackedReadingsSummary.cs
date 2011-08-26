@@ -34,7 +34,7 @@ namespace Atmo.Stats {
 		public PackedReadingValues Min;
 		public PackedReadingValues Max;
 		public PackedReadingValues Mean;
-		public PackedReadingValues Median;
+		public PackedReadingValues SampleStandardDeviation;
 		public Dictionary<ushort, int> TemperatureCounts;
 		public Dictionary<ushort, int> PressureCounts;
 		public Dictionary<ushort, int> HumidityCounts;
@@ -46,14 +46,14 @@ namespace Atmo.Stats {
 			PackedReadingValues min,
 			PackedReadingValues max,
 			PackedReadingValues mean,
-			PackedReadingValues median,
+			PackedReadingValues sampleStandardDeviation,
 			int count
 		) {
 			BeginStamp = beginStamp;
 			Min = min;
 			Max = max;
 			Mean = mean;
-			Median = median;
+			SampleStandardDeviation = sampleStandardDeviation;
 			Count = count;
 			TemperatureCounts = new Dictionary<ushort, int>();
 			PressureCounts = new Dictionary<ushort, int>();
@@ -82,8 +82,8 @@ namespace Atmo.Stats {
 			get { return Mean; }
 		}
 
-		IReadingValues IReadingsSummary.Median {
-			get { return Median; }
+		IReadingValues IReadingsSummary.SampleStandardDeviation {
+			get { return SampleStandardDeviation; }
 		}
 
 		int IReadingsSummary.Count {

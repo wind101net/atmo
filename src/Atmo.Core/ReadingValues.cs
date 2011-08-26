@@ -100,23 +100,28 @@ namespace Atmo {
 
 		/// <inheritdoc/>
 		[XmlAttribute("temperature")]
-		public double Temperature { get; set; }
+		public double Temperature;
+		double IReadingValues.Temperature { get { return Temperature; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("pressure")]
-		public double Pressure { get; set; }
+		public double Pressure;
+		double IReadingValues.Pressure { get { return Pressure; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("humidity")]
-		public double Humidity { get; set; }
+		public double Humidity;
+		double IReadingValues.Humidity { get { return Humidity; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("windspeed")]
-		public double WindSpeed { get; set; }
+		public double WindSpeed;
+		double IReadingValues.WindSpeed { get { return WindSpeed; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("winddirection")]
-		public double WindDirection { get; set; }
+		public double WindDirection;
+		double IReadingValues.WindDirection { get { return WindDirection; } }
 
 		/// <inheritdoc/>
 		public bool IsValid {

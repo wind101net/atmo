@@ -95,12 +95,10 @@ namespace Atmo.Core.DbDataStore.Test {
 			using (var store = CreateDbDataStore()) {
 				var sensor = new SensorInfo("Sensor1", SpeedUnit.MetersPerSec, TemperatureUnit.Celsius, PressureUnit.Pascals);
 				store.AddSensor(sensor);
+				var testTimeStart = new DateTime(2011, 11, 09);
 				var testTimeSpan = new TimeSpan(2, 0, 0, 0);
-				var readings = GenerateReadings(
-					new DateTime(2011, 11, 09),
-					testTimeSpan
-				);
-				Stopwatch pushTime = new Stopwatch();
+				var readings = GenerateReadings(testTimeStart,testTimeSpan);
+				var pushTime = new Stopwatch();
 				pushTime.Start();
 				Assert.That(store.Push(sensor.Name, readings));
 				pushTime.Stop();
@@ -121,6 +119,18 @@ namespace Atmo.Core.DbDataStore.Test {
 						Assert.AreEqual((int)testTimeSpan.TotalDays, countReader.GetInt32(0));
 					}
 				}
+
+				var readingsInDb = store.GetReadings(sensor.Name, testTimeStart, testTimeSpan)
+					.ToList();
+				
+				var firstReading = readingsInDb.First();
+				Assert.AreEqual(readings[0], firstReading);
+
+				var daySummaries = store.GetReadingSummaries(sensor.Name, testTimeStart, testTimeSpan, new TimeSpan(1, 0, 0, 0))
+					.ToList();
+
+				Assert.That(daySummaries, Has.Count.EqualTo((int)testTimeSpan.TotalDays));
+
 			}
 		}
 

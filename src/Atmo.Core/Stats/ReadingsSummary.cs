@@ -46,7 +46,7 @@ namespace Atmo.Stats {
 		public ReadingValues Min;
 		public ReadingValues Max;
 		public ReadingValues Mean;
-		public ReadingValues Median;
+		public ReadingValues SampleStandardDeviation;
 		public int Count;
 		public Dictionary<double, int> TemperatureCounts;
 		public Dictionary<double, int> PressureCounts;
@@ -57,7 +57,7 @@ namespace Atmo.Stats {
 		public ReadingsSummary(IReadingsSummary summary)
 			: this(
 			summary.BeginStamp, summary.EndStamp,
-			new ReadingValues(summary.Min), new ReadingValues(summary.Max), new ReadingValues(summary.Mean), new ReadingValues(summary.Median), 
+			new ReadingValues(summary.Min), new ReadingValues(summary.Max), new ReadingValues(summary.Mean), new ReadingValues(summary.SampleStandardDeviation), 
 			summary.Count,
 			summary.GetTemperatureCounts(),
 			summary.GetPressureCounts(),
@@ -72,7 +72,7 @@ namespace Atmo.Stats {
 			ReadingValues min,
 			ReadingValues max,
 			ReadingValues mean,
-			ReadingValues median,
+			ReadingValues sampleStandardDeviation,
 			int count,
 			Dictionary<double, int> tempCounts,
 			Dictionary<double, int> presCounts,
@@ -85,7 +85,7 @@ namespace Atmo.Stats {
 			Min = min;
 			Max = max;
 			Mean = mean;
-			Median = median;
+			SampleStandardDeviation = sampleStandardDeviation;
 			Count = count;
 			TemperatureCounts = RoundAndCombine(tempCounts);
 			PressureCounts = RoundAndCombine(presCounts);
@@ -118,8 +118,8 @@ namespace Atmo.Stats {
 			get { return Mean; }
 		}
 
-		IReadingValues IReadingsSummary.Median {
-			get { return Median; }
+		IReadingValues IReadingsSummary.SampleStandardDeviation {
+			get { return SampleStandardDeviation; }
 		}
 
 		int IReadingsSummary.Count {

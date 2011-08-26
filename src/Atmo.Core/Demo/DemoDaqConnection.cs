@@ -200,8 +200,8 @@ namespace Atmo.Demo {
 					temp,
 					pressure,
 					humidity,
-					windSpeed,
-					windDirectionDeg
+					windDirectionDeg,
+					windSpeed
 				);
 
 				if (null != lastReading && lastReading.IsValid) {

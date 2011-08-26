@@ -54,8 +54,7 @@ namespace Atmo.Stats {
 		/// <summary>
 		/// The median values of all readings within the summary.
 		/// </summary>
-		[Obsolete("Not currently used.")]
-		IReadingValues Median { get; }
+		IReadingValues SampleStandardDeviation { get; }
 
 		/// <summary>
 		/// The total number of records summarized
