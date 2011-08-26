@@ -28,12 +28,14 @@ namespace Atmo.Stats {
 
 		private static readonly TimeSpan OneMinute = new TimeSpan(0, 1, 0);
 
+		public PackedReadingsMinuteSummary() { }
+
 		public PackedReadingsMinuteSummary(
 			DateTime beginStamp,
 			PackedReadingValues min,
 			PackedReadingValues max,
 			PackedReadingValues mean,
-			PackedReadingValues median,
+			PackedReadingValues stddev,
 			int count
 		)
 			: base(
@@ -41,7 +43,7 @@ namespace Atmo.Stats {
 				min,
 				max,
 				mean,
-				median,
+				stddev,
 				count
 				) { }
 

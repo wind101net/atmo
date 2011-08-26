@@ -853,10 +853,56 @@ namespace Atmo.Data {
 			return true;
 		}
 
+		private static DateTime PeriodTenMinutes(DateTime time) {
+			return new DateTime(time.Year,time.Month,time.Day, time.Hour, (time.Minute / 10) * 10,0);
+		}
+
 		private bool UpdateSummaryRecords(TimeRange rangeCovered, string sensorName, int sensorId) {
+			TimeRange minuteAlignedRange = new TimeRange(
+				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.Minute),
+				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Minute) + OneMinute
+			);
+			var minuteSummaries = StatsUtil.Summarize(
+				GetReadings(sensorName, minuteAlignedRange.Low, minuteAlignedRange.Span), TimeUnit.Minute
+			).ToList();
+
+			bool minsOk = PushSummaries(sensorId, "MinuteRecord", minuteSummaries);
+
+			var tenMinuteSummaries = new List<ReadingsSummary>();
+			{
+				List<List<ReadingsSummary>> tenMinutePeriodSummaries = new List<List<ReadingsSummary>>();
+				List<ReadingsSummary> currentMinuteSummaries = new List<ReadingsSummary>();
+				foreach (ReadingsSummary minuteSummary in minuteSummaries) {
+					if (currentMinuteSummaries.Count == 0
+						|| PeriodTenMinutes(currentMinuteSummaries[0].BeginStamp).Equals(PeriodTenMinutes(minuteSummary.BeginStamp))
+					) {
+						currentMinuteSummaries.Add(minuteSummary);
+					}
+					else {
+						tenMinutePeriodSummaries.Add(currentMinuteSummaries);
+						currentMinuteSummaries = new List<ReadingsSummary>();
+					}
+				}
+				if (currentMinuteSummaries.Count > 0) {
+					tenMinutePeriodSummaries.Add(currentMinuteSummaries);
+				}
+				foreach (List<ReadingsSummary> minutelyForCondensing in tenMinutePeriodSummaries) {
+					ReadingsSummary summary = StatsUtil.Combine(minutelyForCondensing);
+					summary.BeginStamp = PeriodTenMinutes(summary.BeginStamp);
+					summary.EndStamp = summary.BeginStamp.Add(TenMinutes).AddTicks(-1);
+					tenMinuteSummaries.Add(summary);
+				}
+			}
+
+			bool tenMinsOk = PushSummaries(sensorId, "TenminuteRecord", tenMinuteSummaries);
+
+			return minsOk && tenMinsOk;
+		}
+
+		private bool UpdateSummaryRecordsHourAndDay(TimeRange rangeCovered, string sensorName, int sensorId) {
 			TimeRange hourAlignedRange = new TimeRange(
 				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.Hour),
-				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Hour) + new TimeSpan(1, 0, 0)
+				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Hour) + OneHour
 			);
 			var hourSummaries = StatsUtil.Summarize(
 				GetReadings(sensorName, hourAlignedRange.Low, hourAlignedRange.Span), TimeUnit.Hour
@@ -864,12 +910,6 @@ namespace Atmo.Data {
 
 			bool hoursOk = PushSummaries(sensorId, "HourRecord", hourSummaries);
 			
-			// TODO: send the day summaries off to the dat summary calculator
-
-			TimeRange dayAlignedRange = new TimeRange(
-				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.Day),
-				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Day).AddDays(1.0)
-			);
 
 			var daySummaries = new List<ReadingsSummary>();
 			{
@@ -955,8 +995,88 @@ namespace Atmo.Data {
 
 		#region Summary CRUD
 
+
+		private IEnumerable<T> GetPackedSummaries<T>(string sensor, DateTime from, TimeSpan span, string tableName)
+			where T:PackedReadingsSummary, new()
+		{
+			DateTime to = from.Add(span);
+			if (to < from) {
+				DateTime s = to;
+				to = from;
+				from = s;
+			}
+			if (!ForceConnectionOpen()) {
+				throw new Exception("Could not open database.");
+			}
+			using (var command = _connection.CreateTextCommand(String.Format(
+				"SELECT stamp,minValues,maxValues,meanValues,stddevValues,recordCount"
+				+ ",tempCount,pressCount,humCount,speedCount,dirCount"
+				+ " FROM [{0}]"
+				+ " INNER JOIN Sensor ON (Sensor.sensorId = [{0}].sensorId)"
+				+ " WHERE Sensor.nameKey = @sensorNameKey"
+				+ " AND [{0}].stamp >= @minPosixStamp"
+				+ " AND [{0}].stamp < @maxPosixStamp"
+				+ " ORDER BY stamp " + ((span < TimeSpan.Zero) ? "DESC" : "ASC"),
+				tableName
+			))) {
+				command.AddParameter("minPosixStamp", DbType.Int32, UnitUtility.ConvertToPosixTime(from));
+				command.AddParameter("maxPosixStamp", DbType.Int32, UnitUtility.ConvertToPosixTime(to));
+				command.AddParameter("sensorNameKey", DbType.String, sensor);
+
+				using (IDataReader reader = command.ExecuteReader()) {
+					int ordStamp = reader.GetOrdinal("stamp");
+					int ordMinValues = reader.GetOrdinal("minValues");
+					int ordMaxValues = reader.GetOrdinal("maxValues");
+					int ordMeanValues = reader.GetOrdinal("meanValues");
+					int ordStddevValues = reader.GetOrdinal("stddevValues");
+					int ordRecordCount = reader.GetOrdinal("recordCount");
+					int ordTempCount = reader.GetOrdinal("tempCount");
+					int ordPressCount = reader.GetOrdinal("pressCount");
+					int ordHumCount = reader.GetOrdinal("humCount");
+					int ordSpeedCount = reader.GetOrdinal("speedCount");
+					int ordDirCount = reader.GetOrdinal("dirCount");
+
+					byte[] values = new byte[8];
+					//return ReadAsSensorReadings(reader);
+					while (reader.Read()) {
+
+						reader.GetBytes(ordMinValues, 0, values, 0, values.Length);
+						PackedReadingValues minValues = PackedReadingValues.ConvertFromPackedBytes(values);
+						reader.GetBytes(ordMaxValues, 0, values, 0, values.Length);
+						PackedReadingValues maxValues = PackedReadingValues.ConvertFromPackedBytes(values);
+						reader.GetBytes(ordMeanValues, 0, values, 0, values.Length);
+						PackedReadingValues meanValues = PackedReadingValues.ConvertFromPackedBytes(values);
+						reader.GetBytes(ordStddevValues, 0, values, 0, values.Length);
+						PackedReadingValues stddevValues = PackedReadingValues.ConvertFromPackedBytes(values);
+						var summary = new T {
+						    BeginStamp = UnitUtility.ConvertFromPosixTime(reader.GetInt32(ordStamp)),
+						    Min = minValues,
+						    Max = maxValues,
+						    Mean = meanValues,
+						    SampleStandardDeviation = stddevValues,
+						    Count = reader.GetInt32(ordRecordCount),
+						    TemperatureCounts =
+						        PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordTempCount) as byte[]),
+						    PressureCounts =
+						        PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordPressCount) as byte[]),
+						    HumidityCounts =
+						        PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordHumCount) as byte[]),
+						    WindSpeedCounts =
+						        PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordSpeedCount) as byte[]),
+						    WindDirectionCounts =
+						        PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordDirCount) as byte[])
+						};
+						yield return summary;
+
+
+					}
+				}
+
+			}
+		}
+
 		[Obsolete]
-		private IEnumerable<PackedReadingsDaySummary> GetDaySummaries(string sensor, DateTime from, TimeSpan span) {
+		private IEnumerable<PackedReadingsDaySummary> GetDaySummariesOld(string sensor, DateTime from, TimeSpan span) {
 			DateTime to = from.Add(span);
 			if (to < from) {
 				DateTime s = to;
@@ -1047,7 +1167,7 @@ namespace Atmo.Data {
 		}
 
 		[Obsolete]
-		private IEnumerable<PackedReadingsHourSummary> GetHourSummaries(string sensor, DateTime from, TimeSpan span) {
+		private IEnumerable<PackedReadingsHourSummary> GetHourSummariesOld(string sensor, DateTime from, TimeSpan span) {
 			DateTime to = from.Add(span);
 			if (to < from) {
 				DateTime s = to;
@@ -1165,12 +1285,19 @@ namespace Atmo.Data {
 
 			var bestTimeSpan = ChooseBestSummaryTimeSpan(desiredSummaryUnitSpan);
 
-			if(bestTimeSpan == OneHour) {
+			if(bestTimeSpan == OneMinute) {
+				return GetPackedSummaries<PackedReadingsMinuteSummary>(sensor, from, span, "MinuteRecord").Cast<IReadingsSummary>();
+			}
+			if (bestTimeSpan == TenMinutes) {
+				return GetPackedSummaries<PackedReadingsTenMinutesSummary>(sensor, from, span, "TenminuteRecord").Cast<IReadingsSummary>();
+			}
+
+			/*if(bestTimeSpan == OneHour) {
 				return GetHourSummaries(sensor, from, span).Cast<IReadingsSummary>();
 			}
 			if(bestTimeSpan == OneDay) {
 				return GetDaySummaries(sensor, from, span).OfType<IReadingsSummary>();
-			}
+			}*/
 
 			throw new NotSupportedException(String.Format("Summaries for {0} are not supported.",bestTimeSpan));
 			/*

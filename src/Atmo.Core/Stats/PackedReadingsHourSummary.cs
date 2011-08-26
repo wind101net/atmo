@@ -28,19 +28,21 @@ namespace Atmo.Stats {
 
         private static readonly TimeSpan OneHour = new TimeSpan(1,0,0);
 
+		public PackedReadingsHourSummary() { }
+
 		public PackedReadingsHourSummary(
 			DateTime beginStamp,
 			PackedReadingValues min,
 			PackedReadingValues max,
 			PackedReadingValues mean,
-			PackedReadingValues median,
+			PackedReadingValues stddev,
 			int count
 		): base(
 			  beginStamp,
 			  min,
 			  max,
 			  mean,
-			  median,
+			  stddev,
 			  count
 		) { }
 

@@ -108,15 +108,15 @@ namespace Atmo.Core.DbDataStore.Test {
 						Assert.That(countReader.Read());
 						Assert.AreEqual((int)testTimeSpan.TotalSeconds, countReader.GetInt32(0));
 					}
-					countCmd.CommandText = "SELECT COUNT(*) FROM HourRecord";
+					countCmd.CommandText = "SELECT COUNT(*) FROM MinuteRecord";
 					using (var countReader = countCmd.ExecuteReader()) {
 						Assert.That(countReader.Read());
-						Assert.AreEqual((int)testTimeSpan.TotalHours, countReader.GetInt32(0));
+						Assert.AreEqual((int)testTimeSpan.TotalMinutes, countReader.GetInt32(0));
 					}
-					countCmd.CommandText = "SELECT COUNT(*) FROM DayRecord";
+					countCmd.CommandText = "SELECT COUNT(*) FROM TenminuteRecord";
 					using (var countReader = countCmd.ExecuteReader()) {
 						Assert.That(countReader.Read());
-						Assert.AreEqual((int)testTimeSpan.TotalDays, countReader.GetInt32(0));
+						Assert.AreEqual((int)(testTimeSpan.TotalMinutes / 10.0), countReader.GetInt32(0));
 					}
 				}
 
@@ -126,10 +126,10 @@ namespace Atmo.Core.DbDataStore.Test {
 				var firstReading = readingsInDb.First();
 				Assert.AreEqual(readings[0], firstReading);
 
-				var daySummaries = store.GetReadingSummaries(sensor.Name, testTimeStart, testTimeSpan, new TimeSpan(1, 0, 0, 0))
+				var tenMinSummaries = store.GetReadingSummaries(sensor.Name, testTimeStart, testTimeSpan, new TimeSpan(0, 0, 10, 0))
 					.ToList();
 
-				Assert.That(daySummaries, Has.Count.EqualTo((int)testTimeSpan.TotalDays));
+				Assert.That(tenMinSummaries, Has.Count.EqualTo((int)(testTimeSpan.TotalMinutes / 10.0)));
 
 			}
 		}

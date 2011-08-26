@@ -41,6 +41,15 @@ namespace Atmo.Stats {
 		public Dictionary<ushort, int> WindSpeedCounts;
 		public Dictionary<ushort, int> WindDirectionCounts;
 
+		protected PackedReadingsSummary() : this(
+			default(DateTime),
+			PackedReadingValues.Invalid,
+			PackedReadingValues.Invalid,
+			PackedReadingValues.Invalid,
+			PackedReadingValues.Invalid,
+			0
+		){ }
+
 		protected PackedReadingsSummary(
 			DateTime beginStamp,
 			PackedReadingValues min,
