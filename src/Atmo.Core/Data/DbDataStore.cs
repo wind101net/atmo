@@ -787,8 +787,8 @@ namespace Atmo.Data {
 
 		private bool PushSummaries(int sensorId, string tableName, IEnumerable<ReadingsSummary> summaries) {
 			using (var command = _connection.CreateTextCommand(String.Format(
-				"INSERT OR REPLACE INTO {0} (sensorId,stamp,minValues,maxValues,meanValues,medianValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount)"
-				+ " VALUES (@sensorId,@stamp,@minValues,@maxValues,@meanValues,@medianValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)",
+				"INSERT OR REPLACE INTO {0} (sensorId,stamp,minValues,maxValues,meanValues,stddevValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount)"
+				+ " VALUES (@sensorId,@stamp,@minValues,@maxValues,@meanValues,@stddevValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)",
 				tableName
 			))) {
 				command.Transaction = _connection.BeginTransaction();
@@ -801,8 +801,8 @@ namespace Atmo.Data {
 				maxValuesParam.Size = 8;
 				var meanValuesParam = command.AddParameter("meanValues", DbType.Binary, null);
 				meanValuesParam.Size = 8;
-				var medianValuesParam = command.AddParameter("medianValues", DbType.Binary, null);
-				medianValuesParam.Size = 8;
+				var stddevValuesParam = command.AddParameter("stddevValues", DbType.Binary, null);
+				stddevValuesParam.Size = 8;
 				var recordCountParam = command.AddParameter("recordCount", DbType.Int32, null);
 				recordCountParam.ParameterName = "recordCount";
 				var tempCountParam = command.AddParameter("tempCount", DbType.Binary, null);
@@ -822,7 +822,7 @@ namespace Atmo.Data {
 					minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
 					maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
 					meanValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Mean);
-					medianValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.SampleStandardDeviation);
+					stddevValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.SampleStandardDeviation);
 					recordCountParam.Value = summary.Count;
 
 					byte[] data;
@@ -968,7 +968,7 @@ namespace Atmo.Data {
 			}
 			using (IDbCommand command = _connection.CreateCommand()) {
 				command.CommandType = CommandType.Text;
-				command.CommandText = "SELECT stamp,minValues,maxValues,meanValues,medianValues,recordCount"
+				command.CommandText = "SELECT stamp,minValues,maxValues,meanValues,stddevValues,recordCount"
 				+ ",tempCount,pressCount,humCount,speedCount,dirCount"
 				+ " FROM DayRecord"
 				+ " INNER JOIN Sensor ON (Sensor.sensorId = DayRecord.sensorId)"
@@ -1003,7 +1003,7 @@ namespace Atmo.Data {
 					int ordMinValues = reader.GetOrdinal("minValues");
 					int ordMaxValues = reader.GetOrdinal("maxValues");
 					int ordMeanValues = reader.GetOrdinal("meanValues");
-					int ordMedianValues = reader.GetOrdinal("medianValues");
+					int ordStddevValues = reader.GetOrdinal("stddevValues");
 					int ordRecordCount = reader.GetOrdinal("recordCount");
 					int ordTempCount = reader.GetOrdinal("tempCount");
 					int ordPressCount = reader.GetOrdinal("pressCount");
@@ -1021,14 +1021,14 @@ namespace Atmo.Data {
 						PackedReadingValues maxValues = PackedReadingValues.ConvertFromPackedBytes(values);
 						reader.GetBytes(ordMeanValues, 0, values, 0, values.Length);
 						PackedReadingValues meanValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordMedianValues, 0, values, 0, values.Length);
-						PackedReadingValues medianValues = PackedReadingValues.ConvertFromPackedBytes(values);
+						reader.GetBytes(ordStddevValues, 0, values, 0, values.Length);
+						PackedReadingValues stddevValues = PackedReadingValues.ConvertFromPackedBytes(values);
 						PackedReadingsDaySummary summary = new PackedReadingsDaySummary(
 							UnitUtility.ConvertFromPosixTime(reader.GetInt32(ordStamp)),
 							minValues,
 							maxValues,
 							meanValues,
-							medianValues,
+							stddevValues,
 							reader.GetInt32(ordRecordCount)
 						);
 
@@ -1059,7 +1059,7 @@ namespace Atmo.Data {
 			}
 			using (IDbCommand command = _connection.CreateCommand()) {
 				command.CommandType = CommandType.Text;
-				command.CommandText = "SELECT stamp,minValues,maxValues,meanValues,medianValues,recordCount"
+				command.CommandText = "SELECT stamp,minValues,maxValues,meanValues,stddevValues,recordCount"
 				+ ",tempCount,pressCount,humCount,speedCount,dirCount"
 				+ " FROM HourRecord"
 				+ " INNER JOIN Sensor ON (Sensor.sensorId = HourRecord.sensorId)"
@@ -1094,7 +1094,7 @@ namespace Atmo.Data {
 					int ordMinValues = reader.GetOrdinal("minValues");
 					int ordMaxValues = reader.GetOrdinal("maxValues");
 					int ordMeanValues = reader.GetOrdinal("meanValues");
-					int ordMedianValues = reader.GetOrdinal("medianValues");
+					int ordStddevValues = reader.GetOrdinal("stddevValues");
 					int ordRecordCount = reader.GetOrdinal("recordCount");
 					int ordTempCount = reader.GetOrdinal("tempCount");
 					int ordPressCount = reader.GetOrdinal("pressCount");
@@ -1112,14 +1112,14 @@ namespace Atmo.Data {
 						PackedReadingValues maxValues = PackedReadingValues.ConvertFromPackedBytes(values);
 						reader.GetBytes(ordMeanValues, 0, values, 0, values.Length);
 						PackedReadingValues meanValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordMedianValues, 0, values, 0, values.Length);
-						PackedReadingValues medianValues = PackedReadingValues.ConvertFromPackedBytes(values);
+						reader.GetBytes(ordStddevValues, 0, values, 0, values.Length);
+						PackedReadingValues stddevValues = PackedReadingValues.ConvertFromPackedBytes(values);
 						PackedReadingsHourSummary summary = new PackedReadingsHourSummary(
 							UnitUtility.ConvertFromPosixTime(reader.GetInt32(ordStamp)),
 							minValues,
 							maxValues,
 							meanValues,
-							medianValues,
+							stddevValues,
 							reader.GetInt32(ordRecordCount)
 						);
 

@@ -314,7 +314,7 @@
 			pointSeriesLabel1.Visible = false;
 			series1.Label = pointSeriesLabel1;
 			series1.Name = "Temperature";
-			series1.ValueDataMembersSerializable = "Temperature";
+			series1.ValueDataMembersSerializable = "TemperatureProperty";
 			areaSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(225)))), ((int)(((byte)(255)))), ((int)(((byte)(0)))));
 			areaSeriesView1.FillStyle.FillMode = DevExpress.XtraCharts.FillMode.Gradient;
 			polygonGradientFillOptions1.Color2 = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(255)))));
@@ -327,7 +327,7 @@
 			pointSeriesLabel2.Visible = false;
 			series2.Label = pointSeriesLabel2;
 			series2.Name = "Humidity";
-			series2.ValueDataMembersSerializable = "Humidity";
+			series2.ValueDataMembersSerializable = "HumidityProperty";
 			splineSeriesView1.AxisYName = "Humidity AxisY";
 			splineSeriesView1.LineMarkerOptions.Visible = false;
 			splineSeriesView1.LineTensionPercent = 50;
@@ -338,7 +338,7 @@
 			pointSeriesLabel3.Visible = false;
 			series3.Label = pointSeriesLabel3;
 			series3.Name = "Wind Speed";
-			series3.ValueDataMembersSerializable = "WindSpeed";
+			series3.ValueDataMembersSerializable = "WindSpeedProperty";
 			areaSeriesView2.AxisYName = "Wind Speed AxisY";
 			areaSeriesView2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(96)))), ((int)(((byte)(128)))), ((int)(((byte)(228)))));
 			areaSeriesView2.MarkerOptions.Visible = false;
@@ -362,7 +362,7 @@
 			pointSeriesLabel5.Visible = false;
 			series5.Label = pointSeriesLabel5;
 			series5.Name = "Pressure";
-			series5.ValueDataMembersSerializable = "Pressure";
+			series5.ValueDataMembersSerializable = "PressureProperty";
 			splineSeriesView2.AxisYName = "Pressure AxisY";
 			splineSeriesView2.Color = System.Drawing.Color.Black;
 			splineSeriesView2.LineMarkerOptions.Visible = false;
@@ -375,7 +375,7 @@
 			pointSeriesLabel6.Visible = false;
 			series6.Label = pointSeriesLabel6;
 			series6.Name = "Direction";
-			series6.ValueDataMembersSerializable = "WindDirection";
+			series6.ValueDataMembersSerializable = "WindDirectionProperty";
 			pointSeriesView1.AxisYName = "Direction AxisY";
 			pointSeriesView1.Color = System.Drawing.Color.Black;
 			pointSeriesView1.PaneName = "SpeedAndDirection";

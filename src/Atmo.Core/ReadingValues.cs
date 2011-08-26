@@ -22,6 +22,7 @@
 // ================================================================================
 
 using System;
+using System.Diagnostics;
 using System.Xml.Serialization;
 
 namespace Atmo {
@@ -101,26 +102,51 @@ namespace Atmo {
 		/// <inheritdoc/>
 		[XmlAttribute("temperature")]
 		public double Temperature;
+
+		[DebuggerHidden]
+		public double TemperatureProperty { get { return Temperature; } set { Temperature = value; } }
+
+		/// <inheritdoc/>
 		double IReadingValues.Temperature { get { return Temperature; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("pressure")]
 		public double Pressure;
+
+		[DebuggerHidden]
+		public double PressureProperty { get { return Pressure; } set { Pressure = value; } }
+
+		/// <inheritdoc/>
 		double IReadingValues.Pressure { get { return Pressure; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("humidity")]
 		public double Humidity;
+
+		[DebuggerHidden]
+		public double HumidityProperty { get { return Humidity; } set { Humidity = value; } }
+
+		/// <inheritdoc/>
 		double IReadingValues.Humidity { get { return Humidity; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("windspeed")]
 		public double WindSpeed;
+
+		[DebuggerHidden]
+		public double WindSpeedProperty { get { return WindSpeed; } set { WindSpeed = value; } }
+
+		/// <inheritdoc/>
 		double IReadingValues.WindSpeed { get { return WindSpeed; } }
 
 		/// <inheritdoc/>
 		[XmlAttribute("winddirection")]
 		public double WindDirection;
+
+		[DebuggerHidden]
+		public double WindDirectionProperty { get { return WindDirection; } set { WindDirection = value; } }
+
+		/// <inheritdoc/>
 		double IReadingValues.WindDirection { get { return WindDirection; } }
 
 		/// <inheritdoc/>
