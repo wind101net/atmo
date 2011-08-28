@@ -111,9 +111,7 @@ namespace Atmo.Data {
 		/// </summary>
 		private static readonly TimeSpan[] ValidSummaryTimeSpans = new[] {
 			OneMinute, 
-			TenMinutes, 
-            OneHour,                                                	
-			OneDay, 
+			TenMinutes
 		};
 
 		static DbDataStore() {

@@ -639,25 +639,17 @@ namespace Atmo.Units {
 			return value.AddTicks(1);
 		}
 
-		public static TimeUnit ChooseBestUnit(TimeSpan span) {
+		public static TimeSpan ChooseBestSummaryUnit(TimeSpan span) {
 			if (span < TimeSpan.Zero) {
-				return ChooseBestUnit(TimeSpan.Zero.Subtract(span));
+				return ChooseBestSummaryUnit(TimeSpan.Zero.Subtract(span));
 			}
-			if (span <= new TimeSpan(0, 15, 0)) {
-				return TimeUnit.Second;
+			if (span <= new TimeSpan(31, 0, 0, 0)) {
+				return new TimeSpan(0,1,0);
 			}
-			else if (span <= new TimeSpan(1, 0, 0, 0)) {
-				return TimeUnit.Minute;
+			if (span <= new TimeSpan(366, 0, 0, 0)) {
+				return new TimeSpan(0,10,0);
 			}
-			else if (span <= new TimeSpan(31, 0, 0, 0)) {
-				return TimeUnit.Hour;
-			}
-			else if (span <= new TimeSpan(366, 0, 0, 0)) {
-				return TimeUnit.Day;
-			}
-			else {
-				return TimeUnit.Month;
-			}
+			return new TimeSpan(31,0,0,0);
 		}
 
 		public static TimeSpan TimeUnitToTimeSpan(TimeUnit unit) {
