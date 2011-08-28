@@ -88,6 +88,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Atmo.Core\Resources\IconResource.Designer.cs">
+      <Link>IconResource.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\Atmo.Core\Resources\IconResource1.Designer.cs">
+      <Link>IconResource1.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IconResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="..\AtmoAssemblyInfo.cs">
       <Link>Properties\AtmoAssemblyInfo.cs</Link>
     </Compile>
@@ -241,6 +250,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\Atmo.Core\Resources\IconResource.resx">
+      <Link>IconResource.resx</Link>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IconResource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\CustomTimeRangeSelector.resx">
       <DependentUpon>CustomTimeRangeSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -310,6 +324,24 @@
     <None Include="Properties\DataSources\Atmo.Stats.WindDirectionEnergy.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindSpeedFrequency.datasource" />
     <None Include="Properties\DataSources\Atmo.TimeStampedValue.datasource" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Download Data.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Download Data1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Search Sensor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stream Off.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stream On.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Sync Time.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

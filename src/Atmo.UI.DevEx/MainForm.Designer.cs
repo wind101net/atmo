@@ -64,9 +64,10 @@
 			this.labelLocalTime = new DevExpress.XtraEditors.LabelControl();
 			this.timerQueryTime = new System.Windows.Forms.Timer(this.components);
 			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
-			this.simpleButtonPwsAction = new DevExpress.XtraEditors.SimpleButton();
 			this.labelControlPwsStatus = new DevExpress.XtraEditors.LabelControl();
+			this.simpleButtonPwsAction = new DevExpress.XtraEditors.SimpleButton();
 			this.timerRapidFire = new System.Windows.Forms.Timer(this.components);
+			this.simpleButtonTimeSync = new DevExpress.XtraEditors.SimpleButton();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControlDbList)).BeginInit();
@@ -298,9 +299,9 @@
 			this.panelSensors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelSensors.Controls.Add(this.groupControlDbList);
 			this.panelSensors.Controls.Add(this.groupControlSensors);
-			this.panelSensors.Location = new System.Drawing.Point(0, 88);
+			this.panelSensors.Location = new System.Drawing.Point(0, 244);
 			this.panelSensors.Name = "panelSensors";
-			this.panelSensors.Size = new System.Drawing.Size(206, 548);
+			this.panelSensors.Size = new System.Drawing.Size(206, 201);
 			this.panelSensors.TabIndex = 13;
 			// 
 			// groupControlDbList
@@ -327,9 +328,10 @@
 			// 
 			// simpleButtonFindSensors
 			// 
-			this.simpleButtonFindSensors.Location = new System.Drawing.Point(1, 30);
+			this.simpleButtonFindSensors.Image = global::Atmo.UI.DevEx.Properties.Resources.Search_Sensor;
+			this.simpleButtonFindSensors.Location = new System.Drawing.Point(2, 507);
 			this.simpleButtonFindSensors.Name = "simpleButtonFindSensors";
-			this.simpleButtonFindSensors.Size = new System.Drawing.Size(205, 23);
+			this.simpleButtonFindSensors.Size = new System.Drawing.Size(178, 35);
 			this.simpleButtonFindSensors.TabIndex = 18;
 			this.simpleButtonFindSensors.Text = "Find Sensors...";
 			this.simpleButtonFindSensors.Click += new System.EventHandler(this.simpleButtonFindSensors_Click);
@@ -340,9 +342,10 @@
 			// 
 			// simpleButtonDownloadData
 			// 
-			this.simpleButtonDownloadData.Location = new System.Drawing.Point(1, 59);
+			this.simpleButtonDownloadData.Image = global::Atmo.UI.DevEx.Properties.Resources.Download_Data;
+			this.simpleButtonDownloadData.Location = new System.Drawing.Point(2, 466);
 			this.simpleButtonDownloadData.Name = "simpleButtonDownloadData";
-			this.simpleButtonDownloadData.Size = new System.Drawing.Size(205, 23);
+			this.simpleButtonDownloadData.Size = new System.Drawing.Size(157, 35);
 			this.simpleButtonDownloadData.TabIndex = 23;
 			this.simpleButtonDownloadData.Text = "Download Data...";
 			this.simpleButtonDownloadData.Click += new System.EventHandler(this.simpleButtonDownloadData_Click);
@@ -555,25 +558,12 @@
 			// groupControl2
 			// 
 			this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.groupControl2.Controls.Add(this.simpleButtonPwsAction);
 			this.groupControl2.Controls.Add(this.labelControlPwsStatus);
 			this.groupControl2.Location = new System.Drawing.Point(0, 642);
 			this.groupControl2.Name = "groupControl2";
 			this.groupControl2.Size = new System.Drawing.Size(205, 86);
 			this.groupControl2.TabIndex = 59;
 			this.groupControl2.Text = "PWS Status";
-			// 
-			// simpleButtonPwsAction
-			// 
-			this.simpleButtonPwsAction.Appearance.ForeColor = System.Drawing.Color.Red;
-			this.simpleButtonPwsAction.Appearance.Options.UseForeColor = true;
-			this.simpleButtonPwsAction.Location = new System.Drawing.Point(5, 58);
-			this.simpleButtonPwsAction.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.UltraFlat;
-			this.simpleButtonPwsAction.Name = "simpleButtonPwsAction";
-			this.simpleButtonPwsAction.Size = new System.Drawing.Size(196, 23);
-			this.simpleButtonPwsAction.TabIndex = 1;
-			this.simpleButtonPwsAction.Text = "N/A";
-			this.simpleButtonPwsAction.Click += new System.EventHandler(this.simpleButtonPwsAction_Click);
 			// 
 			// labelControlPwsStatus
 			// 
@@ -587,16 +577,41 @@
 			this.labelControlPwsStatus.TabIndex = 0;
 			this.labelControlPwsStatus.Text = "N/A";
 			// 
+			// simpleButtonPwsAction
+			// 
+			this.simpleButtonPwsAction.Appearance.ForeColor = System.Drawing.Color.Red;
+			this.simpleButtonPwsAction.Appearance.Options.UseForeColor = true;
+			this.simpleButtonPwsAction.Image = global::Atmo.UI.DevEx.Properties.Resources.Stream_Off;
+			this.simpleButtonPwsAction.Location = new System.Drawing.Point(5, 550);
+			this.simpleButtonPwsAction.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.UltraFlat;
+			this.simpleButtonPwsAction.Name = "simpleButtonPwsAction";
+			this.simpleButtonPwsAction.Size = new System.Drawing.Size(167, 35);
+			this.simpleButtonPwsAction.TabIndex = 1;
+			this.simpleButtonPwsAction.Text = "N/A";
+			this.simpleButtonPwsAction.Click += new System.EventHandler(this.simpleButtonPwsAction_Click);
+			// 
 			// timerRapidFire
 			// 
 			this.timerRapidFire.Interval = 5000;
 			this.timerRapidFire.Tick += new System.EventHandler(this.timerRapidFire_Tick);
+			// 
+			// simpleButtonTimeSync
+			// 
+			this.simpleButtonTimeSync.Image = global::Atmo.UI.DevEx.Properties.Resources.Sync_Time;
+			this.simpleButtonTimeSync.Location = new System.Drawing.Point(12, 591);
+			this.simpleButtonTimeSync.Name = "simpleButtonTimeSync";
+			this.simpleButtonTimeSync.Size = new System.Drawing.Size(157, 35);
+			this.simpleButtonTimeSync.TabIndex = 64;
+			this.simpleButtonTimeSync.Text = "Time Sync...";
+			this.simpleButtonTimeSync.Click += new System.EventHandler(this.simpleButtonTimeSync_Click);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(813, 862);
+			this.Controls.Add(this.simpleButtonTimeSync);
+			this.Controls.Add(this.simpleButtonPwsAction);
 			this.Controls.Add(this.groupControl2);
 			this.Controls.Add(this.groupControl1);
 			this.Controls.Add(this.mainScrollableControl);
@@ -682,6 +697,7 @@
 		private DevExpress.XtraEditors.SimpleButton simpleButtonPwsAction;
 		private DevExpress.XtraEditors.LabelControl labelControlPwsStatus;
 		private System.Windows.Forms.Timer timerRapidFire;
+		private DevExpress.XtraEditors.SimpleButton simpleButtonTimeSync;
 
 	}
 }

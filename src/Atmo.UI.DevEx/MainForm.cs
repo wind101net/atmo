@@ -343,7 +343,11 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void barButtonItemTimeSync_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
-			var timeSync = new TimeSync(_deviceConnection,_dbStore);
+			ShowTimeSyncDialog();
+		}
+
+		private void ShowTimeSyncDialog() {
+			var timeSync = new TimeSync(_deviceConnection, _dbStore);
 			timeSync.ShowDialog(this);
 		}
 
@@ -591,6 +595,10 @@ namespace Atmo.UI.DevEx {
 				}
 			}
 			base.Dispose(disposing);
+		}
+
+		private void simpleButtonTimeSync_Click(object sender, EventArgs e) {
+			ShowTimeSyncDialog();
 		}
 
 

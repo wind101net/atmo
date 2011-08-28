@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -58,6 +59,11 @@
     <Compile Include="Device\MemoryRegionDataCollection.cs" />
     <Compile Include="Device\MemoryRegionInfo.cs" />
     <Compile Include="Device\QueryResult.cs" />
+    <Compile Include="Resources\IconResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IconResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Range.cs" />
     <Compile Include="ReadingAttributeType.cs" />
     <Compile Include="SensorInfo.cs" />
@@ -111,6 +117,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClearStorage.db" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\IconResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IconResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icons\Download Data.ico" />
+    <Content Include="Resources\Icons\Search Sensor.ico" />
+    <Content Include="Resources\Icons\Stream Off.ico" />
+    <Content Include="Resources\Icons\Stream On.ico" />
+    <Content Include="Resources\Icons\Sync Time.ico" />
+    <Content Include="Resources\Icons\Temp Sensor 01.ico" />
+    <Content Include="Resources\Icons\Temp Sensor 02.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

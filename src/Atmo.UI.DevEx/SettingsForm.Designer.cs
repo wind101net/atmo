@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
 			this.simpleButtonApply = new DevExpress.XtraEditors.SimpleButton();
 			this.simpleButtonOk = new DevExpress.XtraEditors.SimpleButton();
 			this.simpleButtonCancel = new DevExpress.XtraEditors.SimpleButton();
@@ -135,9 +136,9 @@
 			// 
 			// xtraTabControlSettings
 			// 
-			this.xtraTabControlSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.xtraTabControlSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.xtraTabControlSettings.Location = new System.Drawing.Point(12, 12);
 			this.xtraTabControlSettings.Name = "xtraTabControlSettings";
 			this.xtraTabControlSettings.SelectedTabPage = this.xtraTabPageGraph;
@@ -177,8 +178,8 @@
 			// 
 			// comboBoxEditUserGraph
 			// 
-			this.comboBoxEditUserGraph.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxEditUserGraph.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxEditUserGraph.Location = new System.Drawing.Point(105, 25);
 			this.comboBoxEditUserGraph.Name = "comboBoxEditUserGraph";
 			this.comboBoxEditUserGraph.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
@@ -188,8 +189,8 @@
 			// 
 			// groupControlGraphMinRanges
 			// 
-			this.groupControlGraphMinRanges.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupControlGraphMinRanges.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupControlGraphMinRanges.Controls.Add(this.tableLayoutPanel1);
 			this.groupControlGraphMinRanges.Location = new System.Drawing.Point(3, 54);
 			this.groupControlGraphMinRanges.Name = "groupControlGraphMinRanges";
@@ -723,11 +724,11 @@
 			this.Controls.Add(this.simpleButtonCancel);
 			this.Controls.Add(this.simpleButtonOk);
 			this.Controls.Add(this.simpleButtonApply);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(468, 385);
 			this.Name = "SettingsForm";
-			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Preferences";

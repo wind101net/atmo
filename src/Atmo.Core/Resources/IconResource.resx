@@ -118,20 +118,29 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Stream On" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Stream On.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Temp_Sensor_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Temp Sensor 02.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Download Data" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Download Data1.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Sync_Time" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Sync Time.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Stream Off" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Stream Off.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Search_Sensor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Search Sensor.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Search Sensor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Search Sensor.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Download_Data" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Download Data.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temp_Sensor_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Temp Sensor 01.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Stream_On" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Stream On.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Stream_Off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Stream Off.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Sync Time" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Sync Time.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Download Data" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Atmo.UI.DevEx\Resources\Download Data.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

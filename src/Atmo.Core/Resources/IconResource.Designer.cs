@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Atmo.UI.DevEx.Properties {
+namespace Atmo.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Atmo.UI.DevEx.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class IconResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal IconResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Atmo.UI.DevEx.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Atmo.UI.DevEx.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Atmo.Resources.IconResource", typeof(IconResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,38 +60,52 @@ namespace Atmo.UI.DevEx.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap Download_Data {
+        internal static System.Drawing.Icon Download_Data {
             get {
-                object obj = ResourceManager.GetObject("Download Data", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("Download_Data", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap Search_Sensor {
+        internal static System.Drawing.Icon Search_Sensor {
             get {
-                object obj = ResourceManager.GetObject("Search Sensor", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("Search_Sensor", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap Stream_Off {
+        internal static System.Drawing.Icon Stream_Off {
             get {
-                object obj = ResourceManager.GetObject("Stream Off", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("Stream_Off", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap Stream_On {
+        internal static System.Drawing.Icon Stream_On {
             get {
-                object obj = ResourceManager.GetObject("Stream On", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("Stream_On", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap Sync_Time {
+        internal static System.Drawing.Icon Sync_Time {
             get {
-                object obj = ResourceManager.GetObject("Sync Time", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("Sync_Time", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon Temp_Sensor_01 {
+            get {
+                object obj = ResourceManager.GetObject("Temp_Sensor_01", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon Temp_Sensor_02 {
+            get {
+                object obj = ResourceManager.GetObject("Temp_Sensor_02", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }
