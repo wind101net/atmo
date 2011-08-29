@@ -50,7 +50,6 @@ namespace Atmo.Data {
 		public static bool TryConvert7ByteDateTime(byte[] data, int offset, out DateTime stamp) {
 
 			// TODO: test for an invalid date that falls within the ranges.
-
 			if (data.Length - offset >= 7) {
 				var year = (short)((data[offset] << 8) | data[offset + 1]);
 				var month = data[offset + 2];
@@ -69,10 +68,40 @@ namespace Atmo.Data {
 					&& 0 != month
 					&& 0 != day
 				) {
-					stamp = new DateTime(year, month, day, hour, min, sec);
-					return true;
+					try {
+						stamp = new DateTime(year, month, day, hour, min, sec);
+						return true;
+					}
+					catch {;}
 				}
 			}
+			stamp = default(DateTime);
+			return false;
+		}
+
+		public static bool TryConvertFrom7ByteDateTimeForce(byte[] data, int offset, out DateTime stamp) {
+			try {
+				if (data.Length - offset >= 7) {
+					var year = Math.Max((short)0,(short)((data[offset] << 8) | data[offset + 1]));
+					var month =Math.Max((byte)1, Math.Min((byte)12,data[offset + 2]));
+					var day = Math.Max((byte)1,Math.Min((byte)31,data[offset + 3]));
+					var hour = Math.Min((byte)23,data[offset + 4]);
+					var min = Math.Min((byte)59,data[offset + 5]);
+					var sec = Math.Min((byte)59,data[offset + 6]);
+					while (day > 0) {
+						try {
+							stamp = new DateTime(year, month, day, hour, min, sec);
+							return true;
+						}catch {
+							day--;
+							if(day < 28) {
+								break;
+							}
+						}
+					}
+				}
+			}
+			catch {;}
 			stamp = default(DateTime);
 			return false;
 		}

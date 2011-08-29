@@ -289,6 +289,12 @@ namespace Atmo.Daq.Win32 {
 
 			networkSize = highestValid + 1;
 
+			_lastClock = QueryAdjustedClock();
+
+			_daqStat = _lastDaqStatusQuery >= now
+				? QueryStatus()
+				: DaqStatusValues.Default;
+
 			for (int i = 0; i < values.Length; i++) {
 				_sensors[i].HandleObservation(values[i], networkSize, daqSafeTime);
 			}
@@ -491,7 +497,11 @@ namespace Atmo.Daq.Win32 {
 					DateTime dt;
 					return DaqDataFileInfo.TryConvert7ByteDateTime(queryPacket, 2, out dt)
 						? dt
-						: default(DateTime)
+						: (
+							DaqDataFileInfo.TryConvertFrom7ByteDateTimeForce(queryPacket, 2, out dt)
+							? dt
+							: default(DateTime)
+						)
 					;
 				}
 			}
