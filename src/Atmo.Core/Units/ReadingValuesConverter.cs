@@ -106,11 +106,11 @@ namespace Atmo.Units {
 					input
 				);
 			}
-			Expression tempExp = Expression.Property(input, "Temperature");
-			Expression pressExp = Expression.Property(input, "Pressure");
-			Expression humExp = Expression.Property(input, "Humidity");
-			Expression speedExp = Expression.Property(input, "WindSpeed");
-			Expression dirExp = Expression.Property(input, "WindDirection");
+			Expression tempExp = Expression.Field(input, "Temperature");
+			Expression pressExp = Expression.Field(input, "Pressure");
+			Expression humExp = Expression.Field(input, "Humidity");
+			Expression speedExp = Expression.Field(input, "WindSpeed");
+			Expression dirExp = Expression.Field(input, "WindDirection");
 			if(null != temperatureConverter) {
 				tempExp = temperatureConverter.GetConversionExpression(tempExp);
 			}

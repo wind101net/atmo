@@ -161,25 +161,34 @@ namespace Atmo.UI.DevEx {
             bool success = false;
             foreach(var map in validMaps){
                 
-                IEnumerable<PackedReading> packedReadings = _fileInfosLookup[(byte)(Char.Parse(map.AnemId.ToUpper())) - (byte)('A')]
-                    .OrderBy(afi => afi.FirstStamp)
-                    .SelectMany(afi => GetPackedReadings(afi))
-                ;
+				ISensorInfo sensor = _dataStore.GetAllSensorInfos().FirstOrDefault(
+					si => StringComparer.InvariantCultureIgnoreCase.Equals(si.Name, map.DatabaseSensorId)
+				);
+				if (null == sensor) {
+					sensor = new SensorInfo(map.DatabaseSensorId, SpeedUnit.MetersPerSec, TemperatureUnit.Celsius, PressureUnit.InchOfMercury);
+					_dataStore.AddSensor(sensor);
+				}
 
-                ISensorInfo sensor = _dataStore.GetAllSensorInfos().FirstOrDefault(si => String.Equals(si.Name, map.DatabaseSensorId, StringComparison.InvariantCultureIgnoreCase));
-                if (null == sensor) {
-                    sensor = new SensorInfo(map.DatabaseSensorId, SpeedUnit.MetersPerSec, TemperatureUnit.Celsius, PressureUnit.InchOfMercury);
-                    _dataStore.AddSensor(sensor);
-                }
-                if (_dataStore.Push<PackedReading>(sensor.Name, packedReadings, chkOverwrite.Checked)) {
-                    success = true;
-                    _dataStore.SetLatestSensorNameForHardwareId(sensor.Name, map.AnemId);
-                }
-                else {
-                    failed = true;
-                }
+            	bool savedData = false;
+				var packedReadings = new List<PackedReading>();
+				foreach(var daqFileInfo in _fileInfosLookup[(byte)(Char.Parse(map.AnemId.ToUpper())) - (byte)('A')]
+					.OrderBy(afi => afi.FirstStamp)
+				) {
+					packedReadings.Clear();
+					packedReadings.AddRange(GetPackedReadings(daqFileInfo));
+					if (_dataStore.Push(sensor.Name, packedReadings, chkOverwrite.Checked)) {
+						success = true;
+						savedData = true;
+					}
+					else {
+						failed = true;
+					}
+				}
+				if (savedData) {
+					_dataStore.SetLatestSensorNameForHardwareId(sensor.Name, map.AnemId);
+				}
             }
-
+        	
             if (failed || !success) {
                 MessageBox.Show(
                     "Data import failed.",

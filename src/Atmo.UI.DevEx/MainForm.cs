@@ -100,7 +100,7 @@ namespace Atmo.UI.DevEx {
 			}
 
 			HandleRapidFireSetup();
-
+			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
 		}
 
 		private void HandleRapidFireSetup() {
@@ -154,7 +154,9 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void timerTesting_Tick(object sender, EventArgs e) {
-			
+
+			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
+
 			// current live state
 			var now = DateTime.Now;
 			var sensors = _deviceConnection.Where(s => s.IsValid).ToList();
@@ -599,6 +601,22 @@ namespace Atmo.UI.DevEx {
 
 		private void simpleButtonTimeSync_Click(object sender, EventArgs e) {
 			ShowTimeSyncDialog();
+		}
+
+		private void simpleButtonTempSource_Click(object sender, EventArgs e) {
+			var newState = !_deviceConnection.UsingDaqTemp;
+			_deviceConnection.UseDaqTemp(newState);
+		}
+
+		private void HandleDaqTemperatureSourceSet(bool isDaqTempSource) {
+			if (isDaqTempSource) {
+				simpleButtonTempSource.Text = "Temperature Sensor: DAQ (click to change)";
+				simpleButtonTempSource.Image = Properties.Resources.Temp_Sensor_01;
+			}
+			else {
+				simpleButtonTempSource.Text = "Temperature Sensor: Anemometer (click to change)";
+				simpleButtonTempSource.Image = Properties.Resources.Temp_Sensor_02;
+			}
 		}
 
 

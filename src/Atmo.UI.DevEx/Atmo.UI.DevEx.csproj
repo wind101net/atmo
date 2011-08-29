@@ -318,7 +318,6 @@
   <ItemGroup>
     <None Include="..\Atmo.Core\ClearStorage.db">
       <Link>ClearStorage.db</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindDirectionEnergy.datasource" />
@@ -342,6 +341,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Sync Time.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Temp Sensor 02.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Temp Sensor 01.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -41,6 +41,21 @@ namespace Atmo.Stats {
 			return result;
 		}
 
+		private static Dictionary<double, int> RoundAndCombine(Dictionary<double, int> values, double denominator) {
+			var result = new Dictionary<double, int>(values.Count);
+			foreach (var kvp in values) {
+				var roundKey = Math.Round(kvp.Key * denominator) / denominator;
+				int count;
+				if (result.TryGetValue(roundKey, out count)) {
+					result[roundKey] = count + kvp.Value;
+				}
+				else {
+					result.Add(roundKey, kvp.Value);
+				}
+			}
+			return result;
+		}
+
 		public DateTime BeginStamp;
 		public DateTime EndStamp;
 		public ReadingValues Min;
@@ -90,7 +105,7 @@ namespace Atmo.Stats {
 			TemperatureCounts = RoundAndCombine(tempCounts);
 			PressureCounts = RoundAndCombine(presCounts);
 			HumidityCounts = RoundAndCombine(humCounts);
-			WindSpeedCounts = RoundAndCombine(speedCounts);
+			WindSpeedCounts = RoundAndCombine(speedCounts,2);
 			WindDirectionCounts = RoundAndCombine(dirCounts);
 		}
 

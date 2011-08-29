@@ -294,7 +294,10 @@ namespace Atmo.Daq.Win32 {
 			}
 
 			_networkSize = networkSize;
-			_usingDaqTemp = usingDaqTemp;
+			if (!_usingDaqTempUntil.HasValue || _usingDaqTempUntil.Value <= DateTime.Now) {
+				_usingDaqTemp = usingDaqTemp;
+				_usingDaqTempUntil = null;
+			}
 		}
 
 		public PackedReadingValues QueryValues(int nid) {
@@ -571,9 +574,12 @@ namespace Atmo.Daq.Win32 {
 			get { return _usingDaqTemp.HasValue && _usingDaqTemp.Value; }
 		}
 
+		private DateTime? _usingDaqTempUntil = null;
+
 		public void UseDaqTemp(bool useDaqTemp) {
 			SetDaqTempSelected(useDaqTemp);
 			_usingDaqTemp = useDaqTemp;
+			_usingDaqTempUntil = DateTime.Now.Add(new TimeSpan(0, 0, 2));
 		}
 
 		private bool SetDaqTempSelected(bool useDaq) {

@@ -94,5 +94,19 @@ namespace Atmo.UI.DevEx.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap Temp_Sensor_01 {
+            get {
+                object obj = ResourceManager.GetObject("Temp Sensor 01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Temp_Sensor_02 {
+            get {
+                object obj = ResourceManager.GetObject("Temp Sensor 02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

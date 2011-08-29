@@ -53,7 +53,7 @@ namespace Atmo.Stats {
 						collectedReadings.Add(enumerator.Current);
 					}
 					else {
-						yield return FormSummary<T>(dateRangeLow, dateRangeHigh, collectedReadings);
+						yield return FormSummary(dateRangeLow, dateRangeHigh, collectedReadings);
 						collectedReadings.Clear();
 						collectedReadings.Add(enumerator.Current);
 						dateRangeLow = UnitUtility.StripToUnit(enumerator.Current.TimeStamp, unit);
@@ -61,7 +61,7 @@ namespace Atmo.Stats {
 					}
 				}
 				if (collectedReadings.Count > 0) {
-					yield return FormSummary<T>(dateRangeLow, dateRangeHigh, collectedReadings);
+					yield return FormSummary(dateRangeLow, dateRangeHigh, collectedReadings);
 				}
 			}
 		}

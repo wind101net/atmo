@@ -52,22 +52,24 @@
 			this.mainScrollableControl = new DevExpress.XtraEditors.XtraScrollableControl();
 			this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
 			this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
+			this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
 			this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
-			this.labelTmpDaq = new DevExpress.XtraEditors.LabelControl();
 			this.labelVolUsb = new DevExpress.XtraEditors.LabelControl();
-			this.labelVolBat = new DevExpress.XtraEditors.LabelControl();
-			this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
+			this.labelTmpDaq = new DevExpress.XtraEditors.LabelControl();
 			this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
-			this.labelDaqTime = new DevExpress.XtraEditors.LabelControl();
 			this.labelLocalTime = new DevExpress.XtraEditors.LabelControl();
+			this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
+			this.labelVolBat = new DevExpress.XtraEditors.LabelControl();
+			this.labelDaqTime = new DevExpress.XtraEditors.LabelControl();
 			this.timerQueryTime = new System.Windows.Forms.Timer(this.components);
 			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
 			this.labelControlPwsStatus = new DevExpress.XtraEditors.LabelControl();
 			this.simpleButtonPwsAction = new DevExpress.XtraEditors.SimpleButton();
 			this.timerRapidFire = new System.Windows.Forms.Timer(this.components);
 			this.simpleButtonTimeSync = new DevExpress.XtraEditors.SimpleButton();
+			this.simpleButtonTempSource = new DevExpress.XtraEditors.SimpleButton();
+			this.panelLeftSide = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControlDbList)).BeginInit();
@@ -78,6 +80,7 @@
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
 			this.groupControl2.SuspendLayout();
+			this.panelLeftSide.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// barManager
@@ -292,16 +295,15 @@
 			// 
 			// panelSensors
 			// 
-			this.panelSensors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
 			this.panelSensors.AutoScroll = true;
 			this.panelSensors.AutoScrollMinSize = new System.Drawing.Size(180, 0);
 			this.panelSensors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelSensors.Controls.Add(this.groupControlDbList);
 			this.panelSensors.Controls.Add(this.groupControlSensors);
-			this.panelSensors.Location = new System.Drawing.Point(0, 244);
+			this.panelSensors.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelSensors.Location = new System.Drawing.Point(0, 269);
 			this.panelSensors.Name = "panelSensors";
-			this.panelSensors.Size = new System.Drawing.Size(206, 201);
+			this.panelSensors.Size = new System.Drawing.Size(204, 483);
 			this.panelSensors.TabIndex = 13;
 			// 
 			// groupControlDbList
@@ -311,7 +313,7 @@
 			this.groupControlDbList.Dock = System.Windows.Forms.DockStyle.Top;
 			this.groupControlDbList.Location = new System.Drawing.Point(0, 24);
 			this.groupControlDbList.Name = "groupControlDbList";
-			this.groupControlDbList.Size = new System.Drawing.Size(204, 24);
+			this.groupControlDbList.Size = new System.Drawing.Size(202, 24);
 			this.groupControlDbList.TabIndex = 2;
 			this.groupControlDbList.Text = "Available Sensor Data Databases";
 			// 
@@ -322,16 +324,17 @@
 			this.groupControlSensors.Dock = System.Windows.Forms.DockStyle.Top;
 			this.groupControlSensors.Location = new System.Drawing.Point(0, 0);
 			this.groupControlSensors.Name = "groupControlSensors";
-			this.groupControlSensors.Size = new System.Drawing.Size(204, 24);
+			this.groupControlSensors.Size = new System.Drawing.Size(202, 24);
 			this.groupControlSensors.TabIndex = 1;
 			this.groupControlSensors.Text = "Available Sensors";
 			// 
 			// simpleButtonFindSensors
 			// 
+			this.simpleButtonFindSensors.Dock = System.Windows.Forms.DockStyle.Top;
 			this.simpleButtonFindSensors.Image = global::Atmo.UI.DevEx.Properties.Resources.Search_Sensor;
-			this.simpleButtonFindSensors.Location = new System.Drawing.Point(2, 507);
+			this.simpleButtonFindSensors.Location = new System.Drawing.Point(0, 164);
 			this.simpleButtonFindSensors.Name = "simpleButtonFindSensors";
-			this.simpleButtonFindSensors.Size = new System.Drawing.Size(178, 35);
+			this.simpleButtonFindSensors.Size = new System.Drawing.Size(204, 35);
 			this.simpleButtonFindSensors.TabIndex = 18;
 			this.simpleButtonFindSensors.Text = "Find Sensors...";
 			this.simpleButtonFindSensors.Click += new System.EventHandler(this.simpleButtonFindSensors_Click);
@@ -342,10 +345,11 @@
 			// 
 			// simpleButtonDownloadData
 			// 
+			this.simpleButtonDownloadData.Dock = System.Windows.Forms.DockStyle.Top;
 			this.simpleButtonDownloadData.Image = global::Atmo.UI.DevEx.Properties.Resources.Download_Data;
-			this.simpleButtonDownloadData.Location = new System.Drawing.Point(2, 466);
+			this.simpleButtonDownloadData.Location = new System.Drawing.Point(0, 129);
 			this.simpleButtonDownloadData.Name = "simpleButtonDownloadData";
-			this.simpleButtonDownloadData.Size = new System.Drawing.Size(157, 35);
+			this.simpleButtonDownloadData.Size = new System.Drawing.Size(204, 35);
 			this.simpleButtonDownloadData.TabIndex = 23;
 			this.simpleButtonDownloadData.Text = "Download Data...";
 			this.simpleButtonDownloadData.Click += new System.EventHandler(this.simpleButtonDownloadData_Click);
@@ -422,11 +426,11 @@
 			// 
 			// groupControl1
 			// 
-			this.groupControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.groupControl1.Controls.Add(this.tableLayoutPanel1);
-			this.groupControl1.Location = new System.Drawing.Point(0, 734);
+			this.groupControl1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupControl1.Location = new System.Drawing.Point(0, 0);
 			this.groupControl1.Name = "groupControl1";
-			this.groupControl1.Size = new System.Drawing.Size(206, 129);
+			this.groupControl1.Size = new System.Drawing.Size(204, 129);
 			this.groupControl1.TabIndex = 54;
 			this.groupControl1.Text = "Logger Status";
 			// 
@@ -435,16 +439,16 @@
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
-			this.tableLayoutPanel1.Controls.Add(this.labelControl1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.labelControl2, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.labelControl2, 0, 4);
+			this.tableLayoutPanel1.Controls.Add(this.labelControl1, 0, 3);
 			this.tableLayoutPanel1.Controls.Add(this.labelControl3, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.labelVolUsb, 1, 4);
 			this.tableLayoutPanel1.Controls.Add(this.labelTmpDaq, 1, 2);
-			this.tableLayoutPanel1.Controls.Add(this.labelVolUsb, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.labelVolBat, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.labelControl4, 0, 3);
-			this.tableLayoutPanel1.Controls.Add(this.labelControl5, 0, 4);
-			this.tableLayoutPanel1.Controls.Add(this.labelDaqTime, 1, 3);
-			this.tableLayoutPanel1.Controls.Add(this.labelLocalTime, 1, 4);
+			this.tableLayoutPanel1.Controls.Add(this.labelControl5, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.labelLocalTime, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.labelControl4, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.labelVolBat, 1, 3);
+			this.tableLayoutPanel1.Controls.Add(this.labelDaqTime, 1, 1);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 22);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -454,28 +458,28 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0008F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.9988F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.9988F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(202, 105);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(200, 105);
 			this.tableLayoutPanel1.TabIndex = 1;
-			// 
-			// labelControl1
-			// 
-			this.labelControl1.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-			this.labelControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelControl1.Location = new System.Drawing.Point(3, 3);
-			this.labelControl1.Name = "labelControl1";
-			this.labelControl1.Size = new System.Drawing.Size(84, 15);
-			this.labelControl1.TabIndex = 0;
-			this.labelControl1.Text = "Battery Voltage:";
 			// 
 			// labelControl2
 			// 
 			this.labelControl2.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
 			this.labelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelControl2.Location = new System.Drawing.Point(3, 24);
+			this.labelControl2.Location = new System.Drawing.Point(3, 86);
 			this.labelControl2.Name = "labelControl2";
-			this.labelControl2.Size = new System.Drawing.Size(84, 15);
+			this.labelControl2.Size = new System.Drawing.Size(84, 16);
 			this.labelControl2.TabIndex = 1;
 			this.labelControl2.Text = "USB Voltage:";
+			// 
+			// labelControl1
+			// 
+			this.labelControl1.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelControl1.Location = new System.Drawing.Point(3, 66);
+			this.labelControl1.Name = "labelControl1";
+			this.labelControl1.Size = new System.Drawing.Size(84, 14);
+			this.labelControl1.TabIndex = 0;
+			this.labelControl1.Text = "Battery Voltage:";
 			// 
 			// labelControl3
 			// 
@@ -487,67 +491,75 @@
 			this.labelControl3.TabIndex = 2;
 			this.labelControl3.Text = "Logger Temp.:";
 			// 
+			// labelVolUsb
+			// 
+			this.labelVolUsb.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelVolUsb.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelVolUsb.Location = new System.Drawing.Point(93, 86);
+			this.labelVolUsb.Name = "labelVolUsb";
+			this.labelVolUsb.Size = new System.Drawing.Size(104, 16);
+			this.labelVolUsb.TabIndex = 4;
+			this.labelVolUsb.Text = "N/A";
+			// 
 			// labelTmpDaq
 			// 
 			this.labelTmpDaq.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
 			this.labelTmpDaq.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.labelTmpDaq.Location = new System.Drawing.Point(93, 45);
 			this.labelTmpDaq.Name = "labelTmpDaq";
-			this.labelTmpDaq.Size = new System.Drawing.Size(106, 15);
+			this.labelTmpDaq.Size = new System.Drawing.Size(104, 15);
 			this.labelTmpDaq.TabIndex = 3;
 			this.labelTmpDaq.Text = "N/A";
 			// 
-			// labelVolUsb
+			// labelControl5
 			// 
-			this.labelVolUsb.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-			this.labelVolUsb.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelVolUsb.Location = new System.Drawing.Point(93, 24);
-			this.labelVolUsb.Name = "labelVolUsb";
-			this.labelVolUsb.Size = new System.Drawing.Size(106, 15);
-			this.labelVolUsb.TabIndex = 4;
-			this.labelVolUsb.Text = "N/A";
+			this.labelControl5.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelControl5.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelControl5.Location = new System.Drawing.Point(3, 3);
+			this.labelControl5.Name = "labelControl5";
+			this.labelControl5.Size = new System.Drawing.Size(84, 15);
+			this.labelControl5.TabIndex = 7;
+			this.labelControl5.Text = "Computer Time:";
+			// 
+			// labelLocalTime
+			// 
+			this.labelLocalTime.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelLocalTime.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelLocalTime.Location = new System.Drawing.Point(93, 3);
+			this.labelLocalTime.Name = "labelLocalTime";
+			this.labelLocalTime.Size = new System.Drawing.Size(104, 15);
+			this.labelLocalTime.TabIndex = 9;
+			this.labelLocalTime.Text = "N/A";
+			// 
+			// labelControl4
+			// 
+			this.labelControl4.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelControl4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelControl4.Location = new System.Drawing.Point(3, 24);
+			this.labelControl4.Name = "labelControl4";
+			this.labelControl4.Size = new System.Drawing.Size(84, 15);
+			this.labelControl4.TabIndex = 6;
+			this.labelControl4.Text = "Logger Time:";
 			// 
 			// labelVolBat
 			// 
 			this.labelVolBat.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
 			this.labelVolBat.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelVolBat.Location = new System.Drawing.Point(93, 3);
+			this.labelVolBat.Location = new System.Drawing.Point(93, 66);
 			this.labelVolBat.Name = "labelVolBat";
-			this.labelVolBat.Size = new System.Drawing.Size(106, 15);
+			this.labelVolBat.Size = new System.Drawing.Size(104, 14);
 			this.labelVolBat.TabIndex = 5;
 			this.labelVolBat.Text = "N/A";
 			// 
-			// labelControl4
-			// 
-			this.labelControl4.Location = new System.Drawing.Point(3, 66);
-			this.labelControl4.Name = "labelControl4";
-			this.labelControl4.Size = new System.Drawing.Size(62, 13);
-			this.labelControl4.TabIndex = 6;
-			this.labelControl4.Text = "Logger Time:";
-			// 
-			// labelControl5
-			// 
-			this.labelControl5.Location = new System.Drawing.Point(3, 86);
-			this.labelControl5.Name = "labelControl5";
-			this.labelControl5.Size = new System.Drawing.Size(76, 13);
-			this.labelControl5.TabIndex = 7;
-			this.labelControl5.Text = "Computer Time:";
-			// 
 			// labelDaqTime
 			// 
-			this.labelDaqTime.Location = new System.Drawing.Point(93, 66);
+			this.labelDaqTime.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelDaqTime.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelDaqTime.Location = new System.Drawing.Point(93, 24);
 			this.labelDaqTime.Name = "labelDaqTime";
-			this.labelDaqTime.Size = new System.Drawing.Size(18, 13);
+			this.labelDaqTime.Size = new System.Drawing.Size(104, 15);
 			this.labelDaqTime.TabIndex = 8;
 			this.labelDaqTime.Text = "N/A";
-			// 
-			// labelLocalTime
-			// 
-			this.labelLocalTime.Location = new System.Drawing.Point(93, 86);
-			this.labelLocalTime.Name = "labelLocalTime";
-			this.labelLocalTime.Size = new System.Drawing.Size(18, 13);
-			this.labelLocalTime.TabIndex = 9;
-			this.labelLocalTime.Text = "N/A";
 			// 
 			// timerQueryTime
 			// 
@@ -557,11 +569,12 @@
 			// 
 			// groupControl2
 			// 
-			this.groupControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.groupControl2.Controls.Add(this.labelControlPwsStatus);
-			this.groupControl2.Location = new System.Drawing.Point(0, 642);
+			this.groupControl2.Controls.Add(this.simpleButtonPwsAction);
+			this.groupControl2.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.groupControl2.Location = new System.Drawing.Point(0, 752);
 			this.groupControl2.Name = "groupControl2";
-			this.groupControl2.Size = new System.Drawing.Size(205, 86);
+			this.groupControl2.Size = new System.Drawing.Size(204, 88);
 			this.groupControl2.TabIndex = 59;
 			this.groupControl2.Text = "PWS Status";
 			// 
@@ -571,9 +584,10 @@
 			this.labelControlPwsStatus.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top;
 			this.labelControlPwsStatus.AutoEllipsis = true;
 			this.labelControlPwsStatus.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-			this.labelControlPwsStatus.Location = new System.Drawing.Point(5, 25);
+			this.labelControlPwsStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelControlPwsStatus.Location = new System.Drawing.Point(2, 22);
 			this.labelControlPwsStatus.Name = "labelControlPwsStatus";
-			this.labelControlPwsStatus.Size = new System.Drawing.Size(195, 27);
+			this.labelControlPwsStatus.Size = new System.Drawing.Size(200, 29);
 			this.labelControlPwsStatus.TabIndex = 0;
 			this.labelControlPwsStatus.Text = "N/A";
 			// 
@@ -581,11 +595,12 @@
 			// 
 			this.simpleButtonPwsAction.Appearance.ForeColor = System.Drawing.Color.Red;
 			this.simpleButtonPwsAction.Appearance.Options.UseForeColor = true;
+			this.simpleButtonPwsAction.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.simpleButtonPwsAction.Image = global::Atmo.UI.DevEx.Properties.Resources.Stream_Off;
-			this.simpleButtonPwsAction.Location = new System.Drawing.Point(5, 550);
+			this.simpleButtonPwsAction.Location = new System.Drawing.Point(2, 51);
 			this.simpleButtonPwsAction.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.UltraFlat;
 			this.simpleButtonPwsAction.Name = "simpleButtonPwsAction";
-			this.simpleButtonPwsAction.Size = new System.Drawing.Size(167, 35);
+			this.simpleButtonPwsAction.Size = new System.Drawing.Size(200, 35);
 			this.simpleButtonPwsAction.TabIndex = 1;
 			this.simpleButtonPwsAction.Text = "N/A";
 			this.simpleButtonPwsAction.Click += new System.EventHandler(this.simpleButtonPwsAction_Click);
@@ -597,27 +612,51 @@
 			// 
 			// simpleButtonTimeSync
 			// 
+			this.simpleButtonTimeSync.Dock = System.Windows.Forms.DockStyle.Top;
 			this.simpleButtonTimeSync.Image = global::Atmo.UI.DevEx.Properties.Resources.Sync_Time;
-			this.simpleButtonTimeSync.Location = new System.Drawing.Point(12, 591);
+			this.simpleButtonTimeSync.Location = new System.Drawing.Point(0, 234);
 			this.simpleButtonTimeSync.Name = "simpleButtonTimeSync";
-			this.simpleButtonTimeSync.Size = new System.Drawing.Size(157, 35);
+			this.simpleButtonTimeSync.Size = new System.Drawing.Size(204, 35);
 			this.simpleButtonTimeSync.TabIndex = 64;
 			this.simpleButtonTimeSync.Text = "Time Sync...";
 			this.simpleButtonTimeSync.Click += new System.EventHandler(this.simpleButtonTimeSync_Click);
+			// 
+			// simpleButtonTempSource
+			// 
+			this.simpleButtonTempSource.Appearance.Options.UseTextOptions = true;
+			this.simpleButtonTempSource.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+			this.simpleButtonTempSource.Dock = System.Windows.Forms.DockStyle.Top;
+			this.simpleButtonTempSource.Image = global::Atmo.UI.DevEx.Properties.Resources.Temp_Sensor_01;
+			this.simpleButtonTempSource.Location = new System.Drawing.Point(0, 199);
+			this.simpleButtonTempSource.Name = "simpleButtonTempSource";
+			this.simpleButtonTempSource.Size = new System.Drawing.Size(204, 35);
+			this.simpleButtonTempSource.TabIndex = 69;
+			this.simpleButtonTempSource.Text = "Temperature Source";
+			this.simpleButtonTempSource.Click += new System.EventHandler(this.simpleButtonTempSource_Click);
+			// 
+			// panelLeftSide
+			// 
+			this.panelLeftSide.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.panelLeftSide.Controls.Add(this.panelSensors);
+			this.panelLeftSide.Controls.Add(this.simpleButtonTimeSync);
+			this.panelLeftSide.Controls.Add(this.simpleButtonTempSource);
+			this.panelLeftSide.Controls.Add(this.simpleButtonFindSensors);
+			this.panelLeftSide.Controls.Add(this.simpleButtonDownloadData);
+			this.panelLeftSide.Controls.Add(this.groupControl1);
+			this.panelLeftSide.Controls.Add(this.groupControl2);
+			this.panelLeftSide.Location = new System.Drawing.Point(0, 23);
+			this.panelLeftSide.Name = "panelLeftSide";
+			this.panelLeftSide.Size = new System.Drawing.Size(204, 840);
+			this.panelLeftSide.TabIndex = 74;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(813, 862);
-			this.Controls.Add(this.simpleButtonTimeSync);
-			this.Controls.Add(this.simpleButtonPwsAction);
-			this.Controls.Add(this.groupControl2);
-			this.Controls.Add(this.groupControl1);
+			this.Controls.Add(this.panelLeftSide);
 			this.Controls.Add(this.mainScrollableControl);
-			this.Controls.Add(this.simpleButtonDownloadData);
-			this.Controls.Add(this.simpleButtonFindSensors);
-			this.Controls.Add(this.panelSensors);
 			this.Controls.Add(this.barDockControlLeft);
 			this.Controls.Add(this.barDockControlRight);
 			this.Controls.Add(this.barDockControlBottom);
@@ -636,9 +675,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
 			this.groupControl1.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
 			this.groupControl2.ResumeLayout(false);
+			this.panelLeftSide.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -698,6 +737,8 @@
 		private DevExpress.XtraEditors.LabelControl labelControlPwsStatus;
 		private System.Windows.Forms.Timer timerRapidFire;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonTimeSync;
+		private DevExpress.XtraEditors.SimpleButton simpleButtonTempSource;
+		private System.Windows.Forms.Panel panelLeftSide;
 
 	}
 }

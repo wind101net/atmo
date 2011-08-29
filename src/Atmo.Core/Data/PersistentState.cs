@@ -174,5 +174,6 @@ namespace Atmo.Data {
 		[XmlElement]
 		public bool PwsEnabled { get; set; }
 
+
 	}
 }

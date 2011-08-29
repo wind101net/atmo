@@ -77,7 +77,7 @@ namespace Atmo.Stats {
 					var energy = speed*speed;
 					var power = energy*speed;
 					foreach (var set in readings.GetWindDirectionCounts()) {
-						if (0 == set.Value || Double.IsNaN(set.Key)) {
+						if (0 == set.Value || 0 == set.Key || Double.IsNaN(set.Key)) {
 							continue;
 						}
 						var dirSlot = UnitUtility.WrapDegree(((int) ((set.Key + _angleHalfStep)/_angleStep))*_angleStep);
