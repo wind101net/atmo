@@ -50,7 +50,7 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		public bool Connect() {
-			return UsbConn.Connect();
+			return null != UsbConn && UsbConn.Connect();
 		}
 
 		public void Dispose() {
@@ -72,7 +72,7 @@ namespace Atmo.Daq.Win32 {
         protected virtual void DisposeComm() {
 			if (null != UsbConn) {
 				UsbConn.Dispose();
-				UsbConn = null;
+				//UsbConn = null;
             }
         }
 

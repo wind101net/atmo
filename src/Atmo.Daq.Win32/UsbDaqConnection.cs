@@ -535,7 +535,7 @@ namespace Atmo.Daq.Win32 {
 			return _sensors.AsEnumerable().GetEnumerator();
 		}
 
-		IEnumerator<UsbDaqConnection.Sensor> IEnumerable<UsbDaqConnection.Sensor>.GetEnumerator() {
+		IEnumerator<Sensor> IEnumerable<Sensor>.GetEnumerator() {
 			return _sensors.AsEnumerable().GetEnumerator();
 		}
 

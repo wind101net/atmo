@@ -27,6 +27,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using Atmo.Calculation;
 using Atmo.Daq.Win32;
 using Atmo.Data;
 using Atmo.Stats;
@@ -517,29 +518,40 @@ namespace Atmo.UI.DevEx {
 				queryParams.Add("dateutc", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
 				queryParams.Add("realtime", "1");
 				queryParams.Add("rtfreq", ((timerRapidFire.Interval / 1000.0).ToString()));
-				if (reading.IsWindDirectionValid && reading.WindDirection <= 360.0) {
+				if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0) {
 					queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
 				}
 				if (reading.IsWindSpeedValid) {
-					queryParams.Add(
-						"windspeedmph",
-						UnitUtility.ConvertUnit(reading.WindSpeed, sensors[i].SpeedUnit, SpeedUnit.MilesPerHour).ToString()
-					);
+					var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+						.Get(sensors[i].SpeedUnit, SpeedUnit.MilesPerHour);
+					var speed = speedConverter.Convert(reading.WindSpeed);
+					queryParams.Add("windspeedmph",speed.ToString());
 				}
 				if (reading.IsHumidityValid) {
 					queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
 				}
 				if (reading.IsTemperatureValid) {
-					queryParams.Add(
-						"tempf",
-						UnitUtility.ConvertUnit(reading.Temperature, sensors[i].TemperatureUnit, TemperatureUnit.Fahrenheit).ToString()
-					);
+					var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+						.Get(sensors[i].TemperatureUnit, TemperatureUnit.Fahrenheit);
+					var temperature = tempConverter.Convert(reading.Temperature);
+					queryParams.Add("tempf",temperature.ToString());
 				}
 				if (reading.IsPressureValid) {
-					queryParams.Add(
-						"baromin",
-						UnitUtility.ConvertUnit(reading.Pressure, sensors[i].PressureUnit, PressureUnit.InchOfMercury).ToString()
-					);
+					var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+						.Get(sensors[i].PressureUnit, PressureUnit.InchOfMercury);
+					var pressure = pressConverter.Convert(reading.Pressure);
+					queryParams.Add("baromin",pressure.ToString());
+				}
+				if(reading.IsHumidityValid && reading.IsTemperatureValid) {
+					var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
+						.Get(sensors[i].TemperatureUnit, TemperatureUnit.Celsius);
+					var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
+						.Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
+
+					var tempC = tempConverterCelcius.Convert(reading.Temperature);
+					var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
+					var dewPointF = tempConverterCToF.Convert(dewPointC);
+					queryParams.Add("dewptf", dewPointF.ToString());
 				}
 				queryParams.Add(
 					"softwaretype",
