@@ -178,7 +178,7 @@
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 2;
-			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.Text = "Close";
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
 			// 
 			// buttonImport
@@ -219,7 +219,7 @@
 			this.syncChk.Location = new System.Drawing.Point(10, 30);
 			this.syncChk.Name = "syncChk";
 			this.syncChk.Properties.Caption = "Synchronize logger time and adjust data after import.";
-			this.syncChk.Size = new System.Drawing.Size(545, 18);
+			this.syncChk.Size = new System.Drawing.Size(545, 19);
 			this.syncChk.TabIndex = 0;
 			// 
 			// daqCheckTimer
@@ -244,7 +244,7 @@
 			this.chkOverwrite.Location = new System.Drawing.Point(10, 31);
 			this.chkOverwrite.Name = "chkOverwrite";
 			this.chkOverwrite.Properties.Caption = "Overwrite";
-			this.chkOverwrite.Size = new System.Drawing.Size(75, 18);
+			this.chkOverwrite.Size = new System.Drawing.Size(75, 19);
 			this.chkOverwrite.TabIndex = 0;
 			// 
 			// ImportDataForm
