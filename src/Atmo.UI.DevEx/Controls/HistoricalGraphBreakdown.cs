@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using Atmo.Data;
 using Atmo.Stats;
 using Atmo.Units;
@@ -288,17 +289,17 @@ namespace Atmo.UI.DevEx.Controls {
 				numberGraphsToMake = 12;
 			}
 
-
 			TimeSpan timeSpanPerGraph = new TimeSpan(cumulativeChartCoverage.Ticks / numberGraphsToMake);
-			flowLayoutPanel.Controls.Clear();
 			_cumulativeCharts.Clear();
 			for (int i = 0; i < numberGraphsToMake; i++) {
-				ChartControl chart = new ChartControl();
+				
+				var chart = new ChartControl();
 				chart.Show();
 				chart.DataSource = null;// this.sensorReadingBindingSource; // TODO: binding source
 				chart.Size = new Size(200, 200);
+				chart.Dock = DockStyle.Fill;
 				chart.Legend.Visible = false;
-				Series series = new Series();
+				var series = new Series();
 				series.ArgumentDataMember = "TimeStamp";
 				series.ArgumentScaleType = ScaleType.DateTime;
 				series.ValueDataMembersSerializable = SelectedAttributeType.ToString().Replace(" ", "");
@@ -311,8 +312,8 @@ namespace Atmo.UI.DevEx.Controls {
 				chart.Titles[0].Text = "";
 				chart.Titles[0].Visible = true;
 				chart.Titles[0].Font = new Font(chart.Titles[0].Font.FontFamily, 10.0f);
-				AxisX axisX = (chart.Diagram as XYDiagram).AxisX;
-				AxisY axisY = (chart.Diagram as XYDiagram).AxisY;
+				var axisX = (chart.Diagram as XYDiagram).AxisX;
+				var axisY = (chart.Diagram as XYDiagram).AxisY;
 				axisX.Reverse = false;
 				axisX.GridLines.Visible = true;
 				if (timeSpanPerGraph < new TimeSpan(0, 1, 0)) {
@@ -338,9 +339,10 @@ namespace Atmo.UI.DevEx.Controls {
 				_cumulativeCharts.Add(chart);
 				;
 			}
-			foreach (var chart in _cumulativeCharts.Reverse<ChartControl>()) {
-				flowLayoutPanel.Controls.Add(chart);
-			}
+
+			tableLayout.Controls.Clear();
+			tableLayout.Controls.AddRange(_cumulativeCharts.ToArray());
+
 		}
 
 		public void SetDataSource(List<ReadingsSummary> items) {

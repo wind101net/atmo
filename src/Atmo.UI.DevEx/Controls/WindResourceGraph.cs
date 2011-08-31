@@ -65,7 +65,8 @@ namespace Atmo.UI.DevEx.Controls {
 			// todo: can this list copy be eliminated?
 
 			var windCalc = new WindDataSummaryCalculator<IReadingsSummary> {
-				IgnoreZeroValuesForWeibullCalculation = checkEditIgnoreWeibullZero.Checked
+				MinWeibullSpeed = rangeTrackBarControlWeibullSpeeds.Value.Minimum,
+				MaxWeibullSpeed = rangeTrackBarControlWeibullSpeeds.Value.Maximum
 			};
 
 			foreach (var item in items) {

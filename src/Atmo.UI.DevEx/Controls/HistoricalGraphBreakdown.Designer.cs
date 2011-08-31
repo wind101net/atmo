@@ -23,30 +23,38 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.groupControl = new DevExpress.XtraEditors.GroupControl();
+			this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
 			this.groupControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// flowLayoutPanel
-			// 
-			this.flowLayoutPanel.AutoScroll = true;
-			this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.flowLayoutPanel.Location = new System.Drawing.Point(2, 22);
-			this.flowLayoutPanel.Name = "flowLayoutPanel";
-			this.flowLayoutPanel.Size = new System.Drawing.Size(635, 484);
-			this.flowLayoutPanel.TabIndex = 0;
-			// 
 			// groupControl
 			// 
-			this.groupControl.Controls.Add(this.flowLayoutPanel);
+			this.groupControl.Controls.Add(this.tableLayout);
 			this.groupControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupControl.Location = new System.Drawing.Point(0, 0);
 			this.groupControl.Name = "groupControl";
 			this.groupControl.Size = new System.Drawing.Size(639, 508);
 			this.groupControl.TabIndex = 1;
 			this.groupControl.Text = "Historical Breakdown";
+			// 
+			// tableLayout
+			// 
+			this.tableLayout.ColumnCount = 4;
+			this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayout.Location = new System.Drawing.Point(2, 22);
+			this.tableLayout.Name = "tableLayout";
+			this.tableLayout.RowCount = 3;
+			this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+			this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+			this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+			this.tableLayout.Size = new System.Drawing.Size(635, 484);
+			this.tableLayout.TabIndex = 0;
 			// 
 			// HistoricalGraphBreakdown
 			// 
@@ -63,7 +71,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private DevExpress.XtraEditors.GroupControl groupControl;
+		private System.Windows.Forms.TableLayoutPanel tableLayout;
 	}
 }

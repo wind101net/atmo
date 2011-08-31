@@ -25,6 +25,10 @@ using System;
 using Atmo.Units;
 
 namespace Atmo.Calculation {
+
+	/// <summary>
+	/// Performs calculations for air density.
+	/// </summary>
 	public class AirDensityCalculator {
 
 		public static PressureUnit PressureUnit {

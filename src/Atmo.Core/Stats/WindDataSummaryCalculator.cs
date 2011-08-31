@@ -45,7 +45,8 @@ namespace Atmo.Stats {
 		private readonly Dictionary<double, WindDirectionEnergy> _directionLookup;
 
 		public WindDataSummaryCalculator() {
-			IgnoreZeroValuesForWeibullCalculation = false;
+			MinWeibullSpeed = 0;
+			MaxWeibullSpeed = Double.MaxValue;
 			_weibullCalcNeeded = true;
 			_beta = 0;
 			_theta = 0;
@@ -63,10 +64,11 @@ namespace Atmo.Stats {
 				var dir = i*_angleStep;
 				_directionLookup.Add(dir, new WindDirectionEnergy(dir, 0, 0));
 			}
-
 		}
 
-		public bool IgnoreZeroValuesForWeibullCalculation { get; set; }
+		public double MinWeibullSpeed { get; set; }
+		
+		public double MaxWeibullSpeed { get; set; }
 
 		public void Process(T readings) {
 
@@ -153,6 +155,10 @@ namespace Atmo.Stats {
 
 		private const double ZeroReplace = 0.001;
 
+		private bool IsValidWeibullSpeed(double speed) {
+			return speed >= MinWeibullSpeed && speed <= MaxWeibullSpeed;
+		}
+
 		private void FinalizeWeibull() {
 			_beta = 2.0;
 			_theta = 0;
@@ -160,7 +166,7 @@ namespace Atmo.Stats {
 			// get a quick frequency sum
 			var frequencyTotal = 0.0;
 			foreach(var reading in _speedLookup.Values) {
-				if (IgnoreZeroValuesForWeibullCalculation && reading.Speed == 0) {
+				if (!IsValidWeibullSpeed(reading.Speed)) {
 					continue;
 				}
 				frequencyTotal += reading.Frequency;
@@ -198,7 +204,7 @@ namespace Atmo.Stats {
 			foreach(var reading in _speedLookup.Values) {
 				var speed = reading.Speed;
 				if (speed <= 0) {
-					if (IgnoreZeroValuesForWeibullCalculation) {
+					if (!IsValidWeibullSpeed(reading.Speed)) {
 						continue;
 					}
 					speed = ZeroReplace;
@@ -239,7 +245,7 @@ namespace Atmo.Stats {
 			foreach (var reading in _speedLookup.Values) {
 				var speed = reading.Speed;
 				if (speed <= 0) {
-					if (IgnoreZeroValuesForWeibullCalculation) {
+					if (!IsValidWeibullSpeed(reading.Speed)) {
 						continue;
 					}
 					speed = ZeroReplace;
