@@ -27,12 +27,6 @@ namespace Atmo.Daq.Win32 {
 
 	public abstract class BaseDaqUsbConnection : IDisposable {
 
-		private const string DefaultBootloaderDeviceIdValue = "Vid_04d8&Pid_003c";
-
-		public static string DefaultBootloaderDeviceId {
-			get { return DefaultBootloaderDeviceIdValue; }
-		}
-
 		protected BaseDaqUsbConnection(string deviceId)
 			: this(new PicHidUsbConnection(deviceId)) { }
 

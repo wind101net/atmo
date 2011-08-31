@@ -21,27 +21,40 @@
 //
 // ================================================================================
 
-using System.Collections.ObjectModel;
+using System;
 
-namespace Atmo.Device {
+namespace Atmo.Units {
 
-	/// <summary>
-	/// The result of querying for device memory regions.
-	/// </summary>
-	public class QueryResult : KeyedCollection<long, MemoryRegionInfo> {
+	public struct PosixTimeRange {
 
-		public static readonly int MaxRegions = 6;
+		private readonly PosixTime _low;
+		private readonly PosixTime _high;
 
-		public QueryResult()
-			: base() {
-			BytesPerPacket = 0;
+		public PosixTimeRange(PosixTime a, PosixTime b) {
+			if (a < b) {
+				_low = a;
+				_high = b;
+			}
+			else {
+				_low = b;
+				_high = a;
+			}
 		}
 
-		public byte BytesPerPacket { get; set; }
+		public PosixTimeRange(DateTime a, DateTime b)
+			: this(
+			new PosixTime(a),
+			new PosixTime(b)
+		) { }
 
-		protected override long GetKeyForItem(MemoryRegionInfo item) {
-			return item.Address;
-		}
+		public PosixTimeRange(TimeRange range)
+			: this(range.Low, range.High) { }
+
+		public PosixTime Low { get { return _low; } }
+
+		public PosixTime High { get { return _high; } }
+
+		public int Span { get { return _high.Value - _low.Value; } }
 
 	}
 }

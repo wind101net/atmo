@@ -24,6 +24,10 @@
 using System.Collections.Generic;
 
 namespace Atmo.Device {
+
+	/// <summary>
+	/// Represents a region of memory on a device that has or can store data.
+	/// </summary>
 	public class MemoryRegionData {
 
 		public long Address;

@@ -25,6 +25,7 @@ using System;
 using System.Data;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using Atmo.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -65,7 +66,10 @@ namespace Atmo.Core.DbDataStore.Test {
 			)) {
 				using (var reader = cmd.ExecuteReader()) {
 					while (reader.Read()) {
-						tableNames.Add(reader.GetString(0));
+						string tableName = reader.GetString(0);
+						if (!tableName.StartsWith("sqlite", StringComparison.OrdinalIgnoreCase)) {
+							tableNames.Add(tableName);
+						}
 					}
 				}
 			}
@@ -76,6 +80,12 @@ namespace Atmo.Core.DbDataStore.Test {
 			using(var cmd = _connection.CreateTextCommand(String.Format("DELETE FROM [{0}]",name))) {
 				return cmd.ExecuteNonQuery();
 			}
+		}
+
+		private IDbConnection GenerateConnection() {
+			return new System.Data.SQLite.SQLiteConnection(
+				String.Format(@"data source=""{0}"";page size=65536;journal mode=OFF;ignore_check_constraints=ON;synchronous=OFF", _fileName)
+			);
 		}
 
 		[TestFixtureSetUp]
@@ -91,17 +101,19 @@ namespace Atmo.Core.DbDataStore.Test {
 					newFile.Flush();
 				}
 			}
-			_connection = new System.Data.SQLite.SQLiteConnection(
-				String.Format(@"data source=""{0}"";page size=65536;journal mode=OFF;ignore_check_constraints=ON;synchronous=OFF", _fileName)
-			);
-			_connection.Open();
+			Thread.Sleep(100);
 		}
 
 		[SetUp]
 		public void SetUp() {
+			_connection = GenerateConnection();
+			Thread.Sleep(100);
+			_connection.Open();
+			Thread.Sleep(100);
 			foreach(var tableName in GetTableNames()) {
 				TruncateTable(tableName);
 			}
+			Thread.Sleep(100);
 		}
 
 		[Test(Description = "make sure that the temp database is there")]
@@ -113,7 +125,8 @@ namespace Atmo.Core.DbDataStore.Test {
 
 		[TearDown]
 		public void TearDown() {
-
+			Thread.Sleep(100);
+			_connection.Dispose();
 		}
 
 		[TestFixtureTearDown]

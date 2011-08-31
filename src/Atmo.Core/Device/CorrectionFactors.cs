@@ -26,6 +26,10 @@ using System.Linq;
 using System.Text;
 
 namespace Atmo.Device {
+
+	/// <summary>
+	/// Correction factors that can be sent to an anemometer.
+	/// </summary>
 	public class CorrectionFactors {
 
 		private const double decimalFactor = 100000.0;

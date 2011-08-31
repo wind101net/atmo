@@ -27,6 +27,10 @@ using System.Linq;
 using Atmo.Units;
 
 namespace Atmo.Data {
+
+	/// <summary>
+	/// An in-memory implementation of a data store.
+	/// </summary>
 	public class MemoryDataStore : IDataStore {
 
 		private class SensorStorage : List<Reading>, ISensor {
@@ -41,7 +45,7 @@ namespace Atmo.Data {
 			public SensorStorage(string name, SpeedUnit speedUnit, TemperatureUnit tempUnit, PressureUnit presUnit) : this(name, speedUnit, tempUnit, presUnit, null) { }
 
 			public SensorStorage(string name, SpeedUnit speedUnit, TemperatureUnit tempUnit, PressureUnit presUnit, IEnumerable<Reading> readings)
-				: base((null == readings) ? (new Reading[0]) : readings) {
+				: base(readings ?? new Reading[0]) {
 				_name = name;
 				_speedUnit = speedUnit;
 				_tempUnit = tempUnit;
@@ -78,14 +82,14 @@ namespace Atmo.Data {
 
 		}
 
-		private List<SensorStorage> _sensors;
+		private readonly List<SensorStorage> _sensors;
 
 		public MemoryDataStore() {
 			_sensors = new List<SensorStorage>();
 		}
 
 		public bool Push(string sensor, IEnumerable<Reading> readings) {
-			SensorStorage sensorStorage = this.GetSensorStorageByName(sensor);
+			SensorStorage sensorStorage = GetSensorStorageByName(sensor);
 			if (null == sensorStorage) {
 				return false;
 			}
@@ -111,7 +115,7 @@ namespace Atmo.Data {
 		}
 
 		public IEnumerable<Reading> GetReadings(string sensor, DateTime from, TimeSpan span) {
-			SensorStorage sensorStorage = this.GetSensorStorageByName(sensor);
+			SensorStorage sensorStorage = GetSensorStorageByName(sensor);
 			if (null == sensorStorage) {
 				return Enumerable.Empty<Reading>();
 			}
@@ -133,13 +137,13 @@ namespace Atmo.Data {
 
 		public bool AddSensor(ISensorInfo sensor) {
 			if (null == sensor) {
-				return false; // throw new ArgumentNullException("sensor");
+				return false;
 			}
 			if (null == sensor.Name) {
-				return false; // throw new ArgumentException("Sensor name is null.", "sensor");
+				return false;
 			}
 			if (_sensors.Any(ss => sensor.Name.Equals(ss.Name))) {
-				return false; // throw new ArgumentException("A sensor with that name already exists within the data store.", "sensor");
+				return false;
 			}
 			_sensors.Add(new SensorStorage(sensor));
 			return true;
@@ -150,7 +154,7 @@ namespace Atmo.Data {
 		}
 
 		public bool Push(string sensor, IEnumerable<IReading> readings) {
-			var sensorStorage = this.GetSensorStorageByName(sensor);
+			var sensorStorage = GetSensorStorageByName(sensor);
 			if (null == sensorStorage) {
 				return false;
 			}
@@ -179,7 +183,7 @@ namespace Atmo.Data {
 		}
 
 		public bool Push<T>(string sensor, IEnumerable<T> readings, bool replace) where T : IReading {
-			return Push<T>(sensor, readings);
+			return Push(sensor, readings);
 		}
 
 		public void SetLatestSensorNameForHardwareId(string dbSensorName, string hardwareId) {

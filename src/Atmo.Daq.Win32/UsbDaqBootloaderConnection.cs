@@ -7,7 +7,11 @@ using Atmo.Device;
 namespace Atmo.Daq.Win32 {
 	public class UsbDaqBootloaderConnection : BaseDaqUsbConnection {
 
-		private const string DefaultBootloaderDeviceId = "Vid_04d8&Pid_003c";
+		private const string DefaultBootloaderDeviceIdValue = "Vid_04d8&Pid_003c";
+
+		public static string DefaultBootloaderDeviceId {
+			get { return DefaultBootloaderDeviceIdValue; }
+		}
 
 		private static readonly string queryTaskDesciption = "Querying device";
 		private static readonly string eraseTaskDesciption = "Erasing device";

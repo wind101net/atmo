@@ -25,6 +25,10 @@ using System;
 using System.IO;
 
 namespace Atmo.Device {
+
+	/// <summary>
+	/// A firmware hex file parser.
+	/// </summary>
 	public static class HexParser {
 
 		public static MemoryRegionDataCollection ParseToMemoryRegions(TextReader reader) {

@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Atmo.Stats;
 
 namespace Atmo.Units {
@@ -106,11 +107,25 @@ namespace Atmo.Units {
 					input
 				);
 			}
-			Expression tempExp = Expression.Field(input, "Temperature");
-			Expression pressExp = Expression.Field(input, "Pressure");
-			Expression humExp = Expression.Field(input, "Humidity");
-			Expression speedExp = Expression.Field(input, "WindSpeed");
-			Expression dirExp = Expression.Field(input, "WindDirection");
+
+
+			FieldInfo fieldInfo;
+			PropertyInfo propInfo;
+			fieldInfo = input.Type.GetField("Temperature");
+			propInfo = input.Type.GetProperty("Temperature") ?? input.Type.GetProperty("TemperatureProperty");
+			Expression tempExp = fieldInfo == null ? Expression.Property(input, propInfo) : Expression.Field(input, fieldInfo);
+			fieldInfo = input.Type.GetField("Pressure");
+			propInfo = input.Type.GetProperty("Pressure") ?? input.Type.GetProperty("PressureProperty");
+			Expression pressExp = fieldInfo == null ? Expression.Property(input, propInfo) : Expression.Field(input, fieldInfo);
+			fieldInfo = input.Type.GetField("Humidity");
+			propInfo = input.Type.GetProperty("Humidity") ?? input.Type.GetProperty("HumidityProperty");
+			Expression humExp = fieldInfo == null ? Expression.Property(input, propInfo) : Expression.Field(input, fieldInfo);
+			fieldInfo = input.Type.GetField("WindSpeed");
+			propInfo = input.Type.GetProperty("WindSpeed") ?? input.Type.GetProperty("WindSpeedProperty");
+			Expression speedExp = fieldInfo == null ? Expression.Property(input, propInfo) : Expression.Field(input, fieldInfo);
+			fieldInfo = input.Type.GetField("WindDirection");
+			propInfo = input.Type.GetProperty("WindDirection") ?? input.Type.GetProperty("WindDirectionProperty");
+			Expression dirExp = fieldInfo == null ? Expression.Property(input, propInfo) : Expression.Field(input, fieldInfo);
 			if(null != temperatureConverter) {
 				tempExp = temperatureConverter.GetConversionExpression(tempExp);
 			}

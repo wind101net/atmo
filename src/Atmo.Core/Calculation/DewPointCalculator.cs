@@ -24,22 +24,25 @@
 using System;
 
 namespace Atmo.Calculation {
-	public class DewPointCalculator {
+
+	/// <summary>
+	/// A calculator utility class that calculates the dewpoint.
+	/// </summary>
+	public static class DewPointCalculator {
 		/// <summary>
 		/// Calculates the dew point.
 		/// </summary>
 		/// <param name="temperature">The temperature in degrees C.</param>
-		/// <param name="humidity">The relative humidity as a decimal (0.0 to 1.0).</param>
+		/// <param name="humidity">The relative humidity as a ratio (0.0 to 1.0).</param>
 		/// <returns>The dew point.</returns>
 		public static double DewPoint(double temperature, double humidity) {
-
+			// some constants used by this equation
 			const double m = 17.62;
 			const double tn = 243.12;
 
-			var h = ((Math.Log10(humidity*100) - 2.0)/0.4343)
+			var h = ((Math.Log10(humidity*100.0) - 2.0)/0.4343)
 				+ ((m*temperature)/(tn + temperature));
-			var dewPoint = (tn * h) / (m - h);
-			return dewPoint;
+			return (tn * h) / (m - h);
 		}
 	}
 }

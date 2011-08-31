@@ -34,8 +34,6 @@ namespace Atmo.Data {
 
 	
 	public class DbDataStore : IDataStore, IDisposable {
-		
-		// TODO: do the finalize/dispose pattern right
 
 		private class DbSensorInfo : ISensorInfo {
 
@@ -66,39 +64,6 @@ namespace Atmo.Data {
 
 		}
 
-		[Obsolete("TODO: move and maybe make a PosixTime")]
-		public struct PosixTimeRange {
-
-			private readonly int _low;
-			private readonly int _high;
-
-			public PosixTimeRange(int a, int b) {
-				if (a < b) {
-					_low = a;
-					_high = b;
-				}
-				else {
-					_low = b;
-					_high = a;
-				}
-			}
-
-			public PosixTimeRange(DateTime a, DateTime b)
-				: this(
-				UnitUtility.ConvertToPosixTime(a),
-				UnitUtility.ConvertToPosixTime(b)
-			) { }
-
-			public PosixTimeRange(TimeRange range)
-				: this(range.Low, range.High) { }
-
-			public int Low { get { return _low; } }
-
-			public int High { get { return _high; } }
-
-			public int Span { get { return _high - _low; } }
-
-		}
 
 		private static readonly TimeSpan OneMinute = new TimeSpan(0,1,0);
 		private static readonly TimeSpan TenMinutes = new TimeSpan(0,10,0);
@@ -125,6 +90,10 @@ namespace Atmo.Data {
 				throw new ArgumentNullException("connection");
 			
 			_connection = connection;
+		}
+
+		~DbDataStore() {
+			Dispose(false);
 		}
 
 		#region Record Modification Methods
@@ -897,49 +866,6 @@ namespace Atmo.Data {
 			return minsOk && tenMinsOk;
 		}
 
-		private bool UpdateSummaryRecordsHourAndDay(TimeRange rangeCovered, string sensorName, int sensorId) {
-			TimeRange hourAlignedRange = new TimeRange(
-				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.Hour),
-				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Hour) + OneHour
-			);
-			var hourSummaries = StatsUtil.Summarize(
-				GetReadings(sensorName, hourAlignedRange.Low, hourAlignedRange.Span), TimeUnit.Hour
-			).ToList();
-
-			bool hoursOk = PushSummaries(sensorId, "HourRecord", hourSummaries);
-			
-
-			var daySummaries = new List<ReadingsSummary>();
-			{
-				List<List<ReadingsSummary>> dailyHourSummaries = new List<List<ReadingsSummary>>();
-				List<ReadingsSummary> currentHourSummaries = new List<ReadingsSummary>();
-				foreach (ReadingsSummary hourSummary in hourSummaries) {
-					if (currentHourSummaries.Count == 0
-						|| currentHourSummaries[0].BeginStamp.Date.Equals(hourSummary.BeginStamp.Date)
-					) {
-						currentHourSummaries.Add(hourSummary);
-					}
-					else {
-						dailyHourSummaries.Add(currentHourSummaries);
-						currentHourSummaries = new List<ReadingsSummary>();
-					}
-				}
-				if (currentHourSummaries.Count > 0) {
-					dailyHourSummaries.Add(currentHourSummaries);
-				}
-				foreach (List<ReadingsSummary> hourlyForCondensing in dailyHourSummaries) {
-					ReadingsSummary summary = StatsUtil.Combine(hourlyForCondensing);
-					summary.BeginStamp = summary.BeginStamp.Date;
-					summary.EndStamp = summary.BeginStamp.AddDays(1).AddTicks(-1);
-					daySummaries.Add(summary);
-				}
-			}
-
-			bool daysOk = PushSummaries(sensorId, "DayRecord", daySummaries);
-
-			return hoursOk && daysOk;
-		}
-
 		public bool DeleteSensor(string name) {
 			if (!ForceConnectionOpen()) {
 				throw new Exception("Could not open database.");
@@ -1073,188 +999,6 @@ namespace Atmo.Data {
 			}
 		}
 
-		[Obsolete]
-		private IEnumerable<PackedReadingsDaySummary> GetDaySummariesOld(string sensor, DateTime from, TimeSpan span) {
-			DateTime to = from.Add(span);
-			if (to < from) {
-				DateTime s = to;
-				to = from;
-				from = s;
-			}
-			if (!ForceConnectionOpen()) {
-				throw new Exception("Could not open database.");
-			}
-			using (IDbCommand command = _connection.CreateCommand()) {
-				command.CommandType = CommandType.Text;
-				command.CommandText = "SELECT stamp,minValues,maxValues,meanValues,stddevValues,recordCount"
-				+ ",tempCount,pressCount,humCount,speedCount,dirCount"
-				+ " FROM DayRecord"
-				+ " INNER JOIN Sensor ON (Sensor.sensorId = DayRecord.sensorId)"
-				+ " WHERE Sensor.nameKey = @sensorNameKey"
-				+ " AND DayRecord.stamp >= @minPosixStamp"
-				+ " AND DayRecord.stamp < @maxPosixStamp"
-				+ " ORDER BY stamp " + ((span < TimeSpan.Zero) ? "DESC" : "ASC");
-				{
-					DbParameter sensorStampMinParam;
-					command.Parameters.Add(sensorStampMinParam = command.CreateParameter() as DbParameter);
-					sensorStampMinParam.DbType = DbType.Int32;
-					sensorStampMinParam.ParameterName = "minPosixStamp";
-					sensorStampMinParam.Value = UnitUtility.ConvertToPosixTime(from);
-				}
-				{
-					DbParameter sensorStampMaxParam;
-					command.Parameters.Add(sensorStampMaxParam = command.CreateParameter() as DbParameter);
-					sensorStampMaxParam.DbType = DbType.Int32;
-					sensorStampMaxParam.ParameterName = "maxPosixStamp";
-					sensorStampMaxParam.Value = UnitUtility.ConvertToPosixTime(to);
-				}
-				{
-					DbParameter nameKeyParam;
-					command.Parameters.Add(nameKeyParam = command.CreateParameter() as DbParameter);
-					nameKeyParam.DbType = DbType.String;
-					nameKeyParam.ParameterName = "sensorNameKey";
-					nameKeyParam.Value = sensor;
-				}
-
-				using (IDataReader reader = command.ExecuteReader()) {
-					int ordStamp = reader.GetOrdinal("stamp");
-					int ordMinValues = reader.GetOrdinal("minValues");
-					int ordMaxValues = reader.GetOrdinal("maxValues");
-					int ordMeanValues = reader.GetOrdinal("meanValues");
-					int ordStddevValues = reader.GetOrdinal("stddevValues");
-					int ordRecordCount = reader.GetOrdinal("recordCount");
-					int ordTempCount = reader.GetOrdinal("tempCount");
-					int ordPressCount = reader.GetOrdinal("pressCount");
-					int ordHumCount = reader.GetOrdinal("humCount");
-					int ordSpeedCount = reader.GetOrdinal("speedCount");
-					int ordDirCount = reader.GetOrdinal("dirCount");
-
-					byte[] values = new byte[8];
-					//return ReadAsSensorReadings(reader);
-					while (reader.Read()) {
-
-						reader.GetBytes(ordMinValues, 0, values, 0, values.Length);
-						PackedReadingValues minValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordMaxValues, 0, values, 0, values.Length);
-						PackedReadingValues maxValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordMeanValues, 0, values, 0, values.Length);
-						PackedReadingValues meanValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordStddevValues, 0, values, 0, values.Length);
-						PackedReadingValues stddevValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						PackedReadingsDaySummary summary = new PackedReadingsDaySummary(
-							UnitUtility.ConvertFromPosixTime(reader.GetInt32(ordStamp)),
-							minValues,
-							maxValues,
-							meanValues,
-							stddevValues,
-							reader.GetInt32(ordRecordCount)
-						);
-
-						summary.TemperatureCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordTempCount) as byte[]);
-						summary.PressureCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordPressCount) as byte[]);
-						summary.HumidityCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordHumCount) as byte[]);
-						summary.WindSpeedCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordSpeedCount) as byte[]);
-						summary.WindDirectionCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordDirCount) as byte[]);
-
-						yield return summary;
-
-
-					}
-				}
-			}
-		}
-
-		[Obsolete]
-		private IEnumerable<PackedReadingsHourSummary> GetHourSummariesOld(string sensor, DateTime from, TimeSpan span) {
-			DateTime to = from.Add(span);
-			if (to < from) {
-				DateTime s = to;
-				to = from;
-				from = s;
-			}
-			if (!ForceConnectionOpen()) {
-				throw new Exception("Could not open database.");
-			}
-			using (IDbCommand command = _connection.CreateCommand()) {
-				command.CommandType = CommandType.Text;
-				command.CommandText = "SELECT stamp,minValues,maxValues,meanValues,stddevValues,recordCount"
-				+ ",tempCount,pressCount,humCount,speedCount,dirCount"
-				+ " FROM HourRecord"
-				+ " INNER JOIN Sensor ON (Sensor.sensorId = HourRecord.sensorId)"
-				+ " WHERE Sensor.nameKey = @sensorNameKey"
-				+ " AND HourRecord.stamp >= @minPosixStamp"
-				+ " AND HourRecord.stamp < @maxPosixStamp"
-				+ " ORDER BY stamp " + ((span < TimeSpan.Zero) ? "DESC" : "ASC");
-				{
-					DbParameter sensorStampMinParam;
-					command.Parameters.Add(sensorStampMinParam = command.CreateParameter() as DbParameter);
-					sensorStampMinParam.DbType = DbType.Int32;
-					sensorStampMinParam.ParameterName = "minPosixStamp";
-					sensorStampMinParam.Value = UnitUtility.ConvertToPosixTime(from);
-				}
-				{
-					DbParameter sensorStampMaxParam;
-					command.Parameters.Add(sensorStampMaxParam = command.CreateParameter() as DbParameter);
-					sensorStampMaxParam.DbType = DbType.Int32;
-					sensorStampMaxParam.ParameterName = "maxPosixStamp";
-					sensorStampMaxParam.Value = UnitUtility.ConvertToPosixTime(to);
-				}
-				{
-					DbParameter nameKeyParam;
-					command.Parameters.Add(nameKeyParam = command.CreateParameter() as DbParameter);
-					nameKeyParam.DbType = DbType.String;
-					nameKeyParam.ParameterName = "sensorNameKey";
-					nameKeyParam.Value = sensor;
-				}
-
-				using (IDataReader reader = command.ExecuteReader()) {
-					int ordStamp = reader.GetOrdinal("stamp");
-					int ordMinValues = reader.GetOrdinal("minValues");
-					int ordMaxValues = reader.GetOrdinal("maxValues");
-					int ordMeanValues = reader.GetOrdinal("meanValues");
-					int ordStddevValues = reader.GetOrdinal("stddevValues");
-					int ordRecordCount = reader.GetOrdinal("recordCount");
-					int ordTempCount = reader.GetOrdinal("tempCount");
-					int ordPressCount = reader.GetOrdinal("pressCount");
-					int ordHumCount = reader.GetOrdinal("humCount");
-					int ordSpeedCount = reader.GetOrdinal("speedCount");
-					int ordDirCount = reader.GetOrdinal("dirCount");
-
-					byte[] values = new byte[8];
-					//return ReadAsSensorReadings(reader);
-					while (reader.Read()) {
-
-						reader.GetBytes(ordMinValues, 0, values, 0, values.Length);
-						PackedReadingValues minValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordMaxValues, 0, values, 0, values.Length);
-						PackedReadingValues maxValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordMeanValues, 0, values, 0, values.Length);
-						PackedReadingValues meanValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						reader.GetBytes(ordStddevValues, 0, values, 0, values.Length);
-						PackedReadingValues stddevValues = PackedReadingValues.ConvertFromPackedBytes(values);
-						PackedReadingsHourSummary summary = new PackedReadingsHourSummary(
-							UnitUtility.ConvertFromPosixTime(reader.GetInt32(ordStamp)),
-							minValues,
-							maxValues,
-							meanValues,
-							stddevValues,
-							reader.GetInt32(ordRecordCount)
-						);
-
-						summary.TemperatureCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordTempCount) as byte[]);
-						summary.PressureCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordPressCount) as byte[]);
-						summary.HumidityCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordHumCount) as byte[]);
-						summary.WindSpeedCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordSpeedCount) as byte[]);
-						summary.WindDirectionCounts = PackedReadingValues.PackedCountsToHashUnsigned16(reader.GetValue(ordDirCount) as byte[]);
-
-						yield return summary;
-
-
-					}
-				}
-			}
-		}
-
 		private static TimeSpan ChooseBestSummaryTimeSpan(TimeSpan desiredTimeSpan) {
 			if(ValidSummaryTimeSpans.Length > 0) {
 				int lasti = ValidSummaryTimeSpans.Length - 1;
@@ -1289,31 +1033,7 @@ namespace Atmo.Data {
 			if (bestTimeSpan == TenMinutes) {
 				return GetPackedSummaries<PackedReadingsTenMinutesSummary>(sensor, from, span, "TenminuteRecord").Cast<IReadingsSummary>();
 			}
-
-			/*if(bestTimeSpan == OneHour) {
-				return GetHourSummaries(sensor, from, span).Cast<IReadingsSummary>();
-			}
-			if(bestTimeSpan == OneDay) {
-				return GetDaySummaries(sensor, from, span).OfType<IReadingsSummary>();
-			}*/
-
 			throw new NotSupportedException(String.Format("Summaries for {0} are not supported.",bestTimeSpan));
-			/*
-			if (TimeUnit.Second == summaryUnit || TimeUnit.Minute == summaryUnit) {
-				return StatsUtil.Summarize<PackedReading>(GetReadings(sensor, from, span), summaryUnit).OfType<IReadingsSummary>();
-			}
-			else if (TimeUnit.Hour == summaryUnit) {
-				return this.GetHourSummaries(sensor, from, span).OfType<IReadingsSummary>();
-			}
-			else if (TimeUnit.Day == summaryUnit) {
-				return this.GetDaySummaries(sensor, from, span).OfType<IReadingsSummary>();
-			}
-			else if (TimeUnit.Month == summaryUnit || TimeUnit.Year == summaryUnit) {
-				return this.GetDaySummaries(sensor, from, span).OfType<IReadingsSummary>();
-			}
-			else {
-				throw new NotSupportedException("The supplied summary time unit is not supported.");
-			}*/
 		}
 
 		public IEnumerable<TimeSpan> SupportedSummaryUnitSpans {
@@ -1338,6 +1058,13 @@ namespace Atmo.Data {
 		}
 
 		public void Dispose() {
+			Dispose(true);
+		}
+
+		public virtual void Dispose(bool disposing) {
+			if(disposing) {
+				; // managed stuff here
+			}
 			if (null != _connection) {
 				_connection.Dispose();
 			}

@@ -21,27 +21,50 @@
 //
 // ================================================================================
 
-using System.Collections.ObjectModel;
+using System;
 
-namespace Atmo.Device {
+namespace Atmo.Units {
 
 	/// <summary>
-	/// The result of querying for device memory regions.
+	/// A 32bit signed posix formated time.
 	/// </summary>
-	public class QueryResult : KeyedCollection<long, MemoryRegionInfo> {
+	public struct PosixTime {
 
-		public static readonly int MaxRegions = 6;
-
-		public QueryResult()
-			: base() {
-			BytesPerPacket = 0;
+		public static bool operator > (PosixTime a, PosixTime b) {
+			return a.Value > b.Value;
 		}
 
-		public byte BytesPerPacket { get; set; }
-
-		protected override long GetKeyForItem(MemoryRegionInfo item) {
-			return item.Address;
+		public static bool operator < (PosixTime a, PosixTime b) {
+			return a.Value < b.Value;
 		}
+
+		public static bool operator ==(PosixTime a, PosixTime b) {
+			return a.Value == b.Value;
+		}
+
+		public static bool operator !=(PosixTime a, PosixTime b) {
+			return a.Value != b.Value;
+		}
+
+		public static implicit operator int(PosixTime t) {
+			return t.Value;
+		}
+
+		public static implicit operator PosixTime(int i) {
+			return new PosixTime(i);
+		}
+
+		public readonly int Value;
+
+		public PosixTime(int value) {
+			Value = value;
+		}
+
+		public PosixTime(DateTime dateTime) {
+			Value = UnitUtility.ConvertToPosixTime(dateTime);
+		}
+
+
 
 	}
 }

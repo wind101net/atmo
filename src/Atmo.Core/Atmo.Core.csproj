@@ -101,6 +101,8 @@
     <Compile Include="Stats\WindSpeedFrequency.cs" />
     <Compile Include="TimeRange.cs" />
     <Compile Include="TimeStampedValue.cs" />
+    <Compile Include="Units\PosixTime.cs" />
+    <Compile Include="Units\PosixTimeRange.cs" />
     <Compile Include="Units\PressureConverter.cs" />
     <Compile Include="Units\ReadingValuesConverter.cs" />
     <Compile Include="Units\ReadingValuesConverterCache.cs" />

@@ -25,29 +25,31 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Atmo.Stats;
-using Atmo.Test;
 using Atmo.Units;
 
 namespace Atmo.Demo {
+
+	/// <summary>
+	/// Generates fake data to simulate a sensor.
+	/// </summary>
+	/// <remarks>
+	/// The generated data is pretty terrible...
+	/// </remarks>
 	public class DemoDaqConnection : KeyedCollection<string, DemoDaqConnection.DemoSensor>, IDaqConnection {
 
 		public class DemoSensor : ISensor, ISensorInfo {
 
 			private DemoDaqConnection _parent;
-			private string _name;
 			private Reading _lastReading;
-			private Random _rand = new Random((int)System.DateTime.Now.Ticks);
-			private bool _valid;
+			private readonly Random _rand = new Random((int)DateTime.Now.Ticks);
 
 			public DemoSensor(string name, DemoDaqConnection parent, bool valid) {
-				_name = name;
+				Name = name;
 				_parent = parent;
-				_valid = valid;
+				IsValid = valid;
 			}
 
-			public string Name {
-				get { return _name; }
-			}
+			public string Name { get; private set; }
 
 			public SpeedUnit SpeedUnit {
 				get { return SpeedUnit.MetersPerSec; }
@@ -71,10 +73,7 @@ namespace Atmo.Demo {
 				return reading;
 			}
 
-			public bool IsValid {
-				get { return _valid; }
-				set { _valid = value; }
-			}
+			public bool IsValid { get; set; }
 
 			public static PackedReading GetCurrentReading(DateTime now, Random rand, IReadingValues lastReading) {
 
@@ -209,18 +208,6 @@ namespace Atmo.Demo {
 
 					var meanCalc = new ReadingValuesMeanCalculator<IReadingValues>();
 
-
-					/*
-					pressure = (pressure + pressure + lastReading.Pressure) / 3.0;
-					double oldWindDirRad = (lastReading.WindDirection / 180.0) * Math.PI;
-					oldWindDirRad = -oldWindDirRad;
-					oldWindDirRad += Math.PI / 2.0;
-					var oldWindDirVec = new Vector2D(windDirectionVec.X + (Math.Cos(oldWindDirRad) * 10.0), windDirectionVec.Y + (Math.Sin(oldWindDirRad) * 10.0));
-					windDirectionDeg = oldWindDirVec.GetNorthRelativeClockwiseAngularDegrees();
-					windSpeed = (windSpeed + windSpeed + lastReading.WindSpeed * 3.0) / 5.0;
-					temp = (temp + temp + (lastReading.Temperature * 20.0)) / 22.0;
-					humidity = (humidity + humidity + lastReading.Humidity * 80.0) / 82.0;
-					*/
 				}
 
 				var stamp = now.Date.Add(new TimeSpan(now.Hour, now.Minute, now.Second));
@@ -310,7 +297,7 @@ namespace Atmo.Demo {
 		}
 
 		public TemperatureUnit TemperatureUnit {
-			get { return Units.TemperatureUnit.Celsius; }
+			get { return TemperatureUnit.Celsius; }
 		}
 
 		public bool UsingDaqTemp {

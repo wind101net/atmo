@@ -53,6 +53,7 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private readonly string _deviceId;
+		private readonly Regex _deviceIdRegex;
 		private SafeFileHandle _writeHandle;
 		private SafeFileHandle _readHandle;
 		private FileStream _writeStream;
@@ -63,6 +64,7 @@ namespace Atmo.Daq.Win32 {
 
 		public PicHidUsbConnection(string deviceId) {
             _deviceId = deviceId;
+			_deviceIdRegex = new Regex(String.Concat(".*", _deviceId, ".*"), RegexOptions.IgnoreCase | RegexOptions.Compiled);
             _writeHandle = null;
             _readHandle = null;
             _writeStream = null;
@@ -164,7 +166,6 @@ namespace Atmo.Daq.Win32 {
 			}
 
 			string devicePath = null;
-			var deviceIdRegex = new Regex(String.Concat(".*", _deviceId, ".*"), RegexOptions.IgnoreCase);
 			var deviceInfoList = IntPtr.Zero;
 
 			try {
@@ -207,7 +208,7 @@ namespace Atmo.Daq.Win32 {
 								out requiredSize
 							)) {
 								var deviceId = System.Text.Encoding.Unicode.GetString(propertyBuffer, 0, (int)requiredSize);
-								if (deviceIdRegex.IsMatch(deviceId)) {
+								if (_deviceIdRegex.IsMatch(deviceId)) {
 									var deviceInterfaceDetailData = new SP_DEVICE_INTERFACE_DETAIL_DATA();
 									//deviceInterfaceDetailData.cbSize = (uint)Marshal.SizeOf(deviceInterfaceDetailData);
 									deviceInterfaceDetailData.cbSize = (IntPtr.Size == 8) ? 8 : (uint)(4 + Marshal.SystemDefaultCharSize); // fix for 64bit systems

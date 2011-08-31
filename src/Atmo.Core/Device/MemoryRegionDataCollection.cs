@@ -24,9 +24,11 @@
 using System.Linq;
 
 namespace Atmo.Device {
-	public class MemoryRegionDataCollection : System.Collections.ObjectModel.KeyedCollection<long, MemoryRegionData> {
 
-		//public MemoryRegionDataCollection() : base() { }
+	/// <summary>
+	/// A collection of memory regions.
+	/// </summary>
+	public class MemoryRegionDataCollection : System.Collections.ObjectModel.KeyedCollection<long, MemoryRegionData> {
 
 		public void Union(long address, byte[] data) {
 

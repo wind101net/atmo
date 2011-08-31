@@ -22,6 +22,10 @@
 // ================================================================================
 
 namespace Atmo.Device {
+
+	/// <summary>
+	/// Attributes that define a chunk of memory.
+	/// </summary>
 	public class MemoryRegionInfo {
 
 		public byte TypeFlag;

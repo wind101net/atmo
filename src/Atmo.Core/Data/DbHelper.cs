@@ -26,6 +26,10 @@ using System.Data;
 using System.Data.Common;
 
 namespace Atmo.Data {
+
+	/// <summary>
+	/// Some helper methods for database operations.
+	/// </summary>
 	public static class DbHelper {
 
 		/// <summary>

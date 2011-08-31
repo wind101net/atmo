@@ -24,11 +24,12 @@
 using System;
 using System.Collections.Generic;
 using Atmo.Stats;
-using Atmo.Units;
 
 namespace Atmo.Data {
 
-	
+	/// <summary>
+	/// Defines operations for a data store.
+	/// </summary>
 	public interface IDataStore {
 		/// <summary>
 		/// Gets the information for all sensors in the data store.

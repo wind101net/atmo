@@ -35,7 +35,7 @@ namespace Atmo.Data {
 	/// </remarks>
 	public class DaqDataFileInfo {
 
-		public static readonly Regex AnemFileNameRegex = new Regex(@"([A-D])(\d\d)(\d\d)(\d\d)[.]DAT", RegexOptions.IgnoreCase);
+		public static readonly Regex AnemFileNameRegex = new Regex(@"([A-D])(\d\d)(\d\d)(\d\d)[.]DAT", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		internal const int RecordSize = 8;
 		internal const byte HeaderCodeByte = 0xa5;
@@ -146,7 +146,6 @@ namespace Atmo.Data {
 		private readonly FileInfo _fileInfo;
         private int _nid;
         private DateTime _firstStamp;
-
 
 		private DaqDataFileInfo(FileInfo fileInfo, int nid, DateTime firstStamp) {
             if (null == fileInfo) {

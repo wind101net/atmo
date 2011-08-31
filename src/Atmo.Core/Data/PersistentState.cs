@@ -30,6 +30,9 @@ using Atmo.Units;
 
 namespace Atmo.Data {
 
+	/// <summary>
+	/// The persistent state of an application that can be saved to an XML configuration file.
+	/// </summary>
 	[XmlRoot("PersistentState")]
 	public class PersistentState {
 
@@ -53,7 +56,7 @@ namespace Atmo.Data {
 					return ReadStream(fileStream);
 				}
 			}
-			catch(FileNotFoundException fnf) {
+			catch(FileNotFoundException) {
 				return null;
 			}
 		}
@@ -85,6 +88,9 @@ namespace Atmo.Data {
 			}
 		}
 
+		/// <summary>
+		/// Constructs a new persistent state store with default values.
+		/// </summary>
 		public PersistentState() {
 			IsDirty = true;
 			MinRangeSizes = new ReadingValues(10, 5, 0.20, 0, 0);
@@ -146,7 +152,9 @@ namespace Atmo.Data {
 			set { HistoricalTimeScale = new TimeSpan(value); }
 		}
 
-
+		/// <summary>
+		/// Backing field for SelectedDatabases to ensure non-null collections.
+		/// </summary>
 		private List<string> _selectedDatabases;
 
 		[XmlArray]
@@ -159,6 +167,9 @@ namespace Atmo.Data {
 		[XmlElement]
 		public string LastDaqFileLoadPath { get; set; }
 
+		/// <summary>
+		/// Backing field for StationNames to ensure non-null collections.
+		/// </summary>
 		private List<string> _stationNames;
 
 		[XmlArray]
