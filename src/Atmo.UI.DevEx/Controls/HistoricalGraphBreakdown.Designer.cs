@@ -23,10 +23,13 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.groupControl = new DevExpress.XtraEditors.GroupControl();
 			this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
+			this.bindingSourceReadingSummary = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
 			this.groupControl.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupControl
@@ -56,6 +59,10 @@
 			this.tableLayout.Size = new System.Drawing.Size(635, 484);
 			this.tableLayout.TabIndex = 0;
 			// 
+			// bindingSourceReadingSummary
+			// 
+			this.bindingSourceReadingSummary.DataSource = typeof(Atmo.Stats.ReadingsSummary);
+			// 
 			// HistoricalGraphBreakdown
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -65,6 +72,7 @@
 			this.Size = new System.Drawing.Size(639, 508);
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).EndInit();
 			this.groupControl.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -73,5 +81,6 @@
 
 		private DevExpress.XtraEditors.GroupControl groupControl;
 		private System.Windows.Forms.TableLayoutPanel tableLayout;
+		private System.Windows.Forms.BindingSource bindingSourceReadingSummary;
 	}
 }

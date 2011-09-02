@@ -290,16 +290,26 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 
 			TimeSpan timeSpanPerGraph = new TimeSpan(cumulativeChartCoverage.Ticks / numberGraphsToMake);
-			_cumulativeCharts.Clear();
-			for (int i = 0; i < numberGraphsToMake; i++) {
-				
+			while(_cumulativeCharts.Count < numberGraphsToMake) {
 				var chart = new ChartControl();
 				chart.Show();
-				chart.DataSource = null;// this.sensorReadingBindingSource; // TODO: binding source
+				chart.DataSource = bindingSourceReadingSummary;
 				chart.Size = new Size(200, 200);
 				chart.Dock = DockStyle.Fill;
 				chart.Legend.Visible = false;
-				var series = new Series();
+				chart.Titles.Add(new ChartTitle());
+				chart.Series.Add(new Series());
+				_cumulativeCharts.Add(chart);
+				tableLayout.Controls.Add(chart);
+			}
+
+
+			for (int i = 0; i < numberGraphsToMake; i++) {
+				
+				var chart = _cumulativeCharts[i];
+
+
+				var series = chart.Series[0];
 				series.ArgumentDataMember = "TimeStamp";
 				series.ArgumentScaleType = ScaleType.DateTime;
 				series.ValueDataMembersSerializable = SelectedAttributeType.ToString().Replace(" ", "");
@@ -307,11 +317,12 @@ namespace Atmo.UI.DevEx.Controls {
 				series.View = new AreaSeriesView();
 				(series.View as AreaSeriesView).MarkerOptions.Visible = false;
 				series.Label.Visible = false;
-				chart.Series.Add(series);
-				chart.Titles.Add(new ChartTitle());
-				chart.Titles[0].Text = "";
-				chart.Titles[0].Visible = true;
-				chart.Titles[0].Font = new Font(chart.Titles[0].Font.FontFamily, 10.0f);
+
+				var chartTitle = chart.Titles[0];
+				chartTitle.Text = "";
+				chartTitle.Visible = true;
+				chartTitle.Font = new Font(chart.Titles[0].Font.FontFamily, 10.0f);
+
 				var axisX = (chart.Diagram as XYDiagram).AxisX;
 				var axisY = (chart.Diagram as XYDiagram).AxisY;
 				axisX.Reverse = false;
@@ -336,12 +347,12 @@ namespace Atmo.UI.DevEx.Controls {
 					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Month;
 					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
 				}
-				_cumulativeCharts.Add(chart);
+				
 				;
 			}
 
-			tableLayout.Controls.Clear();
-			tableLayout.Controls.AddRange(_cumulativeCharts.ToArray());
+			//tableLayout.Controls.Clear();
+			//tableLayout.Controls.AddRange(_cumulativeCharts.ToArray());
 
 		}
 

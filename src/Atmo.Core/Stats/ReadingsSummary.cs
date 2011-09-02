@@ -68,7 +68,7 @@ namespace Atmo.Stats {
 		public Dictionary<double, int> HumidityCounts;
 		public Dictionary<double, int> WindSpeedCounts;
 		public Dictionary<double, int> WindDirectionCounts;
-
+		
 		public ReadingsSummary(IReadingsSummary summary)
 			: this(
 			summary.BeginStamp, summary.EndStamp,

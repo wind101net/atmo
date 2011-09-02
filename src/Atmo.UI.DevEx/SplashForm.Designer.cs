@@ -56,6 +56,7 @@
 			this.Name = "SplashForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Splash";
 			this.Shown += new System.EventHandler(this.SplashForm_Shown);
 			this.ResumeLayout(false);
