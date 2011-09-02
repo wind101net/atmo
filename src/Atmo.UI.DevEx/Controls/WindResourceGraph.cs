@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Atmo.Data;
 using Atmo.Stats;
 using Atmo.Units;
@@ -43,6 +44,8 @@ namespace Atmo.UI.DevEx.Controls {
 
 		public PersistentState State { get; set; }
 
+		private object _updateGraphMutex = new object();
+
 		public void SetDataSource<T>(IEnumerable<T> items) where T : IReadingsSummary {
 			SetDataSource(items is List<T> ? items as List<T> : new List<T>(items));
 		}
@@ -61,28 +64,58 @@ namespace Atmo.UI.DevEx.Controls {
 			SetDataSource(readings);
 		}
 
+		private List<ReadingsSummary> _pendingSetDataSourceItems = null; 
+
 		public void SetDataSource(List<ReadingsSummary> items) {
-			// todo: can this list copy be eliminated?
 
-			var windCalc = new WindDataSummaryCalculator<IReadingsSummary> {
-				MinWeibullSpeed = rangeTrackBarControlWeibullSpeeds.Value.Minimum,
-				MaxWeibullSpeed = rangeTrackBarControlWeibullSpeeds.Value.Maximum
-			};
-
-			foreach (var item in items) {
-				windCalc.Process(item);
+			if (Monitor.TryEnter(_updateGraphMutex)) {
+				Monitor.Exit(_updateGraphMutex);
+				ThreadPool.QueueUserWorkItem(SetGraphDataWorker, items);
+			}else {
+				_pendingSetDataSourceItems = new List<ReadingsSummary>(items);
 			}
 
-			var speedFrequencyData = windCalc.WindSpeedFrequencyData;
+		}
 
-			SetGraphParameterLabels(
-				windCalc.Beta,
-				windCalc.Theta,
-				windCalc.CalculateWeibullAverage(),
-			    CalculateMeanWindSpeed(speedFrequencyData)
-			);
-			chartControlWindDir.DataSource = PercentageOfMax(windCalc.WindDirectionEnergyData);
-			chartControlWindSpeedFreq.DataSource = speedFrequencyData;
+		private void SetGraphDataWorker(object junk) {
+			lock (_updateGraphMutex) {
+				var items = junk as List<ReadingsSummary>;
+				if (null == items) {
+					return;
+				}
+
+				var windCalc = new WindDataSummaryCalculator<IReadingsSummary> {
+					MinWeibullSpeed =
+						rangeTrackBarControlWeibullSpeeds.Value.Minimum,
+					MaxWeibullSpeed =
+						rangeTrackBarControlWeibullSpeeds.Value.Maximum
+				};
+
+				foreach (var item in items) {
+					windCalc.Process(item);
+				}
+				var speedFrequencyData = windCalc.WindSpeedFrequencyData;
+
+				var maxPercentageSpeedData = PercentageOfMax(windCalc.WindDirectionEnergyData);
+
+				Invoke(new Action(() => {
+					SetGraphParameterLabels(
+						windCalc.Beta,
+						windCalc.Theta,
+						windCalc.CalculateWeibullAverage(),
+						CalculateMeanWindSpeed(speedFrequencyData)
+					);
+				    chartControlWindSpeedFreq.DataSource = speedFrequencyData;
+					chartControlWindDir.DataSource = maxPercentageSpeedData;
+				}));
+
+			}
+
+			if(null != _pendingSetDataSourceItems) {
+				var items = _pendingSetDataSourceItems;
+				_pendingSetDataSourceItems = null;
+				SetDataSource(items);
+			}
 		}
 
 		private void SetGraphParameterLabels(double beta, double theta, double weibullMean, double mean) {
@@ -134,6 +167,8 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 			return result;
 		}
+
+
 
 	}
 }

@@ -39,7 +39,7 @@
 			this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
 			this.barSubItem5 = new DevExpress.XtraBars.BarSubItem();
 			this.liveAtmosphericGraph = new Atmo.UI.DevEx.Controls.LiveAtmosphericGraph();
-			this.timerTesting = new System.Windows.Forms.Timer(this.components);
+			this.timerLive = new System.Windows.Forms.Timer(this.components);
 			this.panelSensors = new System.Windows.Forms.Panel();
 			this.groupControlDbList = new DevExpress.XtraEditors.GroupControl();
 			this.groupControlSensors = new DevExpress.XtraEditors.GroupControl();
@@ -71,6 +71,7 @@
 			this.simpleButtonTimeSync = new DevExpress.XtraEditors.SimpleButton();
 			this.simpleButtonTempSource = new DevExpress.XtraEditors.SimpleButton();
 			this.panelLeftSide = new System.Windows.Forms.Panel();
+			this.backgroundWorkerLiveGraph = new System.ComponentModel.BackgroundWorker();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControlDbList)).BeginInit();
@@ -289,11 +290,11 @@
 			this.liveAtmosphericGraph.TabIndex = 4;
 			this.liveAtmosphericGraph.TemperatureUnit = Atmo.Units.TemperatureUnit.Celsius;
 			// 
-			// timerTesting
+			// timerLive
 			// 
-			this.timerTesting.Enabled = true;
-			this.timerTesting.Interval = 1000;
-			this.timerTesting.Tick += new System.EventHandler(this.timerTesting_Tick);
+			this.timerLive.Enabled = true;
+			this.timerLive.Interval = 1000;
+			this.timerLive.Tick += new System.EventHandler(this.timerTesting_Tick);
 			// 
 			// panelSensors
 			// 
@@ -652,6 +653,11 @@
 			this.panelLeftSide.Size = new System.Drawing.Size(204, 840);
 			this.panelLeftSide.TabIndex = 74;
 			// 
+			// backgroundWorkerLiveGraph
+			// 
+			this.backgroundWorkerLiveGraph.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLiveGraph_DoWork);
+			this.backgroundWorkerLiveGraph.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerLiveGraph_RunWorkerCompleted);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -709,7 +715,7 @@
 		private DevExpress.XtraBars.BarButtonItem barButtonItemAbout;
 		private DevExpress.XtraBars.BarSubItem barSubItem5;
 		private Controls.LiveAtmosphericGraph liveAtmosphericGraph;
-		private System.Windows.Forms.Timer timerTesting;
+		private System.Windows.Forms.Timer timerLive;
 		private System.Windows.Forms.Panel panelSensors;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonFindSensors;
 		private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel;
@@ -742,6 +748,7 @@
 		private DevExpress.XtraEditors.SimpleButton simpleButtonTimeSync;
 		private DevExpress.XtraEditors.SimpleButton simpleButtonTempSource;
 		private System.Windows.Forms.Panel panelLeftSide;
+		private System.ComponentModel.BackgroundWorker backgroundWorkerLiveGraph;
 
 	}
 }

@@ -36,7 +36,7 @@ namespace Atmo.UI.DevEx {
 			var propertyInfo = (property.Body as MemberExpression).Member as PropertyInfo;
 
 			if (propertyInfo == null ||
-				!@this.GetType().IsSubclassOf(propertyInfo.ReflectedType) ||
+				//!@this.GetType().IsSubclassOf(propertyInfo.ReflectedType) ||
 				@this.GetType().GetProperty(propertyInfo.Name, propertyInfo.PropertyType) == null) {
 				throw new ArgumentException("The lambda expression 'property' must reference a valid property on this Control.");
 			}

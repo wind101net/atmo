@@ -27,6 +27,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using Atmo.Calculation;
 using Atmo.Daq.Win32;
 using Atmo.Data;
@@ -47,6 +48,7 @@ namespace Atmo.UI.DevEx {
 		private System.Data.SQLite.SQLiteConnection _dbConnection = null;
 		private IDataStore _dbStore;
 		private bool _updateHistorical = false;
+		private object _historicalUpdateThreadMutex = new object();
 
 		private ProgramContext AppContext { get; set; }
 
@@ -54,6 +56,7 @@ namespace Atmo.UI.DevEx {
 			if (null == appContext) {
 				throw new ArgumentNullException();
 			}
+
 			AppContext = appContext;
 			InitializeComponent();
 
@@ -92,10 +95,10 @@ namespace Atmo.UI.DevEx {
 			historicalTimeSelectHeader.TimeRange.ValueChanged += historicalTimeSelectHeader_TimeRangeValueChanged;
 			liveAtmosphericHeader.TimeRange.ValueChanged += liveTimeSelectHeader_TimeRangeValueChanged;
 
-			foreach(var view in _historicSensorViewPanelController.Views) {
+			foreach(var view in _historicSensorViewPanelController.Views.Where(v => null != v)) {
 				bool selected = false;
 				if(
-					null != view && null != view.SensorInfo
+					null != view.SensorInfo
 					&& AppContext.PersistentState.SelectedDatabases.Contains(view.SensorInfo.Name)
 				) {
 					selected = true;
@@ -105,6 +108,8 @@ namespace Atmo.UI.DevEx {
 
 			HandleRapidFireSetup();
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
+
+			RequestHistoricalUpdate();
 		}
 
 		private void HandleRapidFireSetup() {
@@ -158,125 +163,9 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void timerTesting_Tick(object sender, EventArgs e) {
-
-			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
-
-			// current live state
-			var now = DateTime.Now;
-			var sensors = _deviceConnection.Where(s => s.IsValid).ToList();
-
-			// get readings
-			var readings = new Dictionary<ISensor, IReading>();
-			foreach (var sensor in sensors) {
-				var reading = sensor.GetCurrentReading();
-				if(reading.IsValid) {
-					readings.Add(sensor, reading);
-				}
+			if(!backgroundWorkerLiveGraph.IsBusy) {
+				backgroundWorkerLiveGraph.RunWorkerAsync();
 			}
-
-			// save to memory
-			foreach(var reading in readings) {
-				if(!_memoryDataStore.GetAllSensorInfos().Any(si => si.Name.Equals(reading.Key.Name))) {
-					_memoryDataStore.AddSensor(reading.Key);
-				}
-				_memoryDataStore.Push(reading.Key.Name, new [] { reading.Value });
-			}
-
-			// update the sensor controls
-			_sensorViewPanelControler.UpdateView(sensors);
-
-			// the current sensor views
-			var sensorViews = _sensorViewPanelControler.Views.ToList();
-
-			// determine which sensors are enabled
-			var enabledSensors = new List<ISensor>();
-			for(int i = 0; i < sensors.Count && i < sensorViews.Count; i++) {
-				if(sensorViews[i].IsSelected) {
-					enabledSensors.Add(sensors[i]);
-				}
-			}
-			
-			var liveDataEnabled = true;
-			var liveDataTimeSpan = liveAtmosphericHeader.TimeRange.SelectedSpan;
-
-			// pass it off to the live data graphs/tables
-			if(liveDataEnabled) {
-				
-				// gather the data for each selected sensor
-				var enabledSensorsLiveMeans = new List<List<ReadingAggregate>>(enabledSensors.Count);
-				foreach(var sensor in enabledSensors) {
-					
-					// get the recent readings
-					var recentReadings = _memoryDataStore.GetReadings(sensor.Name, now, TimeSpan.Zero.Subtract(liveDataTimeSpan));
-					
-					// calculate the mean data
-					var means = StatsUtil.AggregateMean(recentReadings, TimeUnit.Second).ToList();
-
-					// convert the units for display
-					var converter = ConverterCacheReadingAggregate.Get(
-						sensor.TemperatureUnit, TemperatureUnit,
-						sensor.SpeedUnit, SpeedUnit,
-						sensor.PressureUnit, PressureUnit
-					);
-					converter.ConvertInline(means);
-					
-					// add it to the presentation list
-					enabledSensorsLiveMeans.Add(means);
-				}
-
-				// compile it all together into one set
-				var enabledSensorsCompiledMeans = StatsUtil.JoinParallelMeanReadings(enabledSensorsLiveMeans);
-
-				// present the data set
-				liveAtmosphericGraph.TemperatureUnit = TemperatureUnit;
-				liveAtmosphericGraph.PressureUnit = PressureUnit;
-				liveAtmosphericGraph.SpeedUnit = SpeedUnit;
-				liveAtmosphericGraph.FormatTimeAxis(liveDataTimeSpan);
-				liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
-				liveAtmosphericGraph.State = AppContext.PersistentState;
-				liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
-			}
-
-			var histTimeRangeSelector = historicalTimeSelectHeader.TimeRange;
-			var histDateChooser = historicalTimeSelectHeader.DateEdit;
-			var histNowChk = historicalTimeSelectHeader.CheckEdit;
-			var histTimeChooser = historicalTimeSelectHeader.TimeEdit;
-
-			var histTimeSpan = histTimeRangeSelector.SelectedSpan;
-			var histStartDate = histNowChk.Checked
-			    ? now.Subtract(histTimeSpan)
-			    : histDateChooser.DateTime.Date.Add(histTimeChooser.Time.TimeOfDay);
-
-			var cumTimeInfo = HistoricalGraphBreakdown.GetCumulativeWindows(
-				histStartDate.Add(histTimeSpan),
-				histTimeSpan,
-				!histNowChk.Checked
-			);
-
-			var historicalSelected = _dbStore.GetAllSensorInfos().Where(si => _historicSensorViewPanelController.IsSensorSelected(si)).ToList();
-			var sensorReadings = historicalSelected.Select(
-				sensor =>
-				_dbStore.GetReadingSummaries(sensor.Name, cumTimeInfo.MaxStamp, cumTimeInfo.MinStamp - cumTimeInfo.MaxStamp, UnitUtility.ChooseBestSummaryUnit(histTimeSpan))
-			);
-
-			var historicalSummaries = StatsUtil.JoinReadingSummaryEnumerable(sensorReadings).ToList();
-
-			windResourceGraph.TemperatureUnit = TemperatureUnit;
-			windResourceGraph.PressureUnit = PressureUnit;
-			windResourceGraph.SpeedUnit = SpeedUnit;
-
-			windResourceGraph.SetDataSource(historicalSummaries);
-
-			historicalGraphBreakdown.TemperatureUnit = TemperatureUnit;
-			historicalGraphBreakdown.PressureUnit = PressureUnit;
-			historicalGraphBreakdown.SpeedUnit = SpeedUnit;
-			historicalGraphBreakdown.SelectedAttributeType = ReadingAttributeType.WindSpeed;
-			historicalGraphBreakdown.StepBack = !histNowChk.Checked;
-			historicalGraphBreakdown.DrillStartDate = histStartDate;
-			historicalGraphBreakdown.CumulativeTimeSpan = histTimeSpan;
-
-			historicalGraphBreakdown.SetDataSource(historicalSummaries);
-
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -298,10 +187,10 @@ namespace Atmo.UI.DevEx {
 			if(rapidFireEnabled) {
 				timerRapidFire.Enabled = false;
 			}
-			timerTesting.Enabled = false;
+			timerLive.Enabled = false;
 			var findSensorForm = new FindSensorsDialog(_deviceConnection);
 			findSensorForm.ShowDialog(this);
-			timerTesting.Enabled = true;
+			timerLive.Enabled = true;
 			if(rapidFireEnabled) {
 				timerRapidFire.Enabled = true;
 			}
@@ -624,19 +513,182 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void HandleDaqTemperatureSourceSet(bool isDaqTempSource) {
+			string text;
+			Image image;
 			if (isDaqTempSource) {
-				simpleButtonTempSource.Text = "Temperature Sensor: DAQ (click to change)";
-				simpleButtonTempSource.Image = Properties.Resources.Temp_Sensor_01;
+				text = "Temperature Sensor: DAQ (click to change)";
+				image = Properties.Resources.Temp_Sensor_01;
 			}
 			else {
-				simpleButtonTempSource.Text = "Temperature Sensor: Anemometer (click to change)";
-				simpleButtonTempSource.Image = Properties.Resources.Temp_Sensor_02;
+				text = "Temperature Sensor: Anemometer (click to change)";
+				image = Properties.Resources.Temp_Sensor_02;
 			}
+			simpleButtonTempSource.SetPropertyThreadSafe(() => simpleButtonTempSource.Text, text);
+			simpleButtonTempSource.SetPropertyThreadSafe(() => simpleButtonTempSource.Image, image);
 		}
 
 		private void barButtonItemAbout_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
 			var aboutForm = new AboutForm();
 			aboutForm.ShowDialog(this);
+		}
+
+
+
+		private void backgroundWorkerLiveGraph_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+			System.Diagnostics.Debug.WriteLine("Begin Live Data");
+			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
+			// current live state
+			var now = DateTime.Now;
+			var sensors = _deviceConnection.Where(s => s.IsValid).ToList();
+
+			// get readings
+			var readings = new Dictionary<ISensor, IReading>();
+			foreach (var sensor in sensors) {
+				var reading = sensor.GetCurrentReading();
+				if (reading.IsValid) {
+					readings.Add(sensor, reading);
+				}
+			}
+
+			// save to memory
+			foreach (var reading in readings) {
+				if (!_memoryDataStore.GetAllSensorInfos().Any(si => si.Name.Equals(reading.Key.Name))) {
+					_memoryDataStore.AddSensor(reading.Key);
+				}
+				_memoryDataStore.Push(reading.Key.Name, new[] { reading.Value });
+			}
+
+			// update the sensor controls
+			var updateSensorViewResult = BeginInvoke(new Action(() => _sensorViewPanelControler.UpdateView(sensors)));
+
+			// the current sensor views
+			var sensorViews = _sensorViewPanelControler.Views.ToList();
+
+			// determine which sensors are enabled
+			var enabledSensors = new List<ISensor>();
+			for (int i = 0; i < sensors.Count && i < sensorViews.Count; i++) {
+				if (sensorViews[i].IsSelected) {
+					enabledSensors.Add(sensors[i]);
+				}
+			}
+
+			var liveDataEnabled = true;
+			var liveDataTimeSpan = liveAtmosphericHeader.TimeRange.SelectedSpan;
+
+			// pass it off to the live data graphs/tables
+			if (liveDataEnabled) {
+
+				// gather the data for each selected sensor
+				var enabledSensorsLiveMeans = new List<List<ReadingAggregate>>(enabledSensors.Count);
+				foreach (var sensor in enabledSensors) {
+
+					// get the recent readings
+					var recentReadings = _memoryDataStore.GetReadings(sensor.Name, now, TimeSpan.Zero.Subtract(liveDataTimeSpan));
+
+					// calculate the mean data
+					var means = StatsUtil.AggregateMean(recentReadings, TimeUnit.Second).ToList();
+
+					// convert the units for display
+					var converter = ConverterCacheReadingAggregate.Get(
+						sensor.TemperatureUnit, TemperatureUnit,
+						sensor.SpeedUnit, SpeedUnit,
+						sensor.PressureUnit, PressureUnit
+					);
+					converter.ConvertInline(means);
+
+					// add it to the presentation list
+					enabledSensorsLiveMeans.Add(means);
+				}
+
+				// compile it all together into one set
+				var enabledSensorsCompiledMeans = StatsUtil.JoinParallelMeanReadings(enabledSensorsLiveMeans);
+
+				// present the data set
+				Invoke(new Action(() => {
+					liveAtmosphericGraph.TemperatureUnit = TemperatureUnit;
+					liveAtmosphericGraph.PressureUnit = PressureUnit;
+					liveAtmosphericGraph.SpeedUnit = SpeedUnit;
+					liveAtmosphericGraph.FormatTimeAxis(liveDataTimeSpan);
+					liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
+					liveAtmosphericGraph.State = AppContext.PersistentState;
+					liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
+				}));
+
+				while(!updateSensorViewResult.IsCompleted) {
+					Thread.Sleep(100);
+				}
+			}
+
+		}
+
+		private void backgroundWorkerLiveGraph_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+			System.Diagnostics.Debug.WriteLine("End Live Data");
+		}
+
+
+
+		public void RequestHistoricalUpdate() {
+
+			if(Monitor.TryEnter(_historicalUpdateThreadMutex)) {
+				Monitor.Exit(_historicalUpdateThreadMutex);
+				ThreadPool.QueueUserWorkItem(HistoricalDataUpdate);
+			}
+
+		}
+
+		private void HistoricalDataUpdate(object junk) {
+			lock (_historicalUpdateThreadMutex) {
+				System.Diagnostics.Debug.WriteLine("Begin Historical Data");
+
+				var now = DateTime.Now;
+				var histTimeRangeSelector = historicalTimeSelectHeader.TimeRange;
+				var histDateChooser = historicalTimeSelectHeader.DateEdit;
+				var histNowChk = historicalTimeSelectHeader.CheckEdit;
+				var histTimeChooser = historicalTimeSelectHeader.TimeEdit;
+
+				var histTimeSpan = histTimeRangeSelector.SelectedSpan;
+				var histStartDate = histNowChk.Checked
+				                    	? now.Subtract(histTimeSpan)
+				                    	: histDateChooser.DateTime.Date.Add(histTimeChooser.Time.TimeOfDay);
+
+				var cumTimeInfo = HistoricalGraphBreakdown.GetCumulativeWindows(
+					histStartDate.Add(histTimeSpan),
+					histTimeSpan,
+					!histNowChk.Checked
+					);
+
+				var historicalSelected =
+					_dbStore.GetAllSensorInfos().Where(si => _historicSensorViewPanelController.IsSensorSelected(si)).ToList();
+				var sensorReadings = historicalSelected.Select(
+					sensor =>
+					_dbStore.GetReadingSummaries(sensor.Name, cumTimeInfo.MaxStamp, cumTimeInfo.MinStamp - cumTimeInfo.MaxStamp,
+					                             UnitUtility.ChooseBestSummaryUnit(histTimeSpan))
+					);
+
+				var historicalSummaries = StatsUtil.JoinReadingSummaryEnumerable(sensorReadings).ToList();
+
+				if (!IsDisposed) {
+					Invoke(new Action(() => {
+					    windResourceGraph.TemperatureUnit = TemperatureUnit;
+					    windResourceGraph.PressureUnit = PressureUnit;
+					    windResourceGraph.SpeedUnit = SpeedUnit;
+
+
+					    windResourceGraph.SetDataSource(historicalSummaries);
+
+					    historicalGraphBreakdown.TemperatureUnit = TemperatureUnit;
+					    historicalGraphBreakdown.PressureUnit = PressureUnit;
+					    historicalGraphBreakdown.SpeedUnit = SpeedUnit;
+					    historicalGraphBreakdown.SelectedAttributeType = ReadingAttributeType.WindSpeed;
+					    historicalGraphBreakdown.StepBack = !histNowChk.Checked;
+					    historicalGraphBreakdown.DrillStartDate = histStartDate;
+					    historicalGraphBreakdown.CumulativeTimeSpan = histTimeSpan;
+
+					    historicalGraphBreakdown.SetDataSource(historicalSummaries);
+					}));
+				}
+
+			}
 		}
 
 
