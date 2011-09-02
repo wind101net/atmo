@@ -45,7 +45,7 @@ namespace Atmo.UI.DevEx {
 
 		public MainForm SpawnForm { get; private set; }
 
-		private void timerFadeIn_Tick(object sender, System.EventArgs e) {
+		private void timerFadeIn_Tick(object sender, EventArgs e) {
 			Color curColor = BackColor;
 			if (curColor.R >= targetColor.R && curColor.G >= targetColor.G && curColor.B >= targetColor.B) {
 				if (!SpawnForm.Visible) {
@@ -58,16 +58,16 @@ namespace Atmo.UI.DevEx {
 			}
 			else {
 				BackColor = Color.FromArgb(
-					System.Math.Min(255, curColor.R + increment),
-					System.Math.Min(255, curColor.G + increment),
-					System.Math.Min(255, curColor.B + increment)
+					Math.Min(255, curColor.R + increment),
+					Math.Min(255, curColor.G + increment),
+					Math.Min(255, curColor.B + increment)
 				);
 			}
 		}
 
-		private void timerFadeOut_Tick(object sender, System.EventArgs e) {
+		private void timerFadeOut_Tick(object sender, EventArgs e) {
 			double opac = Opacity;
-			opac = System.Math.Max(0, opac - opacDec);
+			opac = Math.Max(0, opac - opacDec);
 			Opacity = opac;
 			if (opac <= 0) {
 				timerFadeOut.Enabled = false;
@@ -77,7 +77,7 @@ namespace Atmo.UI.DevEx {
 
 		
 
-		private void SplashForm_Shown(object sender, System.EventArgs e) {
+		private void SplashForm_Shown(object sender, EventArgs e) {
 			timerFadeIn.Enabled = true;
 			timerFadeIn_Tick(null, null);
 		}
