@@ -55,8 +55,11 @@ namespace Atmo.UI.DevEx {
 				throw new ArgumentNullException();
 			}
 			AppContext = appContext;
-
 			InitializeComponent();
+
+
+			Text = ProgramContext.ProgramFriendlyName;
+		
 
 			ConverterCache = ReadingValuesConverterCache<IReadingValues, ReadingValues>.Default;
 			ConverterCacheReadingValues = ReadingValuesConverterCache<ReadingValues>.Default;
@@ -629,6 +632,11 @@ namespace Atmo.UI.DevEx {
 				simpleButtonTempSource.Text = "Temperature Sensor: Anemometer (click to change)";
 				simpleButtonTempSource.Image = Properties.Resources.Temp_Sensor_02;
 			}
+		}
+
+		private void barButtonItemAbout_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			var aboutForm = new AboutForm();
+			aboutForm.ShowDialog(this);
 		}
 
 

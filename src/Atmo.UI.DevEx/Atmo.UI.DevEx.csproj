@@ -74,6 +74,7 @@
     <Reference Include="DevExpress.XtraCharts.v10.1.UI, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v10.1, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -255,6 +256,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>IconResource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\CustomTimeRangeSelector.resx">
       <DependentUpon>CustomTimeRangeSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -308,6 +312,9 @@
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimeCorrection.resx">
       <DependentUpon>TimeCorrection.cs</DependentUpon>
     </EmbeddedResource>
@@ -319,6 +326,7 @@
     <None Include="..\Atmo.Core\ClearStorage.db">
       <Link>ClearStorage.db</Link>
     </None>
+    <None Include="App.config" />
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindDirectionEnergy.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindSpeedFrequency.datasource" />
@@ -347,6 +355,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Temp Sensor 01.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="atmoSplash.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

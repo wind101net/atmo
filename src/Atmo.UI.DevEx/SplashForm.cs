@@ -21,16 +21,65 @@
 //
 // ================================================================================
 
-using DevExpress.XtraEditors;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Atmo.UI.DevEx {
-	public partial class SplashForm : XtraForm {
+	public partial class SplashForm : AboutForm {
 
-		private readonly MainForm _spawnForm;
+		private readonly Color targetColor = Color.White;
+		private readonly int increment = 16;
+		private readonly double opacDec = 0.1;
+
 
 		public SplashForm(MainForm spawnForm) {
-			_spawnForm = spawnForm;
+			SpawnForm = spawnForm;
+			Text = ProgramContext.ProgramFriendlyName;
 			InitializeComponent();
+			AboutForm_BackColorChanged(null, null);
+			LoadBackground(ProgramContext.SplashBackground);
+		}
+
+		
+
+		public MainForm SpawnForm { get; private set; }
+
+		private void timerFadeIn_Tick(object sender, System.EventArgs e) {
+			Color curColor = BackColor;
+			if (curColor.R >= targetColor.R && curColor.G >= targetColor.G && curColor.B >= targetColor.B) {
+				if (!SpawnForm.Visible) {
+					SpawnForm.Show();
+				}
+				if (SpawnForm.Created) {
+					timerFadeIn.Stop();
+					timerFadeOut.Enabled = true;
+				}
+			}
+			else {
+				BackColor = Color.FromArgb(
+					System.Math.Min(255, curColor.R + increment),
+					System.Math.Min(255, curColor.G + increment),
+					System.Math.Min(255, curColor.B + increment)
+				);
+			}
+		}
+
+		private void timerFadeOut_Tick(object sender, System.EventArgs e) {
+			double opac = Opacity;
+			opac = System.Math.Max(0, opac - opacDec);
+			Opacity = opac;
+			if (opac <= 0) {
+				timerFadeOut.Enabled = false;
+				Close();
+			}
+		}
+
+		
+
+		private void SplashForm_Shown(object sender, System.EventArgs e) {
+			timerFadeIn.Enabled = true;
+			timerFadeIn_Tick(null, null);
 		}
 	}
 }

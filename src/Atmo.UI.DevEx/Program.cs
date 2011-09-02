@@ -22,6 +22,7 @@
 // ================================================================================
 
 using System;
+using System.Configuration;
 using System.Windows.Forms;
 using System.IO;
 using Atmo.Data;
@@ -40,6 +41,44 @@ namespace Atmo.UI.DevEx {
 			get { return Path.Combine(AssemblyDirectory, PersistentFileName); }
 		}
 
+		public static string GetAppConfigSetting(string keyName) {
+			return ConfigurationManager.AppSettings.Get(keyName);
+		}
+
+		public static string GetAppConfigSetting(string keyName, string defaultValue) {
+			var result = GetAppConfigSetting(keyName);
+			return String.IsNullOrEmpty(result) ? defaultValue : result;
+		}
+
+		public static string ProgramFriendlyName {
+			get { return GetAppConfigSetting("programName", "Atmo 2"); }
+		}
+
+		public static string SplashBackground {
+			get { return GetAppConfigSetting("splashBackground", "atmoSplash.png"); }
+		}
+
+		private const string BaraniDesignSupportLinkValue = "www.baranidesign.com/support";
+
+		public static string DocumentationLink {
+			get { return GetAppConfigSetting("documentationLink", BaraniDesignSupportLinkValue); }
+		}
+
+		public static string UpdateLink {
+			get { return GetAppConfigSetting("updateLink", BaraniDesignSupportLinkValue); }
+		}
+
+		public static string ContactLink {
+			get { return GetAppConfigSetting("contactLink", BaraniDesignSupportLinkValue); }
+		}
+
+		public static bool IsDemoMode {
+			get {
+				bool b;
+				return bool.TryParse(GetAppConfigSetting("demoMode"), out b) && b;
+			}
+		}
+
 		private readonly SplashForm _splashForm;
 		private readonly MainForm _mainForm;
 		private PersistentState _state;
@@ -47,14 +86,18 @@ namespace Atmo.UI.DevEx {
 		public ProgramContext() {
 			_mainForm = new MainForm(this);
 			_splashForm = new SplashForm(_mainForm);
+			_splashForm.Closing += _splashForm_Closing;
+		}
+
+		void _splashForm_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
 			MainForm = _mainForm;
+			if(!MainForm.Visible) {
+				MainForm.Show();
+			}
 		}
 
 		public void Start() {
 			_splashForm.Show(_mainForm);
-			// TODO: replace with fade in
-			_mainForm.Show();
-			_splashForm.Close();
 		}
 
 		protected override void OnMainFormClosed(object sender, EventArgs e) {
@@ -82,6 +125,7 @@ namespace Atmo.UI.DevEx {
 		}
 
 		protected override void Dispose(bool disposing) {
+			MainForm = _mainForm;
 			_mainForm.Dispose();
 			base.Dispose(disposing);
 		}
@@ -104,6 +148,7 @@ namespace Atmo.UI.DevEx {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			using (var context = new ProgramContext()) {
+				context.Start();
 				Application.Run(context);
 			}
 		}

@@ -21,12 +21,37 @@
 //
 // ================================================================================
 
+using System;
+using System.Drawing;
 using DevExpress.XtraEditors;
 
 namespace Atmo.UI.DevEx {
 	public partial class AboutForm : XtraForm {
+
 		public AboutForm() {
 			InitializeComponent();
+			LoadBackground(ProgramContext.SplashBackground);
+			AboutForm_BackColorChanged(null, null);
+			labelControlVersion.Text = String.Format(
+				"Version: {0}",
+				typeof(AboutForm).Assembly.GetName().Version
+			);
+		}
+
+
+		protected void LoadBackground(string filePath) {
+			try {
+				var i = Image.FromFile(filePath);
+				BackgroundImage = i;
+				ClientSize = new Size(i.Width, i.Height);
+			}
+			catch (Exception ex) {
+				;
+			}
+		}
+
+		protected void AboutForm_BackColorChanged(object sender, EventArgs e) {
+			labelControlVersion.BackColor = BackColor;
 		}
 	}
 }

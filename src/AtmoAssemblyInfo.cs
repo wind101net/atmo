@@ -40,5 +40,5 @@ using System.Reflection;
 //      Revision
 //
 // Major Version will transition from 0 to 2, skipping 1.
-[assembly: AssemblyVersion("0.1.*")]
+[assembly: AssemblyVersion("2.0.*")]
 //[assembly: AssemblyFileVersion("0.1.0.0")]

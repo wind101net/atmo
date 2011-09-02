@@ -15,6 +15,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.barManager = new DevExpress.XtraBars.BarManager(this.components);
 			this.bar2 = new DevExpress.XtraBars.Bar();
 			this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -242,6 +243,7 @@
 			this.barButtonItemAbout.Caption = "About...";
 			this.barButtonItemAbout.Id = 15;
 			this.barButtonItemAbout.Name = "barButtonItemAbout";
+			this.barButtonItemAbout.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemAbout_ItemClick);
 			// 
 			// barDockControlTop
 			// 
@@ -661,6 +663,7 @@
 			this.Controls.Add(this.barDockControlRight);
 			this.Controls.Add(this.barDockControlBottom);
 			this.Controls.Add(this.barDockControlTop);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(800, 600);
 			this.Name = "MainForm";
 			this.Text = "Atmo 2";

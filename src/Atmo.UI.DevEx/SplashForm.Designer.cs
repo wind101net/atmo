@@ -24,10 +24,44 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SplashForm));
+			this.timerFadeIn = new System.Windows.Forms.Timer(this.components);
+			this.timerFadeOut = new System.Windows.Forms.Timer(this.components);
+			this.SuspendLayout();
+			// 
+			// timerFadeIn
+			// 
+			this.timerFadeIn.Interval = 16;
+			this.timerFadeIn.Tick += new System.EventHandler(this.timerFadeIn_Tick);
+			// 
+			// timerFadeOut
+			// 
+			this.timerFadeOut.Interval = 16;
+			this.timerFadeOut.Tick += new System.EventHandler(this.timerFadeOut_Tick);
+			// 
+			// SplashForm
+			// 
+			this.Appearance.BackColor = System.Drawing.Color.Black;
+			this.Appearance.Options.UseBackColor = true;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Text = "SplashForm";
+			this.ClientSize = new System.Drawing.Size(284, 262);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
+			this.Name = "SplashForm";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
+			this.Text = "Splash";
+			this.Shown += new System.EventHandler(this.SplashForm_Shown);
+			this.ResumeLayout(false);
+
 		}
 
 		#endregion
+
+		private System.Windows.Forms.Timer timerFadeIn;
+		private System.Windows.Forms.Timer timerFadeOut;
 	}
 }
