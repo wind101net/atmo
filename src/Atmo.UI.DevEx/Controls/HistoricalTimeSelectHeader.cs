@@ -31,6 +31,8 @@ namespace Atmo.UI.DevEx.Controls {
 			checkEdit_CheckedChanged(null, null);
 		}
 
+		public event Action OnTimeRangeChanged;
+
 		public string HeaderText {
 			get { return groupControlHistoricHeader.Text; }
 			set { groupControlHistoricHeader.Text = value; }
@@ -65,10 +67,34 @@ namespace Atmo.UI.DevEx.Controls {
 				DateEdit.Enabled = true;
 				TimeEdit.Enabled = (TimeRange.SelectedSpan <= new TimeSpan(1, 0, 0, 0));
 			}
+			if(null != OnTimeRangeChanged) {
+				OnTimeRangeChanged();
+			}
 		}
 
 		private void customTimeRangeSelector_RangeSlider_ValueChanged(object sender, EventArgs e) {
 			checkEdit_CheckedChanged(null, null);
+			if (null != OnTimeRangeChanged) {
+				OnTimeRangeChanged();
+			}
+		}
+
+		private void dateEdit_EditValueChanged(object sender, EventArgs e) {
+			if (null != OnTimeRangeChanged) {
+				OnTimeRangeChanged();
+			}
+		}
+
+		private void timeEdit_EditValueChanged(object sender, EventArgs e) {
+			if (null != OnTimeRangeChanged) {
+				OnTimeRangeChanged();
+			}
+		}
+
+		private void customTimeRangeSelector_Load(object sender, EventArgs e) {
+			if (null != OnTimeRangeChanged) {
+				OnTimeRangeChanged();
+			}
 		}
 
 

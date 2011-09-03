@@ -379,7 +379,6 @@
 			this.historicalGraphBreakdown.Location = new System.Drawing.Point(0, 562);
 			this.historicalGraphBreakdown.Name = "historicalGraphBreakdown";
 			this.historicalGraphBreakdown.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-			this.historicalGraphBreakdown.SelectedAttributeType = Atmo.ReadingAttributeType.Temperature;
 			this.historicalGraphBreakdown.Size = new System.Drawing.Size(586, 561);
 			this.historicalGraphBreakdown.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
 			this.historicalGraphBreakdown.State = null;

@@ -25,17 +25,17 @@
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HistoricalTimeSelectHeader));
 			this.groupControlHistoricHeader = new DevExpress.XtraEditors.GroupControl();
+			this.customTimeRangeSelector = new Atmo.UI.DevEx.Controls.CustomTimeRangeSelector();
 			this.checkEdit = new DevExpress.XtraEditors.CheckEdit();
 			this.dateEdit = new DevExpress.XtraEditors.DateEdit();
 			this.timeEdit = new DevExpress.XtraEditors.TimeEdit();
-			this.customTimeRangeSelector = new Atmo.UI.DevEx.Controls.CustomTimeRangeSelector();
 			((System.ComponentModel.ISupportInitialize)(this.groupControlHistoricHeader)).BeginInit();
 			this.groupControlHistoricHeader.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.customTimeRangeSelector.RangeSlider.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.checkEdit.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dateEdit.Properties.VistaTimeProperties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dateEdit.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.timeEdit.Properties)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.customTimeRangeSelector.RangeSlider.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupControlHistoricHeader
@@ -57,6 +57,32 @@
 			this.groupControlHistoricHeader.Size = new System.Drawing.Size(581, 28);
 			this.groupControlHistoricHeader.TabIndex = 0;
 			this.groupControlHistoricHeader.Text = "Historic Data";
+			// 
+			// customTimeRangeSelector
+			// 
+			this.customTimeRangeSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.customTimeRangeSelector.Appearance.BackColor = System.Drawing.Color.Transparent;
+			this.customTimeRangeSelector.Appearance.Options.UseBackColor = true;
+			this.customTimeRangeSelector.Location = new System.Drawing.Point(317, 6);
+			this.customTimeRangeSelector.Name = "customTimeRangeSelector";
+			// 
+			// 
+			// 
+			this.customTimeRangeSelector.RangeSlider.Dock = System.Windows.Forms.DockStyle.Left;
+			this.customTimeRangeSelector.RangeSlider.EditValue = 3;
+			this.customTimeRangeSelector.RangeSlider.Location = new System.Drawing.Point(0, 0);
+			this.customTimeRangeSelector.RangeSlider.Name = "rangeSlider";
+			this.customTimeRangeSelector.RangeSlider.Properties.AutoSize = false;
+			this.customTimeRangeSelector.RangeSlider.Properties.Maximum = 4;
+			this.customTimeRangeSelector.RangeSlider.Size = new System.Drawing.Size(137, 17);
+			this.customTimeRangeSelector.RangeSlider.TabIndex = 1;
+			this.customTimeRangeSelector.RangeSlider.Value = 3;
+			this.customTimeRangeSelector.RangeSlider.ValueChanged += new System.EventHandler(this.customTimeRangeSelector_RangeSlider_ValueChanged);
+			this.customTimeRangeSelector.SelectedIndex = 3;
+			this.customTimeRangeSelector.Size = new System.Drawing.Size(200, 17);
+			this.customTimeRangeSelector.TabIndex = 39;
+			this.customTimeRangeSelector.TimeSpans = ((System.Collections.Generic.List<System.TimeSpan>)(resources.GetObject("customTimeRangeSelector.TimeSpans")));
+			this.customTimeRangeSelector.Load += new System.EventHandler(this.customTimeRangeSelector_Load);
 			// 
 			// checkEdit
 			// 
@@ -81,6 +107,7 @@
             new DevExpress.XtraEditors.Controls.EditorButton()});
 			this.dateEdit.Size = new System.Drawing.Size(98, 20);
 			this.dateEdit.TabIndex = 50;
+			this.dateEdit.EditValueChanged += new System.EventHandler(this.dateEdit_EditValueChanged);
 			// 
 			// timeEdit
 			// 
@@ -92,31 +119,7 @@
             new DevExpress.XtraEditors.Controls.EditorButton()});
 			this.timeEdit.Size = new System.Drawing.Size(100, 20);
 			this.timeEdit.TabIndex = 49;
-			// 
-			// customTimeRangeSelector
-			// 
-			this.customTimeRangeSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.customTimeRangeSelector.Appearance.BackColor = System.Drawing.Color.Transparent;
-			this.customTimeRangeSelector.Appearance.Options.UseBackColor = true;
-			this.customTimeRangeSelector.Location = new System.Drawing.Point(317, 6);
-			this.customTimeRangeSelector.Name = "customTimeRangeSelector";
-			// 
-			// 
-			// 
-			this.customTimeRangeSelector.RangeSlider.Dock = System.Windows.Forms.DockStyle.Left;
-			this.customTimeRangeSelector.RangeSlider.EditValue = 3;
-			this.customTimeRangeSelector.RangeSlider.Location = new System.Drawing.Point(0, 0);
-			this.customTimeRangeSelector.RangeSlider.Name = "rangeSlider";
-			this.customTimeRangeSelector.RangeSlider.Properties.AutoSize = false;
-			this.customTimeRangeSelector.RangeSlider.Properties.Maximum = 7;
-			this.customTimeRangeSelector.RangeSlider.Size = new System.Drawing.Size(137, 17);
-			this.customTimeRangeSelector.RangeSlider.TabIndex = 1;
-			this.customTimeRangeSelector.RangeSlider.Value = 3;
-			this.customTimeRangeSelector.RangeSlider.ValueChanged += new System.EventHandler(this.customTimeRangeSelector_RangeSlider_ValueChanged);
-			this.customTimeRangeSelector.SelectedIndex = 3;
-			this.customTimeRangeSelector.Size = new System.Drawing.Size(200, 17);
-			this.customTimeRangeSelector.TabIndex = 39;
-			this.customTimeRangeSelector.TimeSpans = ((System.Collections.Generic.List<System.TimeSpan>)(resources.GetObject("customTimeRangeSelector.TimeSpans")));
+			this.timeEdit.EditValueChanged += new System.EventHandler(this.timeEdit_EditValueChanged);
 			// 
 			// HistoricalTimeSelectHeader
 			// 
@@ -129,11 +132,11 @@
 			this.Size = new System.Drawing.Size(581, 28);
 			((System.ComponentModel.ISupportInitialize)(this.groupControlHistoricHeader)).EndInit();
 			this.groupControlHistoricHeader.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.customTimeRangeSelector.RangeSlider.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.checkEdit.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dateEdit.Properties.VistaTimeProperties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dateEdit.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.timeEdit.Properties)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.customTimeRangeSelector.RangeSlider.Properties)).EndInit();
 			this.ResumeLayout(false);
 
 		}

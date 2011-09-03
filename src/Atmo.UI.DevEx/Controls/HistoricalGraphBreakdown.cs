@@ -37,6 +37,8 @@ namespace Atmo.UI.DevEx.Controls {
 			InitializeComponent();
 		}
 
+		public event Action OnSelectedPropertyChanged;
+
 		private List<ChartControl> _cumulativeCharts = new List<ChartControl>();
 
 		public ReadingValuesConverterCache<ReadingValues> ConverterCacheReadingValues { get; set; }
@@ -269,7 +271,20 @@ namespace Atmo.UI.DevEx.Controls {
 
 		public bool StepBack { get; set; }
 
-		public ReadingAttributeType SelectedAttributeType { get; set; }
+		public ReadingAttributeType SelectedAttributeType {
+			get {
+				switch(comboBoxEditSelProp.SelectedItem.ToString()) {
+				case "Wind Speed": return ReadingAttributeType.WindSpeed;
+				case "Temperature": return ReadingAttributeType.Temperature;
+				case "Humidity": return ReadingAttributeType.Humidity;
+				case "Pressure": return ReadingAttributeType.Pressure;
+				default:
+					throw new NotSupportedException(
+						String.Format("Selection {0} is not supported.", comboBoxEditSelProp.SelectedItem)
+					);
+				}
+			}
+		}
 
 		private void RecreateCumulativeGraphs() {
 
@@ -434,6 +449,12 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 
 
+		}
+
+		private void comboBoxEditSelProp_SelectedIndexChanged(object sender, EventArgs e) {
+			if(null != OnSelectedPropertyChanged) {
+				OnSelectedPropertyChanged();
+			}
 		}
 
 	}

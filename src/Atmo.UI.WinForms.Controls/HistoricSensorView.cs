@@ -30,6 +30,7 @@ namespace Atmo.UI.WinForms.Controls {
 
 		private bool _selected;
 		public event Action<ISensorInfo> OnDeleteRequest;
+		public event Action OnSelectionChanged;
 
 		public HistoricSensorView() {
 			_selected = false;
@@ -74,6 +75,9 @@ namespace Atmo.UI.WinForms.Controls {
 				}
 			}
 			IsSelected = !IsSelected;
+			if(null != OnSelectionChanged) {
+				OnSelectionChanged();
+			}
 		}
 
 		private void deleteToolStripMenuItem_Click(object sender, System.EventArgs e) {

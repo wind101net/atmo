@@ -87,7 +87,6 @@ namespace Atmo.UI.DevEx {
 			_historicSensorViewPanelController.OnDeleteRequested += OnDeleteRequested;
 
 			historicalTimeSelectHeader.CheckEdit.CheckedChanged += histNowChk_CheckedChanged;
-			ReloadHistoric();
 
 			historicalTimeSelectHeader.TimeRange.SelectedIndex = historicalTimeSelectHeader.TimeRange.FindNearestIndex(AppContext.PersistentState.HistoricalTimeScale);
 			liveAtmosphericHeader.TimeRange.SelectedIndex = liveAtmosphericHeader.TimeRange.FindNearestIndex(AppContext.PersistentState.LiveTimeScale);
@@ -109,7 +108,11 @@ namespace Atmo.UI.DevEx {
 			HandleRapidFireSetup();
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
 
-			RequestHistoricalUpdate();
+			ReloadHistoric();
+			_historicSensorViewPanelController.OnSelectionChanged += RequestHistoricalUpdate;
+			historicalGraphBreakdown.OnSelectedPropertyChanged += RequestHistoricalUpdate;
+			historicalTimeSelectHeader.OnTimeRangeChanged += RequestHistoricalUpdate;
+			windResourceGraph.OnWeibullParamChanged += RequestHistoricalUpdate;
 		}
 
 		private void HandleRapidFireSetup() {
@@ -216,20 +219,17 @@ namespace Atmo.UI.DevEx {
 		public void ReloadHistoric() {
 			var historicSensors = _dbStore.GetAllSensorInfos();
 			_historicSensorViewPanelController.UpdateView(historicSensors);
-			TriggerHistoricalUpdate();
-		}
-
-		private void TriggerHistoricalUpdate() {
-			_updateHistorical = true;
+			RequestHistoricalUpdate();
 		}
 
 		private void histNowChk_CheckedChanged(object sender, EventArgs e) {
-			TriggerHistoricalUpdate();
+			RequestHistoricalUpdate();
 		}
 
 		private void barButtonItemTimeCorrection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
 			var timeCorrectionDialog = new TimeCorrection(_dbStore);
 			timeCorrectionDialog.ShowDialog(this);
+			ReloadHistoric();
 		}
 
 		private void barButtonItemExport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -637,6 +637,14 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void HistoricalDataUpdate(object junk) {
+			if(!Visible) {
+				lock (_historicalUpdateThreadMutex) {
+					Thread.Sleep(100);
+				}
+				RequestHistoricalUpdate();
+				return;
+			}
+
 			lock (_historicalUpdateThreadMutex) {
 				System.Diagnostics.Debug.WriteLine("Begin Historical Data");
 
@@ -668,7 +676,7 @@ namespace Atmo.UI.DevEx {
 				var historicalSummaries = StatsUtil.JoinReadingSummaryEnumerable(sensorReadings).ToList();
 
 				if (!IsDisposed) {
-					Invoke(new Action(() => {
+					BeginInvoke(new Action(() => {
 					    windResourceGraph.TemperatureUnit = TemperatureUnit;
 					    windResourceGraph.PressureUnit = PressureUnit;
 					    windResourceGraph.SpeedUnit = SpeedUnit;
@@ -679,7 +687,6 @@ namespace Atmo.UI.DevEx {
 					    historicalGraphBreakdown.TemperatureUnit = TemperatureUnit;
 					    historicalGraphBreakdown.PressureUnit = PressureUnit;
 					    historicalGraphBreakdown.SpeedUnit = SpeedUnit;
-					    historicalGraphBreakdown.SelectedAttributeType = ReadingAttributeType.WindSpeed;
 					    historicalGraphBreakdown.StepBack = !histNowChk.Checked;
 					    historicalGraphBreakdown.DrillStartDate = histStartDate;
 					    historicalGraphBreakdown.CumulativeTimeSpan = histTimeSpan;

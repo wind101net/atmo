@@ -43,7 +43,7 @@ namespace Atmo.Stats {
 		/// </remarks>
 		public static IEnumerable<ReadingsSummary> Summarize<T>(IEnumerable<T> readings, TimeUnit unit) where T : IReading {
 			List<T> collectedReadings = new List<T>();
-			IEnumerator<T> enumerator = readings.OrderBy(r => r.TimeStamp).GetEnumerator();
+			IEnumerator<T> enumerator = readings.GetEnumerator(); //readings.OrderBy(r => r.TimeStamp).GetEnumerator();
 			if (enumerator.MoveNext()) {
 				collectedReadings.Add(enumerator.Current);
 				DateTime dateRangeLow = UnitUtility.StripToUnit(enumerator.Current.TimeStamp, unit);

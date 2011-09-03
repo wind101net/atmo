@@ -34,6 +34,8 @@ namespace Atmo.UI.DevEx.Controls {
 			InitializeComponent();
 		}
 
+		public event Action OnWeibullParamChanged;
+
 		public ReadingValuesConverterCache<ReadingValues> ConverterCacheReadingValues { get; set; }
 
 		public TemperatureUnit TemperatureUnit { get; set; }
@@ -166,6 +168,12 @@ namespace Atmo.UI.DevEx.Controls {
 				));
 			}
 			return result;
+		}
+
+		private void rangeTrackBarControlWeibullSpeeds_EditValueChanged(object sender, EventArgs e) {
+			if(null != OnWeibullParamChanged) {
+				OnWeibullParamChanged();
+			}
 		}
 
 
