@@ -7,11 +7,6 @@
 
 	<loadtasks assembly="${path::combine(nant::get-base-directory(),'..\..\nantcontrib\bin\NAnt.Contrib.Tasks.dll')}" />
 	
-	<target name="default" depends="build-all"></target>
-	
-	<target name="build-all">
-		<msbuild project="${atmo-all-sln}">
-		</msbuild>
-	</target>
+	<target name="default" depends="not-a-target"></target>
 	
 </project>
