@@ -12,3 +12,4 @@
 /build/SetupMain/bin
 /build/SetupMain/buildresult
 /packages
+/src/*/bin/*
