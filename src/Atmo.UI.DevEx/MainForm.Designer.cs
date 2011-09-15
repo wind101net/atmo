@@ -205,7 +205,7 @@
 			// 
 			// barButtonItemTimeSync
 			// 
-			this.barButtonItemTimeSync.Caption = "Time Synchronization";
+			this.barButtonItemTimeSync.Caption = "Logger Time Sync...";
 			this.barButtonItemTimeSync.Id = 17;
 			this.barButtonItemTimeSync.Name = "barButtonItemTimeSync";
 			this.barButtonItemTimeSync.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemTimeSync_ItemClick);
@@ -620,7 +620,7 @@
 			this.simpleButtonTimeSync.Name = "simpleButtonTimeSync";
 			this.simpleButtonTimeSync.Size = new System.Drawing.Size(204, 35);
 			this.simpleButtonTimeSync.TabIndex = 64;
-			this.simpleButtonTimeSync.Text = "Time Sync...";
+			this.simpleButtonTimeSync.Text = "Logger Time Sync...";
 			this.simpleButtonTimeSync.Click += new System.EventHandler(this.simpleButtonTimeSync_Click);
 			// 
 			// simpleButtonTempSource

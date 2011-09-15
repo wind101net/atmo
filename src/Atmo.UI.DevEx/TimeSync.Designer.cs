@@ -35,7 +35,7 @@
 			this.syncButton.Name = "syncButton";
 			this.syncButton.Size = new System.Drawing.Size(165, 23);
 			this.syncButton.TabIndex = 1;
-			this.syncButton.Text = "Sync";
+			this.syncButton.Text = "Sync. Logger TIme";
 			this.syncButton.Click += new System.EventHandler(this.syncButton_Click);
 			// 
 			// chkAdjust
@@ -62,7 +62,7 @@
 			this.Name = "TimeSync";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Time Sync.";
+			this.Text = "Logger Time Sync";
 			this.Load += new System.EventHandler(this.TimeSync_Load);
 			((System.ComponentModel.ISupportInitialize)(this.chkAdjust.Properties)).EndInit();
 			this.ResumeLayout(false);
