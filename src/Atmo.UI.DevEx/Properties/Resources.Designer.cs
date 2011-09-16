@@ -60,6 +60,13 @@ namespace Atmo.UI.DevEx.Properties {
             }
         }
         
+        internal static System.Drawing.Icon atmo {
+            get {
+                object obj = ResourceManager.GetObject("atmo", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Download_Data {
             get {
                 object obj = ResourceManager.GetObject("Download Data", resourceCulture);
