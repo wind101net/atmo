@@ -144,7 +144,7 @@
 			// 
 			// barButtonItemImport
 			// 
-			this.barButtonItemImport.Caption = "Download Sensor Data...";
+			this.barButtonItemImport.Caption = "Download Logger Data...";
 			this.barButtonItemImport.Id = 7;
 			this.barButtonItemImport.Name = "barButtonItemImport";
 			this.barButtonItemImport.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemImport_ItemClick);
@@ -354,7 +354,7 @@
 			this.simpleButtonDownloadData.Name = "simpleButtonDownloadData";
 			this.simpleButtonDownloadData.Size = new System.Drawing.Size(204, 35);
 			this.simpleButtonDownloadData.TabIndex = 23;
-			this.simpleButtonDownloadData.Text = "Download Data...";
+			this.simpleButtonDownloadData.Text = "Download Logger Data";
 			this.simpleButtonDownloadData.Click += new System.EventHandler(this.simpleButtonDownloadData_Click);
 			// 
 			// windResourceGraph
@@ -578,7 +578,7 @@
 			this.groupControl2.Name = "groupControl2";
 			this.groupControl2.Size = new System.Drawing.Size(204, 88);
 			this.groupControl2.TabIndex = 59;
-			this.groupControl2.Text = "PWS Status";
+			this.groupControl2.Text = "Web Streaming Status";
 			// 
 			// labelControlPwsStatus
 			// 

@@ -1,7 +1,6 @@
 
 *.user
 /bin
-/_ReSharper.atmo-all
 *.suo
 *.vsp
 *.psess
@@ -13,3 +12,4 @@
 /build/SetupMain/buildresult
 /packages
 /src/*/bin/*
+*/_ReSharper.*
