@@ -305,6 +305,7 @@ namespace Atmo.UI.DevEx.Controls {
 			}
 
 			TimeSpan timeSpanPerGraph = new TimeSpan(cumulativeChartCoverage.Ticks / numberGraphsToMake);
+			var forAdd = new List<ChartControl>();
 			while(_cumulativeCharts.Count < numberGraphsToMake) {
 				var chart = new ChartControl();
 				chart.Show();
@@ -314,10 +315,10 @@ namespace Atmo.UI.DevEx.Controls {
 				chart.Legend.Visible = false;
 				chart.Titles.Add(new ChartTitle());
 				chart.Series.Add(new Series());
-				_cumulativeCharts.Add(chart);
+				_cumulativeCharts.Insert(0,chart); // these need to be reversed
 				tableLayout.Controls.Add(chart);
+				forAdd.Add(chart);
 			}
-
 
 			for (int i = 0; i < numberGraphsToMake; i++) {
 				

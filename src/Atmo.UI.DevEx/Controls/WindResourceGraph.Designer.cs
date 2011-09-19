@@ -273,16 +273,16 @@
 			// 
 			this.rangeTrackBarControlWeibullSpeeds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.rangeTrackBarControlWeibullSpeeds.EditValue = new DevExpress.XtraEditors.Repository.TrackBarRange(0, 184);
+			this.rangeTrackBarControlWeibullSpeeds.EditValue = new DevExpress.XtraEditors.Repository.TrackBarRange(0, 70);
 			this.rangeTrackBarControlWeibullSpeeds.Location = new System.Drawing.Point(243, 0);
 			this.rangeTrackBarControlWeibullSpeeds.Name = "rangeTrackBarControlWeibullSpeeds";
 			this.rangeTrackBarControlWeibullSpeeds.Properties.AutoSize = false;
-			this.rangeTrackBarControlWeibullSpeeds.Properties.Maximum = 184;
+			this.rangeTrackBarControlWeibullSpeeds.Properties.Maximum = 70;
 			this.rangeTrackBarControlWeibullSpeeds.Properties.ShowValueToolTip = true;
-			this.rangeTrackBarControlWeibullSpeeds.Properties.TickFrequency = 4;
+			this.rangeTrackBarControlWeibullSpeeds.Properties.TickFrequency = 2;
 			this.rangeTrackBarControlWeibullSpeeds.Size = new System.Drawing.Size(655, 22);
 			this.rangeTrackBarControlWeibullSpeeds.TabIndex = 2;
-			this.rangeTrackBarControlWeibullSpeeds.Value = new DevExpress.XtraEditors.Repository.TrackBarRange(0, 184);
+			this.rangeTrackBarControlWeibullSpeeds.Value = new DevExpress.XtraEditors.Repository.TrackBarRange(0, 70);
 			this.rangeTrackBarControlWeibullSpeeds.EditValueChanged += new System.EventHandler(this.rangeTrackBarControlWeibullSpeeds_EditValueChanged);
 			// 
 			// bindingSourceWindDir

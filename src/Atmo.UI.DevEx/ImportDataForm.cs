@@ -277,5 +277,9 @@ namespace Atmo.UI.DevEx {
                 device.ReconnectMedia();
             }
         }
+
+		private void textEditFolderPath_Leave(object sender, EventArgs e) {
+			HandleFolderSelected(textEditFolderPath.Text);
+		}
     }
 }
