@@ -81,21 +81,42 @@ namespace Atmo.UI.DevEx.Controls {
 
 		private void SetUserData(List<Reading> items) {
 			var userValues = GetUserValues(items);
+			var userRange = new Range(Double.NaN);
+			if(userValues.Count > 0) {
+				userRange = new Range(userValues[0].Value);
+				for(int i = 1; i < userValues.Count; i++) {
+					userRange.Merge(userValues[i].Value);
+				}
+			}
 			var series = chartControl.Series.OfType<Series>().FirstOrDefault(s => s.Name == "User");
 			series.DataSource = userValues;
 
 			var diagram = (chartControl.Diagram as XYDiagram);
 			var titleText = "User";
+			var minRange = 1.0;
 			switch (State.UserGraphAttribute) {
 				case PersistentState.UserCalculatedAttribute.AirDensity:
 					titleText = "Air Density";
+					minRange = State.MinRangeSizeAirDensity;
 					break;
 				case PersistentState.UserCalculatedAttribute.DewPoint:
 					titleText = "Dew Point";
+					minRange = State.MinRangeSizeDewPoint;
 					break;
 			}
 			var axis = diagram.SecondaryAxesY.OfType<Axis>().FirstOrDefault(a => a.Name == "User");
 			axis.Title.Text = titleText;
+
+
+			if (userRange.Size < minRange && minRange > 0) {
+				diagram.SecondaryAxesY[4].Range.Auto = false;
+				var valRange = new Range(0, minRange);
+				valRange.Recenter(userRange.Mid);
+				diagram.SecondaryAxesY[4].Range.SetMinMaxValues(valRange.Low, valRange.High);
+			}
+			else {
+				diagram.SecondaryAxesY[4].Range.Auto = true;
+			}
 		}
 
 		private List<TimeStampedValue> GetUserValues(List<Reading> items) {
@@ -170,6 +191,7 @@ namespace Atmo.UI.DevEx.Controls {
 			else {
 				diagram.AxisY.Range.Auto = true;
 			}
+
 			if (range.Pressure.Size < minRange.Pressure && minRange.Pressure > 0) {
 				diagram.SecondaryAxesY[2].Range.Auto = false;
 				var valRange = new Range(0, minRange.Pressure);
@@ -180,6 +202,7 @@ namespace Atmo.UI.DevEx.Controls {
 			else {
 				diagram.SecondaryAxesY[2].Range.Auto = true;
 			}
+
 			if (range.Humidity.Size < minRange.Humidity && minRange.Humidity > 0) {
 				diagram.SecondaryAxesY[0].Range.Auto = false;
 				var valRange = new Range(0, minRange.Humidity);
@@ -190,6 +213,7 @@ namespace Atmo.UI.DevEx.Controls {
 			else {
 				diagram.SecondaryAxesY[0].Range.Auto = true;
 			}
+
 			if (range.WindSpeed.Size < minRange.WindSpeed && minRange.WindSpeed > 0) {
 				diagram.SecondaryAxesY[1].Range.Auto = false;
 				var valRange = new Range(0, minRange.WindSpeed);
