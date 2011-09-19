@@ -329,8 +329,17 @@ namespace Atmo.UI.DevEx.Controls {
 				series.ArgumentScaleType = ScaleType.DateTime;
 				series.ValueDataMembersSerializable = SelectedAttributeType.ToString().Replace(" ", "");
 				series.ValueScaleType = ScaleType.Numerical;
-				series.View = new AreaSeriesView();
-				(series.View as AreaSeriesView).MarkerOptions.Visible = false;
+				var seriesView = new LineSeriesView(){
+					AxisYName = "Pressure AxisY",
+					Color = Color.Black,
+					//LineTensionPercent = 50,
+					PaneName = "UserAndPressure"
+				};
+				seriesView.LineMarkerOptions.Visible = false;
+				//(series.View as AreaSeriesView).MarkerOptions.Visible = false;
+
+				series.View = seriesView;
+
 				series.Label.Visible = false;
 
 				var chartTitle = chart.Titles[0];
@@ -355,11 +364,11 @@ namespace Atmo.UI.DevEx.Controls {
 					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
 				}
 				else if (timeSpanPerGraph < new TimeSpan(31, 0, 0, 1)) {
-					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Day;
+					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Hour;
 					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
 				}
 				else {
-					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Month;
+					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Hour;
 					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
 				}
 				
