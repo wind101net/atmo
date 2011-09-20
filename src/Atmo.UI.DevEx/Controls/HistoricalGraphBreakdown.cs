@@ -336,6 +336,8 @@ namespace Atmo.UI.DevEx.Controls {
 					//LineTensionPercent = 50,
 					PaneName = "UserAndPressure"
 				};
+				seriesView.LineStyle.Thickness = 1;
+				seriesView.LineStyle.DashStyle = DashStyle.Solid;
 				seriesView.LineMarkerOptions.Visible = false;
 				//(series.View as AreaSeriesView).MarkerOptions.Visible = false;
 
@@ -352,26 +354,7 @@ namespace Atmo.UI.DevEx.Controls {
 				var axisY = (chart.Diagram as XYDiagram).AxisY;
 				axisX.Reverse = false;
 				axisX.GridLines.Visible = true;
-				if (timeSpanPerGraph < new TimeSpan(0, 1, 0)) {
-					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Second;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
-				}
-				else if (timeSpanPerGraph < new TimeSpan(1, 0, 0)) {
-					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Minute;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
-				}
-				else if (timeSpanPerGraph < new TimeSpan(1, 0, 0, 0)) {
-					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Hour;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
-				}
-				else if (timeSpanPerGraph < new TimeSpan(31, 0, 0, 1)) {
-					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Hour;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
-				}
-				else {
-					axisX.DateTimeMeasureUnit = axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Hour;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
-				}
+				
 				
 				;
 			}
@@ -443,17 +426,28 @@ namespace Atmo.UI.DevEx.Controls {
 					axisY.Range.SetMinMaxValues(min, max);
 				}
 
-				if (window.Span <= new TimeSpan(1, 0, 0, 0)) {
+				var timeSpanPerGraph = window.Span;
+
+				axisX.DateTimeScaleMode = DateTimeScaleMode.Manual;
+				if (timeSpanPerGraph < new TimeSpan(0, 1, 0)) {
+					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Second;
+					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Second;
 					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
-					axisX.DateTimeScaleMode = DateTimeScaleMode.Manual;
+				}
+				else if (timeSpanPerGraph <= new TimeSpan(12, 0, 0)) {
+					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Second;
+					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Minute;
+					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
+				}
+				else if (timeSpanPerGraph <= new TimeSpan(31, 0, 0, 1)) {
 					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Minute;
 					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Minute;
+					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
 				}
 				else {
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
-					axisX.DateTimeScaleMode = DateTimeScaleMode.Manual;
-					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Day;
+					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Minute;
 					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Day;
+					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
 				}
 				axisX.Range.SetMinMaxValues(window.min, window.max);
 			}

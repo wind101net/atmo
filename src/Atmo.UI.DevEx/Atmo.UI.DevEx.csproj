@@ -259,6 +259,7 @@
       <Link>IconResource.resx</Link>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>IconResource1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
