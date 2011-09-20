@@ -27,6 +27,7 @@ using System.Threading;
 using Atmo.Data;
 using Atmo.Stats;
 using Atmo.Units;
+using DevExpress.XtraCharts;
 
 namespace Atmo.UI.DevEx.Controls {
 	public partial class WindResourceGraph : DevExpress.XtraEditors.XtraUserControl {
@@ -93,9 +94,21 @@ namespace Atmo.UI.DevEx.Controls {
 						rangeTrackBarControlWeibullSpeeds.Value.Maximum
 				};
 
+				if(windCalc.MaxWeibullSpeed == rangeTrackBarControlWeibullSpeeds.Properties.Maximum
+					&& windCalc.MinWeibullSpeed == rangeTrackBarControlWeibullSpeeds.Properties.Minimum
+				) {
+					(chartControlWindSpeedFreq.Diagram as XYDiagram).AxisX.Range.Auto = true;
+				}else {
+					(chartControlWindSpeedFreq.Diagram as XYDiagram).AxisX.Range.SetMinMaxValues(
+						windCalc.MinWeibullSpeed, windCalc.MaxWeibullSpeed
+					);
+				}
+
 				foreach (var item in items) {
 					windCalc.Process(item);
 				}
+
+
 				var speedFrequencyData = windCalc.WindSpeedFrequencyData;
 
 				var maxPercentageSpeedData = PercentageOfMax(windCalc.WindDirectionEnergyData);
