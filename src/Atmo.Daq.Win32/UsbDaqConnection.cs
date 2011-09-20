@@ -709,12 +709,14 @@ namespace Atmo.Daq.Win32 {
 					}
 				}
 				finally {
-					packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
-					packet[0] = 0;
-					packet[1] = 0x76;
-					packet[2] = checked((byte)nid);
-					if (UsbConn.WritePacket(packet)) {
-						byte[] res = UsbConn.ReadPacket();
+					for (int i = 0; i < 3; i++) {
+						packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
+						packet[0] = 0;
+						packet[1] = 0x76;
+						packet[2] = checked((byte) nid);
+						if (UsbConn.WritePacket(packet)) {
+							byte[] res = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 250));
+						}
 					}
 				}
 			}
