@@ -71,6 +71,8 @@
 			this.labelControl17 = new DevExpress.XtraEditors.LabelControl();
 			this.labelControl16 = new DevExpress.XtraEditors.LabelControl();
 			this.checkButtonPwsEnabled = new DevExpress.XtraEditors.CheckButton();
+			this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
+			this.checkEditSyncDaqClock = new DevExpress.XtraEditors.CheckEdit();
 			((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).BeginInit();
 			this.xtraTabControlSettings.SuspendLayout();
 			this.xtraTabPageGraph.SuspendLayout();
@@ -102,6 +104,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationC.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationB.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).BeginInit();
+			this.groupControl3.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.checkEditSyncDaqClock.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// simpleButtonApply
@@ -155,7 +160,7 @@
 			this.xtraTabPageGraph.Controls.Add(this.groupControlUserGraph);
 			this.xtraTabPageGraph.Controls.Add(this.groupControlGraphMinRanges);
 			this.xtraTabPageGraph.Name = "xtraTabPageGraph";
-			this.xtraTabPageGraph.Size = new System.Drawing.Size(426, 271);
+			this.xtraTabPageGraph.Size = new System.Drawing.Size(421, 265);
 			this.xtraTabPageGraph.Text = "Graph";
 			// 
 			// groupControlUserGraph
@@ -420,9 +425,10 @@
 			// 
 			// xtraTabPageData
 			// 
+			this.xtraTabPageData.Controls.Add(this.groupControl3);
 			this.xtraTabPageData.Controls.Add(this.groupControl1);
 			this.xtraTabPageData.Name = "xtraTabPageData";
-			this.xtraTabPageData.Size = new System.Drawing.Size(426, 271);
+			this.xtraTabPageData.Size = new System.Drawing.Size(421, 265);
 			this.xtraTabPageData.Text = "Data";
 			// 
 			// groupControl1
@@ -431,7 +437,7 @@
 			this.groupControl1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.groupControl1.Location = new System.Drawing.Point(0, 0);
 			this.groupControl1.Name = "groupControl1";
-			this.groupControl1.Size = new System.Drawing.Size(426, 95);
+			this.groupControl1.Size = new System.Drawing.Size(421, 95);
 			this.groupControl1.TabIndex = 2;
 			this.groupControl1.Text = "Data Units";
 			// 
@@ -453,7 +459,7 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(422, 71);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(417, 71);
 			this.tableLayoutPanel2.TabIndex = 5;
 			// 
 			// comboBoxEditSpeed
@@ -463,7 +469,7 @@
 			this.comboBoxEditSpeed.Name = "comboBoxEditSpeed";
 			this.comboBoxEditSpeed.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.comboBoxEditSpeed.Size = new System.Drawing.Size(316, 20);
+			this.comboBoxEditSpeed.Size = new System.Drawing.Size(311, 20);
 			this.comboBoxEditSpeed.TabIndex = 5;
 			// 
 			// comboBoxEditPress
@@ -473,7 +479,7 @@
 			this.comboBoxEditPress.Name = "comboBoxEditPress";
 			this.comboBoxEditPress.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.comboBoxEditPress.Size = new System.Drawing.Size(316, 20);
+			this.comboBoxEditPress.Size = new System.Drawing.Size(311, 20);
 			this.comboBoxEditPress.TabIndex = 4;
 			// 
 			// labelControl4
@@ -521,14 +527,14 @@
 			this.comboBoxEditTemp.Name = "comboBoxEditTemp";
 			this.comboBoxEditTemp.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.comboBoxEditTemp.Size = new System.Drawing.Size(316, 20);
+			this.comboBoxEditTemp.Size = new System.Drawing.Size(311, 20);
 			this.comboBoxEditTemp.TabIndex = 3;
 			// 
 			// xtraTabPagePws
 			// 
 			this.xtraTabPagePws.Controls.Add(this.groupControl2);
 			this.xtraTabPagePws.Name = "xtraTabPagePws";
-			this.xtraTabPagePws.Size = new System.Drawing.Size(426, 271);
+			this.xtraTabPagePws.Size = new System.Drawing.Size(421, 265);
 			this.xtraTabPagePws.Text = "PWS";
 			// 
 			// groupControl2
@@ -540,7 +546,7 @@
 			this.groupControl2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.groupControl2.Location = new System.Drawing.Point(0, 0);
 			this.groupControl2.Name = "groupControl2";
-			this.groupControl2.Size = new System.Drawing.Size(426, 221);
+			this.groupControl2.Size = new System.Drawing.Size(421, 221);
 			this.groupControl2.TabIndex = 0;
 			this.groupControl2.Text = "PWS Streaming Data Configuration";
 			// 
@@ -568,7 +574,7 @@
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(422, 125);
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(417, 125);
 			this.tableLayoutPanel3.TabIndex = 0;
 			// 
 			// textEditPwsPass
@@ -576,7 +582,7 @@
 			this.textEditPwsPass.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textEditPwsPass.Location = new System.Drawing.Point(123, 103);
 			this.textEditPwsPass.Name = "textEditPwsPass";
-			this.textEditPwsPass.Size = new System.Drawing.Size(296, 20);
+			this.textEditPwsPass.Size = new System.Drawing.Size(291, 20);
 			this.textEditPwsPass.TabIndex = 9;
 			// 
 			// textEditStationD
@@ -584,7 +590,7 @@
 			this.textEditStationD.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textEditStationD.Location = new System.Drawing.Point(123, 78);
 			this.textEditStationD.Name = "textEditStationD";
-			this.textEditStationD.Size = new System.Drawing.Size(296, 20);
+			this.textEditStationD.Size = new System.Drawing.Size(291, 20);
 			this.textEditStationD.TabIndex = 8;
 			// 
 			// textEditStationC
@@ -592,7 +598,7 @@
 			this.textEditStationC.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textEditStationC.Location = new System.Drawing.Point(123, 53);
 			this.textEditStationC.Name = "textEditStationC";
-			this.textEditStationC.Size = new System.Drawing.Size(296, 20);
+			this.textEditStationC.Size = new System.Drawing.Size(291, 20);
 			this.textEditStationC.TabIndex = 7;
 			// 
 			// textEditStationB
@@ -600,7 +606,7 @@
 			this.textEditStationB.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textEditStationB.Location = new System.Drawing.Point(123, 28);
 			this.textEditStationB.Name = "textEditStationB";
-			this.textEditStationB.Size = new System.Drawing.Size(296, 20);
+			this.textEditStationB.Size = new System.Drawing.Size(291, 20);
 			this.textEditStationB.TabIndex = 6;
 			// 
 			// labelControl10
@@ -673,7 +679,7 @@
 			this.textEditStationA.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textEditStationA.Location = new System.Drawing.Point(123, 3);
 			this.textEditStationA.Name = "textEditStationA";
-			this.textEditStationA.Size = new System.Drawing.Size(296, 20);
+			this.textEditStationA.Size = new System.Drawing.Size(291, 20);
 			this.textEditStationA.TabIndex = 5;
 			// 
 			// labelControl17
@@ -684,7 +690,7 @@
 			this.labelControl17.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.labelControl17.Location = new System.Drawing.Point(2, 147);
 			this.labelControl17.Name = "labelControl17";
-			this.labelControl17.Size = new System.Drawing.Size(422, 21);
+			this.labelControl17.Size = new System.Drawing.Size(417, 21);
 			this.labelControl17.TabIndex = 18;
 			this.labelControl17.Text = "Note: Wunderground.com password transmission/storage is not secure.";
 			// 
@@ -700,7 +706,7 @@
 			this.labelControl16.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.labelControl16.Location = new System.Drawing.Point(2, 168);
 			this.labelControl16.Name = "labelControl16";
-			this.labelControl16.Size = new System.Drawing.Size(422, 28);
+			this.labelControl16.Size = new System.Drawing.Size(417, 28);
 			this.labelControl16.TabIndex = 17;
 			this.labelControl16.Text = "http://www.wunderground.com/wxstation/signup.html";
 			this.labelControl16.Click += new System.EventHandler(this.labelControl16_Click);
@@ -710,10 +716,29 @@
 			this.checkButtonPwsEnabled.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.checkButtonPwsEnabled.Location = new System.Drawing.Point(2, 196);
 			this.checkButtonPwsEnabled.Name = "checkButtonPwsEnabled";
-			this.checkButtonPwsEnabled.Size = new System.Drawing.Size(422, 23);
+			this.checkButtonPwsEnabled.Size = new System.Drawing.Size(417, 23);
 			this.checkButtonPwsEnabled.TabIndex = 1;
 			this.checkButtonPwsEnabled.Text = "N/A";
 			this.checkButtonPwsEnabled.CheckedChanged += new System.EventHandler(this.checkButtonPwsEnabled_CheckedChanged);
+			// 
+			// groupControl3
+			// 
+			this.groupControl3.Controls.Add(this.checkEditSyncDaqClock);
+			this.groupControl3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupControl3.Location = new System.Drawing.Point(0, 95);
+			this.groupControl3.Name = "groupControl3";
+			this.groupControl3.Size = new System.Drawing.Size(421, 44);
+			this.groupControl3.TabIndex = 3;
+			this.groupControl3.Text = "Data Logger";
+			// 
+			// checkEditSyncDaqClock
+			// 
+			this.checkEditSyncDaqClock.Dock = System.Windows.Forms.DockStyle.Top;
+			this.checkEditSyncDaqClock.Location = new System.Drawing.Point(2, 22);
+			this.checkEditSyncDaqClock.Name = "checkEditSyncDaqClock";
+			this.checkEditSyncDaqClock.Properties.Caption = "Sync. Data Logger Clock";
+			this.checkEditSyncDaqClock.Size = new System.Drawing.Size(417, 19);
+			this.checkEditSyncDaqClock.TabIndex = 0;
 			// 
 			// SettingsForm
 			// 
@@ -765,6 +790,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationC.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationB.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).EndInit();
+			this.groupControl3.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.checkEditSyncDaqClock.Properties)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -818,5 +846,7 @@
 		private DevExpress.XtraEditors.CheckButton checkButtonPwsEnabled;
 		private DevExpress.XtraEditors.LabelControl labelControl17;
 		private DevExpress.XtraEditors.LabelControl labelControl16;
+		private DevExpress.XtraEditors.GroupControl groupControl3;
+		private DevExpress.XtraEditors.CheckEdit checkEditSyncDaqClock;
 	}
 }

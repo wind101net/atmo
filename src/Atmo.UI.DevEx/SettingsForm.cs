@@ -56,6 +56,7 @@ namespace Atmo.UI.DevEx {
 			SetUserGraphFormValue();
 			SetUnitsFormValue();
 			SetPwsFormValues();
+			checkEditSyncDaqClock.Checked = State.AutoSyncClock;
 		}
 
 		public void SetStateFromForm() {
@@ -63,6 +64,7 @@ namespace Atmo.UI.DevEx {
 			SetStateUserGraphType();
 			SetStateUnits();
 			SetStatePws();
+			State.AutoSyncClock = checkEditSyncDaqClock.Checked;
 		}
 
 		public void SetPwsFormValues() {

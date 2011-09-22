@@ -103,6 +103,7 @@ namespace Atmo.Data {
 			SpeedUnit = default(SpeedUnit);
 			SelectedDatabases = null;
 			StationNames = null;
+			AutoSyncClock = false;
 		}
 
 		[XmlIgnore]
@@ -134,6 +135,9 @@ namespace Atmo.Data {
 
 		[XmlIgnore]
 		public TimeSpan LiveTimeScale { get; set; }
+
+		[XmlElement]
+		public bool AutoSyncClock { get; set; }
 
 		[XmlElement]
 		[Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
