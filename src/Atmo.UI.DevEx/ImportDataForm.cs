@@ -17,10 +17,15 @@ namespace Atmo.UI.DevEx {
 
 
         private static IEnumerable<FileInfo> GetAnemFiles(DirectoryInfo folder) {
-            return folder.GetFiles()
-				.Where(fi => DaqDataFileInfo.AnemFileNameRegex.IsMatch(fi.Name))
-                .OrderBy(fi => fi.Name)
-            ;
+			try {
+				return folder.GetFiles()
+					.Where(fi => DaqDataFileInfo.AnemFileNameRegex.IsMatch(fi.Name))
+					.OrderBy(fi => fi.Name)
+					;
+			}
+			catch {
+				return Enumerable.Empty<FileInfo>();
+			}
         }
 
 		private static IEnumerable<PackedReading> GetPackedReadings(DaqDataFileInfo fileInfo) {
@@ -195,6 +200,7 @@ namespace Atmo.UI.DevEx {
 			private Queue<ImportDataSet> _moveSetQueue;
 			private Queue<ImportDataSet> _importSetQueue;
 			private readonly IDataStore _dataStore;
+			private string _message;
 
 			public void DoWork(object sender, DoWorkEventArgs e) {
 				var moveThread = new Thread(MoveData);
@@ -203,6 +209,7 @@ namespace Atmo.UI.DevEx {
 				importThread.Start(sender);
 				moveThread.Join();
 				importThread.Join();
+				e.Result = _message;
 			}
 
 			private void MoveData(object o) {
@@ -234,13 +241,18 @@ namespace Atmo.UI.DevEx {
 							)
 						);
 
-						if (file.Path != importTarget) {
+						if (file.Path != importTarget && file.Path.Exists) {
 							if (!importTarget.Directory.Exists)
 								importTarget.Directory.Create();
-							file.Path.CopyTo(importTarget.FullName, true);
-							currentSet.MovedToLocation[file] = importTarget;
-							if(_deleteSource) {
-								file.Path.Delete();
+							try {
+								file.Path.CopyTo(importTarget.FullName, true);
+								currentSet.MovedToLocation[file] = importTarget;
+								if (_deleteSource) {
+									file.Path.Delete();
+								}
+							}
+							catch {
+								;
 							}
 						}
 					}
@@ -282,20 +294,27 @@ namespace Atmo.UI.DevEx {
 							FileInfo fileLocation;
 							if (!currentSet.MovedToLocation.TryGetValue(file, out fileLocation))
 								fileLocation = file.Path;
-							var currentFile = file.Path == fileLocation ? file : DaqDataFileInfo.Create(fileLocation);
 
-							var pushOk = _dataStore.Push(
-								currentSet.Sensor.Name, GetPackedReadings(currentFile), _recordOverwrite);
+							if (null != fileLocation) {
 
-							if (pushOk) {
-								successCount++;
-								savedData = true;
-								lastAnemId = file.Nid;
+								var currentFile = file.Path == fileLocation ? file : DaqDataFileInfo.Create(fileLocation);
+								try {
+									var pushOk = _dataStore.Push(
+										currentSet.Sensor.Name, GetPackedReadings(currentFile), _recordOverwrite);
+
+									if (pushOk) {
+										successCount++;
+										savedData = true;
+										lastAnemId = file.Nid;
+									}
+									else {
+										failedCount++;
+									}
+								}
+								catch {
+									failedCount++;
+								}
 							}
-							else {
-								failedCount++;
-							}
-
 
 						}
 						if (savedData) {
@@ -313,11 +332,24 @@ namespace Atmo.UI.DevEx {
 						(o as BackgroundWorker).ReportProgress((int)(Progress * 100));
 					}
 				}
+
+				_message = null;
+				if (failedCount > 0 || successCount == 0)
+				{
+					_message = "Data import failed.";
+				}
+				else {
+
+					_message = "Data import completed successfully.";
+				}
+
 				lock (_queueLock) {
 					ImportProgress = 1.0;
 					(o as BackgroundWorker).ReportProgress((int)(Progress * 100));
 				}
+
 			}
+
 
 		}
 
@@ -329,6 +361,9 @@ namespace Atmo.UI.DevEx {
 			System.Diagnostics.Debug.WriteLine("DONE!!!");
 			buttonImport.Enabled = true;
 			progressBarControl1.Position = 100;
+			if(e.Result != null) {
+				MessageBox.Show(e.Result.ToString(), "Result", MessageBoxButtons.OK);
+			}
 		}
 
 		private void backgroundWorkerImport_DoWork(object sender, DoWorkEventArgs e) {
@@ -363,154 +398,8 @@ namespace Atmo.UI.DevEx {
 			buttonImport.Enabled = false;
 			backgroundWorkerImport.RunWorkerAsync(setProcessor);
 
-
-			/*
-			int failedCount = 0;
-			int successCount = 0;
-			bool savedData = false;
-			foreach (
-				var daqFileInfo
-				in _fileInfosLookup[(byte)(Char.Parse(map.AnemId.ToUpper())) - (byte)('A')]
-				.OrderBy(afi => afi.FirstStamp)
-			) {
-				if (_dataStore.Push(sensor.Name, GetPackedReadings(daqFileInfo), chkOverwrite.Checked)) {
-					successCount++;
-					savedData = true;
-				}
-				else {
-					failedCount++;
-				}
-			}
-			if (savedData) {
-				_dataStore.SetLatestSensorNameForHardwareId(sensor.Name, map.AnemId);
-			}
-			*/
-
-			// first we copy the files to a temp folder on this thread, to block
-			// as each file set is copied it should enter a queue to be imported
-			// after each import the file should be removed from
-			//  the SD and temp folders
-
-
 		}
 
-    	private void _old_buttonImport_Click(object sender, EventArgs e) {
-            var validMaps = new List<ImportAnemMap>();
-            var invalidMaps = new List<ImportAnemMap>();
-			for (int i = 0; i < _importAnemMaps.Length; i++) {
-				var anemMapControl = _importAnemMaps[i];
-                if (anemMapControl.Enabled && anemMapControl.Checked) {
-                    if (anemMapControl.IsValid) {
-                        validMaps.Add(anemMapControl);
-                    }
-                    else {
-                        invalidMaps.Add(anemMapControl);
-                    }
-                }
-            }
-            if (invalidMaps.Count > 0) {
-                MessageBox.Show(
-                    "All anemometers selected for import require a database name to be specified.",
-                    "Invalid Import Request",
-                    MessageBoxButtons.OK,MessageBoxIcon.Warning
-                );
-                return;
-            }
-            bool failed = false;
-            bool success = false;
-            foreach(var map in validMaps) {
-                
-				ISensorInfo sensor = _dataStore.GetAllSensorInfos().FirstOrDefault(
-					si => StringComparer.InvariantCultureIgnoreCase.Equals(si.Name, map.DatabaseSensorId)
-				);
-				if (null == sensor) {
-					sensor = new SensorInfo(map.DatabaseSensorId, SpeedUnit.MetersPerSec, TemperatureUnit.Celsius, PressureUnit.InchOfMercury);
-					_dataStore.AddSensor(sensor);
-				}
-
-            	bool savedData = false;
-				var packedReadings = new List<PackedReading>();
-				foreach(var daqFileInfo in _fileInfosLookup[(byte)(Char.Parse(map.AnemId.ToUpper())) - (byte)('A')]
-					.OrderBy(afi => afi.FirstStamp)
-				) {
-					packedReadings.Clear();
-					packedReadings.AddRange(GetPackedReadings(daqFileInfo));
-					if (_dataStore.Push(sensor.Name, packedReadings, chkOverwrite.Checked)) {
-						success = true;
-						savedData = true;
-					}
-					else {
-						failed = true;
-					}
-				}
-				if (savedData) {
-					_dataStore.SetLatestSensorNameForHardwareId(sensor.Name, map.AnemId);
-				}
-            }
-        	
-            if (failed || !success) {
-                MessageBox.Show(
-                    "Data import failed.",
-                    "Import Failed",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }else{
-
-				if (null != PersistentState && !String.IsNullOrEmpty(DataFolderPath)) {
-					PersistentState.LastDaqFileLoadPath = DataFolderPath;
-					PersistentState.IsDirty = true;
-				}
-
-                if (syncChk.Checked && null != _device && _device.IsConnected) {
-                    DateTime cpuTime = DateTime.Now;
-                    bool clockOk = _device.SetClock(cpuTime);
-                    //bool noData = false;
-                    if (clockOk) {
-                        DateTime minSyncStamp = _dataStore.GetMaxSyncStamp().AddSeconds(1.0);
-                        if (default(DateTime).Equals(minSyncStamp)) {
-                            MessageBox.Show(
-                                "No data was found to be adjusted but DAQ clock syncronization was successful.",
-                                "Notice",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning
-                            );
-                        }
-                        else {
-                            // todo: show progress bar and tell them the device and data are no longer needed at this time
-                            DateTime daqTime = _device.QueryClock();
-                            foreach (ISensorInfo si in _dataStore.GetAllSensorInfos()) {
-                                _dataStore.AdjustTimeStamps(si.Name, new TimeRange(minSyncStamp, daqTime), new TimeRange(minSyncStamp, cpuTime));
-                            }
-                            _dataStore.PushSyncStamp(cpuTime);
-                            // todo: hide that progress bar/dialog/message
-                            MessageBox.Show(
-                                "Data import and time synchronization completed successfully.",
-                                "Import and synchronization Complete",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information
-                            );
-                        }
-                    }
-                    else {
-                        MessageBox.Show(
-                            "DAQ clock failed to synchronize.",
-                            "Notice",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning
-                        );
-                    }
-                }
-                else {
-                    MessageBox.Show(
-                        "Data import completed successfully.",
-                        "Import Complete",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                }
-            }
-        }
 
         private void daqCheckTimer_Tick(object sender, EventArgs e) {
             syncChk.Enabled = null != _device
@@ -521,8 +410,7 @@ namespace Atmo.UI.DevEx {
         }
 
         private void ImportDataForm_Load(object sender, EventArgs e) {
-            //syncChk.Checked = null != _device && _device.IsConnected;
-            System.Threading.ThreadPool.QueueUserWorkItem(ReconnectSD, _device);
+            ThreadPool.QueueUserWorkItem(ReconnectSD, _device);
 			if (null != PersistentState && !String.IsNullOrEmpty(PersistentState.LastDaqFileLoadPath)) {
 				HandleFolderSelected(PersistentState.LastDaqFileLoadPath);
 			}
