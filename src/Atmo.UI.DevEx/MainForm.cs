@@ -276,8 +276,35 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void timerQueryTime_Tick(object sender, EventArgs e) {
+			var now = DateTime.Now;
+			labelLocalTime.Text = now.ToString();
+			if (null != _deviceConnection) {
+				var deviceTime = _deviceConnection.QueryClock();
+				if (default(DateTime) != deviceTime) {
+					labelDaqTime.Text = deviceTime.ToString();
+					var diff = deviceTime.Subtract(now);
+					if (diff < TimeSpan.Zero) {
+						diff = TimeSpan.Zero - diff;
+					}
 
-			UpdateDaqTimes();
+					bool outOfSync = diff >= new TimeSpan(0, 0, 0, 2, 0);
+
+					if (outOfSync && AppContext.PersistentState.AutoSyncClock && _deviceConnection.SetClock(DateTime.Now)) {
+						labelDaqTime.ForeColor = ForeColor;
+						now = DateTime.Now;
+					}
+					else if (outOfSync) {
+						labelDaqTime.ForeColor = now.Second%2 == 0 ? Color.Red : ForeColor;
+					}
+					else {
+						labelDaqTime.ForeColor = ForeColor;
+					}
+					return;
+				}
+			}
+			labelDaqTime.Text = "N/A";
+			labelDaqTime.ForeColor = ForeColor;
+
 			UpdateDaqStats();
 
 		}
@@ -292,31 +319,6 @@ namespace Atmo.UI.DevEx {
 			labelTmpDaq.Text = Double.IsNaN(temp) ? na : temp.ToString("F2");
 			labelVolBat.Text = Double.IsNaN(volBat) ? na : volBat.ToString("F2");
 			labelVolUsb.Text = Double.IsNaN(volUsb) ? na : volUsb.ToString("F2");
-		}
-
-		private void UpdateDaqTimes() {
-			var now = DateTime.Now;
-			labelLocalTime.Text = now.ToString();
-
-			if(null != _deviceConnection) {
-				var deviceTime = _deviceConnection.QueryClock();
-				if(default(DateTime) != deviceTime) {
-					labelDaqTime.Text = deviceTime.ToString();
-					var diff = deviceTime.Subtract(now);
-					if (diff < TimeSpan.Zero) {
-						diff = TimeSpan.Zero - diff;
-					}
-					labelDaqTime.ForeColor = (
-						(diff >= new TimeSpan(0, 0, 5) && (0 == (now.Second % 2)))
-						? Color.Red
-						: ForeColor
-					);
-					return;
-				}
-			}
-
-			labelDaqTime.Text = "N/A";
-			labelDaqTime.ForeColor = ForeColor;
 		}
 
 		private void simpleButtonPwsAction_Click(object sender, EventArgs e) {
