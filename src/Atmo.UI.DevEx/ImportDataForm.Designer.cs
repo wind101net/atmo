@@ -41,9 +41,9 @@
 			this.syncChk = new DevExpress.XtraEditors.CheckEdit();
 			this.daqCheckTimer = new System.Windows.Forms.Timer(this.components);
 			this.groupControl4 = new DevExpress.XtraEditors.GroupControl();
+			this.checkEditDelSource = new DevExpress.XtraEditors.CheckEdit();
 			this.chkOverwrite = new DevExpress.XtraEditors.CheckEdit();
 			this.backgroundWorkerImport = new System.ComponentModel.BackgroundWorker();
-			this.checkEditDelSource = new DevExpress.XtraEditors.CheckEdit();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
 			this.groupControl1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.listBoxAnemFiles)).BeginInit();
@@ -56,8 +56,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.syncChk.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl4)).BeginInit();
 			this.groupControl4.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.chkOverwrite.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.checkEditDelSource.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.chkOverwrite.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupControl1
@@ -222,7 +222,7 @@
 			this.syncChk.Location = new System.Drawing.Point(10, 30);
 			this.syncChk.Name = "syncChk";
 			this.syncChk.Properties.Caption = "Synchronize logger time and adjust data after import.";
-			this.syncChk.Size = new System.Drawing.Size(545, 19);
+			this.syncChk.Size = new System.Drawing.Size(545, 18);
 			this.syncChk.TabIndex = 0;
 			// 
 			// daqCheckTimer
@@ -243,12 +243,20 @@
 			this.groupControl4.TabIndex = 6;
 			this.groupControl4.Text = "4. Options";
 			// 
+			// checkEditDelSource
+			// 
+			this.checkEditDelSource.Location = new System.Drawing.Point(162, 31);
+			this.checkEditDelSource.Name = "checkEditDelSource";
+			this.checkEditDelSource.Properties.Caption = "Backup logger data and delete imported files from source (SD card).";
+			this.checkEditDelSource.Size = new System.Drawing.Size(346, 18);
+			this.checkEditDelSource.TabIndex = 1;
+			// 
 			// chkOverwrite
 			// 
 			this.chkOverwrite.Location = new System.Drawing.Point(10, 31);
 			this.chkOverwrite.Name = "chkOverwrite";
-			this.chkOverwrite.Properties.Caption = "Overwrite";
-			this.chkOverwrite.Size = new System.Drawing.Size(75, 19);
+			this.chkOverwrite.Properties.Caption = "Overwrite database rows";
+			this.chkOverwrite.Size = new System.Drawing.Size(146, 18);
 			this.chkOverwrite.TabIndex = 0;
 			// 
 			// backgroundWorkerImport
@@ -257,14 +265,6 @@
 			this.backgroundWorkerImport.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerImport_DoWork);
 			this.backgroundWorkerImport.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerImport_ProgressChanged);
 			this.backgroundWorkerImport.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerImport_RunWorkerCompleted);
-			// 
-			// checkEditDelSource
-			// 
-			this.checkEditDelSource.Location = new System.Drawing.Point(91, 31);
-			this.checkEditDelSource.Name = "checkEditDelSource";
-			this.checkEditDelSource.Properties.Caption = "Delete Source Files";
-			this.checkEditDelSource.Size = new System.Drawing.Size(119, 19);
-			this.checkEditDelSource.TabIndex = 1;
 			// 
 			// ImportDataForm
 			// 
@@ -296,8 +296,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.syncChk.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl4)).EndInit();
 			this.groupControl4.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.chkOverwrite.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.checkEditDelSource.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.chkOverwrite.Properties)).EndInit();
 			this.ResumeLayout(false);
 
         }
