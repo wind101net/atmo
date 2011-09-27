@@ -35,7 +35,7 @@
 			this.syncButton.Name = "syncButton";
 			this.syncButton.Size = new System.Drawing.Size(165, 23);
 			this.syncButton.TabIndex = 1;
-			this.syncButton.Text = "Sync. Logger TIme";
+			this.syncButton.Text = "Sync logger time";
 			this.syncButton.Click += new System.EventHandler(this.syncButton_Click);
 			// 
 			// chkAdjust
@@ -44,7 +44,7 @@
 			this.chkAdjust.Location = new System.Drawing.Point(14, 44);
 			this.chkAdjust.Name = "chkAdjust";
 			this.chkAdjust.Properties.Caption = "Adjust Data";
-			this.chkAdjust.Size = new System.Drawing.Size(165, 18);
+			this.chkAdjust.Size = new System.Drawing.Size(165, 19);
 			this.chkAdjust.TabIndex = 2;
 			this.chkAdjust.Visible = false;
 			// 

@@ -171,8 +171,7 @@
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemPrefs),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemSensorSetup, true),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemFirmwareUpdate),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemTimeCorrection, true),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemTimeSync)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemTimeCorrection, true)});
 			this.barSubItem3.Name = "barSubItem3";
 			// 
 			// barButtonItemPrefs

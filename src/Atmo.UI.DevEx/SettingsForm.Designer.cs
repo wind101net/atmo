@@ -47,6 +47,8 @@
 			this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
 			this.spinEditTemperature = new DevExpress.XtraEditors.SpinEdit();
 			this.xtraTabPageData = new DevExpress.XtraTab.XtraTabPage();
+			this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
+			this.checkEditSyncDaqClock = new DevExpress.XtraEditors.CheckEdit();
 			this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.comboBoxEditSpeed = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -71,8 +73,6 @@
 			this.labelControl17 = new DevExpress.XtraEditors.LabelControl();
 			this.labelControl16 = new DevExpress.XtraEditors.LabelControl();
 			this.checkButtonPwsEnabled = new DevExpress.XtraEditors.CheckButton();
-			this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
-			this.checkEditSyncDaqClock = new DevExpress.XtraEditors.CheckEdit();
 			((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).BeginInit();
 			this.xtraTabControlSettings.SuspendLayout();
 			this.xtraTabPageGraph.SuspendLayout();
@@ -89,6 +89,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.spinEditHumidity.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spinEditTemperature.Properties)).BeginInit();
 			this.xtraTabPageData.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).BeginInit();
+			this.groupControl3.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.checkEditSyncDaqClock.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
 			this.groupControl1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -104,9 +107,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationC.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationB.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).BeginInit();
-			this.groupControl3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.checkEditSyncDaqClock.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// simpleButtonApply
@@ -431,6 +431,25 @@
 			this.xtraTabPageData.Size = new System.Drawing.Size(421, 265);
 			this.xtraTabPageData.Text = "Data";
 			// 
+			// groupControl3
+			// 
+			this.groupControl3.Controls.Add(this.checkEditSyncDaqClock);
+			this.groupControl3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupControl3.Location = new System.Drawing.Point(0, 95);
+			this.groupControl3.Name = "groupControl3";
+			this.groupControl3.Size = new System.Drawing.Size(421, 44);
+			this.groupControl3.TabIndex = 3;
+			this.groupControl3.Text = "Data Logger";
+			// 
+			// checkEditSyncDaqClock
+			// 
+			this.checkEditSyncDaqClock.Dock = System.Windows.Forms.DockStyle.Top;
+			this.checkEditSyncDaqClock.Location = new System.Drawing.Point(2, 22);
+			this.checkEditSyncDaqClock.Name = "checkEditSyncDaqClock";
+			this.checkEditSyncDaqClock.Properties.Caption = "Auto sync data logger clock";
+			this.checkEditSyncDaqClock.Size = new System.Drawing.Size(417, 19);
+			this.checkEditSyncDaqClock.TabIndex = 0;
+			// 
 			// groupControl1
 			// 
 			this.groupControl1.Controls.Add(this.tableLayoutPanel2);
@@ -721,25 +740,6 @@
 			this.checkButtonPwsEnabled.Text = "N/A";
 			this.checkButtonPwsEnabled.CheckedChanged += new System.EventHandler(this.checkButtonPwsEnabled_CheckedChanged);
 			// 
-			// groupControl3
-			// 
-			this.groupControl3.Controls.Add(this.checkEditSyncDaqClock);
-			this.groupControl3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupControl3.Location = new System.Drawing.Point(0, 95);
-			this.groupControl3.Name = "groupControl3";
-			this.groupControl3.Size = new System.Drawing.Size(421, 44);
-			this.groupControl3.TabIndex = 3;
-			this.groupControl3.Text = "Data Logger";
-			// 
-			// checkEditSyncDaqClock
-			// 
-			this.checkEditSyncDaqClock.Dock = System.Windows.Forms.DockStyle.Top;
-			this.checkEditSyncDaqClock.Location = new System.Drawing.Point(2, 22);
-			this.checkEditSyncDaqClock.Name = "checkEditSyncDaqClock";
-			this.checkEditSyncDaqClock.Properties.Caption = "Sync. Data Logger Clock";
-			this.checkEditSyncDaqClock.Size = new System.Drawing.Size(417, 19);
-			this.checkEditSyncDaqClock.TabIndex = 0;
-			// 
 			// SettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -775,6 +775,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.spinEditHumidity.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.spinEditTemperature.Properties)).EndInit();
 			this.xtraTabPageData.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).EndInit();
+			this.groupControl3.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.checkEditSyncDaqClock.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
 			this.groupControl1.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);
@@ -790,9 +793,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationC.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationB.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).EndInit();
-			this.groupControl3.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.checkEditSyncDaqClock.Properties)).EndInit();
 			this.ResumeLayout(false);
 
 		}
