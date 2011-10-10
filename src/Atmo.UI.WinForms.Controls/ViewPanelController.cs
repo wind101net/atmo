@@ -122,7 +122,7 @@ namespace Atmo.UI.WinForms.Controls {
 		}
 
 		public IEnumerable<TView> Views {
-			get { return Container.Controls.OfType<TView>(); }
+			get { return Container.Controls.OfType<TView>().Reverse(); }
 		}
 
 		private void Synchronize(TView[] views, TModel[] models) {

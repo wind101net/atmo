@@ -294,7 +294,7 @@ namespace Atmo.UI.DevEx {
 						diff = TimeSpan.Zero - diff;
 					}
 
-					bool outOfSync = diff >= new TimeSpan(0, 0, 0, 2, 0);
+					bool outOfSync = diff >= new TimeSpan(0, 0, 0, 3, 0);
 					labelDaqTime.ForeColor = ForeColor;
 
 					if (outOfSync && AppContext.PersistentState.AutoSyncClock

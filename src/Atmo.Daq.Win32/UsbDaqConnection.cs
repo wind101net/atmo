@@ -863,7 +863,7 @@ namespace Atmo.Daq.Win32 {
 							foreach (MemoryRegionData block in memoryRegionDataBlocks) {
 								byte[] data = block.Data.ToArray();
 								int checksumFails = 0;
-								int macChecksumFails = 100;
+								int macChecksumFails = 64;
 								for (int i = 0; i < data.Length; i += 32) {
 									int bytesToWrite = Math.Min(32, data.Length - i);
 									int address = i + (int) block.Address;
