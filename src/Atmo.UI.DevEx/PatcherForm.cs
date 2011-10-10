@@ -104,7 +104,7 @@ namespace Atmo.UI.DevEx {
                 }
 
                 if (connected) {
-                    programmed = daqBootloader.Program(_patchData,new Action<double,string>(daqReportProgress));
+                    programmed = daqBootloader.Program(_patchData,daqReportProgress);
                     if (programmed)
                     {
                         daqBootloader.Reboot();
@@ -185,12 +185,14 @@ namespace Atmo.UI.DevEx {
             }
 
             bool programmed = false;
-            bool connected = false;
+			bool connected = _device.Connect();
 
-
-            
-            if (connected = _device.Connect()) {
-                programmed = _device.ProgramAnem(_anemNid, _anemPatchData, new Action<double, string>(anemReportProgress));
+            if (connected) {
+                programmed = _device.ProgramAnem(
+					_anemNid,
+					_anemPatchData,
+					anemReportProgress
+				);
             }
 
             if (programmed) {

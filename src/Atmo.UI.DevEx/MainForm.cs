@@ -255,8 +255,12 @@ namespace Atmo.UI.DevEx {
 				MessageBox.Show("Device is not supported", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
+			timerQueryTime.Stop();
+			timerLive.Stop();
 			var patchForm = new PatcherForm(_deviceConnection as UsbDaqConnection);
 			patchForm.ShowDialog();
+			timerLive.Start();
+			timerQueryTime.Start();
 		}
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -275,6 +279,9 @@ namespace Atmo.UI.DevEx {
 			}
 		}
 
+		private readonly TimeSpan MaxClockUpdateFrequency = new TimeSpan(0,0,0,30);
+		private DateTime LastClockUpdate = default(DateTime);
+
 		private void timerQueryTime_Tick(object sender, EventArgs e) {
 			var now = DateTime.Now;
 			labelLocalTime.Text = now.ToString();
@@ -288,12 +295,22 @@ namespace Atmo.UI.DevEx {
 					}
 
 					bool outOfSync = diff >= new TimeSpan(0, 0, 0, 2, 0);
+					labelDaqTime.ForeColor = ForeColor;
 
-					if (outOfSync && AppContext.PersistentState.AutoSyncClock && _deviceConnection.SetClock(DateTime.Now)) {
-						labelDaqTime.ForeColor = ForeColor;
-						now = DateTime.Now;
+					if (outOfSync && AppContext.PersistentState.AutoSyncClock
+						&& (now - LastClockUpdate) >= MaxClockUpdateFrequency
+					) {
+						System.Diagnostics.Debug.WriteLine("BeginClockSync");
+						if (_deviceConnection.SetClock(DateTime.Now)) {
+							labelDaqTime.ForeColor = ForeColor;
+							System.Diagnostics.Debug.WriteLine("EndClockSync: OK!");
+							LastClockUpdate = DateTime.Now;
+							return;
+						}
+						System.Diagnostics.Debug.WriteLine("EndClockSync: Fail");
 					}
-					else if (outOfSync) {
+
+					if (outOfSync) {
 						labelDaqTime.ForeColor = now.Second%2 == 0 ? Color.Red : ForeColor;
 					}
 					else {
