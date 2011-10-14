@@ -373,7 +373,10 @@ namespace Atmo {
 
 
 		public bool IsValid {
-			get { return 0 != ((ushort)PackedValuesFlags.AllDataFlags & _temperatureAndFlags); }
+			get {
+				return 0 != ((ushort)PackedValuesFlags.AllDataFlags & _temperatureAndFlags)
+					|| IsTemperatureValid;
+			}
 		}
 
 		public bool IsTemperatureValid {
