@@ -181,9 +181,10 @@ namespace Atmo.Data {
 			}
 
 			// at this point there is space to shift or grow into
+			bool ok = false;
 			if (delta < 0) {
 				// shrinking
-				bool ok = ShrinkRecords(sensorId, currentRange, delta);
+				ok = ShrinkRecords(sensorId, currentRange, delta);
 
 				// then shift all if needed
 				if (offset != 0) {
@@ -193,7 +194,7 @@ namespace Atmo.Data {
 				return ok;
 			}
 			else {
-				bool ok = false;
+				ok = false;
 				// need to shift the start into place
 				if (offset != 0) {
 					ok = 0 != OffsetRecords(sensorId, currentRange, offset);
@@ -203,9 +204,16 @@ namespace Atmo.Data {
 					//ok |= InterpolateInsertRecords(sensorId, new PosixTimeRange(currentRange.High - offset + 1, correctedRange.High), correctedRange);
 					ok |= ExpandRecords(sensorId, new PosixTimeRange(currentRange.Low + offset, currentRange.High + offset), delta);
 				}
-				return ok;
 			}
-			//return false;
+
+			var completeRange = new PosixTimeRange(
+				new PosixTime(Math.Min(currentRange.Low,correctedRange.Low)),
+				new PosixTime(Math.Min(currentRange.High,correctedRange.High))
+			);
+
+			ok = UpdateSummaryRecords(completeRange, sensorName, sensorId) | ok;
+
+			return ok;
 		}
 
 		private int OffsetRecords(int sensorId, PosixTimeRange range, int offset) {
@@ -407,75 +415,6 @@ namespace Atmo.Data {
 
 		IEnumerable<IReading> IDataStore.GetReadings(string sensor, DateTime from, TimeSpan span) {
 			return GetReadings(sensor, from, span).OfType<IReading>();
-		}
-
-		[Obsolete]
-		private bool DeleteRecords(int sensorId, PosixTimeRange deletionRange) {
-			if (!ForceConnectionOpen()) {
-				throw new Exception("Could not open database.");
-			}
-			return false;
-		}
-
-		[Obsolete]
-		private bool InterpolateInsertRecords(int sensorId, PosixTimeRange insertionRange, PosixTimeRange existingDataRange) {
-			if (!ForceConnectionOpen()) {
-				throw new Exception("Could not open database.");
-			}
-			byte[] values = null;
-			using (IDbCommand command = _connection.CreateCommand()) {
-				command.CommandText = "SElECT Record.[values] FROM Record WHERE sensorId = @sensorId AND stamp >= @minStamp AND stamp <= @maxStamp ORDER BY stamp DESC LIMIT 1";
-				command.CommandType = CommandType.Text;
-				DbParameter sensorIdParam = command.CreateParameter() as DbParameter;
-				sensorIdParam.DbType = DbType.Int32;
-				sensorIdParam.ParameterName = "sensorId";
-				sensorIdParam.Value = sensorId;
-				command.Parameters.Add(sensorIdParam);
-				DbParameter minStampParam = command.CreateParameter() as DbParameter;
-				minStampParam.DbType = DbType.Int32;
-				minStampParam.ParameterName = "minStamp";
-				minStampParam.Value = existingDataRange.Low;
-				command.Parameters.Add(minStampParam);
-				DbParameter maxStampParam = command.CreateParameter() as DbParameter;
-				maxStampParam.DbType = DbType.Int32;
-				maxStampParam.ParameterName = "maxStamp";
-				maxStampParam.Value = existingDataRange.High;
-				command.Parameters.Add(maxStampParam);
-				using (IDataReader reader = command.ExecuteReader()) {
-					if (reader.Read()) {
-						values = reader.GetValue(0) as byte[];
-					}
-				}
-			}
-			if (null == values) {
-				return false;
-			}
-
-			using (IDbCommand command = _connection.CreateCommand()) {
-				command.CommandText = "INSERT INTO Record (sensorId,stamp,[values]) VALUES (@sensorId,@stamp,@values)";
-				command.CommandType = CommandType.Text;
-				DbParameter sensorIdParam = command.CreateParameter() as DbParameter;
-				sensorIdParam.DbType = DbType.Int32;
-				sensorIdParam.ParameterName = "sensorId";
-				sensorIdParam.Value = sensorId;
-				command.Parameters.Add(sensorIdParam);
-				DbParameter stampParam = command.CreateParameter() as DbParameter;
-				stampParam.DbType = DbType.Int32;
-				stampParam.ParameterName = "stamp";
-				stampParam.Value = insertionRange.Low;
-				command.Parameters.Add(stampParam);
-				DbParameter valuesParam = command.CreateParameter() as DbParameter;
-				valuesParam.DbType = DbType.Binary;
-				valuesParam.ParameterName = "values";
-				valuesParam.Value = values;
-				command.Parameters.Add(valuesParam);
-				for (int stamp = insertionRange.Low; stamp <= insertionRange.High; stamp++) {
-					stampParam.Value = stamp;
-					command.ExecuteNonQuery();
-				}
-			}
-
-			return true;
 		}
 
 		public string GetLatestSensorNameForHardwareId(string hardwareId) {
@@ -774,6 +713,12 @@ namespace Atmo.Data {
 
 		private static DateTime PeriodTenMinutes(DateTime time) {
 			return new DateTime(time.Year,time.Month,time.Day, time.Hour, (time.Minute / 10) * 10,0);
+		}
+
+		private bool UpdateSummaryRecords(PosixTimeRange rangeCovered, string sensorName, int sensorId) {
+			return UpdateSummaryRecords(
+				new TimeRange(rangeCovered.Low.AsDateTime, rangeCovered.High.AsDateTime),
+				sensorName, sensorId);
 		}
 
 		private bool UpdateSummaryRecords(TimeRange rangeCovered, string sensorName, int sensorId) {
