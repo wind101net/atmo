@@ -101,39 +101,38 @@ namespace Atmo.Data {
 		public bool AdjustTimeStamps(
 			string sensorName,
 			TimeRange currentRange,
-			TimeRange correctedRange
+			TimeRange correctedRange,
+			bool canOverwrite
 		) {
 			return AdjustTimeStamps(
 				sensorName,
 				new PosixTimeRange(currentRange),
-				new PosixTimeRange(correctedRange)
+				new PosixTimeRange(correctedRange),
+				canOverwrite
 			);
 		}
 
 		public bool AdjustTimeStamps(
 			string sensorName,
 			PosixTimeRange currentRange,
-			PosixTimeRange correctedRange
+			PosixTimeRange correctedRange,
+			bool canOverwrite
 		) {
 			int delta = correctedRange.Span - currentRange.Span;
 			int offset = correctedRange.Low - currentRange.Low;
 
 			if (delta == 0 && offset == 0)
 				return false;
-			
+
 			if (!ForceConnectionOpen())
 				throw new Exception("Could not open database.");
-			
+
 			int sensorId = -1;
-			using (IDbCommand command = _connection.CreateCommand()) {
-				command.CommandText = "SELECT sensorID FROM Sensor WHERE nameKey = @nameKey";
-				command.CommandType = CommandType.Text;
-				DbParameter nameIdParam = command.CreateParameter() as DbParameter;
-				nameIdParam.DbType = DbType.String;
-				nameIdParam.ParameterName = "nameKey";
-				nameIdParam.Value = sensorName;
-				command.Parameters.Add(nameIdParam);
-				using (IDataReader reader = command.ExecuteReader()) {
+
+			using(var command = _connection.CreateTextCommand(
+				"SELECT sensorID FROM Sensor WHERE nameKey = @nameKey")) {
+				command.AddParameter("nameKey", DbType.String, sensorName);
+				using (var reader = command.ExecuteReader()) {
 					if (reader.Read()) {
 						sensorId = reader.GetInt32(0);
 					}
@@ -142,52 +141,38 @@ namespace Atmo.Data {
 
 			if (sensorId < 0)
 				throw new KeyNotFoundException("Sensor not found in datastore.");
-			
-			if (correctedRange.Low < currentRange.Low || correctedRange.High > currentRange.High) {
-				using (IDbCommand command = _connection.CreateCommand()) {
-					command.CommandText = "SELECT COUNT(*) FROM Record WHERE sensorId = @sensorId";
-					command.CommandType = CommandType.Text;
-					DbParameter nameIdParam = command.CreateParameter() as DbParameter;
-					nameIdParam.DbType = DbType.Int32;
-					nameIdParam.ParameterName = "sensorId";
-					nameIdParam.Value = sensorId;
-					command.Parameters.Add(nameIdParam);
 
-					List<string> orJoin = new List<string>();
+			if (
+				!canOverwrite
+				&& (correctedRange.Low < currentRange.Low || correctedRange.High > currentRange.High)
+			) {
+				using (var command = _connection.CreateTextCommand("SELECT COUNT(*) FROM Record WHERE sensorId = @sensorId")) {
+
+					var nameIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
+
+					var orJoin = new List<string>();
 					if (correctedRange.Low < currentRange.Low) {
 						orJoin.Add("(stamp >= @corLow AND stamp < @curLow)");
 					}
-					DbParameter corLowParam = command.CreateParameter() as DbParameter;
-					corLowParam.DbType = DbType.Int32;
-					corLowParam.ParameterName = "corLow";
-					corLowParam.Value = correctedRange.Low;
-					DbParameter curLowParam = command.CreateParameter() as DbParameter;
-					curLowParam.DbType = DbType.Int32;
-					curLowParam.ParameterName = "curLow";
-					curLowParam.Value = currentRange.Low;
-					command.Parameters.Add(corLowParam);
-					command.Parameters.Add(curLowParam);
+
+					var corLowParam = command.AddParameter("corLow", DbType.Int32, correctedRange.Low);
+					var curLowParam = command.AddParameter("curLow", DbType.Int32, currentRange.Low);
+
 					if (correctedRange.High > currentRange.High) {
 						orJoin.Add("(stamp <= @corHigh AND stamp > @curHigh)");
 					}
-					DbParameter corHighParam = command.CreateParameter() as DbParameter;
-					corHighParam.DbType = DbType.Int32;
-					corHighParam.ParameterName = "corHigh";
-					corHighParam.Value = correctedRange.High;
-					DbParameter curHighParam = command.CreateParameter() as DbParameter;
-					curHighParam.DbType = DbType.Int32;
-					curHighParam.ParameterName = "curHigh";
-					curHighParam.Value = currentRange.High;
-					command.Parameters.Add(corHighParam);
-					command.Parameters.Add(curHighParam);
-					command.CommandText += String.Concat(" AND (", String.Join(" OR ", orJoin.ToArray()), ") AND NOT (stamp >= @curLow AND stamp <= @curHigh)");
+					var corHighParam = command.AddParameter("corHigh", DbType.Int32, correctedRange.High);
+					var curHighParam = command.AddParameter("curHigh", DbType.Int32, currentRange.High);
 
+					command.CommandText += " AND (" +
+						String.Join(" OR ", orJoin.ToArray()) +
+						") AND NOT (stamp >= @curLow AND stamp <= @curHigh)";
 
 					int count = 0;
-					using (IDataReader reader = command.ExecuteReader()) {
+					using (var reader = command.ExecuteReader()) {
 						if (reader.Read())
 							count = reader.GetInt32(0);
-						
+
 					}
 					if (count > 0) {
 						throw new InvalidOperationException("Cannot overwrite existing datastore entries.");
@@ -225,38 +210,43 @@ namespace Atmo.Data {
 
 		private int OffsetRecords(int sensorId, PosixTimeRange range, int offset) {
 			int c = 0;
-			if (0 == offset) {
+			if (0 == offset)
 				return 0;
-			}
-			if (!ForceConnectionOpen()) {
+			
+			if (!ForceConnectionOpen())
 				throw new Exception("Could not open database.");
-			}
-			using (IDbCommand command = _connection.CreateCommand()) {
+
+			const string delLowCommandText = "DELETE FROM Record WHERE stamp >= @minDelRangeInclusive AND stamp < @maxDelRangeExclusive";
+			const string delHighCommandText = "DELETE FROM Record WHERE stamp > @minDelRangeExclusive AND stamp <= @maxDelRangeInclusive";
+			const string shiftCommandText = "UPDATE Record SET stamp = stamp + @offset WHERE sensorId = @sensorId AND stamp = @stamp";
+
+			using (var command = _connection.CreateTextCommand(String.Empty)) {
 				command.Transaction = _connection.BeginTransaction();
-				command.CommandText = "UPDATE Record SET stamp = stamp + @offset WHERE sensorId = @sensorId AND stamp = @stamp";
-				command.CommandType = CommandType.Text;
-				DbParameter sensorIdParam = command.CreateParameter() as DbParameter;
-				sensorIdParam.DbType = DbType.Int32;
-				sensorIdParam.ParameterName = "sensorId";
-				sensorIdParam.Value = sensorId;
-				command.Parameters.Add(sensorIdParam);
-				DbParameter stampParam = command.CreateParameter() as DbParameter;
-				stampParam.DbType = DbType.Int32;
-				stampParam.ParameterName = "stamp";
-				stampParam.Value = 0;
-				command.Parameters.Add(stampParam);
-				DbParameter offsetParam = command.CreateParameter() as DbParameter;
-				offsetParam.DbType = DbType.Int32;
-				offsetParam.ParameterName = "offset";
-				offsetParam.Value = offset;
-				command.Parameters.Add(offsetParam);
 				if (offset < 0) {
+					command.CommandText = delLowCommandText;
+					var minDelRangeInclusive = command.AddParameter("minDelRangeInclusive", DbType.Int32, range.Low.Value + offset);
+					var maxDelRangeExclusive = command.AddParameter("maxDelRangeExclusive", DbType.Int32, range.Low);
+					var deletedCount = command.ExecuteNonQuery();
+
+					command.CommandText = shiftCommandText;
+					var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
+					var stampParam = command.AddParameter("stamp", DbType.Int32, 0);
+					var offsetParam = command.AddParameter("offset", DbType.Int32, offset);
 					for (int i = range.Low; i <= range.High; i++) {
 						stampParam.Value = i;
 						c += command.ExecuteNonQuery();
 					}
 				}
 				else {
+					command.CommandText = delHighCommandText;
+					var minDelRangeExclusive = command.AddParameter("minDelRangeExclusive", DbType.Int32, range.High);
+					var maxDelRangeInclusive = command.AddParameter("maxDelRangeInclusive", DbType.Int32, range.High.Value + offset);
+					var deletedCount = command.ExecuteNonQuery();
+
+					command.CommandText = shiftCommandText;
+					var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
+					var stampParam = command.AddParameter("stamp", DbType.Int32, 0);
+					var offsetParam = command.AddParameter("offset", DbType.Int32, offset);
 					for (int i = range.High; i >= range.Low; i--) {
 						stampParam.Value = i;
 						c += command.ExecuteNonQuery();
@@ -286,36 +276,24 @@ namespace Atmo.Data {
 			int splitParts = Math.Min(rangeSpan, delta + 1);
 
 
-			using (IDbCommand command = _connection.CreateCommand()) {
+			const string moveCommandText =
+				"UPDATE OR REPLACE Record SET stamp = (stamp + @offset) WHERE sensorId = @sensorId AND stamp = @stamp";
+			const string delOverflowCommand =
+				"DELETE FROM Record WHERE stamp > @minRange AND stamp < @maxRange";
+
+			using (var command = _connection.CreateTextCommand(String.Empty)) {
 				command.Transaction = _connection.BeginTransaction();
-				command.CommandText = "UPDATE OR REPLACE Record SET stamp = (stamp + @offset) WHERE sensorId = @sensorId AND stamp = @stamp";
-				command.CommandType = CommandType.Text;
-				DbParameter sensorIdParam = command.CreateParameter() as DbParameter;
-				sensorIdParam.DbType = DbType.Int32;
-				sensorIdParam.ParameterName = "sensorId";
-				sensorIdParam.Value = sensorId;
-				command.Parameters.Add(sensorIdParam);
-				/*DbParameter minStampParam = command.CreateParameter() as DbParameter;
-				minStampParam.DbType = DbType.Int32;
-				minStampParam.ParameterName = "minStamp";
-				minStampParam.Value = 0;
-				command.Parameters.Add(minStampParam);
-				DbParameter maxStampParam = command.CreateParameter() as DbParameter;
-				maxStampParam.DbType = DbType.Int32;
-				maxStampParam.ParameterName = "maxStamp";
-				maxStampParam.Value = 0;
-				command.Parameters.Add(maxStampParam);*/
-				DbParameter offsetParam = command.CreateParameter() as DbParameter;
-				offsetParam.DbType = DbType.Int32;
-				offsetParam.ParameterName = "offset";
-				offsetParam.Value = 0;
-				command.Parameters.Add(offsetParam);
-				DbParameter stampParam = command.CreateParameter() as DbParameter;
-				stampParam.DbType = DbType.Int32;
-				stampParam.ParameterName = "stamp";
-				stampParam.Value = 0;
-				command.Parameters.Add(stampParam);
-				//for (int partIndex = 0; partIndex < splitParts; partIndex++)
+
+				command.CommandText = delOverflowCommand;
+				command.AddParameter("minRange", DbType.Int32, range.High);
+				command.AddParameter("maxRange", DbType.Int32, range.High.Value + delta);
+				command.ExecuteNonQuery();
+				
+				var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
+				var offsetParam = command.AddParameter("offset", DbType.Int32, 0);
+				var stampParam = command.AddParameter("stamp", DbType.Int32, 0);
+
+				command.CommandText = moveCommandText;
 				for (int partIndex = splitParts - 1; partIndex >= 0; partIndex--) {
 
 					int curPartIndex = ((partIndex * rangeSpan) / splitParts);
@@ -353,32 +331,19 @@ namespace Atmo.Data {
 				return false;
 			}
 
-			using (IDbCommand command = _connection.CreateCommand()) {
+			using (var command = _connection.CreateTextCommand(
+				"UPDATE OR REPLACE Record SET stamp = stamp - @offset WHERE sensorId = @sensorId AND stamp = @stamp")) {
 				command.Transaction = _connection.BeginTransaction();
-				command.CommandText = "UPDATE OR REPLACE Record SET stamp = stamp - @offset WHERE sensorId = @sensorId AND stamp = @stamp";
-				command.CommandType = CommandType.Text;
-				DbParameter sensorIdParam = command.CreateParameter() as DbParameter;
-				sensorIdParam.DbType = DbType.Int32;
-				sensorIdParam.ParameterName = "sensorId";
-				sensorIdParam.Value = sensorId;
-				command.Parameters.Add(sensorIdParam);
-				DbParameter stampParam = command.CreateParameter() as DbParameter;
-				stampParam.DbType = DbType.Int32;
-				stampParam.ParameterName = "stamp";
-				stampParam.Value = 0;
-				command.Parameters.Add(stampParam);
-				DbParameter offsetParam = command.CreateParameter() as DbParameter;
-				offsetParam.DbType = DbType.Int32;
-				offsetParam.ParameterName = "offset";
-				offsetParam.Value = 0;
-				command.Parameters.Add(offsetParam);
+
+				var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
+				var stampParam = command.AddParameter("stamp", DbType.Int32, 0);
+				var offsetParam = command.AddParameter("offset", DbType.Int32, 0);
+				
 				for (int delNumber = 0; delNumber < totalDeletions; delNumber++) {
 					// scoot it down
 					int delIndex = (rangeSpan * (delNumber + 1)) / ((rangeSpan - totalDeletions) + 1);
 					int nextIndex = (rangeSpan * (delNumber + 2)) / ((rangeSpan - totalDeletions) + 1);
-					nextIndex = System.Math.Min(nextIndex, range.High);
-					//minStampParam.Value = delIndex;
-					//maxStampParam.Value = nextIndex;
+					nextIndex = Math.Min(nextIndex, range.High);
 					offsetParam.Value = delNumber + 1;
 					for (int i = delIndex; i < nextIndex; i++) {
 						stampParam.Value = i;
@@ -386,25 +351,12 @@ namespace Atmo.Data {
 					}
 				}
 
-
 				command.CommandText = "DELETE FROM Record WHERE sensorId = @sensorId AND stamp > @minStamp AND stamp <= @maxStamp";
-				command.CommandType = CommandType.Text;
 				command.Parameters.Clear();
-				/*DbParameter sensorIdParam = command.CreateParameter() as DbParameter;
-				sensorIdParam.DbType = DbType.Int32;
-				sensorIdParam.ParameterName = "sensorId";
-				sensorIdParam.Value = sensorId;*/
 				command.Parameters.Add(sensorIdParam);
-				DbParameter minStampParam = command.CreateParameter() as DbParameter;
-				minStampParam.DbType = DbType.Int32;
-				minStampParam.ParameterName = "minStamp";
-				minStampParam.Value = range.High - totalDeletions;
-				command.Parameters.Add(minStampParam);
-				DbParameter maxStampParam = command.CreateParameter() as DbParameter;
-				maxStampParam.DbType = DbType.Int32;
-				maxStampParam.ParameterName = "maxStamp";
-				maxStampParam.Value = range.High;
-				command.Parameters.Add(maxStampParam);
+				var minStampParam = command.AddParameter("minStamp", DbType.Int32, range.High - totalDeletions);
+				var maxStampParam = command.AddParameter("maxStamp", DbType.Int32, range.High);
+
 				command.ExecuteNonQuery();
 				command.Transaction.Commit();
 			}

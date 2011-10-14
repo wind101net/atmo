@@ -52,7 +52,6 @@ namespace Atmo.Data {
 		/// <param name="sensor">The sensor name to get readings for.</param>
 		/// <param name="from">The date to start retrieving from.</param>
 		/// <param name="span">The direction and magnitude of time to retrieve records for, usually a negative value.</param>
-		/// <param name="summaryUnit">The time span of each summary.</param>
 		/// <param name="desiredSummaryUnitSpan">The desired summary unit span.</param>
 		/// <returns>A collection of sensor reading summaries.</returns>
 		/// <remarks>Summaries are zero aligned.</remarks>
@@ -90,7 +89,8 @@ namespace Atmo.Data {
 		bool AdjustTimeStamps(
 			string sensorName,
 			TimeRange currentRange,
-			TimeRange correctedRange
+			TimeRange correctedRange,
+			bool canOverwrite
 		);
 
 		string GetLatestSensorNameForHardwareId(string hardwareId);

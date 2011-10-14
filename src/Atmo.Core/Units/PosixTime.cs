@@ -28,7 +28,13 @@ namespace Atmo.Units {
 	/// <summary>
 	/// A 32bit signed posix formated time.
 	/// </summary>
-	public struct PosixTime {
+	public struct PosixTime :
+		IConvertible,
+		IEquatable<PosixTime>,
+		IEquatable<int>,
+		IEquatable<DateTime>,
+		IComparable<PosixTime>
+	{
 
 		public static bool operator > (PosixTime a, PosixTime b) {
 			return a.Value > b.Value;
@@ -54,6 +60,14 @@ namespace Atmo.Units {
 			return new PosixTime(i);
 		}
 
+		public static implicit operator DateTime(PosixTime t) {
+			return t.AsDateTime;
+		}
+
+		public static implicit operator PosixTime(DateTime t) {
+			return new PosixTime(t);
+		}
+
 		public readonly int Value;
 
 		public PosixTime(int value) {
@@ -64,7 +78,108 @@ namespace Atmo.Units {
 			Value = UnitUtility.ConvertToPosixTime(dateTime);
 		}
 
+		public DateTime AsDateTime { get { return UnitUtility.ConvertFromPosixTime(Value); } }
 
+		public TypeCode GetTypeCode() {
+			return TypeCode.DateTime;
+		}
 
+		public bool ToBoolean(IFormatProvider provider) {
+			return Convert.ToBoolean(ToInt32(provider), provider);
+		}
+
+		public byte ToByte(IFormatProvider provider) {
+			return Convert.ToByte(ToInt32(provider), provider);
+		}
+
+		public char ToChar(IFormatProvider provider) {
+			return Convert.ToChar(ToInt32(provider), provider);
+		}
+
+		public DateTime ToDateTime(IFormatProvider provider) {
+			return AsDateTime;
+		}
+
+		public decimal ToDecimal(IFormatProvider provider) {
+			return Convert.ToDecimal(ToInt32(provider), provider);
+		}
+
+		public double ToDouble(IFormatProvider provider) {
+			return Convert.ToDouble(ToInt32(provider), provider);
+		}
+
+		public short ToInt16(IFormatProvider provider) {
+			return Convert.ToInt16(ToInt32(provider), provider);
+		}
+
+		public int ToInt32(IFormatProvider provider) {
+			return Value;
+		}
+
+		public long ToInt64(IFormatProvider provider) {
+			return Value;
+		}
+
+		public sbyte ToSByte(IFormatProvider provider) {
+			return Convert.ToSByte(ToInt32(provider), provider);
+		}
+
+		public float ToSingle(IFormatProvider provider) {
+			return Convert.ToSingle(ToInt32(provider), provider);
+		}
+
+		public string ToString(IFormatProvider provider) {
+			return Convert.ToString(ToInt32(provider), provider);
+		}
+
+		public object ToType(Type conversionType, IFormatProvider provider) {
+			return Convert.ChangeType(ToInt32(provider), conversionType);
+		}
+
+		public ushort ToUInt16(IFormatProvider provider) {
+			return Convert.ToUInt16(ToInt32(provider), provider);
+		}
+
+		public uint ToUInt32(IFormatProvider provider) {
+			return Convert.ToUInt32(ToInt32(provider), provider);
+		}
+
+		public ulong ToUInt64(IFormatProvider provider) {
+			return Convert.ToUInt64(ToInt32(provider), provider);
+		}
+
+		public bool Equals(PosixTime other) {
+			return Value == other.Value;
+		}
+
+		public bool Equals(int other) {
+			return Value == other;
+		}
+
+		public bool Equals(DateTime other) {
+			return AsDateTime == other;
+		}
+
+		public int CompareTo(PosixTime other) {
+			return Value.CompareTo(other.Value);
+		}
+
+		public override bool Equals(object obj) {
+			return obj is PosixTime
+				? Equals((PosixTime)obj)
+				: obj is DateTime
+				? Equals((DateTime)obj)
+				: obj is int
+				? Equals((int)obj)
+				: false;
+		}
+
+		public override int GetHashCode() {
+			return Value ^ -92837840;
+		}
+
+		public override string ToString() {
+			return AsDateTime.ToString();
+		}
 	}
 }

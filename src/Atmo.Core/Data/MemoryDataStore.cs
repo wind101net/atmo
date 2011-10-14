@@ -166,7 +166,7 @@ namespace Atmo.Data {
 			return default(DateTime);
 		}
 
-		public bool AdjustTimeStamps(string sensorName, TimeRange currentRange, TimeRange correctedRange) {
+		public bool AdjustTimeStamps(string sensorName, TimeRange currentRange, TimeRange correctedRange, bool canOverwrite) {
 			return false;
 		}
 

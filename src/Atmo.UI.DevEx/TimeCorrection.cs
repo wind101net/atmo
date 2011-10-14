@@ -30,7 +30,8 @@ using System.Linq;
 namespace Atmo.UI.DevEx {
     public partial class TimeCorrection : DevExpress.XtraEditors.XtraForm {
 
-        private IDataStore _dataStore;
+        private readonly IDataStore _dataStore;
+    	private const bool _overwrite = true;
         
         public TimeCorrection(IDataStore dataStore) {
             _dataStore = dataStore;
@@ -42,20 +43,22 @@ namespace Atmo.UI.DevEx {
         }
 
         private void adjustButton_Click(object sender, EventArgs e) {
-            if (_dataStore.AdjustTimeStamps(
-                sensorNameSelector.EditValue as string,
-                new TimeRange(
-                    dateTimeRangePickerData.From, dateTimeRangePickerData.To
-                ),
-                new TimeRange(
-                    dateTimeRangePickerCorrect.From, dateTimeRangePickerCorrect.To
-                )
-            )) {
-                MessageBox.Show("Correction applied.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        	var adjustOk = _dataStore.AdjustTimeStamps(
+        		sensorNameSelector.EditValue as string,
+        		new TimeRange(dateTimeRangePickerData.From, dateTimeRangePickerData.To),
+        		new TimeRange(dateTimeRangePickerCorrect.From, dateTimeRangePickerCorrect.To),
+				_overwrite
+        	);
+            if (adjustOk) {
+                MessageBox.Show(
+					"Correction applied.", "Success",
+					MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Close();
             }
             else {
-                MessageBox.Show("Correction failed.", "Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+					"Correction failed.", "Failed",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -66,8 +69,5 @@ namespace Atmo.UI.DevEx {
             }
         }
 
-        private void sensorNameSelector_SelectedIndexChanged(object sender, EventArgs e) {
-
-        }
     }
 }

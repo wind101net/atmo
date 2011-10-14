@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Atmo.Core.DbDataStore.Test {
 
-	public class CrudTestBase {
+	public abstract class CrudTestBase {
 
 		private string _fileName = null;
 		private IDbConnection _connection = null;
