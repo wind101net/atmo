@@ -126,7 +126,7 @@ namespace Atmo.UI.DevEx {
         }
 
         private void addRemWorker_DoWork(object sender, DoWorkEventArgs e) {
-            TimeSpan waitTime = new TimeSpan(0, 0, 5);
+            TimeSpan waitTime = new TimeSpan(0, 0, 10);
             DateTime now = DateTime.Now;
             DateTime endTime = now.Add(waitTime);
             while ((now = DateTime.Now) <= endTime) {
@@ -143,7 +143,7 @@ namespace Atmo.UI.DevEx {
                         break;
                     }
                 }
-                System.Threading.Thread.Sleep(100);
+                Thread.Sleep(100);
             }
 
         }
