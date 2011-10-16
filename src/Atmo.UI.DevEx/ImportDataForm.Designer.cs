@@ -222,7 +222,7 @@
 			this.syncChk.Location = new System.Drawing.Point(10, 30);
 			this.syncChk.Name = "syncChk";
 			this.syncChk.Properties.Caption = "Synchronize logger time and adjust data after import.";
-			this.syncChk.Size = new System.Drawing.Size(545, 18);
+			this.syncChk.Size = new System.Drawing.Size(545, 19);
 			this.syncChk.TabIndex = 0;
 			// 
 			// daqCheckTimer
@@ -248,7 +248,7 @@
 			this.checkEditDelSource.Location = new System.Drawing.Point(162, 31);
 			this.checkEditDelSource.Name = "checkEditDelSource";
 			this.checkEditDelSource.Properties.Caption = "Backup logger data and delete imported files from source (SD card).";
-			this.checkEditDelSource.Size = new System.Drawing.Size(346, 18);
+			this.checkEditDelSource.Size = new System.Drawing.Size(346, 19);
 			this.checkEditDelSource.TabIndex = 1;
 			// 
 			// chkOverwrite
@@ -256,7 +256,7 @@
 			this.chkOverwrite.Location = new System.Drawing.Point(10, 31);
 			this.chkOverwrite.Name = "chkOverwrite";
 			this.chkOverwrite.Properties.Caption = "Overwrite database rows";
-			this.chkOverwrite.Size = new System.Drawing.Size(146, 18);
+			this.chkOverwrite.Size = new System.Drawing.Size(146, 19);
 			this.chkOverwrite.TabIndex = 0;
 			// 
 			// backgroundWorkerImport
@@ -283,6 +283,7 @@
 			this.Name = "ImportDataForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Download Sensor Data";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImportDataForm_FormClosing);
 			this.Load += new System.EventHandler(this.ImportDataForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
 			this.groupControl1.ResumeLayout(false);

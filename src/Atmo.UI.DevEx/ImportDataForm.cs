@@ -429,6 +429,13 @@ namespace Atmo.UI.DevEx {
 			HandleFolderSelected(textEditFolderPath.Text);
 		}
 
+		private void ImportDataForm_FormClosing(object sender, FormClosingEventArgs e) {
+			if (backgroundWorkerImport.IsBusy) {
+				e.Cancel = true;
+				MessageBox.Show("The import is still processing.", "Please wait...");
+			}
+		}
+
 		
 
 		
