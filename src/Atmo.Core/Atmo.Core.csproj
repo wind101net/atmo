@@ -118,6 +118,14 @@
     <Compile Include="Vector2D.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\COPYING">
+      <Link>COPYING</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\license.rtf">
+      <Link>license.rtf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="ClearStorage.db" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +135,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\license.txt">
+      <Link>license.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="atmo.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Icons\Download Data.ico" />
     <Content Include="Resources\Icons\Search Sensor.ico" />
     <Content Include="Resources\Icons\Stream Off.ico" />
