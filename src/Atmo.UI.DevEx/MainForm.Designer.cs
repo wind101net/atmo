@@ -27,7 +27,6 @@
 			this.barButtonItemSensorSetup = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemFirmwareUpdate = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemTimeCorrection = new DevExpress.XtraBars.BarButtonItem();
-			this.barButtonItemTimeSync = new DevExpress.XtraBars.BarButtonItem();
 			this.barSubItem4 = new DevExpress.XtraBars.BarSubItem();
 			this.barButtonItemDoc = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemUpdates = new DevExpress.XtraBars.BarButtonItem();
@@ -38,6 +37,7 @@
 			this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
 			this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
 			this.barSubItem5 = new DevExpress.XtraBars.BarSubItem();
+			this.barButtonItemTimeSync = new DevExpress.XtraBars.BarButtonItem();
 			this.liveAtmosphericGraph = new Atmo.UI.DevEx.Controls.LiveAtmosphericGraph();
 			this.timerLive = new System.Windows.Forms.Timer(this.components);
 			this.panelSensors = new System.Windows.Forms.Panel();
@@ -202,13 +202,6 @@
 			this.barButtonItemTimeCorrection.Name = "barButtonItemTimeCorrection";
 			this.barButtonItemTimeCorrection.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemTimeCorrection_ItemClick);
 			// 
-			// barButtonItemTimeSync
-			// 
-			this.barButtonItemTimeSync.Caption = "Logger Time Sync...";
-			this.barButtonItemTimeSync.Id = 17;
-			this.barButtonItemTimeSync.Name = "barButtonItemTimeSync";
-			this.barButtonItemTimeSync.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemTimeSync_ItemClick);
-			// 
 			// barSubItem4
 			// 
 			this.barSubItem4.Caption = "Help";
@@ -274,6 +267,13 @@
 			this.barSubItem5.Caption = "Data";
 			this.barSubItem5.Id = 5;
 			this.barSubItem5.Name = "barSubItem5";
+			// 
+			// barButtonItemTimeSync
+			// 
+			this.barButtonItemTimeSync.Caption = "Logger Time Sync...";
+			this.barButtonItemTimeSync.Id = 17;
+			this.barButtonItemTimeSync.Name = "barButtonItemTimeSync";
+			this.barButtonItemTimeSync.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemTimeSync_ItemClick);
 			// 
 			// liveAtmosphericGraph
 			// 

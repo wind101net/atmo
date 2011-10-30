@@ -933,6 +933,22 @@ namespace Atmo.Data {
 			throw new NotSupportedException(String.Format("Summaries for {0} are not supported.",bestTimeSpan));
 		}
 
+		public bool RenameSensor(string currentName, string desiredName) {
+			try {
+				if (!ForceConnectionOpen())
+					throw new Exception("Could not open database.");
+
+				using (var command = _connection.CreateTextCommand("UPDATE Sensor SET nameKey=@newNameKey WHERE nameKey=@oldNameKey")) {
+					command.AddParameter("newNameKey", DbType.String, desiredName);
+					command.AddParameter("oldNameKey", DbType.String, currentName);
+					command.ExecuteNonQuery();
+				}
+				return true;
+			} catch {
+				return false;
+			}
+		}
+
 		public IEnumerable<TimeSpan> SupportedSummaryUnitSpans {
 			get {
 				yield return OneMinute;

@@ -102,6 +102,8 @@ namespace Atmo.Data {
 		bool Push<T>(string sensor, IEnumerable<T> readings) where T : IReading;
 
 		bool Push<T>(string sensor, IEnumerable<T> readings, bool replace) where T : IReading;
+
+		bool RenameSensor(string currentName, string desiredName);
 	}
 
 }

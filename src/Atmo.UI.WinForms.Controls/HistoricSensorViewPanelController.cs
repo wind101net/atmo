@@ -30,6 +30,7 @@ namespace Atmo.UI.WinForms.Controls {
 		public HistoricSensorViewPanelController(Control container) : base(container) { }
 
 		public event Action<ISensorInfo> OnDeleteRequested;
+		public event Action<ISensorInfo> OnRenameRequested;
 		public event Action OnSelectionChanged;
 
 		protected override HistoricSensorView CreateNewView() {
@@ -37,6 +38,7 @@ namespace Atmo.UI.WinForms.Controls {
 				IsSelected = DefaultSelected,
 			};
 			view.OnDeleteRequest += TriggerOnDeleteRequested;
+			view.OnRenameRequest += TriggerOnRenameRequested;
 			view.OnSelectionChanged += TriggerOnSelectionChanged;
 			return view;
 		}
@@ -44,6 +46,12 @@ namespace Atmo.UI.WinForms.Controls {
 		private void TriggerOnDeleteRequested(ISensorInfo sensorInfo) {
 			if(null != OnDeleteRequested) {
 				OnDeleteRequested(sensorInfo);
+			}
+		}
+
+		private void TriggerOnRenameRequested(ISensorInfo sensorInfo) {
+			if (null != OnRenameRequested) {
+				OnRenameRequested(sensorInfo);
 			}
 		}
 

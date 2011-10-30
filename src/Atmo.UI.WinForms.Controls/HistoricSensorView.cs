@@ -30,6 +30,7 @@ namespace Atmo.UI.WinForms.Controls {
 
 		private bool _selected;
 		public event Action<ISensorInfo> OnDeleteRequest;
+		public event Action<ISensorInfo> OnRenameRequest;
 		public event Action OnSelectionChanged;
 
 		public HistoricSensorView() {
@@ -66,7 +67,7 @@ namespace Atmo.UI.WinForms.Controls {
 			labelSensorName.Text = sensorInfo == null ? "Sensor" : sensorInfo.Name;
 		}
 
-		private void labelSensorName_Click(object sender, System.EventArgs e) {
+		private void labelSensorName_Click(object sender, EventArgs e) {
 			if(e is MouseEventArgs) {
 				var me = e as MouseEventArgs;
 				if(me.Button == MouseButtons.Right) {
@@ -80,9 +81,15 @@ namespace Atmo.UI.WinForms.Controls {
 			}
 		}
 
-		private void deleteToolStripMenuItem_Click(object sender, System.EventArgs e) {
+		private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
 			if(null != OnDeleteRequest) {
 				OnDeleteRequest(SensorInfo);
+			}
+		}
+
+		private void renameToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (null != OnRenameRequest) {
+				OnRenameRequest(SensorInfo);
 			}
 		}
 

@@ -85,6 +85,7 @@ namespace Atmo.UI.DevEx {
 				DefaultSelected = true,
 			};
 			_historicSensorViewPanelController.OnDeleteRequested += OnDeleteRequested;
+			_historicSensorViewPanelController.OnRenameRequested += OnRenameRequested;
 
 			historicalTimeSelectHeader.CheckEdit.CheckedChanged += histNowChk_CheckedChanged;
 
@@ -162,6 +163,30 @@ namespace Atmo.UI.DevEx {
 				return;
 			}
 			_dbStore.DeleteSensor(sensorInfo.Name);
+			ReloadHistoric();
+		}
+
+		private void OnRenameRequested(ISensorInfo sensorInfo) {
+			if (null == sensorInfo || String.IsNullOrEmpty(sensorInfo.Name) || null == _dbStore) {
+				MessageBox.Show("Invalid target", "Error");
+				return;
+			}
+
+			var renameForm = new RenameForm() {
+				Value = sensorInfo.Name,
+				Text = "Rename " + sensorInfo.Name
+			};
+			var renameRes = renameForm.ShowDialog(this);
+			if (renameRes != DialogResult.OK)
+				return;
+			if(renameForm.Value == sensorInfo.Name)
+				return;
+
+			var renameSuccess = _dbStore.RenameSensor(sensorInfo.Name, renameForm.Value);
+
+			if (!renameSuccess)
+				MessageBox.Show("Rename failed.", "Error");
+
 			ReloadHistoric();
 		}
 

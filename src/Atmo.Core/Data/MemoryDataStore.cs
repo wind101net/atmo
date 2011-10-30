@@ -200,5 +200,9 @@ namespace Atmo.Data {
 
 		public IEnumerable<TimeSpan> SupportedSummaryUnitSpans { get { return Enumerable.Empty<TimeSpan>(); } }
 
+		public bool RenameSensor(string currentName, string desiredName) {
+			return false;
+		}
+
 	}
 }
