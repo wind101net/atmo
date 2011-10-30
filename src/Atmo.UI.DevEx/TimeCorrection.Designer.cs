@@ -27,14 +27,14 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
-			this.dateTimeRangePickerData = new Atmo.UI.DevEx.Controls.DateTimeRangePicker();
 			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
-			this.dateTimeRangePickerCorrect = new Atmo.UI.DevEx.Controls.DateTimeRangePicker();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.cancelButton = new DevExpress.XtraEditors.SimpleButton();
 			this.adjustButton = new DevExpress.XtraEditors.SimpleButton();
 			this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
 			this.sensorNameSelector = new DevExpress.XtraEditors.ComboBoxEdit();
+			this.dateTimeRangePickerData = new Atmo.UI.DevEx.Controls.DateTimeRangePicker();
+			this.timeSpanSecondsEditDelta = new Atmo.UI.DevEx.Controls.TimeSpanSecondsEdit();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
@@ -61,22 +61,22 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(406, 266);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(406, 249);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// tableLayoutPanel2
 			// 
 			this.tableLayoutPanel2.ColumnCount = 1;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.Controls.Add(this.groupControl1, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.groupControl2, 0, 1);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 53);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 2;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(400, 180);
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(400, 163);
 			this.tableLayoutPanel2.TabIndex = 0;
 			// 
 			// groupControl1
@@ -85,39 +85,19 @@
 			this.groupControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupControl1.Location = new System.Drawing.Point(3, 3);
 			this.groupControl1.Name = "groupControl1";
-			this.groupControl1.Size = new System.Drawing.Size(394, 84);
+			this.groupControl1.Size = new System.Drawing.Size(394, 102);
 			this.groupControl1.TabIndex = 0;
 			this.groupControl1.Text = "Current Recorded Range";
 			// 
-			// dateTimeRangePickerData
-			// 
-			this.dateTimeRangePickerData.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dateTimeRangePickerData.From = new System.DateTime(((long)(0)));
-			this.dateTimeRangePickerData.Location = new System.Drawing.Point(2, 22);
-			this.dateTimeRangePickerData.Name = "dateTimeRangePickerData";
-			this.dateTimeRangePickerData.Size = new System.Drawing.Size(390, 60);
-			this.dateTimeRangePickerData.TabIndex = 0;
-			this.dateTimeRangePickerData.To = new System.DateTime(((long)(0)));
-			// 
 			// groupControl2
 			// 
-			this.groupControl2.Controls.Add(this.dateTimeRangePickerCorrect);
+			this.groupControl2.Controls.Add(this.timeSpanSecondsEditDelta);
 			this.groupControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupControl2.Location = new System.Drawing.Point(3, 93);
+			this.groupControl2.Location = new System.Drawing.Point(3, 111);
 			this.groupControl2.Name = "groupControl2";
-			this.groupControl2.Size = new System.Drawing.Size(394, 84);
+			this.groupControl2.Size = new System.Drawing.Size(394, 49);
 			this.groupControl2.TabIndex = 1;
-			this.groupControl2.Text = "Correct To";
-			// 
-			// dateTimeRangePickerCorrect
-			// 
-			this.dateTimeRangePickerCorrect.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dateTimeRangePickerCorrect.From = new System.DateTime(((long)(0)));
-			this.dateTimeRangePickerCorrect.Location = new System.Drawing.Point(2, 22);
-			this.dateTimeRangePickerCorrect.Name = "dateTimeRangePickerCorrect";
-			this.dateTimeRangePickerCorrect.Size = new System.Drawing.Size(390, 60);
-			this.dateTimeRangePickerCorrect.TabIndex = 0;
-			this.dateTimeRangePickerCorrect.To = new System.DateTime(((long)(0)));
+			this.groupControl2.Text = "Correct By Offset";
 			// 
 			// tableLayoutPanel3
 			// 
@@ -127,7 +107,7 @@
 			this.tableLayoutPanel3.Controls.Add(this.cancelButton, 0, 0);
 			this.tableLayoutPanel3.Controls.Add(this.adjustButton, 1, 0);
 			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 239);
+			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 222);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
 			this.tableLayoutPanel3.RowCount = 1;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -175,11 +155,30 @@
 			this.sensorNameSelector.Size = new System.Drawing.Size(396, 20);
 			this.sensorNameSelector.TabIndex = 0;
 			// 
+			// dateTimeRangePickerData
+			// 
+			this.dateTimeRangePickerData.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dateTimeRangePickerData.From = new System.DateTime(((long)(0)));
+			this.dateTimeRangePickerData.Location = new System.Drawing.Point(2, 22);
+			this.dateTimeRangePickerData.Name = "dateTimeRangePickerData";
+			this.dateTimeRangePickerData.Size = new System.Drawing.Size(390, 78);
+			this.dateTimeRangePickerData.TabIndex = 0;
+			this.dateTimeRangePickerData.To = new System.DateTime(((long)(0)));
+			// 
+			// timeSpanSecondsEditDelta
+			// 
+			this.timeSpanSecondsEditDelta.Dock = System.Windows.Forms.DockStyle.Top;
+			this.timeSpanSecondsEditDelta.Location = new System.Drawing.Point(2, 22);
+			this.timeSpanSecondsEditDelta.Name = "timeSpanSecondsEditDelta";
+			this.timeSpanSecondsEditDelta.Size = new System.Drawing.Size(390, 20);
+			this.timeSpanSecondsEditDelta.TabIndex = 0;
+			this.timeSpanSecondsEditDelta.Value = System.TimeSpan.Parse("00:00:00");
+			// 
 			// TimeCorrection
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(406, 266);
+			this.ClientSize = new System.Drawing.Size(406, 249);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(400, 260);
@@ -208,12 +207,12 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private DevExpress.XtraEditors.GroupControl groupControl1;
         private DevExpress.XtraEditors.GroupControl groupControl2;
-        private Controls.DateTimeRangePicker dateTimeRangePickerData;
-        private Controls.DateTimeRangePicker dateTimeRangePickerCorrect;
+		private Controls.DateTimeRangePicker dateTimeRangePickerData;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private DevExpress.XtraEditors.SimpleButton cancelButton;
         private DevExpress.XtraEditors.SimpleButton adjustButton;
         private DevExpress.XtraEditors.GroupControl groupControl3;
         private DevExpress.XtraEditors.ComboBoxEdit sensorNameSelector;
+		private Controls.TimeSpanSecondsEdit timeSpanSecondsEditDelta;
     }
 }

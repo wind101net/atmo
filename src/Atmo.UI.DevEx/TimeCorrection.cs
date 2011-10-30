@@ -43,10 +43,30 @@ namespace Atmo.UI.DevEx {
         }
 
         private void adjustButton_Click(object sender, EventArgs e) {
+
+        	var sensorName = sensorNameSelector.EditValue as string;
+
+			if(String.IsNullOrEmpty(sensorName)) {
+				MessageBox.Show("You must specify a sensor. No action has been taken.", "Invalid operation.");
+				return;
+			}
+
+			var spanOffset = timeSpanSecondsEditDelta.Value;
+        	var sourceTimeRange = new TimeRange(dateTimeRangePickerData.From, dateTimeRangePickerData.To);
+			if (sourceTimeRange.Span == TimeSpan.Zero) {
+				MessageBox.Show("You must specify a source time range. No action has been taken.", "Invalid operation.");
+				return;
+			}
+			if(spanOffset == TimeSpan.Zero) {
+				MessageBox.Show("You must specify a time offset for the selected region. No action has been taken.", "Invalid operation.");
+				return;
+			}
+        	var offsetTimeRange = new TimeRange(sourceTimeRange.Low + spanOffset, sourceTimeRange.High + spanOffset);
+
         	var adjustOk = _dataStore.AdjustTimeStamps(
-        		sensorNameSelector.EditValue as string,
-        		new TimeRange(dateTimeRangePickerData.From, dateTimeRangePickerData.To),
-        		new TimeRange(dateTimeRangePickerCorrect.From, dateTimeRangePickerCorrect.To),
+				sensorName,
+				sourceTimeRange,
+				offsetTimeRange,
 				_overwrite
         	);
             if (adjustOk) {
