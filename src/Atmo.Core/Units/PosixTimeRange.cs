@@ -56,5 +56,9 @@ namespace Atmo.Units {
 
 		public int Span { get { return _high.Value - _low.Value; } }
 
+		public bool Intersects(PosixTimeRange range) {
+			return (Low <= range.High) && (range.Low <= High);
+		}
+
 	}
 }

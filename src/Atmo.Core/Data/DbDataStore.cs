@@ -191,10 +191,8 @@ namespace Atmo.Data {
 					ok = (0 != OffsetRecords(sensorId, new PosixTimeRange(currentRange.Low, currentRange.Low + correctedRange.Span), offset))
 						| ok;
 				}
-				return ok;
 			}
 			else {
-				ok = false;
 				// need to shift the start into place
 				if (offset != 0) {
 					ok = 0 != OffsetRecords(sensorId, currentRange, offset);
@@ -206,14 +204,24 @@ namespace Atmo.Data {
 				}
 			}
 
-			var completeRange = new PosixTimeRange(
-				new PosixTime(Math.Min(currentRange.Low,correctedRange.Low)),
-				new PosixTime(Math.Min(currentRange.High,correctedRange.High))
-			);
+			
 
-			ok = UpdateSummaryRecords(completeRange, sensorName, sensorId) | ok;
+			bool okUpdateCurrent, okUpdateCorrected;
 
-			return ok;
+			if(currentRange.Intersects(correctedRange)) {
+				var completeRange = new PosixTimeRange(
+					new PosixTime(Math.Min(currentRange.Low, correctedRange.Low)),
+					new PosixTime(Math.Max(currentRange.High, correctedRange.High))
+				);
+				okUpdateCurrent = okUpdateCorrected =
+					UpdateSummaryRecords(completeRange, sensorName, sensorId);
+			}
+			else {
+				okUpdateCurrent = UpdateSummaryRecords(currentRange, sensorName, sensorId);
+				okUpdateCorrected = UpdateSummaryRecords(correctedRange, sensorName, sensorId);
+			}
+
+			return ok && okUpdateCurrent && okUpdateCorrected;
 		}
 
 		private int OffsetRecords(int sensorId, PosixTimeRange range, int offset) {
@@ -643,13 +651,29 @@ namespace Atmo.Data {
 			return UpdateSummaryRecords(insertTimeRange, sensor, sensorRecordId.Value);
 		}
 
-		private bool PushSummaries(int sensorId, string tableName, IEnumerable<ReadingsSummary> summaries) {
-			using (var command = _connection.CreateTextCommand(String.Format(
+		private bool PushSummaries(int sensorId, string tableName, IEnumerable<ReadingsSummary> summaries, PosixTimeRange totalRange) {
+
+			string insertCommandText = String.Format(
 				"INSERT OR REPLACE INTO {0} (sensorId,stamp,minValues,maxValues,meanValues,stddevValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount)"
 				+ " VALUES (@sensorId,@stamp,@minValues,@maxValues,@meanValues,@stddevValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)",
 				tableName
-			))) {
+				);
+
+			string deleteCommandText = String.Format(
+				"DELETE FROM {0} WHERE stamp >= @minStamp AND stamp <= @maxStamp",
+				tableName
+			);
+
+			using (var command = _connection.CreateTextCommand(deleteCommandText)) {
 				command.Transaction = _connection.BeginTransaction();
+				
+				if(totalRange.Span != 0) {
+					command.AddParameter("minStamp", DbType.Int32, totalRange.Low);
+					command.AddParameter("maxStamp", DbType.Int32, totalRange.High);
+					command.ExecuteNonQuery();
+				}
+
+				command.CommandText = insertCommandText;
 
 				var stampParam = command.AddParameter("stamp", DbType.Int32, null);
 				var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
@@ -729,8 +753,8 @@ namespace Atmo.Data {
 			var minuteSummaries = StatsUtil.Summarize(
 				GetReadings(sensorName, minuteAlignedRange.Low, minuteAlignedRange.Span), TimeUnit.Minute
 			).ToList();
-
-			bool minsOk = PushSummaries(sensorId, "MinuteRecord", minuteSummaries);
+			var posixRangeCovered = new PosixTimeRange(rangeCovered);
+			bool minsOk = PushSummaries(sensorId, "MinuteRecord", minuteSummaries, posixRangeCovered);
 
 			var tenMinuteSummaries = new List<ReadingsSummary>();
 			{
@@ -758,7 +782,7 @@ namespace Atmo.Data {
 				}
 			}
 
-			bool tenMinsOk = PushSummaries(sensorId, "TenminuteRecord", tenMinuteSummaries);
+			bool tenMinsOk = PushSummaries(sensorId, "TenminuteRecord", tenMinuteSummaries, posixRangeCovered);
 
 			return minsOk && tenMinsOk;
 		}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DevExpress.XtraEditors;
 
 
@@ -22,26 +23,28 @@ namespace Atmo.UI.DevEx.Controls {
 
 		private static string ToFriendlyString(TimeSpan span) {
 
-			if(span.TotalDays >= 1)
+			if(span.TotalDays > 12)
 				return span.ToString();
-			
-			var parts = new List<string>();
 
-			if (span.Hours != 0)
-				parts.Add(AbsUnitNumber("hour", span.Hours));
-			if(span.Minutes != 0)
-				parts.Add(AbsUnitNumber("minue", span.Minutes));
-			if(span.Seconds != 0)
-				parts.Add(AbsUnitNumber("second", span.Seconds));
+			var result = String.Join(" ", ToStringParts(span).ToArray());
 
-			var result = String.Join(" ", parts.ToArray());
-
-			if (String.IsNullOrEmpty(result))
-				result = AbsUnitNumber("second",0);
-			else if(span < TimeSpan.Zero)
+			if(span < TimeSpan.Zero)
 				result = "- " + result;
 
 			return result;
+		}
+
+		private static IEnumerable<string> ToStringParts(TimeSpan span) {
+			if (span.Days != 0)
+				yield return AbsUnitNumber("day", span.Days);
+			if (span.Hours != 0)
+				yield return AbsUnitNumber("hour", span.Hours);
+			if (span.Minutes != 0)
+				yield return AbsUnitNumber("minue", span.Minutes);
+			if (span.Seconds != 0)
+				yield return AbsUnitNumber("second", span.Seconds);
+			if (Math.Abs(span.TotalSeconds) < 1)
+				yield return AbsUnitNumber("second", 0);
 		}
 
 		private static string AbsUnitNumber(string unit, int n) {

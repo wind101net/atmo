@@ -81,5 +81,10 @@ namespace Atmo {
 				_high = timeRange._high;
 			}
 		}
+
+		public bool Intersects(TimeRange range) {
+			return (Low <= range.High) && (range.Low <= High);
+		}
+
 	}
 }
