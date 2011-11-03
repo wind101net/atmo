@@ -308,6 +308,13 @@ namespace Atmo.UI.DevEx {
 		private DateTime LastClockUpdate = default(DateTime);
 
 		private void timerQueryTime_Tick(object sender, EventArgs e) {
+
+			UpdateClockStats();
+			UpdateDaqStats();
+
+		}
+
+		private void UpdateClockStats() {
 			var now = DateTime.Now;
 			labelLocalTime.Text = now.ToString();
 			if (null != _deviceConnection) {
@@ -336,7 +343,7 @@ namespace Atmo.UI.DevEx {
 					}
 
 					if (outOfSync) {
-						labelDaqTime.ForeColor = now.Second%2 == 0 ? Color.Red : ForeColor;
+						labelDaqTime.ForeColor = now.Second % 2 == 0 ? Color.Red : ForeColor;
 					}
 					else {
 						labelDaqTime.ForeColor = ForeColor;
@@ -346,9 +353,6 @@ namespace Atmo.UI.DevEx {
 			}
 			labelDaqTime.Text = "N/A";
 			labelDaqTime.ForeColor = ForeColor;
-
-			UpdateDaqStats();
-
 		}
 
 		private void UpdateDaqStats() {
@@ -603,7 +607,8 @@ namespace Atmo.UI.DevEx {
 			}
 
 			// update the sensor controls
-			var updateSensorViewResult = BeginInvoke(new Action(() => _sensorViewPanelControler.UpdateView(sensors)));
+			//var updateSensorViewResult = BeginInvoke(new Action(() => _sensorViewPanelControler.UpdateView(sensors)));
+			
 
 			// the current sensor views
 			var sensorViews = _sensorViewPanelControler.Views.ToList();
@@ -656,11 +661,12 @@ namespace Atmo.UI.DevEx {
 					liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
 					liveAtmosphericGraph.State = AppContext.PersistentState;
 					liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
+					_sensorViewPanelControler.UpdateView(sensors);
 				}));
 
-				while(!updateSensorViewResult.IsCompleted) {
-					Thread.Sleep(100);
-				}
+				//while(!updateSensorViewResult.IsCompleted) {
+				//	Thread.Sleep(100);
+				//}
 			}
 
 		}
