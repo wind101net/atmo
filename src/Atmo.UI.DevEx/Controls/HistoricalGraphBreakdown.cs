@@ -278,6 +278,7 @@ namespace Atmo.UI.DevEx.Controls {
 				case "Temperature": return ReadingAttributeType.Temperature;
 				case "Humidity": return ReadingAttributeType.Humidity;
 				case "Pressure": return ReadingAttributeType.Pressure;
+				case "Wind Direction": return ReadingAttributeType.WindDirection;
 				default:
 					throw new NotSupportedException(
 						String.Format("Selection {0} is not supported.", comboBoxEditSelProp.SelectedItem)
@@ -374,8 +375,9 @@ namespace Atmo.UI.DevEx.Controls {
 
 			// todo: can this copy be eliminated?
 
-			Func<ReadingsSummary, double> targetValueFunction = null;
-			switch(SelectedAttributeType) {
+			Func<ReadingsSummary, double> targetValueFunction;
+			var selAttrType = SelectedAttributeType;
+			switch (selAttrType) {
 			case ReadingAttributeType.WindSpeed:
 				targetValueFunction = (r) => (r.WindSpeed);
 				break;
@@ -388,8 +390,11 @@ namespace Atmo.UI.DevEx.Controls {
 			case ReadingAttributeType.Pressure:
 				targetValueFunction = (r) => (r.Pressure);
 				break;
+			case ReadingAttributeType.WindDirection:
+				targetValueFunction = (r) => (r.WindDirection);
+				break;
 			default:
-				throw new NotSupportedException(String.Format("selectedAttributeType {0} is not supported", SelectedAttributeType));
+				throw new NotSupportedException(String.Format("SelectedAttributeType {0} is not supported", selAttrType));
 			}
 
 			var min = 0.0;
@@ -407,7 +412,7 @@ namespace Atmo.UI.DevEx.Controls {
 				}
 			}
 
-			RecreateCumulativeGraphs(); // TODO: only when they need to change!!!!!
+			RecreateCumulativeGraphs(); // TODO: only when they need to change?
 
 			for(int i = 0; i < cumTimeInfo.Count; i++) {
 				var window = cumTimeInfo[i];

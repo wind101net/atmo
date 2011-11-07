@@ -25,14 +25,14 @@
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
 			this.groupControl = new DevExpress.XtraEditors.GroupControl();
+			this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+			this.comboBoxEditSelProp = new DevExpress.XtraEditors.ComboBoxEdit();
 			this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
 			this.bindingSourceReadingSummary = new System.Windows.Forms.BindingSource(this.components);
-			this.comboBoxEditSelProp = new DevExpress.XtraEditors.ComboBoxEdit();
-			this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
 			this.groupControl.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.comboBoxEditSelProp.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupControl
@@ -46,6 +46,35 @@
 			this.groupControl.Size = new System.Drawing.Size(639, 508);
 			this.groupControl.TabIndex = 1;
 			this.groupControl.Text = "Historical Breakdown";
+			// 
+			// labelControl1
+			// 
+			this.labelControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelControl1.Appearance.Options.UseTextOptions = true;
+			this.labelControl1.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+			this.labelControl1.Location = new System.Drawing.Point(471, 4);
+			this.labelControl1.Name = "labelControl1";
+			this.labelControl1.Size = new System.Drawing.Size(26, 13);
+			this.labelControl1.TabIndex = 2;
+			this.labelControl1.Text = "Field:";
+			// 
+			// comboBoxEditSelProp
+			// 
+			this.comboBoxEditSelProp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxEditSelProp.EditValue = "Wind Speed";
+			this.comboBoxEditSelProp.Location = new System.Drawing.Point(503, 1);
+			this.comboBoxEditSelProp.Name = "comboBoxEditSelProp";
+			this.comboBoxEditSelProp.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+			this.comboBoxEditSelProp.Properties.Items.AddRange(new object[] {
+            "Wind Speed",
+            "Wind Direction",
+            "Temperature",
+            "Humidity",
+            "Pressure"});
+			this.comboBoxEditSelProp.Size = new System.Drawing.Size(133, 20);
+			this.comboBoxEditSelProp.TabIndex = 1;
+			this.comboBoxEditSelProp.SelectedIndexChanged += new System.EventHandler(this.comboBoxEditSelProp_SelectedIndexChanged);
 			// 
 			// tableLayout
 			// 
@@ -68,34 +97,6 @@
 			// 
 			this.bindingSourceReadingSummary.DataSource = typeof(Atmo.Stats.ReadingsSummary);
 			// 
-			// comboBoxEditSelProp
-			// 
-			this.comboBoxEditSelProp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxEditSelProp.EditValue = "Wind Speed";
-			this.comboBoxEditSelProp.Location = new System.Drawing.Point(503, 1);
-			this.comboBoxEditSelProp.Name = "comboBoxEditSelProp";
-			this.comboBoxEditSelProp.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.comboBoxEditSelProp.Properties.Items.AddRange(new object[] {
-            "Wind Speed",
-            "Temperature",
-            "Humidity",
-            "Pressure"});
-			this.comboBoxEditSelProp.Size = new System.Drawing.Size(133, 20);
-			this.comboBoxEditSelProp.TabIndex = 1;
-			this.comboBoxEditSelProp.SelectedIndexChanged += new System.EventHandler(this.comboBoxEditSelProp_SelectedIndexChanged);
-			// 
-			// labelControl1
-			// 
-			this.labelControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelControl1.Appearance.Options.UseTextOptions = true;
-			this.labelControl1.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-			this.labelControl1.Location = new System.Drawing.Point(471, 4);
-			this.labelControl1.Name = "labelControl1";
-			this.labelControl1.Size = new System.Drawing.Size(26, 13);
-			this.labelControl1.TabIndex = 2;
-			this.labelControl1.Text = "Field:";
-			// 
 			// HistoricalGraphBreakdown
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -106,8 +107,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).EndInit();
 			this.groupControl.ResumeLayout(false);
 			this.groupControl.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.comboBoxEditSelProp.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).EndInit();
 			this.ResumeLayout(false);
 
 		}
