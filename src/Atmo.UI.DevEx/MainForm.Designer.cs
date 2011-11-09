@@ -144,7 +144,7 @@
 			// 
 			// barButtonItemImport
 			// 
-			this.barButtonItemImport.Caption = "Download Logger Data...";
+			this.barButtonItemImport.Caption = "Get Logger Data...";
 			this.barButtonItemImport.Id = 7;
 			this.barButtonItemImport.Name = "barButtonItemImport";
 			this.barButtonItemImport.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemImport_ItemClick);
@@ -353,7 +353,7 @@
 			this.simpleButtonDownloadData.Name = "simpleButtonDownloadData";
 			this.simpleButtonDownloadData.Size = new System.Drawing.Size(204, 35);
 			this.simpleButtonDownloadData.TabIndex = 23;
-			this.simpleButtonDownloadData.Text = "Download Logger Data";
+			this.simpleButtonDownloadData.Text = "Get Logger Data";
 			this.simpleButtonDownloadData.Click += new System.EventHandler(this.simpleButtonDownloadData_Click);
 			// 
 			// windResourceGraph
