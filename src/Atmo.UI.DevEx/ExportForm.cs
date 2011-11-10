@@ -159,6 +159,37 @@ namespace Atmo.UI.DevEx {
 		}
 
     	private bool ExecuteExportRaw(string csvFileName) {
+			int c = 0;
+			csvFileName = Path.ChangeExtension(csvFileName, "csv");
+            var iniFileName = Path.ChangeExtension(csvFileName, "ini");
+			using (FileStream
+				iniStream = File.Open(iniFileName, FileMode.Create, FileAccess.ReadWrite),
+				csvStream = File.Open(csvFileName, FileMode.Create, FileAccess.ReadWrite)
+			) {
+				using (StreamWriter
+					iniWriter = new StreamWriter(iniStream),
+					csvWriter = new StreamWriter(csvStream)
+				) {
+					var dataWriter = new CsvDataFileWriter(
+						csvWriter, iniWriter,
+						Path.GetFileName(csvFileName));
+
+					var readings = _dataStore.GetReadings(
+						comboChooseSensor.SelectedText,
+						dateTimeRangePicker.Min,
+						dateTimeRangePicker.Max.Subtract(dateTimeRangePicker.Min));
+					
+					foreach (var reading in readings) {
+						dataWriter.Write(reading);
+						c++;
+					}
+
+					iniWriter.Flush();
+					csvWriter.Flush();
+				}
+			}
+    		return c > 0;
+    		/*
             csvFileName = Path.ChangeExtension(csvFileName, "csv");
             var iniFileName = Path.ChangeExtension(csvFileName, "ini");
             using (var iniStream = File.Open(iniFileName, FileMode.Create, FileAccess.ReadWrite)) {
@@ -219,6 +250,7 @@ namespace Atmo.UI.DevEx {
                 }
             }
             return c > 0;
-        }
+			*/
+    	}
     }
 }
