@@ -32,6 +32,7 @@
 						</Component>
 						<Component Id="AtmoCore" Guid="C43E5FA4-228E-44D6-8956-4640CFAE6748" NeverOverwrite="no">
 							<File Id="AtmoCoredll" Name="Atmo.Core.dll" Source="$(var.OutputPath)\Atmo.Core.dll" KeyPath="yes" />
+							<File Id="AtmoDataConverter" Name="AtmoDataConvert.exe" Source="$(var.OutputPath)\AtmoDataConvert.exe" />
 							<File Id="AtmoDaqWin32dll" Name="Atmo.Daq.Win32.dll" Source="$(var.OutputPath)\Atmo.Daq.Win32.dll" />
 							<File Id="COPYING.Text" Name="COPYING" Source="$(var.OutputPath)\COPYING" />
 							<File Id="license.Text" Name="license.txt" Source="$(var.OutputPath)\license.txt" />

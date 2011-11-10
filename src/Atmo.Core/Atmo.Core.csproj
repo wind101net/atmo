@@ -45,9 +45,11 @@
     </Compile>
     <Compile Include="Calculation\AirDensityCalculator.cs" />
     <Compile Include="Calculation\DewPointCalculator.cs" />
+    <Compile Include="Data\CsvDataFileReader.cs" />
     <Compile Include="Data\CsvDataFileWriter.cs" />
     <Compile Include="Data\DaqDataFileInfo.cs" />
     <Compile Include="Data\DaqDataFileReader.cs" />
+    <Compile Include="Data\DaqDataFileWriter.cs" />
     <Compile Include="Data\DbDataStore.cs" />
     <Compile Include="Data\DbHelper.cs" />
     <Compile Include="Data\IDataStore.cs" />

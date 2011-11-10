@@ -79,6 +79,23 @@ namespace Atmo.Data {
 			return false;
 		}
 
+		public static byte[] ConvertDateTimeTo7ByteForm(DateTime stamp) {
+			var dateChunk = new byte[7];
+			ConvertDateTimeTo7ByteForm(stamp, dateChunk, 0);
+			return dateChunk;
+		}
+
+		public static void ConvertDateTimeTo7ByteForm(DateTime stamp, byte[] data, int offset) {
+			var year = (short)stamp.Year;
+			data[offset] = checked((byte)(year >> 8)); // if it is the year 65535 we should probably fail now
+			data[offset + 1] = unchecked((byte)(year));
+			data[offset + 2] = unchecked((byte)stamp.Month);
+			data[offset + 3] = unchecked((byte)stamp.Day);
+			data[offset + 4] = unchecked((byte)stamp.Hour);
+			data[offset + 5] = unchecked((byte)stamp.Minute);
+			data[offset + 6] = unchecked((byte)stamp.Second);
+		}
+
 		public static bool TryConvertFrom7ByteDateTimeForce(byte[] data, int offset, out DateTime stamp) {
 			try {
 				if (data.Length - offset >= 7) {

@@ -1,8 +1,30 @@
-﻿using System;
+﻿// ================================================================================
+//
+// Atmo 2
+// Copyright (C) 2011  BARANI DESIGN
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+// 
+// Contact: Jan Barani mailto:jan@baranidesign.com
+//
+// ================================================================================
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Atmo.Data;
 
 namespace Atmo.DataConverter {
@@ -52,11 +74,24 @@ namespace Atmo.DataConverter {
 					return SaveCsv(ReadAll(daqDataFileReader), file.FullName);
 				}
 			}
-			catch (Exception ex) {
-				; // not a DAQ file?
+			catch (IOException ex) {
+				if(!file.Extension.EndsWith("csv",StringComparison.OrdinalIgnoreCase))
+					Console.WriteLine("ERROR: csv may already exist.");
+			}
+			catch(Exception ex) {
+				return 1;
 			}
 
-			return 0;
+			try {
+				using(var csvDataFileReader = new CsvDataFileReader(file.FullName)) {
+					return SaveDat(csvDataFileReader.ReadAll(), file.FullName);
+				}
+			}
+			catch (Exception ex) {
+				; // not a CSV file?
+			}
+
+			return 2;
 		}
 
 		private static IEnumerable<IReading> ReadAll(DaqDataFileReader reader) {
@@ -65,7 +100,7 @@ namespace Atmo.DataConverter {
 			}
 		}
 
-		private static int SaveCsv(IEnumerable<IReading> iEnumerable, string csvFileName) {
+		private static int SaveCsv(IEnumerable<IReading> readings, string csvFileName) {
 			csvFileName = Path.ChangeExtension(csvFileName, "csv");
 			var iniFileName = Path.ChangeExtension(csvFileName, "ini");
 			using (FileStream
@@ -80,7 +115,7 @@ namespace Atmo.DataConverter {
 						csvWriter, iniWriter,
 						Path.GetFileName(csvFileName));
 
-					foreach (var reading in iEnumerable) {
+					foreach (var reading in readings) {
 						dataWriter.Write(reading);
 					}
 
@@ -88,6 +123,18 @@ namespace Atmo.DataConverter {
 					csvWriter.Flush();
 				}
 			}
+			return 0;
+		}
+
+		private static int SaveDat(IEnumerable<Reading> readings, string datFileName) {
+			datFileName = Path.ChangeExtension(datFileName, "dat");
+
+			using(var writer = new DaqDataFileWriter(datFileName)) {
+				foreach(var reading in readings) {
+					writer.Write(reading);
+				}
+			}
+
 			return 0;
 		}
 

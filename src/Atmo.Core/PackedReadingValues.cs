@@ -66,6 +66,30 @@ namespace Atmo {
 			return new PackedReadingValues(pressureData, tempFlagsData, humDirSpeedData);
 		}
 
+		public static byte[] ToDeviceBytes(PackedReadingValues values) {
+			var data = new byte[8];
+			ToDeviceBytes(values, data, 0);
+			return data;
+		}
+
+		public static void ToDeviceBytes(PackedReadingValues values, byte[] data, int offset) {
+			var pressureData = values._pressureData;
+			var humidity = unchecked((ushort) (values._humidityDirectionAndSpeed >> 22));
+			var windDirection = unchecked((ushort)((values._humidityDirectionAndSpeed >> 13) & 0x1ff));
+			var windSpeed = unchecked((ushort) (values._humidityDirectionAndSpeed & 0x1fff));
+			var temperature = unchecked((ushort)(values._temperatureAndFlags >> 5));
+			var flags = unchecked((byte)(values._temperatureAndFlags & 0x1f));
+
+			data[offset + 7] = unchecked((byte)(flags | (pressureData & 0x7)));
+			data[offset + 6] = unchecked((byte)(pressureData >> 3));
+			data[offset + 5] = unchecked((byte)((pressureData >> 11) | ((humidity & 0x7) << 5)));
+			data[offset + 4] = unchecked((byte)((humidity >> 3) | ((temperature & 1) << 7)));
+			data[offset + 3] = unchecked((byte)(temperature >> 1));
+			data[offset + 2] = unchecked((byte)((temperature >> 9) | (windDirection << 2)));
+			data[offset + 1] = unchecked((byte)((windDirection >> 6) | ((windSpeed & 0x7) << 3)));
+			data[offset] = unchecked((byte)(windSpeed >> 5));
+		}
+
 		public static byte[] ConvertToPackedBytes(IReadingValues values) {
 			return ConvertToPackedBytes(
 				values is PackedReadingValues
