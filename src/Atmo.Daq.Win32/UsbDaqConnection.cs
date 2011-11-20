@@ -733,7 +733,7 @@ namespace Atmo.Daq.Win32 {
 							ok = false;
 						}
 					}
-
+					Thread.Sleep(500);
 					try {
 						if (ok) {
 							packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
@@ -749,6 +749,7 @@ namespace Atmo.Daq.Win32 {
 						}
 					}
 					finally {
+						Thread.Sleep(500);
 						for (int i = 0; i < 3; i++) {
 							packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
 							packet[0] = 0;
@@ -756,6 +757,9 @@ namespace Atmo.Daq.Win32 {
 							packet[2] = checked((byte) nid);
 							if (UsbConn.WritePacket(packet)) {
 								byte[] res = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 250));
+								if (null != res && res[3] == 0x4f && res[4] == 0x4b) {
+									break;
+								}
 							}
 						}
 					}
@@ -823,6 +827,8 @@ namespace Atmo.Daq.Win32 {
 		public bool ProgramAnem(int nid, MemoryRegionDataCollection memoryRegionDataBlocks, Action<double, string> progressUpdated) {
 			using (var qp =new QueryPause(this)) {
 				Thread.Sleep(1000);
+				bool result = true;
+				byte[] packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
 				try {
 					if (nid < 0 || nid > 255)
 						throw new ArgumentOutOfRangeException("nid");
@@ -833,50 +839,52 @@ namespace Atmo.Daq.Win32 {
 
 					progressUpdated(0, "Entering boot mode.");
 
-					bool result = true;
 					lock (_connLock) {
 
-						byte[] packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
 						packet[0] = 0;
 						packet[1] = 0x74;
-						packet[2] = checked((byte) nid);
+						packet[2] = checked((byte)nid);
 						if (!UsbConn.WritePacket(packet)) {
 							progressUpdated(0, "Boot failure.");
 							return false;
 						}
-						Thread.Sleep(500);
+						Thread.Sleep(1000);
+
 						packet = UsbConn.ReadPacket();
-						if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte) nid) || packet[3] != 0x4f ||
-						    packet[4] != 0x4b) {
+						if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte)nid) || packet[3] != 0x4f ||
+							packet[4] != 0x4b) {
 							progressUpdated(0, "Bad boot response.");
 							if (0xff != nid) {
 								result = false;
 							}
 						}
+						Thread.Sleep(500);
+
 						progressUpdated(0, "Writing.");
-						int totalBytes = memoryRegionDataBlocks.Sum(b => (int) b.Size);
+						int totalBytes = memoryRegionDataBlocks.Sum(b => (int)b.Size);
 						int bytesSent = 0;
 						int lastNoticeByte = 0;
 						int noticeInterval = 128;
 						int dotCount = 1;
 						if (result) {
+							bool firstBlock = true;
 							foreach (MemoryRegionData block in memoryRegionDataBlocks) {
 								byte[] data = block.Data.ToArray();
 								int checksumFails = 0;
-								int macChecksumFails = 64;
+								int maxChecksumFails = 64;
 								for (int i = 0; i < data.Length; i += 32) {
 									int bytesToWrite = Math.Min(32, data.Length - i);
-									int address = i + (int) block.Address;
-									packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
+									int address = i + (int)block.Address;
+									packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
 									packet[0] = 0;
 									packet[1] = 0x75;
-									packet[2] = checked((byte) nid);
+									packet[2] = checked((byte)nid);
 									Array.Copy(BitConverter.GetBytes(address).Reverse().ToArray(), 0, packet, 3, 4);
-									packet[7] = (byte) bytesToWrite;
+									packet[7] = (byte)bytesToWrite;
 									byte checkSum = data[i];
 									int endIndex = i + bytesToWrite;
 									for (int csi = i + 1; csi < endIndex; csi++) {
-										checkSum = unchecked((byte) (checkSum + data[csi]));
+										checkSum = unchecked((byte)(checkSum + data[csi]));
 									}
 									packet[8] = checkSum;
 									Array.Copy(data, i, packet, 9, bytesToWrite);
@@ -889,7 +897,7 @@ namespace Atmo.Daq.Win32 {
 
 									if (null == packet || packet[3] != checkSum) {
 										checksumFails++;
-										if (checksumFails <= macChecksumFails) {
+										if (checksumFails <= maxChecksumFails && !firstBlock) {
 											i--;
 											continue;
 										}
@@ -907,33 +915,36 @@ namespace Atmo.Daq.Win32 {
 											dotCount = 1;
 										}
 										progressUpdated(
-											bytesSent/(double) (totalBytes),
+											bytesSent / (double)(totalBytes),
 											String.Concat("Writing", new String(Enumerable.Repeat('.', dotCount).ToArray()))
-											);
+										);
 									}
 								}
+								firstBlock = false;
 							}
 						}
-
-						packet[0] = 0;
-						packet[1] = 0x76;
-						packet[2] = checked((byte) nid);
-						if (!UsbConn.WritePacket(packet)) {
-							progressUpdated(0, "Reboot failure.");
-							return false;
-						}
-						packet = UsbConn.ReadPacket();
-						if (null == packet || packet[3] != 0x4f || packet[4] != 0x4b) {
-							progressUpdated(0, "Bad reboot response.");
-							return false;
-						}
-						return result;
 					}
 				}
 				catch (Exception ex) {
 					progressUpdated(0, ex.ToString());
-					return false;
+					result = false;
 				}
+				finally {
+					packet[0] = 0;
+					packet[1] = 0x76;
+					packet[2] = checked((byte) nid);
+					if (!UsbConn.WritePacket(packet)) {
+						progressUpdated(0, "Reboot failure.");
+					}
+					else {
+						packet = UsbConn.ReadPacket();
+						if (null == packet || packet[3] != 0x4f || packet[4] != 0x4b) {
+							progressUpdated(0, "Bad reboot response.");
+							result = false;
+						}
+					}
+				}
+				return result;
 			}
 		}
 
