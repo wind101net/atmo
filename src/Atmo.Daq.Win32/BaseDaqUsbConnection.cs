@@ -66,7 +66,6 @@ namespace Atmo.Daq.Win32 {
         protected virtual void DisposeComm() {
 			if (null != UsbConn) {
 				UsbConn.Dispose();
-				//UsbConn = null;
             }
         }
 

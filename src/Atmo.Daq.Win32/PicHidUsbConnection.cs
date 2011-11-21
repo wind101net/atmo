@@ -34,6 +34,7 @@ namespace Atmo.Daq.Win32 {
 	public class PicHidUsbConnection : IDisposable {
 
 		private static readonly Guid HidGuidValue = new Guid("4D1E55B2-F16F-11CF-88CB-001111000030");
+		private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 0, 0, 500);
 		private const int DefaultPacketSize = 65;
 
 		public static Guid HidGuid {
@@ -87,12 +88,15 @@ namespace Atmo.Daq.Win32 {
 		private FileStream _writeStream;
 		private FileStream _readStream;
 		private readonly object _readWriteLock = new object();
-		private Thread _ioThread;
+		//private Thread _ioThread;
 		private int _packetSize = DefaultPacketSize;
 
 		public PicHidUsbConnection(string deviceId) {
             _deviceId = deviceId;
-			_deviceIdRegex = new Regex(String.Concat(".*", _deviceId, ".*"), RegexOptions.IgnoreCase | RegexOptions.Compiled);
+			_deviceIdRegex = new Regex(
+				String.Format(".*{0}.*",_deviceId),
+				RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled
+			);
             _writeHandle = null;
             _readHandle = null;
             _writeStream = null;
@@ -101,10 +105,10 @@ namespace Atmo.Daq.Win32 {
 
 		public bool IsConnected {
 			get {
-				if (null == _writeHandle || null == _readHandle) {
-					return false;
-				}
-				return !String.IsNullOrEmpty(FindDevicePath());
+				return null != _writeHandle
+					&& null != _readHandle
+					&& !String.IsNullOrEmpty(FindDevicePath())
+				;
 			}
 		}
 
@@ -138,13 +142,12 @@ namespace Atmo.Daq.Win32 {
 				}
 				return result;
 			}
-			throw new NotSupportedException();
+			throw new NotSupportedException("Write timeout is not supported.");
 		}
 
 		public byte[] ReadPacket() {
-			return ReadPacket(new TimeSpan(0, 0, 0, 0, 500));
+			return ReadPacket(DefaultTimeout);
 		}
-
 
 		public byte[] ReadPacket(TimeSpan timeout) {
 			var packet = new byte[_packetSize];
@@ -160,9 +163,7 @@ namespace Atmo.Daq.Win32 {
 							CreateHandlesCore();
 						}
 					}
-					 
 					result = bytesRecieved > 0;
-
 				}
 				catch (IOException ioEx) {
 					result = false;
@@ -172,21 +173,21 @@ namespace Atmo.Daq.Win32 {
 				}
 			}
 			if (result) {
-				if (bytesRecieved == _packetSize) {
+				if (bytesRecieved == _packetSize)
 					return packet;
-				}
+				
 				if (bytesRecieved < _packetSize) {
 					var shrunkPacket = new byte[bytesRecieved];
-					Array.Copy(packet, shrunkPacket, (int)bytesRecieved);
+					Array.Copy(packet, shrunkPacket, bytesRecieved);
 					return shrunkPacket;
 				}
-				throw new NotSupportedException();
+				throw new InvalidDataException(String.Format("Read {0} bytes but packet size is {1} .", bytesRecieved, _packetSize));
 			}
 			return null;
 		}
 
 		public bool Connect() {
-			return this.CreateHandles();
+			return CreateHandles();
 		}
 
 		private string FindDevicePath() {
@@ -226,37 +227,47 @@ namespace Atmo.Daq.Win32 {
 							ref deviceInfoData
 						)) {
 							uint propRegDataType;
-							var propertyBuffer = new byte[1024];
-							uint requiredSize;
-							if (SetupApi.SetupDiGetDeviceRegistryProperty(
-								deviceInfoList,
-								ref deviceInfoData,
-								SPDRP.HardwareId,
-								out propRegDataType,
-								propertyBuffer,
-								(uint)propertyBuffer.Length,
-								out requiredSize
-							)) {
-								var deviceId = System.Text.Encoding.Unicode.GetString(propertyBuffer, 0, (int)requiredSize);
-								if (_deviceIdRegex.IsMatch(deviceId)) {
-									var deviceInterfaceDetailData = new SP_DEVICE_INTERFACE_DETAIL_DATA();
-									//deviceInterfaceDetailData.cbSize = (uint)Marshal.SizeOf(deviceInterfaceDetailData);
-									deviceInterfaceDetailData.cbSize = (IntPtr.Size == 8) ? 8 : (uint)(4 + Marshal.SystemDefaultCharSize); // fix for 64bit systems
-									if (SetupApi.SetupDiGetDeviceInterfaceDetail(
-										deviceInfoList,
-										ref deviceInterfaceData,
-										ref deviceInterfaceDetailData,
-										SP_DEVICE_INTERFACE_DETAIL_DATA.BUFFER_SIZE,
-										out requiredSize,
-										ref deviceInfoData
-									)) {
-										devicePath = deviceInterfaceDetailData.devicePath;
-										break;
-									}
-									else {
-										; // some kind of terrible failure
+							//byte[] propertyBuffer = new byte[1024];
+							const uint bufferSize = 1048;
+							var propertyBuffer = Marshal.AllocHGlobal((int)bufferSize);
+							try {
+								uint requiredSize;
+								if (SetupApi.SetupDiGetDeviceRegistryProperty(
+									deviceInfoList,
+									ref deviceInfoData,
+									SPDRP.HardwareId,
+									out propRegDataType,
+									propertyBuffer,
+									bufferSize,
+									out requiredSize
+								)) {
+									//var deviceId = System.Text.Encoding.Unicode.GetString(propertyBuffer, 0, (int)requiredSize);
+									var deviceId = Marshal.PtrToStringAuto(propertyBuffer, (int) requiredSize);
+									if (_deviceIdRegex.IsMatch(deviceId)) {
+										var deviceInterfaceDetailData = new SP_DEVICE_INTERFACE_DETAIL_DATA();
+										deviceInterfaceDetailData.cbSize = (IntPtr.Size == 8)
+										                                   	? 8
+										                                   	: (uint) (4 + Marshal.SystemDefaultCharSize); // fix for 64bit systems
+										if (SetupApi.SetupDiGetDeviceInterfaceDetail(
+											deviceInfoList,
+											ref deviceInterfaceData,
+											ref deviceInterfaceDetailData,
+											SP_DEVICE_INTERFACE_DETAIL_DATA.BUFFER_SIZE,
+											out requiredSize,
+											ref deviceInfoData
+											)) {
+											devicePath = deviceInterfaceDetailData.devicePath;
+											break;
+										}
+										else {
+											; // some kind of terrible failure?
+										}
 									}
 								}
+							}
+							finally {
+								if (IntPtr.Zero != propertyBuffer)
+									Marshal.FreeHGlobal(propertyBuffer);
 							}
 						}
 					}
@@ -275,9 +286,7 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private bool CreateHandles() {
-
 			DisposeHandles();
-
 			lock (_readWriteLock) {
 				return CreateHandlesCore();
 			}
@@ -285,16 +294,19 @@ namespace Atmo.Daq.Win32 {
 
 		private bool CreateHandlesCore() {
 			string devicePath = FindDevicePath();
-			if (String.IsNullOrEmpty(devicePath)) {
+			if (String.IsNullOrEmpty(devicePath))
 				return false;
-			}
-
-			_writeHandle = Kernel32.CreateFile(devicePath, EFileAccess.GenericWrite, EFileShare.Read | EFileShare.Write, IntPtr.Zero, ECreationDisposition.OpenExisting, EFileAttributes.None, IntPtr.Zero);
+			
+			_writeHandle = Kernel32.CreateFile(
+				devicePath, EFileAccess.GenericWrite,
+				EFileShare.Read | EFileShare.Write, IntPtr.Zero,
+				ECreationDisposition.OpenExisting, EFileAttributes.None, IntPtr.Zero);
 			_writeStream = new FileStream(_writeHandle, FileAccess.Write, 65, false);
-			//FileStream _writeStream = File.Open(devicePath, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
-			_readHandle = Kernel32.CreateFile(devicePath, EFileAccess.GenericRead, EFileShare.Read | EFileShare.Write, IntPtr.Zero, ECreationDisposition.OpenExisting, EFileAttributes.None, IntPtr.Zero);
+			_readHandle = Kernel32.CreateFile(
+				devicePath, EFileAccess.GenericRead,
+				EFileShare.Read | EFileShare.Write, IntPtr.Zero,
+				ECreationDisposition.OpenExisting, EFileAttributes.None, IntPtr.Zero);
 			_readStream = new FileStream(_readHandle, FileAccess.Read, 65, false);
-			//FileStream _readStream = File.Open(devicePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
 			return true;
 		}

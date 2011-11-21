@@ -46,7 +46,7 @@ namespace Atmo.Daq.Win32.WinApi {
 			ref SP_DEVINFO_DATA deviceInfoData,
 			SPDRP property,
 			out UInt32 propertyRegDataType,
-			byte[] propertyBuffer,
+			IntPtr propertyBuffer,
 			uint propertyBufferSize,
 			out UInt32 requiredSize
 		);
