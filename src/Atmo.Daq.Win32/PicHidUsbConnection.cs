@@ -46,6 +46,7 @@ namespace Atmo.Daq.Win32 {
 			get { return HidGuidValue; }
 		}
 
+		[Obsolete]
 		private static int SafeRead(Stream readStream, byte[] packet, int waitMs) {
 			return SafeRead(readStream, packet, new TimeSpan(TimeSpan.TicksPerMillisecond*waitMs));
 		}
@@ -98,6 +99,8 @@ namespace Atmo.Daq.Win32 {
 		//private Thread _ioThread;
 		private int _packetSize = DefaultPacketSize;
 		private string _devicePathCache;
+		private DateTime _devicePathCacheLastUpdate = default(DateTime);
+		private TimeSpan _devicePathCacheLifetime = new TimeSpan(0, 0, 0, 2);
 
 		public PicHidUsbConnection(string deviceId) {
             _deviceId = deviceId;
@@ -200,7 +203,13 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private string GetDevicePath() {
-			return _devicePathCache ?? (_devicePathCache = FindDevicePath());
+			if (
+				Math.Abs((_devicePathCacheLastUpdate - DateTime.Now).Ticks) > _devicePathCacheLifetime.Ticks
+				|| null == _devicePathCache
+			) {
+				_devicePathCache = FindDevicePath();
+			}
+			return _devicePathCache;
 		}
 
 		private string FindDevicePath() {

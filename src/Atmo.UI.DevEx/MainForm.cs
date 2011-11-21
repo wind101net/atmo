@@ -191,11 +191,11 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void timerTesting_Tick(object sender, EventArgs e) {
-			/*if(!backgroundWorkerLiveGraph.IsBusy) {
+			if(!backgroundWorkerLiveGraph.IsBusy) {
 				backgroundWorkerLiveGraph.RunWorkerAsync();
-			}*/
-			backgroundWorkerLiveGraph_DoWork(null,null);
-			backgroundWorkerLiveGraph_RunWorkerCompleted(null,null);
+			}
+			//backgroundWorkerLiveGraph_DoWork(null,null);
+			//backgroundWorkerLiveGraph_RunWorkerCompleted(null,null);
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
