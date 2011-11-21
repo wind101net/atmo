@@ -25,8 +25,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 using Atmo.Units;
+using System.Xml;
 
 namespace Atmo.Data {
 
@@ -64,8 +66,10 @@ namespace Atmo.Data {
 		public static PersistentState ReadStream(Stream stream) {
 			PersistentState state;
 			try {
-				state = Serializer.Deserialize(stream) as PersistentState;
-                if(null != state)
+				using (var reader = new StreamReader(stream, Encoding.UTF8)) {
+					state = Serializer.Deserialize(stream) as PersistentState;
+				}
+				if(null != state)
 				    state.IsDirty = false;
 			}catch {
 				state = null;
@@ -81,7 +85,9 @@ namespace Atmo.Data {
 
 		public static bool SaveStream(Stream stream, PersistentState state) {
 			try {
-				Serializer.Serialize(stream, state);
+				using (var writer = new XmlTextWriter(stream, Encoding.UTF8)) {
+					Serializer.Serialize(writer, state);
+				}
 				return true;
 			}catch {
 				return false;

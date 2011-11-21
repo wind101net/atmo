@@ -22,6 +22,7 @@
 // ================================================================================
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -31,44 +32,50 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Atmo.Daq.Win32 {
 	
+	/// <summary>
+	/// The core PIC HID connection for communication with the device.
+	/// </summary>
 	public class PicHidUsbConnection : IDisposable {
 
 		private static readonly Guid HidGuidValue = new Guid("4D1E55B2-F16F-11CF-88CB-001111000030");
 		private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 0, 0, 500);
 		private const int DefaultPacketSize = 65;
+		private static readonly TimeSpan MinReadTimeSpan = new TimeSpan(50 * TimeSpan.TicksPerMillisecond);
 
 		public static Guid HidGuid {
 			get { return HidGuidValue; }
 		}
 
 		private static int SafeRead(Stream readStream, byte[] packet, int waitMs) {
+			return SafeRead(readStream, packet, new TimeSpan(TimeSpan.TicksPerMillisecond*waitMs));
+		}
+
+		private static int SafeRead(Stream readStream, byte[] packet, TimeSpan waitSpan) {
 			try {
-				if(0 >= waitMs)
+				if (TimeSpan.Zero >= waitSpan)
 					return readStream.Read(packet, 0, packet.Length);
 
 				var tempPacket = new byte[packet.Length];
 
 				var ar = readStream.BeginRead(tempPacket, 0, tempPacket.Length, null, null);
 
-				int waitInterval = Math.Min(waitMs, 50);
+				var waitInterval = MinReadTimeSpan > waitSpan ? waitSpan : MinReadTimeSpan;
 				DateTime start = DateTime.Now;
 				do {
 					Thread.Sleep(waitInterval);
 					if (ar.IsCompleted) {
 						break;
 					}
-				} while ((DateTime.Now - start).TotalMilliseconds <= waitMs);
+				} while ((DateTime.Now - start) <= waitInterval);
 
 				if (ar.IsCompleted) {
 					var readLength = readStream.EndRead(ar);
 					Array.Copy(tempPacket, packet, readLength);
 					return readLength;
 				}
-				else {
-					readStream.Close();
-					readStream.Dispose();
-					return -1;
-				}
+				readStream.Close();
+				readStream.Dispose();
+				return -1;
 			}
 			catch (IOException) {
 				return 0;
@@ -90,6 +97,7 @@ namespace Atmo.Daq.Win32 {
 		private readonly object _readWriteLock = new object();
 		//private Thread _ioThread;
 		private int _packetSize = DefaultPacketSize;
+		private string _devicePathCache;
 
 		public PicHidUsbConnection(string deviceId) {
             _deviceId = deviceId;
@@ -101,13 +109,14 @@ namespace Atmo.Daq.Win32 {
             _readHandle = null;
             _writeStream = null;
             _readStream = null;
-        }
+			_devicePathCache = null;
+		}
 
 		public bool IsConnected {
 			get {
 				return null != _writeHandle
 					&& null != _readHandle
-					&& !String.IsNullOrEmpty(FindDevicePath())
+					&& !String.IsNullOrEmpty(GetDevicePath())
 				;
 			}
 		}
@@ -157,7 +166,7 @@ namespace Atmo.Daq.Win32 {
 			if (null != _readHandle && null != _readStream) {
 				try {
 					lock (_readWriteLock) {
-						bytesRecieved = SafeRead(_readStream, packet, (int) timeout.TotalMilliseconds);
+						bytesRecieved = SafeRead(_readStream, packet, timeout);
 						if(bytesRecieved < 0 || !_readStream.CanRead) {
 							DisposeHandlesCore();
 							CreateHandlesCore();
@@ -190,7 +199,64 @@ namespace Atmo.Daq.Win32 {
 			return CreateHandles();
 		}
 
+		private string GetDevicePath() {
+			return _devicePathCache ?? (_devicePathCache = FindDevicePath());
+		}
+
 		private string FindDevicePath() {
+			var hidGuid = HidGuid;
+			var deviceInfoList = SetupApi.SetupDiGetClassDevs(ref hidGuid, null, IntPtr.Zero, DIGCF.DeviceInterface | DIGCF.Present);
+			try {
+				for (uint i = 0; ; i++) {
+					var deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA();
+					deviceInterfaceData.cbSize = (uint) Marshal.SizeOf(deviceInterfaceData);
+					if (!SetupApi.SetupDiEnumDeviceInterfaces(deviceInfoList, IntPtr.Zero, ref hidGuid, i, ref deviceInterfaceData))
+						break; // end of the list
+
+					var deviceInfoData = new SP_DEVINFO_DATA();
+					deviceInfoData.cbSize = (uint)Marshal.SizeOf(deviceInfoData);
+					if (!SetupApi.SetupDiEnumDeviceInfo(deviceInfoList, i, ref deviceInfoData))
+						continue;
+
+					const uint bufferSize = 1048;
+					var propertyBuffer = Marshal.AllocHGlobal((int)bufferSize);
+					try {
+						uint requiredSize;
+						uint propRegDataType;
+						if (!SetupApi.SetupDiGetDeviceRegistryProperty(deviceInfoList, ref deviceInfoData, SPDRP.HardwareId,out propRegDataType, propertyBuffer, bufferSize, out requiredSize))
+							continue;
+							
+						var deviceId = Marshal.PtrToStringAuto(propertyBuffer, (int) requiredSize);
+						if (!_deviceIdRegex.IsMatch(deviceId))
+							continue;
+						
+						var deviceInterfaceDetailData = new SP_DEVICE_INTERFACE_DETAIL_DATA {
+							cbSize = IntPtr.Size == 8 ? 8 : (uint)(4 + Marshal.SystemDefaultCharSize)
+						};
+						var interfaceDetailOk = SetupApi.SetupDiGetDeviceInterfaceDetail(
+							deviceInfoList, ref deviceInterfaceData, ref deviceInterfaceDetailData,
+							SP_DEVICE_INTERFACE_DETAIL_DATA.BUFFER_SIZE, out requiredSize, ref deviceInfoData);
+
+						if (interfaceDetailOk)
+							return deviceInterfaceDetailData.devicePath;
+					}
+					finally {
+						if (IntPtr.Zero != propertyBuffer)
+							Marshal.FreeHGlobal(propertyBuffer);
+					}
+					
+				}
+			}
+			finally {
+				if (IntPtr.Zero != deviceInfoList) {
+					SetupApi.SetupDiDestroyDeviceInfoList(deviceInfoList);
+				}
+			}
+			return null;
+		}
+
+		[Obsolete]
+		private string FindDevicePath_old() {
 
 			if (String.IsNullOrEmpty(_deviceId)) {
 				return null;
@@ -293,7 +359,7 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private bool CreateHandlesCore() {
-			string devicePath = FindDevicePath();
+			string devicePath = GetDevicePath();
 			if (String.IsNullOrEmpty(devicePath))
 				return false;
 			

@@ -276,7 +276,7 @@ namespace Atmo.Daq.Win32 {
 			if (!_queryActive) {
 				return;
 			}
-
+			System.Diagnostics.Debug.WriteLine("Query Start");
 			int networkSize = 4;
 			var values = new PackedReadingValues[networkSize];
 			bool? usingDaqTemp = null;
@@ -286,8 +286,11 @@ namespace Atmo.Daq.Win32 {
 			daqSafeTime = daqSafeTime.Date.Add(new TimeSpan(daqSafeTime.Hour, daqSafeTime.Minute, daqSafeTime.Second));
 
 			for (int i = 0; i < values.Length; i++) {
+				System.Diagnostics.Debug.WriteLine("Querying " + i);
 				values[i] = QueryValues(i);
 			}
+
+			System.Diagnostics.Debug.WriteLine("Analyze...");
 
 			for (int i = 0; i < values.Length; i++) {
 
@@ -312,10 +315,13 @@ namespace Atmo.Daq.Win32 {
 			networkSize = highestValid + 1;
 
 			_lastClock = QueryAdjustedClock();
+			System.Diagnostics.Debug.WriteLine("Clock is: _lastClock");
 
 			_daqStat = _lastDaqStatusQuery >= now
 				? QueryStatus()
 				: DaqStatusValues.Default;
+
+			System.Diagnostics.Debug.WriteLine("Handle...");
 
 			for (int i = 0; i < values.Length; i++) {
 				_sensors[i].HandleObservation(values[i], networkSize, daqSafeTime);
@@ -326,6 +332,7 @@ namespace Atmo.Daq.Win32 {
 				_usingDaqTemp = usingDaqTemp;
 				_usingDaqTempUntil = null;
 			}
+			System.Diagnostics.Debug.WriteLine("Query End");
 		}
 
 		public PackedReadingValues QueryValues(int nid) {

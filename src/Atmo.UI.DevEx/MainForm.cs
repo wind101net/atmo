@@ -191,9 +191,11 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void timerTesting_Tick(object sender, EventArgs e) {
-			if(!backgroundWorkerLiveGraph.IsBusy) {
+			/*if(!backgroundWorkerLiveGraph.IsBusy) {
 				backgroundWorkerLiveGraph.RunWorkerAsync();
-			}
+			}*/
+			backgroundWorkerLiveGraph_DoWork(null,null);
+			backgroundWorkerLiveGraph_RunWorkerCompleted(null,null);
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -583,12 +585,11 @@ namespace Atmo.UI.DevEx {
 
 
 		private void backgroundWorkerLiveGraph_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-			System.Diagnostics.Debug.WriteLine("Begin Live Data");
+			//System.Diagnostics.Debug.WriteLine("Live Data Begin");
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
 			// current live state
 			var now = DateTime.Now;
 			var sensors = _deviceConnection.Where(s => s.IsValid).ToList();
-
 			// get readings
 			var readings = new Dictionary<ISensor, IReading>();
 			foreach (var sensor in sensors) {
@@ -672,7 +673,7 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void backgroundWorkerLiveGraph_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-			System.Diagnostics.Debug.WriteLine("End Live Data");
+			//System.Diagnostics.Debug.WriteLine("Live Data End");
 		}
 
 
