@@ -46,11 +46,6 @@ namespace Atmo.Daq.Win32 {
 			get { return HidGuidValue; }
 		}
 
-		[Obsolete]
-		private static int SafeRead(Stream readStream, byte[] packet, int waitMs) {
-			return SafeRead(readStream, packet, new TimeSpan(TimeSpan.TicksPerMillisecond*waitMs));
-		}
-
 		private static int SafeRead(Stream readStream, byte[] packet, TimeSpan waitSpan) {
 			try {
 				if (TimeSpan.Zero >= waitSpan)
@@ -96,7 +91,6 @@ namespace Atmo.Daq.Win32 {
 		private FileStream _writeStream;
 		private FileStream _readStream;
 		private readonly object _readWriteLock = new object();
-		//private Thread _ioThread;
 		private int _packetSize = DefaultPacketSize;
 		private string _devicePathCache;
 		private DateTime _devicePathCacheLastUpdate = default(DateTime);
@@ -203,9 +197,11 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private string GetDevicePath() {
+			var now = DateTime.Now;
 			if (
-				Math.Abs((_devicePathCacheLastUpdate - DateTime.Now).Ticks) > _devicePathCacheLifetime.Ticks
-				|| null == _devicePathCache
+				null == _devicePathCache
+				|| now < _devicePathCacheLastUpdate
+				|| now.Subtract(_devicePathCacheLastUpdate) > _devicePathCacheLifetime
 			) {
 				_devicePathCache = FindDevicePath();
 			}
@@ -230,11 +226,16 @@ namespace Atmo.Daq.Win32 {
 					const uint bufferSize = 1048;
 					var propertyBuffer = Marshal.AllocHGlobal((int)bufferSize);
 					try {
+
 						uint requiredSize;
 						uint propRegDataType;
-						if (!SetupApi.SetupDiGetDeviceRegistryProperty(deviceInfoList, ref deviceInfoData, SPDRP.HardwareId,out propRegDataType, propertyBuffer, bufferSize, out requiredSize))
+						if (!SetupApi.SetupDiGetDeviceRegistryProperty(
+							deviceInfoList, ref deviceInfoData, SPDRP.HardwareId, out propRegDataType,
+							propertyBuffer, bufferSize, out requiredSize)
+						) {
 							continue;
-							
+						}
+
 						var deviceId = Marshal.PtrToStringAuto(propertyBuffer, (int) requiredSize);
 						if (!_deviceIdRegex.IsMatch(deviceId))
 							continue;
@@ -264,105 +265,9 @@ namespace Atmo.Daq.Win32 {
 			return null;
 		}
 
-		[Obsolete]
-		private string FindDevicePath_old() {
-
-			if (String.IsNullOrEmpty(_deviceId)) {
-				return null;
-			}
-
-			string devicePath = null;
-			var deviceInfoList = IntPtr.Zero;
-
-			try {
-				// get a device list
-				var hidGuid = HidGuid;
-				deviceInfoList = SetupApi.SetupDiGetClassDevs(
-					ref hidGuid,
-					null,
-					IntPtr.Zero,
-					DIGCF.DeviceInterface | DIGCF.Present
-				);
-				// search through all the devices
-				for (uint i = 0; ; i++) {
-					var deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA();
-					deviceInterfaceData.cbSize = (uint)Marshal.SizeOf(deviceInterfaceData);
-					if (SetupApi.SetupDiEnumDeviceInterfaces(
-						deviceInfoList,
-						IntPtr.Zero,
-						ref hidGuid,
-						i,
-						ref deviceInterfaceData
-					)) {
-						var deviceInfoData = new SP_DEVINFO_DATA();
-						deviceInfoData.cbSize = (uint)Marshal.SizeOf(deviceInfoData);
-						if (SetupApi.SetupDiEnumDeviceInfo(
-							deviceInfoList,
-							i,
-							ref deviceInfoData
-						)) {
-							uint propRegDataType;
-							//byte[] propertyBuffer = new byte[1024];
-							const uint bufferSize = 1048;
-							var propertyBuffer = Marshal.AllocHGlobal((int)bufferSize);
-							try {
-								uint requiredSize;
-								if (SetupApi.SetupDiGetDeviceRegistryProperty(
-									deviceInfoList,
-									ref deviceInfoData,
-									SPDRP.HardwareId,
-									out propRegDataType,
-									propertyBuffer,
-									bufferSize,
-									out requiredSize
-								)) {
-									//var deviceId = System.Text.Encoding.Unicode.GetString(propertyBuffer, 0, (int)requiredSize);
-									var deviceId = Marshal.PtrToStringAuto(propertyBuffer, (int) requiredSize);
-									if (_deviceIdRegex.IsMatch(deviceId)) {
-										var deviceInterfaceDetailData = new SP_DEVICE_INTERFACE_DETAIL_DATA();
-										deviceInterfaceDetailData.cbSize = (IntPtr.Size == 8)
-										                                   	? 8
-										                                   	: (uint) (4 + Marshal.SystemDefaultCharSize); // fix for 64bit systems
-										if (SetupApi.SetupDiGetDeviceInterfaceDetail(
-											deviceInfoList,
-											ref deviceInterfaceData,
-											ref deviceInterfaceDetailData,
-											SP_DEVICE_INTERFACE_DETAIL_DATA.BUFFER_SIZE,
-											out requiredSize,
-											ref deviceInfoData
-											)) {
-											devicePath = deviceInterfaceDetailData.devicePath;
-											break;
-										}
-										else {
-											; // some kind of terrible failure?
-										}
-									}
-								}
-							}
-							finally {
-								if (IntPtr.Zero != propertyBuffer)
-									Marshal.FreeHGlobal(propertyBuffer);
-							}
-						}
-					}
-					else {
-						break; // end of the list
-					}
-				}
-			}
-			finally {
-				if (IntPtr.Zero != deviceInfoList) {
-					SetupApi.SetupDiDestroyDeviceInfoList(deviceInfoList);
-					deviceInfoList = IntPtr.Zero;
-				}
-			}
-			return devicePath;
-		}
-
 		private bool CreateHandles() {
-			DisposeHandles();
 			lock (_readWriteLock) {
+				DisposeHandlesCore();
 				return CreateHandlesCore();
 			}
 		}

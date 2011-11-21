@@ -27,6 +27,21 @@ namespace Atmo.Daq.Win32 {
 
 	public abstract class BaseDaqUsbConnection : IDisposable {
 
+		protected static byte[] GenerateEmptyPacketData() {
+			//return Enumerable.Repeat((byte)0xff, 65).ToArray();
+			var data = new byte[65];
+			ClearPacket(data);
+			return data;
+		}
+
+		protected static void ClearPacket(byte[] data) {
+			if (null != data && data.Length > 0) {
+				data[0] = 0;
+				for (int i = 1; i < data.Length; i++)
+					data[i] = 0xff;
+			}
+		}
+
 		protected BaseDaqUsbConnection(string deviceId)
 			: this(new PicHidUsbConnection(deviceId)) { }
 

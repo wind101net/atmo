@@ -54,7 +54,6 @@ namespace Atmo.Daq.Win32 {
 
 		private class QueryPause : IDisposable
 		{
-
 			public QueryPause(UsbDaqConnection conn) {
 				if(null == conn)
 					throw new ArgumentNullException("conn");
@@ -95,6 +94,7 @@ namespace Atmo.Daq.Win32 {
 				_latestReadings = new List<PackedReading>(_maxReadings);
 			}
 
+			/// <inheritdoc/>
 			public bool IsValid {
 				get { return _valid; }
 			}
@@ -130,6 +130,7 @@ namespace Atmo.Daq.Win32 {
 				}
 			}
 
+			/// <inheritdoc/>
 			public PackedReading Current {
 				get { return _latestReadings.FirstOrDefault(); }
 			}
@@ -169,18 +170,8 @@ namespace Atmo.Daq.Win32 {
 
 		public static string DefaultDaqDeviceId{ get { return DefaultDaqDeviceIdValue; }}
 
-		private static byte[] GenerateEmptyPacketData() {
-			//return Enumerable.Repeat((byte)0xff, 65).ToArray();
-			var data = new byte[65];
-			for (int i = 0; i < data.Length; i++) {
-				data[i] = 0xff;
-			}
-			return data;
-		}
-
 		private static byte[] GenerateNetworkSizePacketData(byte currentId, byte desiredId, byte size) {
 			var queryPacket = GenerateEmptyPacketData();
-			queryPacket[0] = 0;
 			queryPacket[1] = 0x82;
 			queryPacket[2] = currentId;
 			queryPacket[3] = desiredId;
@@ -248,10 +239,6 @@ namespace Atmo.Daq.Win32 {
 				_queryTimer.Dispose();
 				_queryTimer = null;
 			}
-		}
-
-		private void QueryThreadBody(object bs) {
-			QueryThreadBody();
 		}
 
 		private void QueryThreadBodyTrigger(object bs) {
@@ -330,17 +317,14 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		public PackedReadingValues QueryValues(int nid) {
-			
-			if(nid < 0 || nid > 3) {
+			if(nid < 0 || nid > 3)
 				throw new ArgumentOutOfRangeException("nid");
-			}
 
 			lock (_connLock) {
 				if (!IsConnected) {
 					Connect();
 				}
 				var queryPacket = GenerateEmptyPacketData();
-				queryPacket[0] = 0;
 				queryPacket[1] = 0x85;
 				queryPacket[2] = (byte)nid;
 				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
@@ -360,7 +344,6 @@ namespace Atmo.Daq.Win32 {
 					Connect();
 				}
 				var queryPacket = GenerateEmptyPacketData();
-				queryPacket[0] = 0;
 				queryPacket[1] = 0x37;
 				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
 					queryPacket = UsbConn.ReadPacket();
@@ -420,10 +403,10 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		public bool SetClock(DateTime time) {
+			var start = DateTime.Now;
 			using (new QueryPause(this)) {
-				Thread.Sleep(1000);
+				Thread.Sleep(750);
 				lock (_connLock) {
-					var start = DateTime.Now;
 					// determine the best time to send the set clock command
 					var optimalTime = start;
 					var firstDaqClock = RawQueryClock();
@@ -451,17 +434,14 @@ namespace Atmo.Daq.Win32 {
 			}
 		}
 
-		private const int AveragePingCount = 2;
-
 		private bool SetClockRaw(DateTime time) {
 			var start = DateTime.Now;
-			var pingTime = new TimeSpan(AveragePing(AveragePingCount).Ticks);
+			var pingTime = new TimeSpan(AveragePing().Ticks);
 
-			if (!IsConnected) {
+			if (!IsConnected)
 				Connect();
-			}
-			byte[] queryPacket = GenerateEmptyPacketData();
-			queryPacket[0] = 0;
+			
+			var queryPacket = GenerateEmptyPacketData();
 			queryPacket[1] = 0x86;
 
 			var calcTime = DateTime.Now.Subtract(start);
@@ -481,17 +461,17 @@ namespace Atmo.Daq.Win32 {
 			queryPacket[7] = (byte)time.Second;
 			queryPacket[7] = (byte)((queryPacket[7] % 10) + ((queryPacket[7] / 10) * 16));
 
-			if (UsbConn.WritePacket(queryPacket)) {
-				//return null != this.UsbComm.ReadPacket();
-				return true;
-			}
-			return false;
+			return UsbConn.WritePacket(queryPacket);
 		}
 
 		public TimeSpan Ping() {
 			lock (_connLock) {
-				return AveragePing(AveragePingCount);
+				return AveragePing();
 			}
+		}
+
+		private TimeSpan AveragePing() {
+			return AveragePing(2);
 		}
 
 		private TimeSpan AveragePing(int n) {
@@ -503,20 +483,19 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private TimeSpan RawPing() {
-			if (!IsConnected) {
+			if (!IsConnected)
 				Connect();
-			}
+			
 			var start = DateTime.Now;
 			RawQueryClock();
 			return DateTime.Now.Subtract(start);
 		}
 
 		private DateTime RawQueryClock() {
-			if (!IsConnected) {
+			if (!IsConnected)
 				Connect();
-			}
+			
 			var queryPacket = GenerateEmptyPacketData();
-			queryPacket[0] = 0;
 			queryPacket[1] = 0x87;
 			if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
 				queryPacket = UsbConn.ReadPacket();
