@@ -149,30 +149,38 @@ namespace Atmo.UI.DevEx {
         }
 
         private void addRemWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-            ISensor sensor = _device.GetSensor(_pendingSensorIndex);
-            bool ok = false;
-            if (_pendingOperation == PendingOperation.Add) {
-                _pendingOperation = PendingOperation.None;
-				Thread.Sleep(500);
-                if (null != sensor && sensor.IsValid) {
-                    MessageBox.Show("Success", "Sensor assignment successful.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else {
-                    MessageBox.Show("Failure", "Sensor assignment failed.", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else if (_pendingOperation == PendingOperation.Rem) {
-                _pendingOperation = PendingOperation.None;
-				Thread.Sleep(500);
-                if (null == sensor || !sensor.IsValid) {
-                    MessageBox.Show("Success", "Sensor removal successful.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else {
-                    MessageBox.Show("Failure", "Sensor removal failed.", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            _pendingOperation = PendingOperation.None;
-            
+			ISensor sensor = _device.GetSensor(_pendingSensorIndex);
+
+        	MessageBoxIcon resultIcon;
+        	string resultTitle;
+        	string resultMessage = "Operation";
+        	bool sensorIsDesiredToBeFound = true;
+
+			if (_pendingOperation == PendingOperation.Add) {
+				resultMessage = "Sensor assignment";
+			}
+			else if (_pendingOperation == PendingOperation.Rem) {
+				resultMessage = "Sensor removal";
+				sensorIsDesiredToBeFound = false;
+			}
+
+			Thread.Sleep(500); // wait for the sensor to be active
+
+        	var sensorFound = null != sensor && sensor.IsValid;
+
+			if (sensorFound == sensorIsDesiredToBeFound) {
+				resultTitle = "Success";
+				resultMessage += " successful";
+				resultIcon = MessageBoxIcon.Information;
+			}
+			else {
+				resultTitle = "Failure";
+				resultMessage += " failed";
+				resultIcon = MessageBoxIcon.Error;
+			}
+
+			_pendingOperation = PendingOperation.None;
+			MessageBox.Show(this, resultTitle, resultMessage, MessageBoxButtons.OK, resultIcon);
         }
 
         private void addRemWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {

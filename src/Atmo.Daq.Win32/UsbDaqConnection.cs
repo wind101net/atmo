@@ -558,12 +558,26 @@ namespace Atmo.Daq.Win32 {
 			return ok;
 		}
 
+		private static T Clamp<T>(T value, T min, T max) where T:IComparable<T> {
+			if (value.CompareTo(min) < 0)
+				return min;
+			if (max.CompareTo(value) < 0)
+				return max;
+			return value;
+		}
+
 		public bool ChangeSensorId(int currentId, int desiredId, int numTries = 3) {
 			using (NewQueryPause()) {
+				const int maxSize = 4;
+				int calculatedSize = _networkSize;
+				if (desiredId >= 0 && desiredId < maxSize && desiredId >= _networkSize) {
+					calculatedSize = desiredId + 1;
+				}
+
 				var packet = GenerateNetworkSizePacketData(
 					currentId >= 0 ? (byte) currentId : (byte) 0xff,
 					desiredId >= 0 ? (byte) desiredId : (byte) 0xff,
-					(byte) _networkSize
+					calculatedSize
 				);
 				using (IsolateConnection()) {
 					System.Diagnostics.Debug.Write("ChangeSensor");
