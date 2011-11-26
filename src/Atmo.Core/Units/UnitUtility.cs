@@ -614,6 +614,13 @@ namespace Atmo.Units {
 		}
 		*/
 
+		public static DateTime StripToSecond(DateTime value) {
+			return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+		}
+
+		public static TimeSpan ExtractHms(DateTime value) {
+			return new TimeSpan(value.Hour,value.Minute, value.Second);
+		}
 
 		public static DateTime StripToUnit(DateTime value, TimeUnit unit) {
 			switch (unit) {
@@ -622,7 +629,7 @@ namespace Atmo.Units {
 			case TimeUnit.Day: return new DateTime(value.Year, value.Month, value.Day);
 			case TimeUnit.Hour: return new DateTime(value.Year, value.Month, value.Day, value.Hour, 0, 0);
 			case TimeUnit.Minute: return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0);
-			case TimeUnit.Second: return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+			case TimeUnit.Second: return StripToSecond(value);
 			}
 			return value;
 		}

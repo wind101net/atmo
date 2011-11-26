@@ -46,6 +46,27 @@ namespace Atmo.Daq.Win32 {
 			get { return HidGuidValue; }
 		}
 
+		private static int SafeRead(Stream readStream, byte[] packet) {
+			try {
+				if (null == readStream)
+					return 0;
+
+				var ar = readStream.BeginRead(packet, 0, packet.Length, null, null);
+				int result = readStream.EndRead(ar);
+				return result;
+			}
+			catch (IOException) {
+				return 0;
+			}
+			catch (OperationCanceledException) {
+				return 0;
+			}
+			catch (Exception ex) {
+				return 0;
+			}
+		}
+
+		[Obsolete]
 		private static int SafeRead(Stream readStream, byte[] packet, TimeSpan waitSpan) {
 			try {
 				if (TimeSpan.Zero >= waitSpan)
@@ -85,28 +106,39 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private readonly string _deviceId;
-		private readonly Regex _deviceIdRegex;
+		private readonly string _deviceIdUpper;
+		//private readonly Regex _deviceIdRegex;
 		private SafeFileHandle _writeHandle;
 		private SafeFileHandle _readHandle;
 		private FileStream _writeStream;
 		private FileStream _readStream;
-		private readonly object _readWriteLock = new object();
+		//private readonly object _readWriteLock = new object();
+		private readonly object _readLock = new object();
+		private readonly object _writeLock = new object();
+
 		private int _packetSize = DefaultPacketSize;
 		private string _devicePathCache;
 		private DateTime _devicePathCacheLastUpdate = default(DateTime);
 		private TimeSpan _devicePathCacheLifetime = new TimeSpan(0, 0, 0, 2);
+		private object _packetQueueLock = new object();
+		private Queue<byte[]> _packetQueue;
+		private const int PacketQueueMax = 8;
+		private Thread _packetReadThread;
+		private bool _disposed = false;
 
 		public PicHidUsbConnection(string deviceId) {
             _deviceId = deviceId;
-			_deviceIdRegex = new Regex(
+			_deviceIdUpper = deviceId.ToUpperInvariant();
+			/*_deviceIdRegex = new Regex(
 				String.Format(".*{0}.*",_deviceId),
 				RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled
-			);
+			);*/
             _writeHandle = null;
             _readHandle = null;
             _writeStream = null;
             _readStream = null;
 			_devicePathCache = null;
+			_packetQueue = new Queue<byte[]>(PacketQueueMax);
 		}
 
 		public bool IsConnected {
@@ -130,70 +162,97 @@ namespace Atmo.Daq.Win32 {
 			if ((offset + _packetSize) > packet.Length) {
 				throw new ArgumentException(String.Concat("packet must have ", _packetSize, " bytes from offset"), "packet");
 			}
-			if (TimeSpan.Zero == timeout) {
-				var result = false;
-				lock (_readWriteLock) {
-					if (null != _writeHandle && null != _writeStream) {
-						try {
-							_writeStream.Write(packet, offset, _packetSize);
-							result = true;
-						}
-						catch (IOException ioEx) {
-							result = false;
-						}
-						catch (OperationCanceledException ocEx) {
-							result = false;
-						}
+			if (TimeSpan.Zero != timeout)
+				throw new NotSupportedException("Write timeout is not supported.");
+			
+			var result = false;
+			lock (_writeLock) {
+				if (null != _writeHandle && null != _writeStream) {
+					try {
+						_writeStream.Write(packet, offset, _packetSize);
+						result = true;
+					}
+					catch (IOException ioEx) {
+						result = false;
+					}
+					catch (OperationCanceledException ocEx) {
+						result = false;
 					}
 				}
-				return result;
 			}
-			throw new NotSupportedException("Write timeout is not supported.");
+			return result;
 		}
 
 		public byte[] ReadPacket() {
-			return ReadPacket(DefaultTimeout);
+			return ReadPacket(new TimeSpan(0, 0, 0, 0, 50));
 		}
 
 		public byte[] ReadPacket(TimeSpan timeout) {
-			var packet = new byte[_packetSize];
-			Array.Clear(packet, 0, packet.Length);
-			var result = false;
-			int bytesRecieved = 0;
-			if (null != _readHandle && null != _readStream) {
-				try {
-					lock (_readWriteLock) {
-						bytesRecieved = SafeRead(_readStream, packet, timeout);
-						if(bytesRecieved < 0 || !_readStream.CanRead) {
+			DateTime start = DateTime.Now;
+			var lastPacket = DequeueLastPacket();
+			if (null != lastPacket)
+				return lastPacket;
+			do {
+				Thread.Sleep(50);
+				lastPacket = DequeueLastPacket();
+				if (null != lastPacket)
+					return lastPacket;
+			} while(DateTime.Now - start <= timeout);
+			return null;
+		}
+
+		private void PacketReadThreadBody() {
+			while(true) {
+				int bytesRead = 0;
+				byte[] packet;
+				lock(_readLock) {
+					packet = new byte[_packetSize];
+					//System.Diagnostics.Debug.WriteLine("Waiting for packet..");
+					bytesRead = SafeRead(_readStream, packet);
+					//System.Diagnostics.Debug.WriteLine("Packet recieved!");
+					if (bytesRead < 0 || null == _readStream || !_readStream.CanRead) {
+						lock (_writeLock) {
 							DisposeHandlesCore();
 							CreateHandlesCore();
 						}
 					}
-					result = bytesRecieved > 0;
 				}
-				catch (IOException ioEx) {
-					result = false;
-				}
-				catch (OperationCanceledException ocEx) {
-					result = false;
+				if (bytesRead <= 0)
+					continue;
+
+				lock(_packetQueueLock) {
+					_packetQueue.Enqueue(packet);
+					while(_packetQueue.Count > PacketQueueMax) {
+						_packetQueue.Dequeue();
+					}
 				}
 			}
-			if (result) {
-				if (bytesRecieved == _packetSize)
-					return packet;
-				
-				if (bytesRecieved < _packetSize) {
-					var shrunkPacket = new byte[bytesRecieved];
-					Array.Copy(packet, shrunkPacket, bytesRecieved);
-					return shrunkPacket;
+		}
+
+		public void ClearPacketQueue() {
+			lock (_packetQueueLock) {
+				_packetQueue.Clear();
+			}
+		}
+
+		public byte[] DequeueLastPacket() {
+			lock(_packetQueueLock) {
+				if(_packetQueue.Count > 0) {
+					return _packetQueue.Dequeue();
 				}
-				throw new InvalidDataException(String.Format("Read {0} bytes but packet size is {1} .", bytesRecieved, _packetSize));
 			}
 			return null;
 		}
 
 		public bool Connect() {
-			return CreateHandles();
+			var handlesOk = CreateHandles();
+
+			if (null == _packetReadThread) {
+				_packetReadThread = new Thread(PacketReadThreadBody);
+				_packetReadThread.Start();
+			}
+			
+			return handlesOk;
 		}
 
 		private string GetDevicePath() {
@@ -211,6 +270,9 @@ namespace Atmo.Daq.Win32 {
 		private string FindDevicePath() {
 			var hidGuid = HidGuid;
 			var deviceInfoList = SetupApi.SetupDiGetClassDevs(ref hidGuid, null, IntPtr.Zero, DIGCF.DeviceInterface | DIGCF.Present);
+			if (IntPtr.Zero == deviceInfoList)
+				return null;
+
 			try {
 				for (uint i = 0; ; i++) {
 					var deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA();
@@ -237,9 +299,12 @@ namespace Atmo.Daq.Win32 {
 						}
 
 						var deviceId = Marshal.PtrToStringAuto(propertyBuffer, (int) requiredSize);
-						if (!_deviceIdRegex.IsMatch(deviceId))
+						if (String.IsNullOrEmpty(deviceId)
+							|| !deviceId.ToUpperInvariant().Contains(_deviceIdUpper)
+						) {
 							continue;
-						
+						}
+
 						var deviceInterfaceDetailData = new SP_DEVICE_INTERFACE_DETAIL_DATA {
 							cbSize = IntPtr.Size == 8 ? 8 : (uint)(4 + Marshal.SystemDefaultCharSize)
 						};
@@ -251,41 +316,47 @@ namespace Atmo.Daq.Win32 {
 							return deviceInterfaceDetailData.devicePath;
 					}
 					finally {
-						if (IntPtr.Zero != propertyBuffer)
-							Marshal.FreeHGlobal(propertyBuffer);
+						Marshal.FreeHGlobal(propertyBuffer);
 					}
 					
 				}
 			}
 			finally {
-				if (IntPtr.Zero != deviceInfoList) {
-					SetupApi.SetupDiDestroyDeviceInfoList(deviceInfoList);
-				}
+				SetupApi.SetupDiDestroyDeviceInfoList(deviceInfoList);
 			}
 			return null;
 		}
 
 		private bool CreateHandles() {
-			lock (_readWriteLock) {
-				DisposeHandlesCore();
-				return CreateHandlesCore();
+			if (_disposed)
+				return false;
+
+			lock (_readLock) {
+				lock (_writeLock) {
+					DisposeHandlesCore();
+					return CreateHandlesCore();
+				}
 			}
 		}
 
+		private static SafeFileHandle OpenExistingFile(string devicePath, EFileAccess fileAccess) {
+			return Kernel32.CreateFile(
+				devicePath, fileAccess,
+				EFileShare.Read | EFileShare.Write, IntPtr.Zero,
+				ECreationDisposition.OpenExisting, EFileAttributes.None, IntPtr.Zero);
+		}
+
 		private bool CreateHandlesCore() {
-			string devicePath = GetDevicePath();
+			if (_disposed)
+				return false;
+
+			var devicePath = GetDevicePath();
 			if (String.IsNullOrEmpty(devicePath))
 				return false;
-			
-			_writeHandle = Kernel32.CreateFile(
-				devicePath, EFileAccess.GenericWrite,
-				EFileShare.Read | EFileShare.Write, IntPtr.Zero,
-				ECreationDisposition.OpenExisting, EFileAttributes.None, IntPtr.Zero);
+
+			_writeHandle = OpenExistingFile(devicePath, EFileAccess.GenericWrite);
 			_writeStream = new FileStream(_writeHandle, FileAccess.Write, 65, false);
-			_readHandle = Kernel32.CreateFile(
-				devicePath, EFileAccess.GenericRead,
-				EFileShare.Read | EFileShare.Write, IntPtr.Zero,
-				ECreationDisposition.OpenExisting, EFileAttributes.None, IntPtr.Zero);
+			_readHandle = OpenExistingFile(devicePath, EFileAccess.GenericRead);
 			_readStream = new FileStream(_readHandle, FileAccess.Read, 65, false);
 
 			return true;
@@ -297,10 +368,16 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		protected virtual void Dispose(bool disposing) {
+			_disposed = true;
 			if(disposing) {
 				;
 			}
-			DisposeHandles();
+			DisposeHandlesCore();
+			if(null != _packetReadThread) {
+				_packetReadThread.Interrupt();
+				_packetReadThread.Abort();
+			}
+			
 		}
 
         ~PicHidUsbConnection() {
@@ -308,26 +385,32 @@ namespace Atmo.Daq.Win32 {
         }
 
         private void DisposeHandles() {
-			lock (_readWriteLock) {
-				DisposeHandlesCore();
+			lock (_readLock) {
+				lock (_writeLock) {
+					DisposeHandlesCore();
+				}
 			}
         }
 
 		private void DisposeHandlesCore() {
 			if (null != _writeStream) {
 				_writeStream.Close();
+				_writeStream.Dispose();
 				_writeStream = null;
 			}
 			if (null != _readStream) {
 				_readStream.Close();
+				_readStream.Dispose();
 				_readStream = null;
 			}
 			if (null != _writeHandle && !_writeHandle.IsInvalid && !_writeHandle.IsClosed) {
 				_writeHandle.Close();
+				_writeHandle.Dispose();
 			}
 			_writeHandle = null;
 			if (null != _readHandle && !_readHandle.IsInvalid && !_readHandle.IsClosed) {
 				_readHandle.Close();
+				_readHandle.Dispose();
 			}
 			_readHandle = null;
 		}

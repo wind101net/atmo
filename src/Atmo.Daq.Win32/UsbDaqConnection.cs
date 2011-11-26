@@ -32,7 +32,15 @@ using Atmo.Units;
 namespace Atmo.Daq.Win32 {
 	public class UsbDaqConnection : BaseDaqUsbConnection, IDaqConnection, IEnumerable<UsbDaqConnection.Sensor> {
 
-		private struct DaqStatusValues {
+		private struct DaqStatusValues : IEquatable<DaqStatusValues> {
+
+			public static bool operator==(DaqStatusValues a, DaqStatusValues b) {
+				return a.Equals(b);
+			}
+
+			public static bool operator !=(DaqStatusValues a, DaqStatusValues b) {
+				return !a.Equals(b);
+			}
 
 			public static readonly DaqStatusValues Default = new DaqStatusValues(Double.NaN, Double.NaN, Double.NaN);
 
@@ -50,6 +58,12 @@ namespace Atmo.Daq.Win32 {
 				VoltageUsb = voltageUsb;
 			}
 
+			public bool Equals(DaqStatusValues other) {
+				return Temperature == other.Temperature
+					&& VoltageBattery == other.VoltageBattery
+					&& VoltageUsb == other.VoltageUsb
+				;
+			}
 		}
 
 		private class QueryPause : IDisposable
@@ -57,6 +71,7 @@ namespace Atmo.Daq.Win32 {
 			public QueryPause(UsbDaqConnection conn) {
 				if(null == conn)
 					throw new ArgumentNullException("conn");
+
 				Conn = conn;
 				QueryWasActive = conn._queryActive;
 				
@@ -73,6 +88,29 @@ namespace Atmo.Daq.Win32 {
 			}
 		}
 
+		private class ConnectionIsolator : IDisposable
+		{
+			public ConnectionIsolator(UsbDaqConnection conn)
+				: this(conn, true) { }
+
+			public ConnectionIsolator(UsbDaqConnection conn, bool cleanQueue) {
+				if (null == conn)
+					throw new ArgumentNullException("conn");
+
+				Monitor.Enter(conn._connLock);
+				if (cleanQueue)
+					conn.UsbConn.ClearPacketQueue();
+				
+				Conn = conn;
+			}
+
+			public readonly UsbDaqConnection Conn;
+
+			public void Dispose() {
+				Monitor.Exit(Conn._connLock);
+			}
+		}
+
 		public class Sensor : ISensor {
 
 			private const int DefaultMaxReadingsValue = 10;
@@ -80,7 +118,7 @@ namespace Atmo.Daq.Win32 {
 			private readonly int _nid;
 			private readonly UsbDaqConnection _connection;
 			private readonly int _maxReadings;
-			private readonly List<PackedReading> _latestReadings;
+			private readonly List<PackedReading> _latestReadings; // should probably be a queue
 			private readonly object _stateMutex = new object();
 			private bool _valid = false;
 
@@ -168,15 +206,128 @@ namespace Atmo.Daq.Win32 {
 		private const string DefaultDaqDeviceIdValue = "Vid_04d8&Pid_fc4a";
 		private const int DefaultMsPeriodValue = 333;
 
+		private static readonly TimeSpan HalfSecond = new TimeSpan(0, 0, 0, 0, 500);
+		private static readonly TimeSpan QuarterSecond = new TimeSpan(0, 0, 0, 0, 250);
+		private static readonly TimeSpan TenthSecond = new TimeSpan(0, 0, 0, 0, 100);
+		private static readonly TimeSpan ThreeQuarterSecond = new TimeSpan(0, 0, 0, 0, 750);
+		private static readonly TimeSpan OneSecond = new TimeSpan(0, 0, 0, 1);
+
 		public static string DefaultDaqDeviceId{ get { return DefaultDaqDeviceIdValue; }}
 
+		private static byte[] GenerateNetworkSizePacketData(byte currentId, byte desiredId, int size) {
+			checked {
+				return GenerateNetworkSizePacketData(currentId, desiredId, (byte) size);
+			}
+		}
+
 		private static byte[] GenerateNetworkSizePacketData(byte currentId, byte desiredId, byte size) {
-			var queryPacket = GenerateEmptyPacketData();
-			queryPacket[1] = 0x82;
-			queryPacket[2] = currentId;
-			queryPacket[3] = desiredId;
-			queryPacket[4] = size;
-			return queryPacket;
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x82;
+			packet[2] = currentId;
+			packet[3] = desiredId;
+			packet[4] = size;
+			return packet;
+		}
+
+		private static byte[] GenereateQueryPacketData(int nid) {
+			checked {
+				return GenereateQueryPacketData((byte) nid);
+			}
+		}
+
+		private static byte[] GenereateQueryPacketData(byte nid) {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x85;
+			packet[2] = nid;
+			return packet;
+		}
+
+		private static byte[] GenerateQueryDaqStatusPacketData()
+		{
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x37;
+			return packet;
+		}
+
+		private static byte[] GenerateEnterAnemBootPacketData(int nid) {
+			checked {
+				return GenerateEnterAnemBootPacketData((byte) nid);
+			}
+		}
+
+		private static byte[] GenerateEnterAnemBootPacketData(byte nid) {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x74;
+			packet[2] = nid;
+			return packet;
+		}
+
+		private static bool PacketHasOkIn3And4(byte[] packet) {
+			return null != packet
+				&& packet.Length > 4
+				&& packet[3] == 0x4f && packet[4] == 0x4b // "OK"
+			;
+		}
+
+		private static bool IsValidEnterAnemBootResponse(byte[] packet, byte nid) {
+			return PacketHasOkIn3And4(packet)
+				&& packet[1] == 0x74 // the message we execpted
+				&& packet[2] == nid // same NID
+			;
+		}
+
+		private static byte[] GenerateSetDaqTempPacket(bool useDaq, byte nid) {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x72;
+			packet[3] = useDaq ? (byte)0 : (byte)1;
+			packet[2] = nid;
+			return packet;
+		}
+
+		private static bool IsValidSetDaqTempResponse(byte[] packet) {
+			return PacketHasOkIn3And4(packet);
+		}
+
+		private static byte[] GenerateResetAnemPacket(byte nid) {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x76;
+			packet[2] = nid;
+			return packet;
+		}
+
+		private static bool IsValidResetAnemResponse(byte[] packet) {
+			return PacketHasOkIn3And4(packet);
+		}
+
+		private static byte[] GenerateEnterDaqBootPacketData() {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x77;
+			return packet;
+		}
+
+		private static byte[] GenerateReconnectMediaPacketData() {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x78;
+			return packet;
+		}
+
+		private static byte[] GenerateGetCorrectionFactoryPacketData(byte nid) {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x71;
+			packet[2] = nid;
+			return packet;
+		}
+
+		private static byte[] GeneratePutCorrectionFactorsPacketData(byte nid, CorrectionFactors factors) {
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0x70;
+			packet[2] = nid;
+			CorrectionFactors.ToBytes(factors, packet, 3);
+			return packet;
+		}
+
+		private static bool IsValidPutFactorsResponse(byte[] packet) {
+			return PacketHasOkIn3And4(packet);
 		}
 
 		private readonly Sensor[] _sensors;
@@ -248,7 +399,6 @@ namespace Atmo.Daq.Win32 {
 		private object _queryBodylock = new object();
 
 		private void QueryThreadBodyTrigger() {
-
 			if(Monitor.TryEnter(_queryBodylock)) {
 				try {
 					QueryThreadBody();
@@ -259,28 +409,48 @@ namespace Atmo.Daq.Win32 {
 			}
 		}
 
+		private void Swap(byte[] data, int a, int b) {
+			var t = data[a];
+			data[a] = data[b];
+			data[b] = t;
+		}
+
+		private bool WritePacket(byte[] packet) {
+			return null != UsbConn && UsbConn.WritePacket(packet);
+		}
+
+		private bool ConnectIfRequired() {
+			if (IsConnected)
+				return true;
+			return Connect();
+		}
+
+		private QueryPause NewQueryPause() {
+			return new QueryPause(this);
+		}
+
+		private ConnectionIsolator IsolateConnection() {
+			return new ConnectionIsolator(this);
+		}
+
 		private void QueryThreadBody() {
-			if (!_queryActive) {
+			if (!_queryActive)
 				return;
-			}
+			
 			int networkSize = 4;
 			var values = new PackedReadingValues[networkSize];
 			bool? usingDaqTemp = null;
 			int highestValid = -1;
 			var now = DateTime.Now;
-			var daqSafeTime = now;
-			daqSafeTime = daqSafeTime.Date.Add(new TimeSpan(daqSafeTime.Hour, daqSafeTime.Minute, daqSafeTime.Second));
+			var daqSafeTime = UnitUtility.StripToSecond(now);
 
 			for (int i = 0; i < values.Length; i++) {
 				values[i] = QueryValues(i);
 			}
 
-
 			for (int i = 0; i < values.Length; i++) {
-
-				if (!values[i].IsValid) {
+				if (!values[i].IsValid)
 					continue;
-				}
 
 				if (PackedValuesFlags.AnemTemperatureSource != (values[i].RawFlags & PackedValuesFlags.AnemTemperatureSource)) {
 					usingDaqTemp = true;
@@ -297,13 +467,8 @@ namespace Atmo.Daq.Win32 {
 			}
 
 			networkSize = highestValid + 1;
-
-			_lastClock = QueryAdjustedClock(1);
-
-			_daqStat = _lastDaqStatusQuery >= now
-				? QueryStatus()
-				: DaqStatusValues.Default;
-
+			_lastClock = QueryAdjustedClock(0);
+			_daqStat = _lastDaqStatusQuery >= now ? QueryStatus() : DaqStatusValues.Default;
 
 			for (int i = 0; i < values.Length; i++) {
 				_sensors[i].HandleObservation(values[i], networkSize, daqSafeTime);
@@ -320,93 +485,102 @@ namespace Atmo.Daq.Win32 {
 			if(nid < 0 || nid > 3)
 				throw new ArgumentOutOfRangeException("nid");
 
-			lock (_connLock) {
-				if (!IsConnected) {
-					Connect();
-				}
-				var queryPacket = GenerateEmptyPacketData();
-				queryPacket[1] = 0x85;
-				queryPacket[2] = (byte)nid;
-				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
-					queryPacket = UsbConn.ReadPacket();
-					if (null != queryPacket) {
-						return PackedReadingValues.FromDeviceBytes(queryPacket, 1);
+			using (IsolateConnection()) {
+				System.Diagnostics.Debug.Write(String.Format("Query {0}", nid));
+				ConnectIfRequired();
+				var queryPacket = GenereateQueryPacketData(nid);
+				if (WritePacket(queryPacket)) {
+					for (int i = 0; i < 2; i++) {
+						queryPacket = UsbConn.ReadPacket(TenthSecond);
+						if (null != queryPacket) {
+							var result = PackedReadingValues.FromDeviceBytes(queryPacket, 1);
+							System.Diagnostics.Debug.WriteLine(String.Format(", {0}: {1}", nid, result));
+							return result;
+						}
 					}
 				}
-				return PackedReadingValues.Invalid;
 			}
+			System.Diagnostics.Debug.WriteLine(String.Format(": FAIL!", nid));
+			return PackedReadingValues.Invalid;
 		}
 
 		private DaqStatusValues QueryStatus() {
 			var status = DaqStatusValues.Default;
-			lock (_connLock) {
-				if (!IsConnected) {
-					Connect();
-				}
-				var queryPacket = GenerateEmptyPacketData();
-				queryPacket[1] = 0x37;
+			using (IsolateConnection()) {
+				System.Diagnostics.Debug.Write("Status");
+				ConnectIfRequired();
+				var queryPacket = GenerateQueryDaqStatusPacketData();
 				if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
-					queryPacket = UsbConn.ReadPacket();
+					queryPacket = UsbConn.ReadPacket(QuarterSecond);
 					if (null != queryPacket) {
 						var volUsbRaw = (ushort)(queryPacket[2] | (queryPacket[3] << 8));
 						var volBatRaw = (ushort)(queryPacket[4] | (queryPacket[5] << 8));
 						var tmpDaqRaw = (ushort)(queryPacket[7] | (queryPacket[6] << 8));
 
-						var temp = ((double)(tmpDaqRaw) / 10.0) - 40.0;
-						var volUsb = ((double)(volUsbRaw) / 1024.0) * 6.4;
-						var volBat = ((double)(volBatRaw) / 1024.0) * 6.4;
+						var temp = (tmpDaqRaw / 10.0) - 40.0;
+						var volUsb = (volUsbRaw / 1024.0) * 6.4;
+						var volBat = (volBatRaw / 1024.0) * 6.4;
 
 						status = new DaqStatusValues(volBat, volUsb, temp);
+						System.Diagnostics.Debug.WriteLine(": " + status);
 					}
+				}
+				if (status == DaqStatusValues.Default) {
+					System.Diagnostics.Debug.WriteLine(": FAIL!");
 				}
 			}
 			return status;
 		}
 
 		public void SetNetworkSize(int size) {
-			using (new QueryPause(this)) {
-				lock (_connLock) {
-					if (!IsConnected) {
-						Connect();
-					}
-					var queryPacket = GenerateNetworkSizePacketData(0xff, 0xff, (byte) size);
+			using (NewQueryPause()) {
+				using (IsolateConnection()) {
+					System.Diagnostics.Debug.Write("SetSize");
+					ConnectIfRequired();
+					var queryPacket = GenerateNetworkSizePacketData(0xff, 0xff, size);
 					if (UsbConn.WritePacket(queryPacket)) {
 						_networkSize = size;
 					}
+					System.Diagnostics.Debug.WriteLine(": OK");
 				}
 			}
 		}
 
+		private bool RepeatWrite(byte[] packet, int n, int sleepMs = 50) {
+			if (n <= 0)
+				return false;
+
+			var ok = WritePacket(packet);
+			for (int i = 1; i < n; i++) {
+				Thread.Sleep(sleepMs);
+				ok |= WritePacket(packet);
+			}
+			return ok;
+		}
+
 		public bool ChangeSensorId(int currentId, int desiredId, int numTries = 3) {
-			using (new QueryPause(this)) {
-				var queryPacket = GenerateNetworkSizePacketData(
+			using (NewQueryPause()) {
+				var packet = GenerateNetworkSizePacketData(
 					currentId >= 0 ? (byte) currentId : (byte) 0xff,
 					desiredId >= 0 ? (byte) desiredId : (byte) 0xff,
 					(byte) _networkSize
-					);
-				var ok = false;
-				lock (_connLock) {
-					if (!IsConnected) {
-						Connect();
-					}
-					for (int i = 0; i < numTries; i++) {
-
-						ok |= UsbConn.WritePacket(queryPacket);
-
-						if (i < (numTries - 1)) {
-							Thread.Sleep(50);
-						}
-					}
+				);
+				using (IsolateConnection()) {
+					System.Diagnostics.Debug.Write("ChangeSensor");
+					ConnectIfRequired();
+					var ok = RepeatWrite(packet, numTries);
+					System.Diagnostics.Debug.WriteLine(": OK");
+					return ok;
 				}
-				return ok;
 			}
 		}
 
 		public bool SetClock(DateTime time) {
 			var start = DateTime.Now;
-			using (new QueryPause(this)) {
+			using (NewQueryPause()) {
 				Thread.Sleep(750);
-				lock (_connLock) {
+				using (IsolateConnection()) {
+					System.Diagnostics.Debug.Write("SetClock");
 					// determine the best time to send the set clock command
 					var optimalTime = start;
 					var firstDaqClock = RawQueryClock();
@@ -422,14 +596,17 @@ namespace Atmo.Daq.Win32 {
 					// wait for it
 					var nextBestTime = optimalTime.AddSeconds(1);
 					for (int i = 0; i < checkSeg; i++) {
-						if (DateTime.Now.AddSeconds(1.0/(double) checkSeg) >= nextBestTime) {
+						if (DateTime.Now.AddSeconds(1.0/checkSeg) >= nextBestTime) {
 							break;
 						}
 						Thread.Sleep(1000/checkSeg);
 					}
 					// set it
 					var elapsed = DateTime.Now - start;
-					return SetClockRaw(time.Add(elapsed).AddSeconds(1));
+
+					var ok = SetClockRaw(time.Add(elapsed).AddSeconds(1));
+					System.Diagnostics.Debug.WriteLine(": OK");
+					return ok;
 				}
 			}
 		}
@@ -438,15 +615,12 @@ namespace Atmo.Daq.Win32 {
 			var start = DateTime.Now;
 			var pingTime = new TimeSpan(AveragePing().Ticks);
 
-			if (!IsConnected)
-				Connect();
+			ConnectIfRequired();
 			
 			var queryPacket = GenerateEmptyPacketData();
 			queryPacket[1] = 0x86;
 
-			var calcTime = DateTime.Now.Subtract(start);
-
-			time.Add(pingTime + calcTime);
+			time.Add(pingTime + DateTime.Now.Subtract(start));
 
 			queryPacket[2] = (byte)(time.Year % 100);
 			queryPacket[2] = (byte)((queryPacket[2] % 10) + ((queryPacket[2] / 10) * 16));
@@ -461,20 +635,19 @@ namespace Atmo.Daq.Win32 {
 			queryPacket[7] = (byte)time.Second;
 			queryPacket[7] = (byte)((queryPacket[7] % 10) + ((queryPacket[7] / 10) * 16));
 
-			return UsbConn.WritePacket(queryPacket);
+			return WritePacket(queryPacket);
 		}
 
 		public TimeSpan Ping() {
-			lock (_connLock) {
-				return AveragePing();
+			using (IsolateConnection()) {
+				System.Diagnostics.Debug.Write("Ping");
+				var ping = AveragePing();
+				System.Diagnostics.Debug.WriteLine(": OK");
+				return ping;
 			}
 		}
-
-		private TimeSpan AveragePing() {
-			return AveragePing(2);
-		}
-
-		private TimeSpan AveragePing(int n) {
+		
+		private TimeSpan AveragePing(int n = 2) {
 			var sum = RawPing();
 			for (int i = 1; i < n; i++) {
 				sum += RawPing();
@@ -483,8 +656,7 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private TimeSpan RawPing() {
-			if (!IsConnected)
-				Connect();
+			ConnectIfRequired();
 			
 			var start = DateTime.Now;
 			RawQueryClock();
@@ -492,26 +664,23 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private DateTime RawQueryClock() {
-			if (!IsConnected)
-				Connect();
+			ConnectIfRequired();
 			
 			var queryPacket = GenerateEmptyPacketData();
 			queryPacket[1] = 0x87;
-			if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
-				queryPacket = UsbConn.ReadPacket();
+			Thread.Sleep(25);
+			if (WritePacket(queryPacket)) {
+				Thread.Sleep(25);
+				queryPacket = UsbConn.ReadPacket(QuarterSecond);
 				if (null != queryPacket) {
-					{
-						var tmp = queryPacket[4];
-						queryPacket[4] = queryPacket[5];
-						queryPacket[5] = tmp;
-					}
+					Swap(queryPacket, 4, 5);
 					DateTime dt;
 					return DaqDataFileInfo.TryConvert7ByteDateTime(queryPacket, 2, out dt)
 						? dt
 						: (
 							DaqDataFileInfo.TryConvertFrom7ByteDateTimeForce(queryPacket, 2, out dt)
-							? dt
-							: default(DateTime)
+								? dt
+								: default(DateTime)
 						)
 					;
 				}
@@ -519,15 +688,17 @@ namespace Atmo.Daq.Win32 {
 			return default(DateTime);
 		}
 
-		private DateTime QueryAdjustedClock() {
-			return QueryAdjustedClock(2);
-		}
-
-		private DateTime QueryAdjustedClock(int pings) {
-			lock (_connLock) {
-				var halfPingTime = new TimeSpan(AveragePing(pings).Ticks / 2);
+		private DateTime QueryAdjustedClock(int pings = 2) {
+			using (IsolateConnection()) {
+				System.Diagnostics.Debug.Write("QueryAdjustedClock");
+				var halfPingTime = pings > 0 ? new TimeSpan(AveragePing(pings).Ticks / 2) : TimeSpan.Zero;
 				var rawClock = RawQueryClock();
-				return default(DateTime).Equals(rawClock) ? rawClock : rawClock.Add(halfPingTime);
+				var clock = default(DateTime).Equals(rawClock)
+					? rawClock
+					: rawClock.Add(halfPingTime);
+
+				System.Diagnostics.Debug.WriteLine(": " + clock);
+				return clock;
 			}
 		}
 
@@ -607,145 +778,106 @@ namespace Atmo.Daq.Win32 {
 			_usingDaqTempUntil = DateTime.Now.Add(new TimeSpan(0, 0, 2));
 		}
 
+		private bool AnemEnterBootMode(int nid) {
+			return AnemEnterBootMode(checked((byte) nid));
+		}
+
+		private bool AnemEnterBootMode(byte nid) {
+			var packet = GenerateEnterAnemBootPacketData(nid);
+			if (WritePacket(packet)) {
+				packet = UsbConn.ReadPacket();
+				return IsValidEnterAnemBootResponse(packet, nid);
+			}
+			return false;
+		}
+
+		private bool AnemReset(int nid) {
+			return AnemReset(checked((byte) nid));
+		}
+
+		private bool AnemReset(byte nid) {
+			const int numTries = 3;
+			var packet = GenerateResetAnemPacket(nid);
+			for (int i = 0; i < numTries; i++ ) {
+				if(WritePacket(packet)) {
+					var res = UsbConn.ReadPacket(QuarterSecond);
+					if (IsValidResetAnemResponse(res))
+						return true;
+				}
+			}
+			return false;
+		}
+
 		private bool SetDaqTempSelected(bool useDaq) {
-			using (new QueryPause(this)) {
-				bool sumOk = false;
-				lock (_connLock) {
-					if (!this.IsConnected) {
-						this.Connect();
-					}
+			using (NewQueryPause()) {
+				var anyOk = false;
+				using (IsolateConnection()) {
+					ConnectIfRequired();
 
 					for (int nid = 0; nid < _networkSize; nid++) {
-						bool ok = true;
-						byte[] packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-						packet[0] = 0;
-						packet[1] = 0x74;
-						packet[2] = checked((byte) nid);
-						if (UsbConn.WritePacket(packet)) {
-							packet = UsbConn.ReadPacket();
-							if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte) nid) || packet[3] != 0x4f ||
-							    packet[4] != 0x4b) {
-								ok = false;
-							}
-						}
-						//else
-						//{
-						//    return false;
-						//}
+						var ok = AnemEnterBootMode(nid);
 						try {
-							packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-							packet[0] = 0;
-							packet[1] = 0x72;
-							packet[3] = useDaq ? (byte) 0x00 : (byte) 0x01;
-							packet[2] = (byte) nid;
-							if (UsbConn.WritePacket(packet)) {
-								byte[] res = UsbConn.ReadPacket();
-								if (null == res || res[3] != 79 || res[4] != 75) {
-									ok = false;
-								}
+							var packet = GenerateSetDaqTempPacket(useDaq, (byte) nid);
+							if (WritePacket(packet)) {
+								var res = UsbConn.ReadPacket();
+								ok &= IsValidSetDaqTempResponse(res);
 							}
 						}
 						finally {
-
-							packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-							packet[0] = 0;
-							packet[1] = 0x76;
-							packet[2] = checked((byte) nid);
-							if (UsbConn.WritePacket(packet)) {
-								byte[] res = UsbConn.ReadPacket();
-								;
-							}
+							AnemReset(nid);
 						}
-						sumOk = sumOk | ok;
+						anyOk |= ok;
 					}
 				}
-				return sumOk;
+				return anyOk;
 			}
 		}
 
 		public bool EnterBootMode() {
-			using (new QueryPause(this)) {
-				lock (_connLock) {
-					if (!IsConnected) {
-						Connect();
-					}
-					byte[] queryPacket = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-					queryPacket[0] = 0;
-					queryPacket[1] = 0x77;
-					if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
-						return true;
-					}
+			using (NewQueryPause()) {
+				using (IsolateConnection()) {
+					ConnectIfRequired();
+					var queryPacket = GenerateEnterDaqBootPacketData();
+					var ok = WritePacket(queryPacket);
+					return ok;
 				}
-				return false;
 			}
 		}
 
 		public bool ReconnectMedia() {
-			using (new QueryPause(this)) {
-				lock (_connLock) {
-					if (!IsConnected) {
-						Connect();
-					}
-					byte[] queryPacket = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-					queryPacket[0] = 0;
-					queryPacket[1] = 0x78;
-					if (null != UsbConn && UsbConn.WritePacket(queryPacket)) {
-						return true;
-					}
+			using (NewQueryPause()) {
+				using (IsolateConnection()) {
+					ConnectIfRequired();
+					var queryPacket = GenerateReconnectMediaPacketData();
+					var ok = WritePacket(queryPacket);
+					return ok;
 				}
-				return false;
 			}
 		}
 
 		public CorrectionFactors GetCorrectionFactors(int nid) {
-			using (new QueryPause(this)) {
+			using (NewQueryPause()) {
 				CorrectionFactors factors = null;
-				lock (_connLock) {
-					if (!IsConnected) {
-						Connect();
-					}
+				using (IsolateConnection()) {
+					ConnectIfRequired();
 
-					bool ok = true;
-					byte[] packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-					packet[0] = 0;
-					packet[1] = 0x74;
-					packet[2] = checked((byte) nid);
-					if (UsbConn.WritePacket(packet)) {
-						packet = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
-						if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte) nid) || packet[3] != 0x4f ||
-						    packet[4] != 0x4b) {
-							ok = false;
-						}
-					}
-					Thread.Sleep(500);
+					var ok = AnemEnterBootMode(nid);
+					Thread.Sleep(HalfSecond);
+
 					try {
 						if (ok) {
-							packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-							packet[0] = 0;
-							packet[1] = 0x71;
-							packet[2] = checked((byte) nid);
-							if (UsbConn.WritePacket(packet)) {
-								byte[] res = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
-								if (null != res) {
-									factors = CorrectionFactors.ToCorrectionFactors(res, 3);
+							var packet = GenerateGetCorrectionFactoryPacketData((byte)nid);
+							if (WritePacket(packet)) {
+								packet = UsbConn.ReadPacket(OneSecond);
+								if (null != packet) {
+									factors = CorrectionFactors.ToCorrectionFactors(packet, 3);
 								}
 							}
 						}
 					}
 					finally {
-						Thread.Sleep(500);
-						for (int i = 0; i < 3; i++) {
-							packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-							packet[0] = 0;
-							packet[1] = 0x76;
-							packet[2] = checked((byte) nid);
-							if (UsbConn.WritePacket(packet)) {
-								byte[] res = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 250));
-								if (null != res && res[3] == 0x4f && res[4] == 0x4b) {
-									break;
-								}
-							}
-						}
+						Thread.Sleep(HalfSecond);
+						AnemReset(nid);
 					}
 				}
 				return factors;
@@ -753,51 +885,23 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		public bool PutCorrectionFactors(int nid, CorrectionFactors factors) {
-			using (new QueryPause(this)) {
-				bool ok = true;
-				lock (_connLock) {
-					if (!IsConnected) {
-						Connect();
-					}
+			using (NewQueryPause()) {
+				bool ok;
+				using (IsolateConnection()) {
+					ConnectIfRequired();
 
-
-					byte[] packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-					packet[0] = 0;
-					packet[1] = 0x74;
-					packet[2] = checked((byte) nid);
-					if (UsbConn.WritePacket(packet)) {
-						packet = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
-						if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte) nid) || packet[3] != 0x4f ||
-						    packet[4] != 0x4b) {
-							ok = false;
-						}
-					}
-
+					ok = AnemEnterBootMode(nid);
 					try {
-						Thread.Sleep(400);
-						packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-						packet[0] = 0;
-						packet[1] = 0x70;
-						packet[2] = checked((byte) nid);
-						CorrectionFactors.ToBytes(factors, packet, 3);
-						if (UsbConn.WritePacket(packet)) {
-							byte[] res = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 1));
-							if (null == res || res[3] != 0x4f || res[4] != 0x4b) {
-								ok = false;
-							}
+						Thread.Sleep(HalfSecond);
+						var packet = GeneratePutCorrectionFactorsPacketData((byte)nid, factors);
+						if (WritePacket(packet)) {
+							packet = UsbConn.ReadPacket(OneSecond);
+							ok &= IsValidPutFactorsResponse(packet);
 						}
 					}
 					finally {
-						Thread.Sleep(500);
-						packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
-						packet[0] = 0;
-						packet[1] = 0x76;
-						packet[2] = checked((byte) nid);
-						if (UsbConn.WritePacket(packet)) {
-							byte[] res = UsbConn.ReadPacket();
-							;
-						}
-
+						Thread.Sleep(HalfSecond);
+						AnemReset(nid);
 					}
 				}
 				return ok;
@@ -809,58 +913,50 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		public bool ProgramAnem(int nid, MemoryRegionDataCollection memoryRegionDataBlocks, Action<double, string> progressUpdated) {
-			using (var qp =new QueryPause(this)) {
-				Thread.Sleep(1000);
+			if (nid < 0 || nid > 255)
+				throw new ArgumentOutOfRangeException("nid");
+			if (null == progressUpdated)
+				progressUpdated = NullAction; // so we can avoid null checks all over the place
+
+			using (NewQueryPause()) {
+				Thread.Sleep(OneSecond);
 				bool result = true;
-				byte[] packet = Enumerable.Repeat((byte) 0xff, 65).ToArray();
 				try {
-					if (nid < 0 || nid > 255)
-						throw new ArgumentOutOfRangeException("nid");
 					if (!UsbConn.IsConnected)
 						return false;
-					if (null == progressUpdated)
-						progressUpdated = NullAction; // so we can avoid null checks all over the place
 
 					progressUpdated(0, "Entering boot mode.");
 
-					lock (_connLock) {
+					using (IsolateConnection()) {
 
-						packet[0] = 0;
-						packet[1] = 0x74;
-						packet[2] = checked((byte)nid);
-						if (!UsbConn.WritePacket(packet)) {
-							progressUpdated(0, "Boot failure.");
-							return false;
-						}
-						Thread.Sleep(1000);
+						result &= AnemEnterBootMode(nid);
+						Thread.Sleep(OneSecond);
 
-						packet = UsbConn.ReadPacket();
-						if (null == packet || packet[1] != 0x74 || packet[2] != checked((byte)nid) || packet[3] != 0x4f ||
-							packet[4] != 0x4b) {
+						var packet = UsbConn.ReadPacket();
+						if (!IsValidEnterAnemBootResponse(packet, (byte) nid)) {
 							progressUpdated(0, "Bad boot response.");
 							if (0xff != nid) {
 								result = false;
 							}
 						}
-						Thread.Sleep(500);
+						Thread.Sleep(HalfSecond);
 
 						progressUpdated(0, "Writing.");
 						int totalBytes = memoryRegionDataBlocks.Sum(b => (int)b.Size);
 						int bytesSent = 0;
 						int lastNoticeByte = 0;
-						int noticeInterval = 128;
+						const int noticeInterval = 128;
 						int dotCount = 1;
 						if (result) {
 							bool firstBlock = true;
-							foreach (MemoryRegionData block in memoryRegionDataBlocks) {
+							foreach (var block in memoryRegionDataBlocks) {
 								byte[] data = block.Data.ToArray();
 								int checksumFails = 0;
-								int maxChecksumFails = 64;
+								const int maxChecksumFails = 64;
 								for (int i = 0; i < data.Length; i += 32) {
 									int bytesToWrite = Math.Min(32, data.Length - i);
 									int address = i + (int)block.Address;
-									packet = Enumerable.Repeat((byte)0xff, 65).ToArray();
-									packet[0] = 0;
+									packet = GenerateEmptyPacketData();
 									packet[1] = 0x75;
 									packet[2] = checked((byte)nid);
 									Array.Copy(BitConverter.GetBytes(address).Reverse().ToArray(), 0, packet, 3, 4);
@@ -872,13 +968,13 @@ namespace Atmo.Daq.Win32 {
 									}
 									packet[8] = checkSum;
 									Array.Copy(data, i, packet, 9, bytesToWrite);
-									if (!UsbConn.WritePacket(packet)) {
+									if (!WritePacket(packet)) {
 										progressUpdated(0, "Write failure!");
 										result = false;
 										break; //return false;
 									}
-									packet = UsbConn.ReadPacket(new TimeSpan(0, 0, 0, 0, 750));
 
+									packet = UsbConn.ReadPacket(ThreeQuarterSecond);
 									if (null == packet || packet[3] != checkSum) {
 										checksumFails++;
 										if (checksumFails <= maxChecksumFails && !firstBlock) {
@@ -914,19 +1010,11 @@ namespace Atmo.Daq.Win32 {
 					result = false;
 				}
 				finally {
-					packet[0] = 0;
-					packet[1] = 0x76;
-					packet[2] = checked((byte) nid);
-					if (!UsbConn.WritePacket(packet)) {
-						progressUpdated(0, "Reboot failure.");
+					var resetOk = AnemReset(nid);
+					if (!resetOk) {
+						progressUpdated(0, "Anem reboot failure.");
 					}
-					else {
-						packet = UsbConn.ReadPacket();
-						if (null == packet || packet[3] != 0x4f || packet[4] != 0x4b) {
-							progressUpdated(0, "Bad reboot response.");
-							result = false;
-						}
-					}
+					result &= resetOk;
 				}
 				return result;
 			}

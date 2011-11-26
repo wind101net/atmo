@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Atmo.Device;
 
 namespace Atmo.Daq.Win32 {
@@ -27,7 +28,7 @@ namespace Atmo.Daq.Win32 {
 			packet[1] = 0x02; // query
 			if (!UsbConn.WritePacket(packet))
 				return null;
-			
+
 			packet = UsbConn.ReadPacket();
 			if (null == packet)
 				return null;
@@ -78,7 +79,7 @@ namespace Atmo.Daq.Win32 {
 
 			progressUpdated(0.05, eraseTaskDesciption);
 			
-			EraseDevice();
+			EraseDevice(); // if the erase fails, we should probably keep going.
 
 			double writeBaseProgress = 0.3;
 			double writeTotalProgress = 1.0 - writeBaseProgress;
