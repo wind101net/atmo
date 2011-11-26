@@ -490,7 +490,7 @@ namespace Atmo.Daq.Win32 {
 				ConnectIfRequired();
 				var queryPacket = GenereateQueryPacketData(nid);
 				if (WritePacket(queryPacket)) {
-					for (int i = 0; i < 2; i++) {
+					for (int i = 0; i < 3; i++) {
 						queryPacket = UsbConn.ReadPacket(TenthSecond);
 						if (null != queryPacket) {
 							var result = PackedReadingValues.FromDeviceBytes(queryPacket, 1);
@@ -785,7 +785,7 @@ namespace Atmo.Daq.Win32 {
 		private bool AnemEnterBootMode(byte nid) {
 			var packet = GenerateEnterAnemBootPacketData(nid);
 			if (WritePacket(packet)) {
-				packet = UsbConn.ReadPacket();
+				packet = UsbConn.ReadPacket(QuarterSecond);
 				return IsValidEnterAnemBootResponse(packet, nid);
 			}
 			return false;
@@ -796,13 +796,15 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private bool AnemReset(byte nid) {
-			const int numTries = 3;
+			const int numTries = 5;
 			var packet = GenerateResetAnemPacket(nid);
 			for (int i = 0; i < numTries; i++ ) {
 				if(WritePacket(packet)) {
 					var res = UsbConn.ReadPacket(QuarterSecond);
-					if (IsValidResetAnemResponse(res))
+					if (IsValidResetAnemResponse(res)) {
+						Thread.Sleep(QuarterSecond);
 						return true;
+					}
 				}
 			}
 			return false;
@@ -919,7 +921,7 @@ namespace Atmo.Daq.Win32 {
 				progressUpdated = NullAction; // so we can avoid null checks all over the place
 
 			using (NewQueryPause()) {
-				Thread.Sleep(OneSecond);
+				Thread.Sleep(ThreeQuarterSecond);
 				bool result = true;
 				try {
 					if (!UsbConn.IsConnected)
@@ -929,11 +931,9 @@ namespace Atmo.Daq.Win32 {
 
 					using (IsolateConnection()) {
 
-						result &= AnemEnterBootMode(nid);
-						Thread.Sleep(OneSecond);
+						var anemBootResult = AnemEnterBootMode(nid);
 
-						var packet = UsbConn.ReadPacket();
-						if (!IsValidEnterAnemBootResponse(packet, (byte) nid)) {
+						if (!anemBootResult) {
 							progressUpdated(0, "Bad boot response.");
 							if (0xff != nid) {
 								result = false;
@@ -953,10 +953,11 @@ namespace Atmo.Daq.Win32 {
 								byte[] data = block.Data.ToArray();
 								int checksumFails = 0;
 								const int maxChecksumFails = 64;
-								for (int i = 0; i < data.Length; i += 32) {
+								const int stride = 32;
+								for (int i = 0; i < data.Length; i += stride) {
 									int bytesToWrite = Math.Min(32, data.Length - i);
 									int address = i + (int)block.Address;
-									packet = GenerateEmptyPacketData();
+									var packet = GenerateEmptyPacketData();
 									packet[1] = 0x75;
 									packet[2] = checked((byte)nid);
 									Array.Copy(BitConverter.GetBytes(address).Reverse().ToArray(), 0, packet, 3, 4);
@@ -968,6 +969,8 @@ namespace Atmo.Daq.Win32 {
 									}
 									packet[8] = checkSum;
 									Array.Copy(data, i, packet, 9, bytesToWrite);
+									
+									UsbConn.ClearPacketQueue();
 									if (!WritePacket(packet)) {
 										progressUpdated(0, "Write failure!");
 										result = false;
@@ -975,10 +978,12 @@ namespace Atmo.Daq.Win32 {
 									}
 
 									packet = UsbConn.ReadPacket(ThreeQuarterSecond);
+									//var packet2 = UsbConn.ReadPacket(ThreeQuarterSecond);
+									//var packet3 = UsbConn.ReadPacket(ThreeQuarterSecond);
 									if (null == packet || packet[3] != checkSum) {
 										checksumFails++;
-										if (checksumFails <= maxChecksumFails && !firstBlock) {
-											i--;
+										if (checksumFails <= (firstBlock ? 3 : maxChecksumFails)) {
+											i-=stride;
 											continue;
 										}
 										progressUpdated(0, "Checksum failure.");

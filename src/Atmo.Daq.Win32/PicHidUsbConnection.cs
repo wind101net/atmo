@@ -206,6 +206,11 @@ namespace Atmo.Daq.Win32 {
 				int bytesRead = 0;
 				byte[] packet;
 				lock(_readLock) {
+					if(null == _readStream) {
+						Thread.Sleep(50);
+						continue;
+					}
+
 					packet = new byte[_packetSize];
 					//System.Diagnostics.Debug.WriteLine("Waiting for packet..");
 					bytesRead = SafeRead(_readStream, packet);
