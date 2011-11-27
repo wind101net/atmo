@@ -48,11 +48,11 @@
 			DevExpress.XtraCharts.RadarPointSeriesLabel radarPointSeriesLabel3 = new DevExpress.XtraCharts.RadarPointSeriesLabel();
 			DevExpress.XtraCharts.PolarAreaSeriesView polarAreaSeriesView3 = new DevExpress.XtraCharts.PolarAreaSeriesView();
 			this.chartControlWindSpeedFreq = new DevExpress.XtraCharts.ChartControl();
-			this.bindingSourceWindSpeedFreq = new System.Windows.Forms.BindingSource(this.components);
 			this.chartControlWindDir = new DevExpress.XtraCharts.ChartControl();
 			this.groupControl = new DevExpress.XtraEditors.GroupControl();
 			this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
 			this.rangeTrackBarControlWeibullSpeeds = new DevExpress.XtraEditors.RangeTrackBarControl();
+			this.bindingSourceWindSpeedFreq = new System.Windows.Forms.BindingSource(this.components);
 			this.bindingSourceWindDir = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.chartControlWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(xyDiagram1)).BeginInit();
@@ -69,7 +69,6 @@
 			((System.ComponentModel.ISupportInitialize)(splineSeriesView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(splineAreaSeriesView2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControlWindDir)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(polarDiagram1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(series4)).BeginInit();
@@ -84,6 +83,7 @@
 			this.groupControl.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.rangeTrackBarControlWeibullSpeeds)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.rangeTrackBarControlWeibullSpeeds.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindDir)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -141,8 +141,6 @@
 			series1.View = splineAreaSeriesView1;
 			series2.ArgumentDataMember = "SpeedPropertty";
 			series2.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-			series2.DataFilters.ClearAndAddRange(new DevExpress.XtraCharts.DataFilter[] {
-            new DevExpress.XtraCharts.DataFilter("SpeedPropertty", "System.Double", DevExpress.XtraCharts.DataFilterCondition.NotEqual, 0D)});
 			sideBySideBarSeriesLabel1.LineVisible = true;
 			sideBySideBarSeriesLabel1.Visible = false;
 			series2.Label = sideBySideBarSeriesLabel1;
@@ -179,10 +177,6 @@
 			this.chartControlWindSpeedFreq.SideBySideEqualBarWidth = true;
 			this.chartControlWindSpeedFreq.Size = new System.Drawing.Size(894, 203);
 			this.chartControlWindSpeedFreq.TabIndex = 0;
-			// 
-			// bindingSourceWindSpeedFreq
-			// 
-			this.bindingSourceWindSpeedFreq.DataSource = typeof(Atmo.Stats.WindSpeedFrequency);
 			// 
 			// chartControlWindDir
 			// 
@@ -285,6 +279,10 @@
 			this.rangeTrackBarControlWeibullSpeeds.Value = new DevExpress.XtraEditors.Repository.TrackBarRange(0, 70);
 			this.rangeTrackBarControlWeibullSpeeds.EditValueChanged += new System.EventHandler(this.rangeTrackBarControlWeibullSpeeds_EditValueChanged);
 			// 
+			// bindingSourceWindSpeedFreq
+			// 
+			this.bindingSourceWindSpeedFreq.DataSource = typeof(Atmo.Stats.WindSpeedFrequency);
+			// 
 			// bindingSourceWindDir
 			// 
 			this.bindingSourceWindDir.DataSource = typeof(Atmo.Stats.WindDirectionEnergy);
@@ -311,7 +309,6 @@
 			((System.ComponentModel.ISupportInitialize)(pointSeriesLabel3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(splineAreaSeriesView2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartControlWindSpeedFreq)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(polarDiagram1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(radarPointSeriesLabel1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(polarAreaSeriesView1)).EndInit();
@@ -327,6 +324,7 @@
 			this.groupControl.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.rangeTrackBarControlWeibullSpeeds.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.rangeTrackBarControlWeibullSpeeds)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindSpeedFreq)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceWindDir)).EndInit();
 			this.ResumeLayout(false);
 

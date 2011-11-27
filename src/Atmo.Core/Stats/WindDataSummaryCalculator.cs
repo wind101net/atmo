@@ -79,9 +79,9 @@ namespace Atmo.Stats {
 					var energy = speed*speed;
 					var power = energy*speed;
 					foreach (var set in readings.GetWindDirectionCounts()) {
-						if (0 == set.Value || 0 == set.Key || Double.IsNaN(set.Key)) {
+						if (0 == set.Value || 0 == set.Key || Double.IsNaN(set.Key))
 							continue;
-						}
+						
 						var dirSlot = UnitUtility.WrapDegree(((int) ((set.Key + _angleHalfStep)/_angleStep))*_angleStep);
 						WindDirectionEnergy windDirEnrg;
 						var modEnergy = power*set.Value;
@@ -95,19 +95,18 @@ namespace Atmo.Stats {
 
 			// wind speed stuff
 			foreach(var set in readings.GetWindSpeedCounts()) {
-				if (0 == set.Value || Double.IsNaN(set.Key)) {
+				if (/*0 == set.Value ||*/ Double.IsNaN(set.Key))
 					continue;
-				}
+				
 				var speedBucket = ((int)((set.Key + _speedHalfStep) / _speedStep)) * _speedStep;
 				WindSpeedFrequency windSpeedFreq;
-				if(_speedLookup.TryGetValue(speedBucket, out windSpeedFreq)) {
+				if(_speedLookup.TryGetValue(speedBucket, out windSpeedFreq))
 					windSpeedFreq.Frequency += set.Value;
-				}else {
-					windSpeedFreq = new WindSpeedFrequency(speedBucket, set.Value);
-					_speedLookup.Add(speedBucket, windSpeedFreq);
-				}
-				_weibullCalcNeeded = true;
+				else
+					_speedLookup.Add(speedBucket, new WindSpeedFrequency(speedBucket, set.Value));
 			}
+
+			_weibullCalcNeeded = true;
 		}
 
 		public List<WindDirectionEnergy> WindDirectionEnergyData {
@@ -148,12 +147,11 @@ namespace Atmo.Stats {
 		}
 
 		private void FinalizeWeibullIfNeeded() {
-			if(_weibullCalcNeeded) {
+			if(_weibullCalcNeeded)
 				FinalizeWeibull();
-			}
 		}
 
-		private const double ZeroReplace = 0.001;
+		private const double ZeroReplace = 0.25;
 
 		private bool IsValidWeibullSpeed(double speed) {
 			return speed >= MinWeibullSpeed && speed <= MaxWeibullSpeed;

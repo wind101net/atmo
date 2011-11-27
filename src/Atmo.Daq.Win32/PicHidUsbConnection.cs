@@ -202,11 +202,11 @@ namespace Atmo.Daq.Win32 {
 		}
 
 		private void PacketReadThreadBody() {
-			while(true) {
+			while (true) {
 				int bytesRead = 0;
 				byte[] packet;
-				lock(_readLock) {
-					if(null == _readStream) {
+				lock (_readLock) {
+					if (null == _readStream) {
 						Thread.Sleep(50);
 						continue;
 					}
@@ -225,9 +225,9 @@ namespace Atmo.Daq.Win32 {
 				if (bytesRead <= 0)
 					continue;
 
-				lock(_packetQueueLock) {
+				lock (_packetQueueLock) {
 					_packetQueue.Enqueue(packet);
-					while(_packetQueue.Count > PacketQueueMax) {
+					while (_packetQueue.Count > PacketQueueMax) {
 						_packetQueue.Dequeue();
 					}
 				}
@@ -379,7 +379,6 @@ namespace Atmo.Daq.Win32 {
 			}
 			DisposeHandlesCore();
 			if(null != _packetReadThread) {
-				_packetReadThread.Interrupt();
 				_packetReadThread.Abort();
 			}
 			
