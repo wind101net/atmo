@@ -314,7 +314,7 @@
 			// 
 			this.timerLive.Enabled = true;
 			this.timerLive.Interval = 1000;
-			this.timerLive.Tick += new System.EventHandler(this.timerTesting_Tick);
+			this.timerLive.Tick += new System.EventHandler(this.timerLive_Tick);
 			// 
 			// panelSensors
 			// 

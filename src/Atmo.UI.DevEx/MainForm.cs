@@ -49,6 +49,8 @@ namespace Atmo.UI.DevEx {
 		private IDataStore _dbStore;
 		private bool _updateHistorical = false;
 		private object _historicalUpdateThreadMutex = new object();
+		private DateTime _lastLiveUpdate = default(DateTime);
+		private TimeSpan _lastLiveUpdateInterval = default(TimeSpan);
 
 		private ProgramContext AppContext { get; set; }
 
@@ -190,11 +192,10 @@ namespace Atmo.UI.DevEx {
 			ReloadHistoric();
 		}
 
-		private void timerTesting_Tick(object sender, EventArgs e) {
-			UpdateLiveGraph();
-			/*if(!backgroundWorkerLiveGraph.IsBusy) {
+		private void timerLive_Tick(object sender, EventArgs e) {
+			if(!backgroundWorkerLiveGraph.IsBusy)
 				backgroundWorkerLiveGraph.RunWorkerAsync();
-			}*/
+			//UpdateLiveGraph();
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -584,11 +585,12 @@ namespace Atmo.UI.DevEx {
 
 
 		private void backgroundWorkerLiveGraph_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-			
+			UpdateLiveGraph();
 		}
 
 		public void UpdateLiveGraph(){
 			System.Diagnostics.Debug.WriteLine("Live Data Begin");
+
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
 			// current live state
 			var now = DateTime.Now;
@@ -610,10 +612,6 @@ namespace Atmo.UI.DevEx {
 				_memoryDataStore.Push(reading.Key.Name, new[] { reading.Value });
 			}
 
-			// update the sensor controls
-			//var updateSensorViewResult = BeginInvoke(new Action(() => _sensorViewPanelControler.UpdateView(sensors)));
-			
-
 			// the current sensor views
 			var sensorViews = _sensorViewPanelControler.Views.ToList();
 
@@ -625,11 +623,24 @@ namespace Atmo.UI.DevEx {
 				}
 			}
 
-			var liveDataEnabled = true;
 			var liveDataTimeSpan = liveAtmosphericHeader.TimeRange.SelectedSpan;
+			TimeSpan liveUpdateInterval;
+			if(liveDataTimeSpan > new TimeSpan(1,0,0))
+				liveUpdateInterval = new TimeSpan(0,1,0);
+			else if(liveDataTimeSpan >= new TimeSpan(1,0,0))
+				liveUpdateInterval = new TimeSpan(0,0,15);
+			else
+				liveUpdateInterval = new TimeSpan(0,0,0,0,500);
+
+			var liveDataEnabled =
+				(_lastLiveUpdateInterval != liveUpdateInterval)
+				|| (now - liveUpdateInterval > _lastLiveUpdate);
+
+			_lastLiveUpdateInterval = liveUpdateInterval;
 
 			// pass it off to the live data graphs/tables
 			if (liveDataEnabled) {
+				_lastLiveUpdate = now;
 				TimeUnit meanLiveUnit;
 				if(liveDataTimeSpan >= new TimeSpan(1,0,0))
 					meanLiveUnit = TimeUnit.Minute;
@@ -662,7 +673,7 @@ namespace Atmo.UI.DevEx {
 				var enabledSensorsCompiledMeans = StatsUtil.JoinParallelMeanReadings(enabledSensorsLiveMeans);
 
 				// present the data set
-				//Invoke(new Action(() => {
+				liveAtmosphericGraph.Invoke(new Action(() => {
 					liveAtmosphericGraph.TemperatureUnit = TemperatureUnit;
 					liveAtmosphericGraph.PressureUnit = PressureUnit;
 					liveAtmosphericGraph.SpeedUnit = SpeedUnit;
@@ -670,10 +681,12 @@ namespace Atmo.UI.DevEx {
 					liveAtmosphericGraph.SetLatest(enabledSensorsCompiledMeans.LastOrDefault());
 					liveAtmosphericGraph.State = AppContext.PersistentState;
 					liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
+					// update the sensor controls
 					_sensorViewPanelControler.UpdateView(sensors);
-				//}));
+				}));
 
 			}
+
 			System.Diagnostics.Debug.WriteLine("Live Data End");
 		}
 
