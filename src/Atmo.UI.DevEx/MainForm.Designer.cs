@@ -32,6 +32,8 @@
 			this.barButtonItemUpdates = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemSupport = new DevExpress.XtraBars.BarButtonItem();
 			this.barButtonItemAbout = new DevExpress.XtraBars.BarButtonItem();
+			this.barSubItemDebug = new DevExpress.XtraBars.BarSubItem();
+			this.barButtonItemAdd24Hours = new DevExpress.XtraBars.BarButtonItem();
 			this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
 			this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
 			this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -110,9 +112,11 @@
             this.barButtonItemSupport,
             this.barButtonItemAbout,
             this.barButtonItemExit,
-            this.barButtonItemTimeSync});
+            this.barButtonItemTimeSync,
+            this.barSubItemDebug,
+            this.barButtonItemAdd24Hours});
 			this.barManager.MainMenu = this.bar2;
-			this.barManager.MaxItemId = 18;
+			this.barManager.MaxItemId = 20;
 			// 
 			// bar2
 			// 
@@ -124,7 +128,8 @@
 			this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1),
             new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem3),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem4)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem4),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItemDebug)});
 			this.bar2.OptionsBar.AllowQuickCustomization = false;
 			this.bar2.OptionsBar.DisableClose = true;
 			this.bar2.OptionsBar.DisableCustomization = true;
@@ -237,6 +242,22 @@
 			this.barButtonItemAbout.Id = 15;
 			this.barButtonItemAbout.Name = "barButtonItemAbout";
 			this.barButtonItemAbout.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemAbout_ItemClick);
+			// 
+			// barSubItemDebug
+			// 
+			this.barSubItemDebug.Caption = "Debug";
+			this.barSubItemDebug.Id = 18;
+			this.barSubItemDebug.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemAdd24Hours)});
+			this.barSubItemDebug.Name = "barSubItemDebug";
+			this.barSubItemDebug.Visibility = DevExpress.XtraBars.BarItemVisibility.Never;
+			// 
+			// barButtonItemAdd24Hours
+			// 
+			this.barButtonItemAdd24Hours.Caption = "Add 24 hours of live data";
+			this.barButtonItemAdd24Hours.Id = 19;
+			this.barButtonItemAdd24Hours.Name = "barButtonItemAdd24Hours";
+			this.barButtonItemAdd24Hours.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemAdd24Hours_ItemClick);
 			// 
 			// barDockControlTop
 			// 
@@ -667,6 +688,7 @@
 			this.Controls.Add(this.barDockControlRight);
 			this.Controls.Add(this.barDockControlBottom);
 			this.Controls.Add(this.barDockControlTop);
+			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(800, 600);
 			this.Name = "MainForm";
@@ -747,6 +769,8 @@
 		private DevExpress.XtraEditors.SimpleButton simpleButtonTempSource;
 		private System.Windows.Forms.Panel panelLeftSide;
 		private System.ComponentModel.BackgroundWorker backgroundWorkerLiveGraph;
+		private DevExpress.XtraBars.BarSubItem barSubItemDebug;
+		private DevExpress.XtraBars.BarButtonItem barButtonItemAdd24Hours;
 
 	}
 }

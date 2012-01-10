@@ -353,7 +353,7 @@ namespace Atmo.Daq.Win32 {
                 new Sensor(3,this)
             };
         	PauseQuery();
-			_queryTimer = new Timer(QueryThreadBodyTrigger, null, Timeout.Infinite, DefaultMsPeriodValue);
+        	_queryTimer = new Timer(QueryThreadBodyTrigger, null, Timeout.Infinite, DefaultMsPeriodValue);
 			InitiateDeviceQuery();
 		}
 

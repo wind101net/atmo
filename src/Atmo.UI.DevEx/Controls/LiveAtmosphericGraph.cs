@@ -71,12 +71,11 @@ namespace Atmo.UI.DevEx.Controls {
 		public void SetDataSource(List<Reading> items) {
 			// todo: can this copy be eliminated?
 			var newList = new List<Reading>(items);
+			chartControl.BeginInit();
 			chartControl.DataSource = newList;
-
 			SetUserData(newList);
-
 			ForceYRanges(newList);
-			//chartControl.Update();
+			chartControl.EndInit();
 		}
 
 		private void SetUserData(List<Reading> items) {
@@ -278,6 +277,7 @@ namespace Atmo.UI.DevEx.Controls {
 			int pressureDecimals = (PressureUnit == PressureUnit.Millibar ? 1 : 2);
 			int humidityDecimals = 1;
 
+			chartControl.BeginInit();
 			var diagram = chartControl.Diagram as XYDiagram;
 			diagram.AxisY.ConstantLines[0].AxisValue = latest.Temperature;
 			diagram.AxisY.ConstantLines[0].Title.Text = latest.Temperature.ToString("F1");
@@ -291,7 +291,11 @@ namespace Atmo.UI.DevEx.Controls {
 			diagram.SecondaryAxesY[1].ConstantLines[0].Title.Text = latest.WindSpeed.ToString("F2");
 			diagram.SecondaryAxesY[3].ConstantLines[0].AxisValue = latest.WindDirection;
 			diagram.SecondaryAxesY[3].ConstantLines[0].Title.Text = Math.Round(latest.WindDirection).ToString();
+			chartControl.EndInit();
+		}
 
+		private void LiveAtmosphericGraph_Load(object sender, EventArgs e) {
+			
 		}
 	}
 }

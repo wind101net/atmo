@@ -39,6 +39,7 @@ namespace Atmo.Data {
 			private readonly SpeedUnit _speedUnit;
 			private readonly TemperatureUnit _tempUnit;
 			private readonly PressureUnit _presUnit;
+			public DateTime LastPurge { get; set; }
 
 			public SensorStorage(ISensorInfo sensorInfo) : this(sensorInfo.Name, sensorInfo.SpeedUnit, sensorInfo.TemperatureUnit, sensorInfo.PressureUnit) { }
 
@@ -94,7 +95,17 @@ namespace Atmo.Data {
 				return false;
 			}
 			sensorStorage.AddRange(readings);
+			PurgeOldRecords(sensorStorage);
 			return true;
+		}
+
+		private void PurgeOldRecords(SensorStorage sensorStorage) {
+			var now = DateTime.Now;
+			if (now - sensorStorage.LastPurge > new TimeSpan(0,15,0)) {
+				var back24 = now - new TimeSpan(24, 0, 0);
+				int purged = sensorStorage.RemoveAll(record => record.TimeStamp < back24);
+				sensorStorage.LastPurge = now;
+			}
 		}
 
 		public void PurgeBefore(DateTime minStamp) {
@@ -159,6 +170,7 @@ namespace Atmo.Data {
 				return false;
 			}
 			sensorStorage.AddRange(readings.Select(sr => new Reading(sr)));
+			PurgeOldRecords(sensorStorage);
 			return true;
 		}
 

@@ -203,8 +203,12 @@ namespace Atmo.UI.DevEx {
 			private string _message;
 
 			public void DoWork(object sender, DoWorkEventArgs e) {
-				var moveThread = new Thread(MoveData);
-				var importThread = new Thread(ImportData);
+				var moveThread = new Thread(MoveData) {
+					IsBackground = true
+				};
+				var importThread = new Thread(ImportData) {
+					IsBackground = true
+				};
 				moveThread.Start(sender);
 				importThread.Start(sender);
 				moveThread.Join();

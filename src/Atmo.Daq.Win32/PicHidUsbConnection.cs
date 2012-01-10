@@ -253,7 +253,9 @@ namespace Atmo.Daq.Win32 {
 			var handlesOk = CreateHandles();
 
 			if (null == _packetReadThread) {
-				_packetReadThread = new Thread(PacketReadThreadBody);
+				_packetReadThread = new Thread(PacketReadThreadBody){
+					IsBackground = true
+				};
 				_packetReadThread.Start();
 			}
 			
