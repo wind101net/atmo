@@ -316,13 +316,18 @@ namespace Atmo.UI.DevEx {
 
 		}
 
+		private static string DisplayDateTime(DateTime v) {
+			// dont use string format for date, let the culture handle that
+			return v.ToShortDateString() + ' ' + v.ToString("HH:mm:ss");
+		}
+
 		private void UpdateClockStats() {
 			var now = DateTime.Now;
-			labelLocalTime.Text = now.ToString();
+			labelLocalTime.Text = DisplayDateTime(now);
 			if (null != _deviceConnection) {
 				var deviceTime = _deviceConnection.QueryClock();
 				if (default(DateTime) != deviceTime) {
-					labelDaqTime.Text = deviceTime.ToString();
+					labelDaqTime.Text = DisplayDateTime(deviceTime);
 					var diff = deviceTime.Subtract(now);
 					if (diff < TimeSpan.Zero) {
 						diff = TimeSpan.Zero - diff;
