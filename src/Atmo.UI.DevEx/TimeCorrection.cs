@@ -51,8 +51,8 @@ namespace Atmo.UI.DevEx {
 				return;
 			}
 
-			var spanOffset = timeSpanSecondsEditDelta.Value;
         	var sourceTimeRange = new TimeRange(dateTimeRangePickerData.From, dateTimeRangePickerData.To);
+			var spanOffset = dateTimePickerNewStart.DateTime - sourceTimeRange.Low;
 			if (sourceTimeRange.Span == TimeSpan.Zero) {
 				MessageBox.Show("You must specify a source time range. No action has been taken.", "Invalid operation.");
 				return;

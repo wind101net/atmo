@@ -27,14 +27,15 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+			this.dateTimeRangePickerData = new Atmo.UI.DevEx.Controls.DateTimeRangePicker();
 			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+			this.dateTimePickerNewStart = new Atmo.UI.DevEx.Controls.DateTimePicker();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.cancelButton = new DevExpress.XtraEditors.SimpleButton();
 			this.adjustButton = new DevExpress.XtraEditors.SimpleButton();
 			this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
 			this.sensorNameSelector = new DevExpress.XtraEditors.ComboBoxEdit();
-			this.dateTimeRangePickerData = new Atmo.UI.DevEx.Controls.DateTimeRangePicker();
-			this.timeSpanSecondsEditDelta = new Atmo.UI.DevEx.Controls.TimeSpanSecondsEdit();
+			this.labelControlStart = new DevExpress.XtraEditors.LabelControl();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
@@ -87,17 +88,39 @@
 			this.groupControl1.Name = "groupControl1";
 			this.groupControl1.Size = new System.Drawing.Size(394, 102);
 			this.groupControl1.TabIndex = 0;
-			this.groupControl1.Text = "Current Recorded Range";
+			this.groupControl1.Text = "Current Recorded Range:";
+			// 
+			// dateTimeRangePickerData
+			// 
+			this.dateTimeRangePickerData.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dateTimeRangePickerData.From = new System.DateTime(((long)(0)));
+			this.dateTimeRangePickerData.Location = new System.Drawing.Point(2, 22);
+			this.dateTimeRangePickerData.Name = "dateTimeRangePickerData";
+			this.dateTimeRangePickerData.Size = new System.Drawing.Size(390, 78);
+			this.dateTimeRangePickerData.TabIndex = 0;
+			this.dateTimeRangePickerData.To = new System.DateTime(((long)(0)));
 			// 
 			// groupControl2
 			// 
-			this.groupControl2.Controls.Add(this.timeSpanSecondsEditDelta);
+			this.groupControl2.Controls.Add(this.labelControlStart);
+			this.groupControl2.Controls.Add(this.dateTimePickerNewStart);
 			this.groupControl2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupControl2.Location = new System.Drawing.Point(3, 111);
 			this.groupControl2.Name = "groupControl2";
 			this.groupControl2.Size = new System.Drawing.Size(394, 49);
 			this.groupControl2.TabIndex = 1;
-			this.groupControl2.Text = "Correct By Offset";
+			this.groupControl2.Text = "Shift To Start From:";
+			// 
+			// dateTimePickerNewStart
+			// 
+			this.dateTimePickerNewStart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.dateTimePickerNewStart.DateTime = new System.DateTime(((long)(0)));
+			this.dateTimePickerNewStart.Location = new System.Drawing.Point(57, 20);
+			this.dateTimePickerNewStart.Name = "dateTimePickerNewStart";
+			this.dateTimePickerNewStart.Size = new System.Drawing.Size(331, 26);
+			this.dateTimePickerNewStart.TabIndex = 0;
 			// 
 			// tableLayoutPanel3
 			// 
@@ -155,24 +178,15 @@
 			this.sensorNameSelector.Size = new System.Drawing.Size(396, 20);
 			this.sensorNameSelector.TabIndex = 0;
 			// 
-			// dateTimeRangePickerData
+			// labelControlStart
 			// 
-			this.dateTimeRangePickerData.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dateTimeRangePickerData.From = new System.DateTime(((long)(0)));
-			this.dateTimeRangePickerData.Location = new System.Drawing.Point(2, 22);
-			this.dateTimeRangePickerData.Name = "dateTimeRangePickerData";
-			this.dateTimeRangePickerData.Size = new System.Drawing.Size(390, 78);
-			this.dateTimeRangePickerData.TabIndex = 0;
-			this.dateTimeRangePickerData.To = new System.DateTime(((long)(0)));
-			// 
-			// timeSpanSecondsEditDelta
-			// 
-			this.timeSpanSecondsEditDelta.Dock = System.Windows.Forms.DockStyle.Top;
-			this.timeSpanSecondsEditDelta.Location = new System.Drawing.Point(2, 22);
-			this.timeSpanSecondsEditDelta.Name = "timeSpanSecondsEditDelta";
-			this.timeSpanSecondsEditDelta.Size = new System.Drawing.Size(390, 20);
-			this.timeSpanSecondsEditDelta.TabIndex = 0;
-			this.timeSpanSecondsEditDelta.Value = System.TimeSpan.Parse("00:00:00");
+			this.labelControlStart.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+			this.labelControlStart.LineLocation = DevExpress.XtraEditors.LineLocation.Bottom;
+			this.labelControlStart.Location = new System.Drawing.Point(6, 20);
+			this.labelControlStart.Name = "labelControlStart";
+			this.labelControlStart.Size = new System.Drawing.Size(45, 29);
+			this.labelControlStart.TabIndex = 1;
+			this.labelControlStart.Text = "Start";
 			// 
 			// TimeCorrection
 			// 
@@ -212,7 +226,8 @@
         private DevExpress.XtraEditors.SimpleButton cancelButton;
         private DevExpress.XtraEditors.SimpleButton adjustButton;
         private DevExpress.XtraEditors.GroupControl groupControl3;
-        private DevExpress.XtraEditors.ComboBoxEdit sensorNameSelector;
-		private Controls.TimeSpanSecondsEdit timeSpanSecondsEditDelta;
+		private DevExpress.XtraEditors.ComboBoxEdit sensorNameSelector;
+		private Controls.DateTimePicker dateTimePickerNewStart;
+		private DevExpress.XtraEditors.LabelControl labelControlStart;
     }
 }
