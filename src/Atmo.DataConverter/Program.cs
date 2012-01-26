@@ -119,6 +119,8 @@ namespace Atmo.DataConverter {
 						dataWriter.Write(reading);
 					}
 
+					Console.WriteLine("Saving to {0}", csvFileName);
+
 					iniWriter.Flush();
 					csvWriter.Flush();
 				}
@@ -133,6 +135,7 @@ namespace Atmo.DataConverter {
 				foreach(var reading in readings) {
 					writer.Write(reading);
 				}
+				Console.WriteLine("Saving to {0}", datFileName);
 			}
 
 			return 0;

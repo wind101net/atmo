@@ -148,21 +148,21 @@ namespace Atmo.Data {
 			) {
 				using (var command = _connection.CreateTextCommand("SELECT COUNT(*) FROM Record WHERE sensorId = @sensorId")) {
 
-					var nameIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
+					//var nameIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
 
 					var orJoin = new List<string>();
 					if (correctedRange.Low < currentRange.Low) {
 						orJoin.Add("(stamp >= @corLow AND stamp < @curLow)");
 					}
 
-					var corLowParam = command.AddParameter("corLow", DbType.Int32, correctedRange.Low);
-					var curLowParam = command.AddParameter("curLow", DbType.Int32, currentRange.Low);
+					//var corLowParam = command.AddParameter("corLow", DbType.Int32, correctedRange.Low);
+					//var curLowParam = command.AddParameter("curLow", DbType.Int32, currentRange.Low);
 
 					if (correctedRange.High > currentRange.High) {
 						orJoin.Add("(stamp <= @corHigh AND stamp > @curHigh)");
 					}
-					var corHighParam = command.AddParameter("corHigh", DbType.Int32, correctedRange.High);
-					var curHighParam = command.AddParameter("curHigh", DbType.Int32, currentRange.High);
+					//var corHighParam = command.AddParameter("corHigh", DbType.Int32, correctedRange.High);
+					//var curHighParam = command.AddParameter("curHigh", DbType.Int32, currentRange.High);
 
 					command.CommandText += " AND (" +
 						String.Join(" OR ", orJoin.ToArray()) +
@@ -654,18 +654,20 @@ namespace Atmo.Data {
 		private bool PushSummaries(int sensorId, string tableName, IEnumerable<ReadingsSummary> summaries, PosixTimeRange totalRange) {
 
 			string insertCommandText = String.Format(
-				"INSERT OR REPLACE INTO {0} (sensorId,stamp,minValues,maxValues,meanValues,stddevValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount)"
+				"INSERT INTO {0} (sensorId,stamp,minValues,maxValues,meanValues,stddevValues,recordCount,tempCount,pressCount,humCount,speedCount,dirCount)"
 				+ " VALUES (@sensorId,@stamp,@minValues,@maxValues,@meanValues,@stddevValues,@recordCount,@tempCount,@pressCount,@humCount,@speedCount,@dirCount)",
 				tableName
 				);
 
 			string deleteCommandText = String.Format(
-				"DELETE FROM {0} WHERE stamp >= @minStamp AND stamp <= @maxStamp",
+				"DELETE FROM {0} WHERE stamp >= @minStamp AND stamp <= @maxStamp AND sensorId = @sensorId",
 				tableName
 			);
 
 			using (var command = _connection.CreateTextCommand(deleteCommandText)) {
 				command.Transaction = _connection.BeginTransaction();
+
+				var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
 				
 				if(totalRange.Span != 0) {
 					command.AddParameter("minStamp", DbType.Int32, totalRange.Low);
@@ -676,7 +678,6 @@ namespace Atmo.Data {
 				command.CommandText = insertCommandText;
 
 				var stampParam = command.AddParameter("stamp", DbType.Int32, null);
-				var sensorIdParam = command.AddParameter("sensorId", DbType.Int32, sensorId);
 				var minValuesParam = command.AddParameter("minValues", DbType.Binary, null);
 				minValuesParam.Size = 8;
 				var maxValuesParam = command.AddParameter("maxValues", DbType.Binary, null);
