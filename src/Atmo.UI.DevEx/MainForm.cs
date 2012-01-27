@@ -108,6 +108,7 @@ namespace Atmo.UI.DevEx {
 			HandleRapidFireSetup();
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
 
+			ApplyUnits();
 			ReloadHistoric();
 			_historicSensorViewPanelController.OnSelectionChanged += RequestHistoricalUpdate;
 			historicalGraphBreakdown.OnSelectedPropertyChanged += RequestHistoricalUpdate;
@@ -593,7 +594,15 @@ namespace Atmo.UI.DevEx {
 			UpdateLiveGraph();
 		}
 
-		public void UpdateLiveGraph(){
+		private void ApplyUnits() {
+			foreach (var sensorView in _sensorViewPanelControler.Views) {
+				sensorView.PressureUnit = PressureUnit;
+				sensorView.SpeedUnit = SpeedUnit;
+				sensorView.TemperatureUnit = TemperatureUnit;
+			}
+		}
+
+		public void UpdateLiveGraph() {
 			System.Diagnostics.Debug.WriteLine("Live Data Begin");
 
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
@@ -614,7 +623,7 @@ namespace Atmo.UI.DevEx {
 				if (!_memoryDataStore.GetAllSensorInfos().Any(si => si.Name.Equals(reading.Key.Name))) {
 					_memoryDataStore.AddSensor(reading.Key);
 				}
-				_memoryDataStore.Push(reading.Key.Name, new[] { reading.Value });
+				_memoryDataStore.Push(reading.Key.Name, new[]{reading.Value});
 			}
 
 			// the current sensor views
@@ -687,10 +696,11 @@ namespace Atmo.UI.DevEx {
 					liveAtmosphericGraph.State = AppContext.PersistentState;
 					liveAtmosphericGraph.SetDataSource(enabledSensorsCompiledMeans);
 					// update the sensor controls
-					_sensorViewPanelControler.UpdateView(sensors);
 				}));
 
 			}
+
+			Invoke(new Action(() => { ApplyUnits(); _sensorViewPanelControler.UpdateView(sensors); }));
 
 			System.Diagnostics.Debug.WriteLine("Live Data End");
 		}

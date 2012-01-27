@@ -160,7 +160,7 @@
 			this.xtraTabPageGraph.Controls.Add(this.groupControlUserGraph);
 			this.xtraTabPageGraph.Controls.Add(this.groupControlGraphMinRanges);
 			this.xtraTabPageGraph.Name = "xtraTabPageGraph";
-			this.xtraTabPageGraph.Size = new System.Drawing.Size(421, 265);
+			this.xtraTabPageGraph.Size = new System.Drawing.Size(426, 271);
 			this.xtraTabPageGraph.Text = "Graph";
 			// 
 			// groupControlUserGraph
@@ -199,7 +199,7 @@
 			this.groupControlGraphMinRanges.Controls.Add(this.tableLayoutPanel1);
 			this.groupControlGraphMinRanges.Location = new System.Drawing.Point(3, 54);
 			this.groupControlGraphMinRanges.Name = "groupControlGraphMinRanges";
-			this.groupControlGraphMinRanges.Size = new System.Drawing.Size(415, 177);
+			this.groupControlGraphMinRanges.Size = new System.Drawing.Size(420, 177);
 			this.groupControlGraphMinRanges.TabIndex = 0;
 			this.groupControlGraphMinRanges.Text = "Live Plot Minimum Ranges";
 			// 
@@ -230,7 +230,7 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(411, 153);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(416, 153);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// spinEditAirDensity
@@ -250,7 +250,7 @@
             0,
             0,
             0});
-			this.spinEditAirDensity.Size = new System.Drawing.Size(305, 20);
+			this.spinEditAirDensity.Size = new System.Drawing.Size(310, 20);
 			this.spinEditAirDensity.TabIndex = 20;
 			// 
 			// spinEditDewPoint
@@ -270,7 +270,7 @@
             0,
             0,
             0});
-			this.spinEditDewPoint.Size = new System.Drawing.Size(305, 20);
+			this.spinEditDewPoint.Size = new System.Drawing.Size(310, 20);
 			this.spinEditDewPoint.TabIndex = 19;
 			// 
 			// spinEditSpeed
@@ -290,7 +290,7 @@
             0,
             0,
             0});
-			this.spinEditSpeed.Size = new System.Drawing.Size(305, 20);
+			this.spinEditSpeed.Size = new System.Drawing.Size(310, 20);
 			this.spinEditSpeed.TabIndex = 18;
 			// 
 			// spinEditPressure
@@ -310,7 +310,7 @@
             0,
             0,
             0});
-			this.spinEditPressure.Size = new System.Drawing.Size(305, 20);
+			this.spinEditPressure.Size = new System.Drawing.Size(310, 20);
 			this.spinEditPressure.TabIndex = 17;
 			// 
 			// spinEditHumidity
@@ -335,7 +335,7 @@
             0,
             0,
             0});
-			this.spinEditHumidity.Size = new System.Drawing.Size(305, 20);
+			this.spinEditHumidity.Size = new System.Drawing.Size(310, 20);
 			this.spinEditHumidity.TabIndex = 16;
 			// 
 			// labelControl11
@@ -420,7 +420,7 @@
             0,
             0,
             0});
-			this.spinEditTemperature.Size = new System.Drawing.Size(305, 20);
+			this.spinEditTemperature.Size = new System.Drawing.Size(310, 20);
 			this.spinEditTemperature.TabIndex = 15;
 			// 
 			// xtraTabPageData
@@ -447,7 +447,7 @@
 			this.checkEditSyncDaqClock.Location = new System.Drawing.Point(2, 22);
 			this.checkEditSyncDaqClock.Name = "checkEditSyncDaqClock";
 			this.checkEditSyncDaqClock.Properties.Caption = "Auto sync data logger clock";
-			this.checkEditSyncDaqClock.Size = new System.Drawing.Size(417, 19);
+			this.checkEditSyncDaqClock.Size = new System.Drawing.Size(417, 18);
 			this.checkEditSyncDaqClock.TabIndex = 0;
 			// 
 			// groupControl1

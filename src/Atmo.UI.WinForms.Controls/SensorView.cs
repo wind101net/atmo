@@ -103,35 +103,25 @@ namespace Atmo.UI.WinForms.Controls {
 				
 				string tempText;
 				if(data.IsTemperatureValid) {
-					tempText = data.Temperature.ToString("F1");
-					if (null != converter && null != converter.TemperatureConverter) {
-						tempText += ' ' + UnitUtility.GetFriendlyName(converter.TemperatureConverter.To);
-					}
+					tempText = data.Temperature.ToString("F1") + ' ' + UnitUtility.GetFriendlyName(TemperatureUnit);
 				}else {
 					tempText = na;
 				}
 
 				string presText;
 				if(data.IsPressureValid) {
-					if(null != converter && null != converter.PressureConverter) {
-						var presUnit = converter.PressureConverter.To;
-						presText = Math.Round(data.Pressure,presUnit == PressureUnit.Millibar ? 1 : 2).ToString()
-							+ ' '
-							+ UnitUtility.GetFriendlyName(presUnit)
-						;
-					}else {
-						presText = Math.Round(data.Pressure, 2).ToString();
-					}
+					var presUnit = PressureUnit;
+					presText = Math.Round(data.Pressure,presUnit == PressureUnit.Millibar ? 1 : 2).ToString()
+						+ ' '
+						+ UnitUtility.GetFriendlyName(presUnit)
+					;
 				}else {
 					presText = na;
 				}
 
 				string speedText;
 				if(data.IsWindSpeedValid) {
-					speedText = data.WindSpeed.ToString("F2");
-					if (null != converter && null != converter.SpeedConverter) {
-						speedText += ' ' + UnitUtility.GetFriendlyName(converter.SpeedConverter.To);
-					}
+					speedText = data.WindSpeed.ToString("F2") + ' ' + UnitUtility.GetFriendlyName(SpeedUnit);
 				}else {
 					speedText = na;
 				}
