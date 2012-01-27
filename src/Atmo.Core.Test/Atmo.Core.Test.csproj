@@ -71,6 +71,7 @@
     <Compile Include="TimeRangeTest.cs" />
     <Compile Include="ValueConverterCacheTests.cs" />
     <Compile Include="ValueConverterTests.cs" />
+    <Compile Include="WindDirectionCorrectionOffsetTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atmo.Core\Atmo.Core.csproj">

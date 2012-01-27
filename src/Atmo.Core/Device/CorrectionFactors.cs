@@ -34,6 +34,24 @@ namespace Atmo.Device {
 
 		private const double decimalFactor = 100000.0;
 
+		private static double Period(double value, double cap) {
+			if(value < 0) {
+				while (value < 0)
+					value += cap;
+			}
+			else if(value >= cap) {
+				while(value >= cap)
+					value -= cap;
+			}
+			return value;
+		}
+
+		public static byte CalculateWindDirectionOffset(double currentDirectionReading, double desiredDirectionReading, byte currentDirectionOffset) {
+			var difference = currentDirectionReading - desiredDirectionReading;
+			var offsetCorrection = 256 * (difference / 360.0);
+			return unchecked((byte)(Period(currentDirectionOffset + offsetCorrection,256)));
+		}
+
 		private static double ToDouble(byte[] bytes, int offset) {
 			byte[] tmp = new byte[4];
 			Array.Copy(bytes, offset, tmp, 0, tmp.Length);
@@ -49,7 +67,7 @@ namespace Atmo.Device {
 
 		public static CorrectionFactors ToCorrectionFactors(byte[] bytes, int offset) {
 			var factors = new CorrectionFactors();
-			factors.windSpeedAverages = bytes[offset];
+			factors.windDirectionOffset = bytes[offset];
 			factors.tempOffset = ToDouble(bytes, offset + 1);
 			factors.pressureFactorF = ToDouble(bytes, offset + 5);
 			factors.pressureFactorG = ToDouble(bytes, offset + 9);
@@ -66,7 +84,7 @@ namespace Atmo.Device {
 		}
 
 		public static void ToBytes(CorrectionFactors factors, byte[] bytes, int offset) {
-			bytes[offset] = factors.windSpeedAverages;
+			bytes[offset] = factors.windDirectionOffset;
 			ToBytes(factors.tempOffset, bytes, offset + 1);
 			ToBytes(factors.pressureFactorF, bytes, offset + 5);
 			ToBytes(factors.pressureFactorG, bytes, offset + 9);
@@ -81,7 +99,9 @@ namespace Atmo.Device {
 			ToBytes(factors.speedCalibrationOffset, bytes, offset + 45);
 		}
 
-		private static readonly char[] DefaultDelim = ",;".ToCharArray();
+		private static readonly char[] DefaultDelim = ";,".ToCharArray();
+		private static readonly char DefaultSeperatorChar = DefaultDelim[0];
+		private static readonly string DefaultSeperator = DefaultSeperatorChar.ToString();
 
 		public static CorrectionFactors FromString(string value) {
 			return FromString(value, null);
@@ -90,7 +110,7 @@ namespace Atmo.Device {
 		public static CorrectionFactors FromString(string value, char[] delim) {
 			string[] split = value.Split(delim ?? DefaultDelim).Select(s => s.Trim()).ToArray();
 			var factors = new CorrectionFactors();
-			factors.windSpeedAverages = Byte.Parse(split[0]);
+			factors.windDirectionOffset = Byte.Parse(split[0]);
 			factors.tempOffset = Double.Parse(split[1]);
 			factors.pressureFactorF = Double.Parse(split[2]);
 			factors.pressureFactorG = Double.Parse(split[3]);
@@ -106,7 +126,7 @@ namespace Atmo.Device {
 			return factors;
 		}
 
-		public byte windSpeedAverages;
+		public byte windDirectionOffset;
 		public double tempOffset;
 		public double pressureFactorF;
 		public double pressureFactorG;
@@ -120,15 +140,13 @@ namespace Atmo.Device {
 		public double speedCalibrationD;
 		public double speedCalibrationOffset;
 
-		private const string DefaultSeperator = ", ";
-
 		public override string ToString() {
 			return ToString(DefaultSeperator);
 		}
 
 		public string ToString(string seperator) {
 			var builder = new StringBuilder();
-			builder.Append(windSpeedAverages); builder.Append(seperator);
+			builder.Append(windDirectionOffset); builder.Append(seperator);
 			builder.Append(tempOffset); builder.Append(seperator);
 			builder.Append(pressureFactorF); builder.Append(seperator);
 			builder.Append(pressureFactorG); builder.Append(seperator);

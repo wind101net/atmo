@@ -243,7 +243,7 @@ namespace Atmo.UI.DevEx {
             if (_anemNid >= 0)
             {
                 var factors = _device.GetCorrectionFactors(_anemNid);
-                textEditFactors.Text = null == factors ? String.Empty : factors.ToString("; ");
+                textEditFactors.Text = null == factors ? String.Empty : factors.ToString();
                 sendCorrection.Enabled = false;
             }
             else
@@ -294,5 +294,44 @@ namespace Atmo.UI.DevEx {
             }
 
         }
+
+		private void simpleButtonDirOffset_Click(object sender, EventArgs e) {
+			if (_anemNid < 0) {
+				MessageBox.Show("Select a sensor.", "Select a sensor.", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				return;
+			}
+
+			var factorsText = textEditFactors.Text;
+			if (String.IsNullOrEmpty(factorsText)) {
+				MessageBox.Show("You must first get the correction factors.", "Invalid value.", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				return;
+			}
+
+			CorrectionFactors factors = CorrectionFactors.FromString(factorsText);
+			var currentOffset = factors.windDirectionOffset;
+
+			var sensor = _device.GetSensor(_anemNid);
+			if(null == sensor) {
+				MessageBox.Show("Invalid sensor.", "Invalid sensor.", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				return;
+			}
+
+			var reading = sensor.GetCurrentReading();
+			var isWindDirValid = reading.IsWindDirectionValid;
+			if (!isWindDirValid) {
+				MessageBox.Show("Invalid wind direction value.", "Invalid value.", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				return;
+			}
+
+			var currentWindDirection = reading.WindDirection;
+			var desiredWindDirection = (double)spinEditDesiredDirection.Value;
+
+			var newOffset = CorrectionFactors.CalculateWindDirectionOffset(currentWindDirection, desiredWindDirection, currentOffset);
+
+			factors.windDirectionOffset = newOffset;
+			textEditFactors.Text = factors.ToString();
+
+		}
+
     }
 }
