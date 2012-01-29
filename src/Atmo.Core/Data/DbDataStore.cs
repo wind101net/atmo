@@ -579,27 +579,34 @@ namespace Atmo.Data {
 			DateTime minStamp = new DateTime(9999, 1, 1);
 			DateTime maxStamp = new DateTime(0);
 			int counter = 0;
-			
-			command.Transaction = _connection.BeginTransaction();
-			foreach (var reading in readings) {
-				stampParam.Value = UnitUtility.ConvertToPosixTime(reading.TimeStamp);
-				valuesParam.Value = conversion(reading);
-				command.ExecuteNonQuery();
-				counter ++;
-				if (counter >= RecordBatchQuantity) {
-					counter = 0;
+
+			try {
+				command.Transaction = _connection.BeginTransaction();
+				foreach (var reading in readings) {
+					stampParam.Value = UnitUtility.ConvertToPosixTime(reading.TimeStamp);
+					valuesParam.Value = conversion(reading);
+					command.ExecuteNonQuery();
+					counter++;
+					if (counter >= RecordBatchQuantity) {
+						counter = 0;
+						command.Transaction.Commit();
+						command.Transaction = _connection.BeginTransaction();
+					}
+					if (reading.TimeStamp < minStamp) {
+						minStamp = reading.TimeStamp;
+					}
+					if (reading.TimeStamp > maxStamp) {
+						maxStamp = reading.TimeStamp;
+					}
+				}
+				if (command.Transaction != null) {
 					command.Transaction.Commit();
-					command.Transaction = _connection.BeginTransaction();
-				}
-				if (reading.TimeStamp < minStamp) {
-					minStamp = reading.TimeStamp;
-				}
-				if (reading.TimeStamp > maxStamp) {
-					maxStamp = reading.TimeStamp;
 				}
 			}
-			if(command.Transaction != null) {
-				command.Transaction.Commit();
+			catch(Exception ex) {
+				if(null != command.Transaction) {
+					command.Transaction.Rollback();
+				}
 			}
 
 			return new TimeRange(minStamp,maxStamp);
@@ -645,7 +652,7 @@ namespace Atmo.Data {
 						pushRecordCommand, readings.Cast<PackedReading>(),
 						r => PackedReadingValues.ConvertToPackedBytes(r),
 						stampParam, valuesParam
-					);
+				);
 			}
 
 			return UpdateSummaryRecords(insertTimeRange, sensor, sensorRecordId.Value);
@@ -701,6 +708,7 @@ namespace Atmo.Data {
 
 				int counter = 0;
 				foreach (var summary in summaries) {
+
 					stampParam.Value = UnitUtility.ConvertToPosixTime(summary.BeginStamp);
 					minValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Min);
 					maxValuesParam.Value = PackedReadingValues.ConvertToPackedBytes(summary.Max);
@@ -747,15 +755,14 @@ namespace Atmo.Data {
 		}
 
 		private bool UpdateSummaryRecords(TimeRange rangeCovered, string sensorName, int sensorId) {
-			TimeRange minuteAlignedRange = new TimeRange(
-				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.Minute),
-				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.Minute) + OneMinute
+			TimeRange tenMinuteAlignedRange = new TimeRange(
+				UnitUtility.StripToUnit(rangeCovered.Low, TimeUnit.TenMinutes),
+				UnitUtility.StripToUnit(rangeCovered.High, TimeUnit.TenMinutes) + TenMinutes
 			);
 			var minuteSummaries = StatsUtil.Summarize(
-				GetReadings(sensorName, minuteAlignedRange.Low, minuteAlignedRange.Span), TimeUnit.Minute
+				GetReadings(sensorName, tenMinuteAlignedRange.Low, tenMinuteAlignedRange.Span), TimeUnit.Minute
 			).ToList();
-			var posixRangeCovered = new PosixTimeRange(rangeCovered);
-			bool minsOk = PushSummaries(sensorId, "MinuteRecord", minuteSummaries, posixRangeCovered);
+			bool minsOk = PushSummaries(sensorId, "MinuteRecord", minuteSummaries, new PosixTimeRange(tenMinuteAlignedRange));
 
 			var tenMinuteSummaries = new List<ReadingsSummary>();
 			{
@@ -783,7 +790,7 @@ namespace Atmo.Data {
 				}
 			}
 
-			bool tenMinsOk = PushSummaries(sensorId, "TenminuteRecord", tenMinuteSummaries, posixRangeCovered);
+			bool tenMinsOk = PushSummaries(sensorId, "TenminuteRecord", tenMinuteSummaries, new PosixTimeRange(tenMinuteAlignedRange));
 
 			return minsOk && tenMinsOk;
 		}

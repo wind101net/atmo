@@ -35,6 +35,10 @@ namespace Atmo.Units {
 		/// </summary>
 		Minute,
 		/// <summary>
+		/// Ten Minutes
+		/// </summary>
+		TenMinutes,
+		/// <summary>
 		/// Hours.
 		/// </summary>
 		Hour,

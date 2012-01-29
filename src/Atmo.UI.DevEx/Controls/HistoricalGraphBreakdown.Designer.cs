@@ -29,10 +29,12 @@
 			this.comboBoxEditSelProp = new DevExpress.XtraEditors.ComboBoxEdit();
 			this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
 			this.bindingSourceReadingSummary = new System.Windows.Forms.BindingSource(this.components);
+			this.bindingSourceReading = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
 			this.groupControl.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.comboBoxEditSelProp.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupControl
@@ -97,6 +99,10 @@
 			// 
 			this.bindingSourceReadingSummary.DataSource = typeof(Atmo.Stats.ReadingsSummary);
 			// 
+			// bindingSourceReading
+			// 
+			this.bindingSourceReading.DataSource = typeof(Atmo.Reading);
+			// 
 			// HistoricalGraphBreakdown
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,6 +115,7 @@
 			this.groupControl.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.comboBoxEditSelProp.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReadingSummary)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.bindingSourceReading)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -120,5 +127,6 @@
 		private System.Windows.Forms.BindingSource bindingSourceReadingSummary;
 		private DevExpress.XtraEditors.LabelControl labelControl1;
 		private DevExpress.XtraEditors.ComboBoxEdit comboBoxEditSelProp;
+		private System.Windows.Forms.BindingSource bindingSourceReading;
 	}
 }

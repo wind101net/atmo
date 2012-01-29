@@ -325,7 +325,7 @@ namespace Atmo.UI.DevEx {
 							_dataStore.SetLatestSensorNameForHardwareId(
 								currentSet.Sensor.Name,
 								((char) (lastAnemId + (byte) ('A'))).ToString()
-								);
+							);
 						}
 
 						System.Diagnostics.Debug.WriteLine("Importing..." + currentSet.Files.Count);

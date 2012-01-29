@@ -310,12 +310,13 @@ namespace Atmo.UI.DevEx.Controls {
 			while(_cumulativeCharts.Count < numberGraphsToMake) {
 				var chart = new ChartControl();
 				chart.Show();
-				chart.DataSource = bindingSourceReadingSummary;
+				//chart.DataSource = bindingSourceReadingSummary;
 				chart.Size = new Size(200, 200);
 				chart.Dock = DockStyle.Fill;
 				chart.Legend.Visible = false;
 				chart.Titles.Add(new ChartTitle());
-				chart.Series.Add(new Series());
+				chart.Series.Add(new Series { DataSource = bindingSourceReadingSummary });
+				chart.Series.Add(new Series{DataSource = bindingSourceReading});
 				_cumulativeCharts.Insert(0,chart); // these need to be reversed
 				tableLayout.Controls.Add(chart);
 				forAdd.Add(chart);
@@ -331,20 +332,34 @@ namespace Atmo.UI.DevEx.Controls {
 				series.ArgumentScaleType = ScaleType.DateTime;
 				series.ValueDataMembersSerializable = SelectedAttributeType.ToString().Replace(" ", "");
 				series.ValueScaleType = ScaleType.Numerical;
-				var seriesView = new LineSeriesView(){
-					AxisYName = "Pressure AxisY",
+				var seriesView = new LineSeriesView{
+					AxisYName = series.ValueDataMembersSerializable + " AxisY",
 					Color = Color.Black,
 					//LineTensionPercent = 50,
-					PaneName = "UserAndPressure"
+					PaneName = "DataPane"
 				};
 				seriesView.LineStyle.Thickness = 1;
 				seriesView.LineStyle.DashStyle = DashStyle.Solid;
 				seriesView.LineMarkerOptions.Visible = false;
-				//(series.View as AreaSeriesView).MarkerOptions.Visible = false;
-
 				series.View = seriesView;
-
 				series.Label.Visible = false;
+
+				var stdDevSeries = chart.Series[1];
+				stdDevSeries.ArgumentDataMember = series.ArgumentDataMember;
+				stdDevSeries.ArgumentScaleType = series.ArgumentScaleType;
+				stdDevSeries.ValueDataMembersSerializable = series.ValueDataMembersSerializable + "Property";
+				stdDevSeries.ValueScaleType = series.ValueScaleType;
+				var stdDebSeriesView = new LineSeriesView{
+					AxisXName =  seriesView.AxisXName + " StdDev",
+					Color = Color.Green,
+					PaneName =  seriesView.PaneName + "StdDev"
+				};
+				stdDebSeriesView.LineStyle.Thickness = 1;
+				stdDebSeriesView.LineStyle.DashStyle = DashStyle.Solid;
+				stdDebSeriesView.LineMarkerOptions.Visible = false;
+				stdDevSeries.View = stdDebSeriesView;
+				stdDevSeries.Label.Visible = false;
+
 
 				var chartTitle = chart.Titles[0];
 				chartTitle.Text = "";
@@ -355,8 +370,6 @@ namespace Atmo.UI.DevEx.Controls {
 				var axisY = (chart.Diagram as XYDiagram).AxisY;
 				axisX.Reverse = false;
 				axisX.GridLines.Visible = true;
-				
-				
 				;
 			}
 
@@ -375,23 +388,29 @@ namespace Atmo.UI.DevEx.Controls {
 
 			// todo: can this copy be eliminated?
 
-			Func<ReadingsSummary, double> targetValueFunction;
+			Func<ReadingsSummary, double> summaryValueFunction;
+			Func<ReadingValues, double> valueFunction;
 			var selAttrType = SelectedAttributeType;
 			switch (selAttrType) {
 			case ReadingAttributeType.WindSpeed:
-				targetValueFunction = (r) => (r.WindSpeed);
+				summaryValueFunction = r => r.WindSpeed;
+				valueFunction = r => r.WindSpeed;
 				break;
 			case ReadingAttributeType.Temperature:
-				targetValueFunction = (r) => (r.Temperature);
+				summaryValueFunction = r => r.Temperature;
+				valueFunction = r => r.Temperature;
 				break;
 			case ReadingAttributeType.Humidity:
-				targetValueFunction = (r) => (r.Humidity);
+				summaryValueFunction = r => r.Humidity;
+				valueFunction = r => r.Humidity;
 				break;
 			case ReadingAttributeType.Pressure:
-				targetValueFunction = (r) => (r.Pressure);
+				summaryValueFunction = r => r.Pressure;
+				valueFunction = r => r.Pressure;
 				break;
 			case ReadingAttributeType.WindDirection:
-				targetValueFunction = (r) => (r.WindDirection);
+				summaryValueFunction = r => r.WindDirection;
+				valueFunction = r => r.WindDirection;
 				break;
 			default:
 				throw new NotSupportedException(String.Format("SelectedAttributeType {0} is not supported", selAttrType));
@@ -400,9 +419,9 @@ namespace Atmo.UI.DevEx.Controls {
 			var min = 0.0;
 			var max = 0.0;
 			if(items.Count > 0) {
-				min = max = targetValueFunction(items[0]);
+				min = max = summaryValueFunction(items[0]);
 				for(int i = 1; i < items.Count; i++) {
-					var value = targetValueFunction(items[i]);
+					var value = summaryValueFunction(items[i]);
 					if(value < min) {
 						min = value;
 					}
@@ -417,7 +436,9 @@ namespace Atmo.UI.DevEx.Controls {
 			for(int i = 0; i < cumTimeInfo.Count; i++) {
 				var window = cumTimeInfo[i];
 				var chartReadings = items.Where(r => r.TimeStamp >= window.min && r.TimeStamp <= window.max).ToList();
-				_cumulativeCharts[i].DataSource = chartReadings;
+				//_cumulativeCharts[i].DataSource = chartReadings;
+				_cumulativeCharts[i].Series[0].DataSource = chartReadings;
+				_cumulativeCharts[i].Series[1].DataSource = chartReadings.Select(r => new Reading(r.TimeStamp, r.SampleStandardDeviation)).ToList();
 				_cumulativeCharts[i].Invalidate();
 				_cumulativeCharts[i].Titles[0].Text = window.Name;
 				AxisX axisX = (_cumulativeCharts[i].Diagram as XYDiagram).AxisX;

@@ -352,6 +352,7 @@
     </None>
     <None Include="App.config" />
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
+    <None Include="Properties\DataSources\Atmo.ReadingValues.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.ReadingsSummary.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindDirectionEnergy.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.WindSpeedFrequency.datasource" />
