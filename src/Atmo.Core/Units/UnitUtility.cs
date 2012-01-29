@@ -221,7 +221,7 @@ namespace Atmo.Units {
 			if (span < TimeSpan.Zero) {
 				return ChooseBestSummaryUnit(TimeSpan.Zero.Subtract(span));
 			}
-			if (span <= new TimeSpan(31, 0, 0, 0)) {
+			if (span < new TimeSpan(12, 0, 0, 0)) {
 				return new TimeSpan(0,1,0);
 			}
 			if (span <= new TimeSpan(366, 0, 0, 0)) {

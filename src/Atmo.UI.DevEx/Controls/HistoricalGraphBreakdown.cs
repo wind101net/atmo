@@ -315,8 +315,13 @@ namespace Atmo.UI.DevEx.Controls {
 				chart.Dock = DockStyle.Fill;
 				chart.Legend.Visible = false;
 				chart.Titles.Add(new ChartTitle());
-				chart.Series.Add(new Series { DataSource = bindingSourceReadingSummary });
-				chart.Series.Add(new Series{DataSource = bindingSourceReading});
+				var dataSeries = new Series{DataSource = bindingSourceReadingSummary};
+				var stdDevSeries = new Series{DataSource = bindingSourceReading};
+				chart.Series.Add(stdDevSeries);
+				chart.Series.Add(dataSeries);
+
+				var stdDevAxis = new SecondaryAxisY("StdDev");
+				(chart.Diagram as XYDiagram).SecondaryAxesY.Add(stdDevAxis);
 				_cumulativeCharts.Insert(0,chart); // these need to be reversed
 				tableLayout.Controls.Add(chart);
 				forAdd.Add(chart);
@@ -327,7 +332,7 @@ namespace Atmo.UI.DevEx.Controls {
 				var chart = _cumulativeCharts[i];
 
 
-				var series = chart.Series[0];
+				var series = chart.Series[1];
 				series.ArgumentDataMember = "TimeStamp";
 				series.ArgumentScaleType = ScaleType.DateTime;
 				series.ValueDataMembersSerializable = SelectedAttributeType.ToString().Replace(" ", "");
@@ -344,22 +349,22 @@ namespace Atmo.UI.DevEx.Controls {
 				series.View = seriesView;
 				series.Label.Visible = false;
 
-				var stdDevSeries = chart.Series[1];
+				var stdDevSeries = chart.Series[0];
 				stdDevSeries.ArgumentDataMember = series.ArgumentDataMember;
 				stdDevSeries.ArgumentScaleType = series.ArgumentScaleType;
 				stdDevSeries.ValueDataMembersSerializable = series.ValueDataMembersSerializable + "Property";
 				stdDevSeries.ValueScaleType = series.ValueScaleType;
 				var stdDebSeriesView = new LineSeriesView{
-					AxisXName =  seriesView.AxisXName + " StdDev",
-					Color = Color.Green,
-					PaneName =  seriesView.PaneName + "StdDev"
+					AxisXName = seriesView.AxisXName + " StdDev",
+					Color = Color.PaleTurquoise,
+					PaneName = seriesView.PaneName + "StdDev",
+					AxisY = (chart.Diagram as XYDiagram).SecondaryAxesY[0]
 				};
 				stdDebSeriesView.LineStyle.Thickness = 1;
 				stdDebSeriesView.LineStyle.DashStyle = DashStyle.Solid;
 				stdDebSeriesView.LineMarkerOptions.Visible = false;
 				stdDevSeries.View = stdDebSeriesView;
 				stdDevSeries.Label.Visible = false;
-
 
 				var chartTitle = chart.Titles[0];
 				chartTitle.Text = "";
@@ -418,16 +423,23 @@ namespace Atmo.UI.DevEx.Controls {
 
 			var min = 0.0;
 			var max = 0.0;
+			var stdDevMin = 0.0;
+			var stdDevMax = 0.0;
 			if(items.Count > 0) {
 				min = max = summaryValueFunction(items[0]);
+				stdDevMin = stdDevMax = valueFunction(items[0].SampleStandardDeviation);
 				for(int i = 1; i < items.Count; i++) {
 					var value = summaryValueFunction(items[i]);
-					if(value < min) {
+					if(value < min)
 						min = value;
-					}
-					else if(value > max) {
+					else if(value > max)
 						max = value;
-					}
+
+					var stdDevValue = valueFunction(items[i].SampleStandardDeviation);
+					if(stdDevValue < stdDevMin)
+						stdDevMin = stdDevValue;
+					else if(stdDevValue > stdDevMax)
+						stdDevMax = stdDevValue;
 				}
 			}
 
@@ -437,48 +449,60 @@ namespace Atmo.UI.DevEx.Controls {
 				var window = cumTimeInfo[i];
 				var chartReadings = items.Where(r => r.TimeStamp >= window.min && r.TimeStamp <= window.max).ToList();
 				//_cumulativeCharts[i].DataSource = chartReadings;
-				_cumulativeCharts[i].Series[0].DataSource = chartReadings;
-				_cumulativeCharts[i].Series[1].DataSource = chartReadings.Select(r => new Reading(r.TimeStamp, r.SampleStandardDeviation)).ToList();
-				_cumulativeCharts[i].Invalidate();
-				_cumulativeCharts[i].Titles[0].Text = window.Name;
-				AxisX axisX = (_cumulativeCharts[i].Diagram as XYDiagram).AxisX;
+				var chart =_cumulativeCharts[i];
+				var diagram = chart.Diagram as XYDiagram;
+				var seriesData = chart.Series[1];
+				var seriesStdDev = chart.Series[0];
+				seriesData.DataSource = chartReadings;
+				seriesStdDev.DataSource = chartReadings.Select(r => new Reading(r.TimeStamp, r.SampleStandardDeviation)).ToList();
+				chart.Invalidate();
+				chart.Titles[0].Text = window.Name;
 
-				AxisY axisY = (_cumulativeCharts[i].Diagram as XYDiagram).AxisY;
-				if (Double.MaxValue == min || Double.MinValue == max || min == max) {
-					axisY.Range.Auto = true;
-				}
-				else {
-					axisY.Range.Auto = false;
-					axisY.Range.SetMinMaxValues(min, max);
-				}
+				AxisX axisX = diagram.AxisX;
+				AxisY axisY = diagram.AxisY;
 
 				var timeSpanPerGraph = window.Span;
-
-				axisX.DateTimeScaleMode = DateTimeScaleMode.Manual;
-				if (timeSpanPerGraph < new TimeSpan(0, 1, 0)) {
-					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Second;
-					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Second;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
-				}
-				else if (timeSpanPerGraph <= new TimeSpan(12, 0, 0)) {
-					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Second;
-					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Minute;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
-				}
-				else if (timeSpanPerGraph <= new TimeSpan(31, 0, 0, 1)) {
-					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Minute;
-					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Minute;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
-				}
-				else {
-					axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Minute;
-					axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Day;
-					axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
-				}
-				axisX.Range.SetMinMaxValues(window.min, window.max);
+				SetAxisYRanges(min, max, axisY);
+				SetAxisYRanges(stdDevMin, stdDevMax, diagram.SecondaryAxesY[0]);
+				SetAxisXRanges(window.min, window.max, timeSpanPerGraph, axisX);
 			}
 
 
+		}
+
+		private void SetAxisYRanges(double min, double max, AxisYBase axisY) {
+			if (Double.MaxValue == min || Double.MinValue == max || min == max) {
+				axisY.Range.Auto = true;
+			}
+			else {
+				axisY.Range.Auto = false;
+				axisY.Range.SetMinMaxValues(min, max);
+			}
+		}
+
+		private void SetAxisXRanges(DateTime min, DateTime max, TimeSpan timeSpanPerGraph, AxisX axisX) {
+			axisX.DateTimeScaleMode = DateTimeScaleMode.Manual;
+			if (timeSpanPerGraph < new TimeSpan(0, 1, 0)) {
+				axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Second;
+				axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Second;
+				axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
+			}
+			else if (timeSpanPerGraph <= new TimeSpan(12, 0, 0)) {
+				axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Second;
+				axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Minute;
+				axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
+			}
+			else if (timeSpanPerGraph <= new TimeSpan(31, 0, 0, 1)) {
+				axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Minute;
+				axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Minute;
+				axisX.DateTimeOptions.Format = DateTimeFormat.ShortTime;
+			}
+			else {
+				axisX.DateTimeGridAlignment = DateTimeMeasurementUnit.Minute;
+				axisX.DateTimeMeasureUnit = DateTimeMeasurementUnit.Day;
+				axisX.DateTimeOptions.Format = DateTimeFormat.ShortDate;
+			}
+			axisX.Range.SetMinMaxValues(min, max);
 		}
 
 		private void comboBoxEditSelProp_SelectedIndexChanged(object sender, EventArgs e) {
