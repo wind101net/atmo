@@ -48,5 +48,14 @@ namespace Atmo.UI.WinForms.Controls {
 			view.Update(model);
 		}
 
+		protected override void Synchronize(SensorView[] views, ISensor[] models, Data.PersistentState state) {
+			foreach (var view in views) {
+				view.TemperatureUnit = state.TemperatureUnit;
+				view.PressureUnit = state.PressureUnit;
+				view.SpeedUnit = state.SpeedUnit;
+			}
+			base.Synchronize(views, models, state);
+		}
+
 	}
 }

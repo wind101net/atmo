@@ -330,6 +330,7 @@ namespace Atmo.UI.DevEx {
 
 			factors.windDirectionOffset = newOffset;
 			textEditFactors.Text = factors.ToString();
+			MessageBox.Show("Applying the correction factor change was successful.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 
 		}
 

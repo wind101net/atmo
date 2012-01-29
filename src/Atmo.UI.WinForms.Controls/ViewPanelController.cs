@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Atmo.Data;
 
 namespace Atmo.UI.WinForms.Controls {
 	public abstract class ViewPanelController<TView,TModel>
@@ -50,15 +51,15 @@ namespace Atmo.UI.WinForms.Controls {
 			ResizeContainer = false;
 		}
 
-		public bool UpdateView(IEnumerable<TModel> sensors) {
-			return UpdateView(sensors.ToArray());
+		public bool UpdateView(IEnumerable<TModel> sensors, PersistentState state) {
+			return UpdateView(sensors.ToArray(), state);
 		}
 
 		protected abstract TView CreateNewView();
 
 		protected abstract void UpdateView(TView view, TModel model);
 
-		public bool UpdateView(TModel[] sensors) {
+		public bool UpdateView(TModel[] sensors, PersistentState state) {
 			var existing = Container.Controls.OfType<TView>().ToArray();
 			TView[] reused;
 			TView[] added;
@@ -112,7 +113,7 @@ namespace Atmo.UI.WinForms.Controls {
 				Array.Copy(added, 0, sync, reused.Length, added.Length);
 			}
 
-			Synchronize(sync, sensors);
+			Synchronize(sync, sensors, state);
 
 			if (ResizeContainer) {
 				ResizeForChildren();
@@ -125,7 +126,7 @@ namespace Atmo.UI.WinForms.Controls {
 			get { return Container.Controls.OfType<TView>().Reverse(); }
 		}
 
-		private void Synchronize(TView[] views, TModel[] models) {
+		protected virtual void Synchronize(TView[] views, TModel[] models, PersistentState state) {
 			if (views.Length < models.Length) {
 				throw new ArgumentOutOfRangeException("views", "not enough views for models");
 			}
