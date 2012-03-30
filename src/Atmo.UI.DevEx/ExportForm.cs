@@ -3,9 +3,12 @@ using System.Windows.Forms;
 using Atmo.Data;
 using System.Linq;
 using System.IO;
+using log4net;
 
 namespace Atmo.UI.DevEx {
     public partial class ExportForm : DevExpress.XtraEditors.XtraForm {
+
+		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private enum ExportType {
 			TenMinute = 0,
@@ -46,7 +49,7 @@ namespace Atmo.UI.DevEx {
 			};
         	if (saveDialog.ShowDialog() == DialogResult.OK) {
                 if (!ExecuteExport(saveDialog.FileName)) {
-                    MessageBox.Show("No records saved", "No data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("No records saved.", "No data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -58,18 +61,24 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private bool ExecuteExport(string csvFileName) {
-			switch((ExportType)comboBoxEditExportType.SelectedItem)
-			{
-			case ExportType.Raw:
-				return ExecuteExportRaw(csvFileName);
-			case ExportType.TenMinute:
-				return ExecuteExportTenMinute(csvFileName);
-			default:
+			try {
+				switch ((ExportType) comboBoxEditExportType.SelectedItem) {
+					case ExportType.Raw:
+						return ExecuteExportRaw(csvFileName);
+					case ExportType.TenMinute:
+						return ExecuteExportTenMinute(csvFileName);
+					default:
+						return false;
+				}
+			}
+			catch(Exception ex) {
+				Log.Error("Export generation failed.", ex);
 				return false;
 			}
 		}
 
 		private bool ExecuteExportTenMinute(string csvFileName) {
+			// TODO: this stuff should use the CSV writer class from core
 			csvFileName = Path.ChangeExtension(csvFileName, "csv");
 			var iniFileName = Path.ChangeExtension(csvFileName, "ini");
 			using (var iniStream = File.Open(iniFileName, FileMode.Create, FileAccess.ReadWrite)) {
@@ -189,68 +198,7 @@ namespace Atmo.UI.DevEx {
 				}
 			}
     		return c > 0;
-    		/*
-            csvFileName = Path.ChangeExtension(csvFileName, "csv");
-            var iniFileName = Path.ChangeExtension(csvFileName, "ini");
-            using (var iniStream = File.Open(iniFileName, FileMode.Create, FileAccess.ReadWrite)) {
-                using (var iniWriter = new StreamWriter(iniStream)) {
-                    iniWriter.Write('[');
-                    iniWriter.Write(Path.GetFileName(csvFileName));
-                    iniWriter.WriteLine(']');
-                    iniWriter.WriteLine("ColnameHeader=True");
-                    iniWriter.WriteLine("Format=CSVDelimited");
-                    iniWriter.WriteLine("DateTimeFormat=yyyy/MM/dd HH:nn:ss");
-                    iniWriter.WriteLine("Col1=Stamp DateTime");
-                    iniWriter.WriteLine("Col2=Temperature Double");
-                    iniWriter.WriteLine("Col3=Pressure Double");
-                    iniWriter.WriteLine("Col4=Humidity Double");
-                    iniWriter.WriteLine("Col5=Speed Double");
-                    iniWriter.WriteLine("Col6=Direction Double");
-                    iniWriter.Flush();
-                }
-            }
-            var readings = _dataStore.GetReadings(
-                comboChooseSensor.SelectedText,
-                dateTimeRangePicker.Min,
-                dateTimeRangePicker.Max.Subtract(dateTimeRangePicker.Min)
-            );
-            int c = 0;
-            using (var csvStream = File.Open(csvFileName, FileMode.Create, FileAccess.ReadWrite)) {
-                using (var csvWriter = new StreamWriter(csvStream)) {
-
-					WriteQuoted(csvWriter, "Stamp");
-					csvWriter.Write(',');
-					WriteQuoted(csvWriter, "Temperature");
-					csvWriter.Write(',');
-					WriteQuoted(csvWriter, "Pressure");
-					csvWriter.Write(',');
-					WriteQuoted(csvWriter, "Humidity");
-					csvWriter.Write(',');
-					WriteQuoted(csvWriter, "Speed");
-					csvWriter.Write(',');
-					WriteQuoted(csvWriter, "Direction");
-					csvWriter.WriteLine();
-
-                    foreach (var reading in readings) {
-                        c++;
-						WriteQuoted(csvWriter,reading.TimeStamp.ToString("yyyy/MM/dd HH:mm:ss"));
-                        csvWriter.Write(',');
-						WriteQuoted(csvWriter,reading.Temperature.ToString());
-                        csvWriter.Write(',');
-						WriteQuoted(csvWriter,reading.Pressure.ToString());
-                        csvWriter.Write(',');
-						WriteQuoted(csvWriter,reading.Humidity.ToString());
-                        csvWriter.Write(',');
-						WriteQuoted(csvWriter,reading.WindSpeed.ToString());
-                        csvWriter.Write(',');
-						WriteQuoted(csvWriter,reading.WindDirection.ToString());
-						csvWriter.WriteLine();
-                    }
-                    csvWriter.Flush();
-                }
-            }
-            return c > 0;
-			*/
+    		
     	}
     }
 }

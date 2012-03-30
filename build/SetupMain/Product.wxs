@@ -29,6 +29,7 @@
 					<Directory Id="INSTALLLOCATION" Name="Atmo2">
 						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
 							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="$(var.OutputPath)\System.Data.SQLite.dll" KeyPath="yes"/>
+							<File Id="Log4Net" Name="log4net.dll" Source="$(var.OutputPath)\log4net.dll" KeyPath="no"/>
 						</Component>
 						<Component Id="AtmoCore" Guid="C43E5FA4-228E-44D6-8956-4640CFAE6748" NeverOverwrite="no">
 							<File Id="AtmoCoredll" Name="Atmo.Core.dll" Source="$(var.OutputPath)\Atmo.Core.dll" KeyPath="yes" />
@@ -36,9 +37,6 @@
 							<File Id="AtmoDaqWin32dll" Name="Atmo.Daq.Win32.dll" Source="$(var.OutputPath)\Atmo.Daq.Win32.dll" />
 							<File Id="COPYING.Text" Name="COPYING" Source="$(var.OutputPath)\COPYING" />
 							<File Id="license.Text" Name="license.txt" Source="$(var.OutputPath)\license.txt" />
-						</Component>
-						<Component Id="DbFiles" Guid="674B9440-8854-4040-B09A-8EE8108BACF9"  NeverOverwrite="yes" Permanent="yes" >
-							<File Id="ClearStoragedb" Name="ClearStorage.db" Source="$(var.OutputPath)\ClearStorage.db" KeyPath="yes" />
 						</Component>
 						<Component Id="AtmoWinFormsLibs" Guid="F32AC172-BD63-4C3A-A600-E704327E9A04" NeverOverwrite="no">
 							<File Id="AtmoUIWinFormsControls" Name="Atmo.UI.WinForms.Controls.dll" Source="$(var.OutputPath)\Atmo.UI.WinForms.Controls.dll" KeyPath="yes"  />
@@ -81,7 +79,6 @@
 
 		<Feature Id="ProductFeature" Title="Atmo 2" Level="1">
 			<ComponentRef Id="Core3rdParty" />
-			<ComponentRef Id="DbFiles" />
 			<ComponentRef Id="AtmoCore" />
 			<ComponentRef Id="AtmoWinFormsLibs" />
 			<ComponentRef Id="DevExpress3rdParty" />

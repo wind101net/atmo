@@ -84,7 +84,7 @@ namespace Atmo.DataConverter {
 
 			try {
 				using(var csvDataFileReader = new CsvDataFileReader(file.FullName)) {
-					return SaveDat(csvDataFileReader.ReadAll(), file.FullName);
+					return SaveDat(CorrectTimeStamps(csvDataFileReader.ReadAll()), file.FullName);
 				}
 			}
 			catch (Exception ex) {
@@ -94,13 +94,76 @@ namespace Atmo.DataConverter {
 			return 2;
 		}
 
-		private static IEnumerable<IReading> ReadAll(DaqDataFileReader reader) {
+		private static IEnumerable<TReading[]> GroupByStamp<TReading>(IEnumerable<TReading> readings) where TReading : IReading {
+			var buffer = new List<TReading>(61);
+			foreach(var reading in readings) {
+				if (buffer.Count == 0 || buffer[0].TimeStamp == reading.TimeStamp) {
+					buffer.Add(reading);
+				}
+				else {
+					yield return buffer.ToArray();
+					buffer.Clear();
+					buffer.Add(reading);
+				}
+			}
+			if (buffer.Count != 0)
+				yield return buffer.ToArray();
+		}
+
+		private static IEnumerable<Reading> CorrectTimeStamps<TReading>(IEnumerable<TReading> readings) where TReading: IReading {
+			using(var groupEnumerator = GroupByStamp(readings).GetEnumerator()) {
+				if (!groupEnumerator.MoveNext())
+					yield break;
+				var currentGroup = groupEnumerator.Current;
+				if (currentGroup.Length == 1) {
+					yield return new Reading(currentGroup[0]); // just use it as is
+					if(groupEnumerator.MoveNext())
+						currentGroup = groupEnumerator.Current; // we have more to do
+					else
+						yield break; // all done
+				} else {
+					var firstGroup = currentGroup;
+					if(groupEnumerator.MoveNext()) {
+						currentGroup = groupEnumerator.Current;
+						var firstNextStamp = currentGroup.First().TimeStamp; // assumes a valid initial record
+						for (int i = 0; i < firstGroup.Length; i++) {
+							yield return new Reading(firstNextStamp.AddSeconds(i - firstGroup.Length), firstGroup[i]); // remove seconds going backwards, but keep records in order
+						}
+						// TODO: correct the times for first group from the first of current group
+					}else {
+						// just add seconds to the stamps, we have no further information to use
+						for(int i = 0; i < firstGroup.Length; i++) {
+							yield return new Reading(firstGroup[i].TimeStamp.AddSeconds(i), firstGroup[i]);
+						}
+						yield break; // nothing left
+					}
+				}
+				// at this point, assume we have already done a MoveNext
+				do {
+					currentGroup = groupEnumerator.Current;
+					if(currentGroup.Length == 1) {
+						yield return new Reading(currentGroup[0]);
+					}
+					else if(currentGroup.Length > 0) {
+						var firstStamp = currentGroup[0].TimeStamp;
+						for(int i = 0; i < currentGroup.Length && i < 60; i++) {
+							yield return new Reading(firstStamp.AddSeconds(i), currentGroup[i]);
+						}
+						for(int i = 60; i < currentGroup.Length; i++) {
+							yield return new Reading(firstStamp.AddSeconds(59), currentGroup[i]);
+						}
+					}
+				} while (groupEnumerator.MoveNext());
+			}
+		}
+
+		private static IEnumerable<PackedReading> ReadAll(DaqDataFileReader reader)  {
 			while(reader.MoveNext()) {
 				yield return reader.Current;
 			}
 		}
 
-		private static int SaveCsv(IEnumerable<IReading> readings, string csvFileName) {
+		private static int SaveCsv<TReading>(IEnumerable<TReading> readings, string csvFileName) where TReading : IReading {
 			csvFileName = Path.ChangeExtension(csvFileName, "csv");
 			var iniFileName = Path.ChangeExtension(csvFileName, "ini");
 			using (FileStream

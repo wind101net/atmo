@@ -122,7 +122,7 @@ namespace Atmo.Daq.Win32.TestHarness {
 				return;
 			}
 
-			_sensorViewPanelControler.UpdateView(Enumerable.Range(0, 4).Select(i => _connection.GetSensor(i)));
+			_sensorViewPanelControler.UpdateView(Enumerable.Range(0, 4).Select(i => _connection.GetSensor(i)), null);
 			
 		}
 

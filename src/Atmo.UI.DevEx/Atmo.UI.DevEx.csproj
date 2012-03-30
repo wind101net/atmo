@@ -77,6 +77,9 @@
     <Reference Include="DevExpress.XtraCharts.v10.1, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraCharts.v10.1.UI, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v10.1, Version=10.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="log4net">
+      <HintPath>..\..\packages\log4net.2.0.0\lib\net35-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -346,11 +349,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Atmo.Core\ClearStorage.db">
-      <Link>ClearStorage.db</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\Atmo.Reading.datasource" />
     <None Include="Properties\DataSources\Atmo.ReadingValues.datasource" />
     <None Include="Properties\DataSources\Atmo.Stats.ReadingsSummary.datasource" />

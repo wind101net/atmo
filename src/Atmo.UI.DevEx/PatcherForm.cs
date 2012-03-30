@@ -27,9 +27,12 @@ using System.Windows.Forms;
 using System.IO;
 using Atmo.Daq.Win32;
 using Atmo.Device;
+using log4net;
 
 namespace Atmo.UI.DevEx {
     public partial class PatcherForm : DevExpress.XtraEditors.XtraForm {
+
+		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private MemoryRegionDataCollection _patchData = null;
         private MemoryRegionDataCollection _anemPatchData = null;
@@ -66,6 +69,7 @@ namespace Atmo.UI.DevEx {
         	}
         	catch (Exception ex) {
         		daqFileLabel.Text = String.Concat("Load error: ", ex.ToString());
+				Log.Error("DAQ firmware load error.",ex);
         		beginDaqUpdate.Enabled = false;
         	}
         }
@@ -158,6 +162,7 @@ namespace Atmo.UI.DevEx {
                 }
                 catch (Exception ex) {
                     _anemPatchData = null;
+					Log.Error("Anem firmware load error.", ex);
                     anemFileLabel.Text = String.Concat("Load error: ", ex.ToString());
                 }
             }

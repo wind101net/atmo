@@ -26,13 +26,15 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows.Forms;
 using Atmo.UI.DevEx.Controls;
+using log4net;
 
 namespace Atmo.UI.DevEx {
     public partial class FindSensorsDialog : DevExpress.XtraEditors.XtraForm {
 
+		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private SensorSetupLine[] _sensorLines;
         private IDaqConnection _device;
-
 
         private enum PendingOperation {
             None,
@@ -93,7 +95,6 @@ namespace Atmo.UI.DevEx {
                 _pendingSensorIndex = obj;
                 addRemWorker.RunWorkerAsync();
             }
-
         }
 
         private void sensorSetupLine_SensorSet(int obj) {
@@ -129,22 +130,27 @@ namespace Atmo.UI.DevEx {
             TimeSpan waitTime = new TimeSpan(0, 0, 10);
             DateTime now = DateTime.Now;
             DateTime endTime = now.Add(waitTime);
-            while ((now = DateTime.Now) <= endTime) {
-                int percent = (int)((endTime.Subtract(now).Ticks * 100) / waitTime.Ticks);
-                addRemWorker.ReportProgress(percent);
-                ISensor sensor = _device.GetSensor(_pendingSensorIndex);
-                if (_pendingOperation == PendingOperation.Add) {
-                    if (null != sensor && sensor.IsValid) {
-                        break;
-                    }
-                }
-                else if (_pendingOperation == PendingOperation.Rem) {
-                    if (null == sensor || !sensor.IsValid) {
-                        break;
-                    }
-                }
-                Thread.Sleep(100);
-            }
+			try {
+				while ((now = DateTime.Now) <= endTime) {
+					int percent = (int) ((endTime.Subtract(now).Ticks*100)/waitTime.Ticks);
+					addRemWorker.ReportProgress(percent);
+					ISensor sensor = _device.GetSensor(_pendingSensorIndex);
+					if (_pendingOperation == PendingOperation.Add) {
+						if (null != sensor && sensor.IsValid) {
+							break;
+						}
+					}
+					else if (_pendingOperation == PendingOperation.Rem) {
+						if (null == sensor || !sensor.IsValid) {
+							break;
+						}
+					}
+					Thread.Sleep(100);
+				}
+			}
+			catch(Exception ex) {
+				Log.Warn("Failed to " + _pendingOperation + " sensor.", ex);
+			}
 
         }
 

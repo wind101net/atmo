@@ -26,10 +26,15 @@ using System.Configuration;
 using System.Windows.Forms;
 using System.IO;
 using Atmo.Data;
+using log4net;
+
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
 namespace Atmo.UI.DevEx {
 
 	public class ProgramContext : ApplicationContext {
+
+		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const string PersistentFileName = "config.xml";
 
@@ -107,20 +112,17 @@ namespace Atmo.UI.DevEx {
 
 		public PersistentState PersistentState {
 			get {
-				return _state ?? (
-					_state = (
-						PersistentState.ReadFile(PersistentStateFileName)
-						?? new PersistentState()
-					)
-				);
+				return _state
+					?? (_state = PersistentState.ReadFile(PersistentStateFileName) ?? new PersistentState());
 			}
 		}
 
 		public void SaveState() {
 			try {
 				PersistentState.SaveFile(PersistentStateFileName, PersistentState);
-			}catch(Exception e) {
-				; // should maybe get a logger in here
+			}
+			catch(Exception ex) {
+				Log.ErrorFormat("Unable to save state to {0}:\nState:{1}\nEx:{2}", PersistentFileName, PersistentState, ex);
 			}
 		}
 

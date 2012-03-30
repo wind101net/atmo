@@ -86,6 +86,7 @@
     <EmbeddedResource Include="A110516.DAT" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="A100315.DAT" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

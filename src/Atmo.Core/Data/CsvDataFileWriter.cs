@@ -29,12 +29,13 @@ namespace Atmo.Data {
 		}
 
 		private static void WriteCommaSeperateQuoted(StreamWriter writer, IEnumerable<string> items) {
-			var enumerator = items.GetEnumerator();
-			if(enumerator.MoveNext()) {
-				WriteQuoted(writer, enumerator.Current);
-				while(enumerator.MoveNext()) {
-					writer.Write(',');
+			using (var enumerator = items.GetEnumerator()) {
+				if (enumerator.MoveNext()) {
 					WriteQuoted(writer, enumerator.Current);
+					while (enumerator.MoveNext()) {
+						writer.Write(',');
+						WriteQuoted(writer, enumerator.Current);
+					}
 				}
 			}
 		}
@@ -46,6 +47,7 @@ namespace Atmo.Data {
 			csvWriter.WriteLine();
 		}
 
+		[Obsolete]
 		private static IEnumerable<string> ToStringValues(IReading reading) {
 			yield return reading.TimeStamp.ToString("yyyy/MM/dd HH:mm:ss");
 			yield return reading.Temperature.ToString();
@@ -55,12 +57,17 @@ namespace Atmo.Data {
 			yield return reading.WindDirection.ToString();
 		}
 
+		private static string ToNumericCsvValueString(double value) {
+			if (Double.IsNaN(value) || value % 1 == 0)
+				return value.ToString();
+			return '\"' + value.ToString() + '\"';
+		}
+
 		private readonly StreamWriter _csvWriter;
 		private readonly StreamWriter _iniWriter;
 		private readonly string _csvFileName;
 		private readonly bool _headerRow;
-
-		private Action<IReading> _writeAction;
+		private bool _initRequired;
 
 		public CsvDataFileWriter(StreamWriter csvWriter)
 			: this(csvWriter, true) {}
@@ -82,7 +89,7 @@ namespace Atmo.Data {
 			_iniWriter = iniWriter;
 			_csvFileName = csvFileName;
 			_headerRow = headerRow;
-			_writeAction = InitAndWrite;
+			_initRequired = true;
 		}
 
 		private void Init() {
@@ -92,20 +99,22 @@ namespace Atmo.Data {
 				WriteHeaderRow(_csvWriter);
 		}
 
-		public void Write(IReading reading) {
-			_writeAction(reading);
+		public void Write<TReading>(TReading reading) where TReading : IReading {
+			if(_initRequired) {
+				Init();
+				_initRequired = false;
+			}
+			var line = reading.TimeStamp.ToString("yyyy/MM/dd HH:mm:ss")
+				+ ',' + ToNumericCsvValueString(reading.Temperature)
+				+ ',' + ToNumericCsvValueString(reading.Pressure)
+				+ ',' + ToNumericCsvValueString(reading.Humidity)
+				+ ',' + ToNumericCsvValueString(reading.WindSpeed)
+				+ ',' + ToNumericCsvValueString(reading.WindDirection);
+			_csvWriter.WriteLine(line);
 		}
 
-		private void WriteCore(IReading reading) {
-			WriteCommaSeperateQuoted(_csvWriter, ToStringValues(reading));
-			_csvWriter.WriteLine();
-		}
+		
 
-		private void InitAndWrite(IReading reading) {
-			Init();
-			WriteCore(reading);
-			_writeAction = WriteCore;
-		}
 
 
 

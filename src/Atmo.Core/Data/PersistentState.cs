@@ -29,6 +29,7 @@ using System.Text;
 using System.Xml.Serialization;
 using Atmo.Units;
 using System.Xml;
+using log4net;
 
 namespace Atmo.Data {
 
@@ -37,6 +38,8 @@ namespace Atmo.Data {
 	/// </summary>
 	[XmlRoot("PersistentState")]
 	public class PersistentState {
+
+		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public enum UserCalculatedAttribute {
 			DewPoint,
@@ -58,22 +61,26 @@ namespace Atmo.Data {
 					return ReadStream(fileStream);
 				}
 			}
-			catch(FileNotFoundException) {
-				return null;
+			catch(Exception ex) {
+				Log.Error("PersistentState file could not be loaded from '" + filePath + "'.", ex);
 			}
+			return null;
 		}
 
 		public static PersistentState ReadStream(Stream stream) {
 			PersistentState state;
-			try {
-				using (var reader = new StreamReader(stream, Encoding.UTF8)) {
-					state = Serializer.Deserialize(stream) as PersistentState;
+			using (var reader = new StreamReader(stream, Encoding.UTF8)) {
+				try {
+					state = Serializer.Deserialize(reader) as PersistentState;
+				} catch(Exception ex) {
+					state = null;
+					Log.Error("PersistentState deserialize failed.", ex);
 				}
-				if(null != state)
-				    state.IsDirty = false;
-			}catch {
-				state = null;
 			}
+
+			if(null != state)
+				state.IsDirty = false;
+
 			return state;
 		}
 
@@ -89,7 +96,9 @@ namespace Atmo.Data {
 					Serializer.Serialize(writer, state);
 				}
 				return true;
-			}catch {
+			}
+			catch (Exception ex) {
+				Log.Error("PersistentState serialize failed.", ex);
 				return false;
 			}
 		}

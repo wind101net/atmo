@@ -73,9 +73,11 @@ namespace Atmo.Data {
 		}
 
 		private static double AsDouble(object o) {
-			return (o is double)
-				? (double)o
-				: Double.Parse(o.ToString());
+			if(o is double)
+				return (double) o;
+			if (null == o || o is DBNull)
+				return Double.NaN;
+			return Double.Parse(o.ToString());
 		}
 
 		public IEnumerable<Reading> ReadAll() {

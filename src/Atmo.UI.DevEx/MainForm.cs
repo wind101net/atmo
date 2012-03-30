@@ -37,9 +37,14 @@ using Atmo.UI.WinForms.Controls;
 using Atmo.Units;
 using DevExpress.XtraEditors;
 using System.Windows.Forms;
+using log4net;
 
 namespace Atmo.UI.DevEx {
-	public partial class MainForm : XtraForm {
+	public partial class MainForm : XtraForm
+	{
+
+		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly string DatabaseFileName = "ClearStorage.db";
 
 		private IDaqConnection _deviceConnection = null;
 		private MemoryDataStore _memoryDataStore = null;
@@ -71,8 +76,28 @@ namespace Atmo.UI.DevEx {
 
 			_deviceConnection = new UsbDaqConnection(); // new Demo.DemoDaqConnection();
 
-			_dbConnection = new System.Data.SQLite.SQLiteConnection(
-				@"data source=ClearStorage.db;page size=4096;cache size=4000;journal mode=Off");
+			// create the DB file using the application privilages instead of using the installer
+			if (!File.Exists(DatabaseFileName)) {
+				using(var dbTemplateDataStream = typeof (DbDataStore).Assembly.GetManifestResourceStream("Atmo." + DatabaseFileName))
+				using(var outDbTemplate = File.Create(DatabaseFileName)) {
+					var buffer = new byte[1024];
+					int totalRead;
+					while(0 < (totalRead = dbTemplateDataStream.Read(buffer, 0, buffer.Length)))
+						outDbTemplate.Write(buffer,0, totalRead);
+				}
+				
+				Thread.Sleep(250); // just to be safe
+				Log.InfoFormat("Core DB file created at: {0}", Path.GetFullPath(DatabaseFileName));
+			}
+			try {
+				_dbConnection = new System.Data.SQLite.SQLiteConnection(
+					@"data source=" + DatabaseFileName + @";page size=4096;cache size=4000;journal mode=Off");
+				_dbConnection.Open();
+			}
+			catch(Exception ex) {
+				Log.Error("Database connection failure.", ex);
+				throw;
+			}
 			_dbStore = new DbDataStore(_dbConnection);
 
 			_memoryDataStore = new MemoryDataStore();
@@ -164,7 +189,17 @@ namespace Atmo.UI.DevEx {
 			if (result != DialogResult.Yes) {
 				return;
 			}
-			_dbStore.DeleteSensor(sensorInfo.Name);
+
+			try {
+				if (_dbStore.DeleteSensor(sensorInfo.Name))
+					Log.InfoFormat("Sensor '{0}' was deleted by the user.", sensorInfo.Name);
+				else
+					Log.ErrorFormat("Sensor '{0}' deletion failed and was requested by the user.", sensorInfo.Name);
+			}
+			catch(Exception ex) {
+				Log.Error("Error deleting sensor '" + sensorInfo.Name + "'.", ex);
+			}
+
 			ReloadHistoric();
 		}
 
@@ -184,10 +219,15 @@ namespace Atmo.UI.DevEx {
 			if(renameForm.Value == sensorInfo.Name)
 				return;
 
-			var renameSuccess = _dbStore.RenameSensor(sensorInfo.Name, renameForm.Value);
-
-			if (!renameSuccess)
-				MessageBox.Show("Rename failed.", "Error");
+			try {
+				if (_dbStore.RenameSensor(sensorInfo.Name, renameForm.Value))
+					Log.InfoFormat("Sensor '{0}' renamed to '{1}' by user.", sensorInfo.Name, renameForm.Value);
+				else
+					MessageBox.Show("Rename failed.", "Error");
+			}
+			catch(Exception ex) {
+				Log.Error("Error renaming sensor '" + sensorInfo.Name + "' to '" + renameForm.Value + "'.", ex);
+			}
 
 			ReloadHistoric();
 		}
@@ -199,8 +239,14 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
-			var settingsForm = new SettingsForm(AppContext.PersistentState);
-			settingsForm.ShowDialog(this);
+			try {
+				var settingsForm = new SettingsForm(AppContext.PersistentState);
+				settingsForm.ShowDialog(this);
+			}
+			catch(Exception ex) {
+				Log.Error("Settings change failed.", ex);
+				MessageBox.Show("Settings change failed.", "Failure");
+			}
 			HandleRapidFireSetup();
 		}
 
@@ -214,15 +260,22 @@ namespace Atmo.UI.DevEx {
 
 		private void FindSensors() {
 			var rapidFireEnabled = timerRapidFire.Enabled;
-			if(rapidFireEnabled) {
-				timerRapidFire.Enabled = false;
+			try {
+				if (rapidFireEnabled) {
+					timerRapidFire.Enabled = false;
+				}
+				timerLive.Enabled = false;
+				var findSensorForm = new FindSensorsDialog(_deviceConnection);
+				findSensorForm.ShowDialog(this);
 			}
-			timerLive.Enabled = false;
-			var findSensorForm = new FindSensorsDialog(_deviceConnection);
-			findSensorForm.ShowDialog(this);
-			timerLive.Enabled = true;
-			if(rapidFireEnabled) {
-				timerRapidFire.Enabled = true;
+			catch (Exception ex) {
+				Log.Error("Failed to find sensors.", ex);
+			}
+			finally{
+				timerLive.Enabled = true;
+				if (rapidFireEnabled) {
+					timerRapidFire.Enabled = true;
+				}
 			}
 		}
 
@@ -235,11 +288,16 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void DownloadDataDialog(bool auto = false) {
-			var importForm = new ImportDataForm(_dbStore, _deviceConnection){
-				AutoImport = true,
-				PersistentState = AppContext.PersistentState
-			};
-			importForm.ShowDialog(this);
+			try {
+				var importForm = new ImportDataForm(_dbStore, _deviceConnection){
+					AutoImport = true,
+					PersistentState = AppContext.PersistentState
+				};
+				importForm.ShowDialog(this);
+			}
+			catch(Exception ex) {
+				Log.Error("Download data failed.", ex);
+			}
 			ReloadHistoric();
 		}
 
@@ -254,14 +312,24 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void barButtonItemTimeCorrection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
-			var timeCorrectionDialog = new TimeCorrection(_dbStore);
-			timeCorrectionDialog.ShowDialog(this);
+			try {
+				var timeCorrectionDialog = new TimeCorrection(_dbStore);
+				timeCorrectionDialog.ShowDialog(this);
+			}
+			catch(Exception ex) {
+				Log.Error("Time correction failed.", ex);
+			}
 			ReloadHistoric();
 		}
 
 		private void barButtonItemExport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
-			var exportForm = new ExportForm(_dbStore);
-			exportForm.ShowDialog(this);
+			try {
+				var exportForm = new ExportForm(_dbStore);
+				exportForm.ShowDialog(this);
+			}
+			catch(Exception ex) {
+				Log.Error("Export failed.", ex);
+			}
 		}
 
 		private void barButtonItemTimeSync_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -269,8 +337,13 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void ShowTimeSyncDialog() {
-			var timeSync = new TimeSync(_deviceConnection, _dbStore);
-			timeSync.ShowDialog(this);
+			try {
+				var timeSync = new TimeSync(_deviceConnection, _dbStore);
+				timeSync.ShowDialog(this);
+			}
+			catch(Exception ex) {
+				Log.Error("Time sync failed.", ex);
+			}
 		}
 
 		private void barButtonItemExit_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
@@ -279,15 +352,22 @@ namespace Atmo.UI.DevEx {
 
 		private void barButtonItemFirmwareUpdate_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
 			if(!(_deviceConnection is UsbDaqConnection)) {
-				MessageBox.Show("Device is not supported", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Device is not supported.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			timerQueryTime.Stop();
-			timerLive.Stop();
-			var patchForm = new PatcherForm(_deviceConnection as UsbDaqConnection);
-			patchForm.ShowDialog();
-			timerLive.Start();
-			timerQueryTime.Start();
+			try {
+				timerQueryTime.Stop();
+				timerLive.Stop();
+				var patchForm = new PatcherForm(_deviceConnection as UsbDaqConnection);
+				patchForm.ShowDialog();
+			}
+			catch(Exception ex) {
+				Log.Error("Firmware update failed.", ex);
+			}
+			finally {
+				timerLive.Start();
+				timerQueryTime.Start();
+			}
 		}
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -422,6 +502,7 @@ namespace Atmo.UI.DevEx {
 			simpleButtonPwsAction.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, "Stopped (click to start).");
 			//simpleButtonPwsAction.BackColor = Color.LightPink;
 			simpleButtonPwsAction.SetPropertyThreadSafe(() => labelControlPwsStatus.ForeColor, Color.Red);
+			Log.InfoFormat("PWS rapid fire canceled due to '{0}'.", message);
 		}
 
 		private void timerRapidFire_Tick(object sender, EventArgs e) {
@@ -512,9 +593,13 @@ namespace Atmo.UI.DevEx {
 						.Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
 						.ToArray()
 				);
-
-				var reqSent = HttpWebRequest.Create(builder.Uri);
-				reqSent.BeginGetResponse(HandleRapidFireResult, reqSent);
+				try {
+					var reqSent = HttpWebRequest.Create(builder.Uri);
+					reqSent.BeginGetResponse(HandleRapidFireResult, reqSent);
+				}
+				catch(Exception ex) {
+					Log.Warn("PWS rapid fire failure.", ex);
+				}
 			}
 
 		}
@@ -539,6 +624,7 @@ namespace Atmo.UI.DevEx {
 			}
 			catch (WebException webEx) {
 				CancelRapidFire("PWS Communication failure.");
+				Log.Warn("PWS rapid fire was disabled due to an error.", webEx);
 			}
 		}
 
@@ -551,8 +637,22 @@ namespace Atmo.UI.DevEx {
 				if (components != null) {
 					components.Dispose();
 				}
-				if(_deviceConnection is IDisposable) {
-					(_deviceConnection as IDisposable).Dispose();
+				try {
+					if (_deviceConnection is IDisposable) {
+						(_deviceConnection as IDisposable).Dispose();
+					}
+				}
+				catch (Exception ex) {
+					Log.Warn("Shutdown problem: device connection.", ex);
+				}
+
+				try {
+					if (_dbStore is IDisposable) {
+						(_dbStore as IDisposable).Dispose();
+					}
+				}
+				catch (Exception ex) {
+					Log.Warn("Shutdown problem: database.", ex);
 				}
 			}
 			base.Dispose(disposing);
@@ -594,7 +694,6 @@ namespace Atmo.UI.DevEx {
 		}
 
 		public void UpdateLiveGraph() {
-			System.Diagnostics.Debug.WriteLine("Live Data Begin");
 
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
 			// current live state
@@ -692,8 +791,6 @@ namespace Atmo.UI.DevEx {
 			}
 
 			Invoke(new Action(() => { _sensorViewPanelControler.UpdateView(sensors, AppContext.PersistentState); }));
-
-			System.Diagnostics.Debug.WriteLine("Live Data End");
 		}
 
 		private void backgroundWorkerLiveGraph_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -795,8 +892,10 @@ namespace Atmo.UI.DevEx {
 			const int maxSensors = 2;
 			var sensors = _deviceConnection.Take(maxSensors).ToList();
 			foreach (var sensor in sensors) {
-				var readings = GenerateFakeReadings(new TimeSpan(0,24,0,0), now);
+				var span = new TimeSpan(0, 24, 0, 0);
+				var readings = GenerateFakeReadings(span, now);
 				_memoryDataStore.Push(sensor.Name, readings.Select(r => new Reading(r)));
+				Log.DebugFormat("Added {0} of data to '{1}' ({2}).", span, sensor.Name, sensor);
 			}
 		}
 	}
