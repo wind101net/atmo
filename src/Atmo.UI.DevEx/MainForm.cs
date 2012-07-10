@@ -898,6 +898,26 @@ namespace Atmo.UI.DevEx {
 				Log.DebugFormat("Added {0} of data to '{1}' ({2}).", span, sensor.Name, sensor);
 			}
 		}
+
+		private void barButtonItemFirmwareUpdateV2_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+			if(!(_deviceConnection is UsbDaqConnection)) {
+				MessageBox.Show("Device is not supported.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			try {
+				timerQueryTime.Stop();
+				timerLive.Stop();
+				var patchForm = new PatcherForm2(_deviceConnection as UsbDaqConnection);
+				patchForm.ShowDialog();
+			}
+			catch(Exception ex) {
+				Log.Error("Firmware update failed.", ex);
+			}
+			finally {
+				timerLive.Start();
+				timerQueryTime.Start();
+			}
+		}
 	}
 
 }

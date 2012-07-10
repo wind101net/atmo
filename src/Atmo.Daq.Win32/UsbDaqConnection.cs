@@ -992,8 +992,6 @@ namespace Atmo.Daq.Win32 {
 									}
 
 									packet = UsbConn.ReadPacket(ThreeQuarterSecond);
-									//var packet2 = UsbConn.ReadPacket(ThreeQuarterSecond);
-									//var packet3 = UsbConn.ReadPacket(ThreeQuarterSecond);
 									if (null == packet || packet[3] != checkSum) {
 										checksumFails++;
 										if (checksumFails <= (firstBlock ? 3 : maxChecksumFails)) {
@@ -1031,6 +1029,115 @@ namespace Atmo.Daq.Win32 {
 				finally {
 					var resetOk = AnemReset(nid);
 					if (!resetOk) {
+						progressUpdated(0, "Anem reboot failure.");
+					}
+					result &= resetOk;
+				}
+				return result;
+			}
+		}
+
+		public bool ProgramAnemVersion2(int nid, MemoryRegionDataCollection memoryRegionDataBlocks, Action<double, string> progressUpdated) {
+			if(nid < 0 || nid > 255)
+				throw new ArgumentOutOfRangeException("nid");
+			if(null == progressUpdated)
+				progressUpdated = NullAction; // so we can avoid null checks all over the place
+
+			using(NewQueryPause()) {
+				Thread.Sleep(ThreeQuarterSecond);
+				bool result = true;
+				try {
+					if(!UsbConn.IsConnected)
+						return false;
+
+					progressUpdated(0, "Entering boot mode.");
+
+					using(IsolateConnection()) {
+
+						var anemBootResult = AnemEnterBootMode(nid);
+
+						if(!anemBootResult) {
+							progressUpdated(0, "Bad boot response.");
+							if(0xff != nid) {
+								result = false;
+							}
+						}
+						Thread.Sleep(HalfSecond);
+
+						progressUpdated(0, "Writing.");
+						int totalBytes = memoryRegionDataBlocks.Sum(b => (int)b.Size);
+						int bytesSent = 0;
+						int lastNoticeByte = 0;
+						const int noticeInterval = 128;
+						int dotCount = 1;
+						if(result) {
+							bool firstBlock = true;
+							foreach(var block in memoryRegionDataBlocks) {
+								byte[] data = block.Data.ToArray();
+								int checksumFails = 0;
+								const int maxChecksumFails = 64;
+								const int stride = 32;
+								for(int i = 0; i < data.Length; i += stride) {
+									int bytesToWrite = Math.Min(32, data.Length - i);
+									int address = i + (int)block.Address;
+									var packet = GenerateEmptyPacketData();
+									packet[1] = 0x75;
+									packet[2] = checked((byte)nid);
+									Array.Copy(BitConverter.GetBytes(address).Reverse().ToArray(), 0, packet, 3, 4);
+									packet[7] = (byte)bytesToWrite;
+									byte checkSum = data[i];
+									int endIndex = i + bytesToWrite;
+									for(int csi = i + 1; csi < endIndex; csi++) {
+										checkSum = unchecked((byte)(checkSum + data[csi]));
+									}
+									packet[8] = checkSum;
+									Array.Copy(data, i, packet, 9, bytesToWrite);
+
+									UsbConn.ClearPacketQueue();
+									if(!WritePacket(packet)) {
+										progressUpdated(0, "Write failure!");
+										result = false;
+										break; //return false;
+									}
+
+									packet = UsbConn.ReadPacket(ThreeQuarterSecond);
+									if(null == packet || packet[3] != checkSum) {
+										checksumFails++;
+										if(checksumFails <= (firstBlock ? 3 : maxChecksumFails)) {
+											i -= stride;
+											continue;
+										}
+										progressUpdated(0, "Checksum failure.");
+										result = false;
+										break;
+									}
+									checksumFails = 0;
+
+									bytesSent += bytesToWrite;
+									if((bytesSent - lastNoticeByte) > noticeInterval) {
+										lastNoticeByte = bytesSent;
+										dotCount++;
+										if(dotCount > 3) {
+											dotCount = 1;
+										}
+										progressUpdated(
+											bytesSent / (double)(totalBytes),
+											String.Concat("Writing", new String(Enumerable.Repeat('.', dotCount).ToArray()))
+										);
+									}
+								}
+								firstBlock = false;
+							}
+						}
+					}
+				}
+				catch(Exception ex) {
+					progressUpdated(0, ex.ToString());
+					result = false;
+				}
+				finally {
+					var resetOk = AnemReset(nid);
+					if(!resetOk) {
 						progressUpdated(0, "Anem reboot failure.");
 					}
 					result &= resetOk;

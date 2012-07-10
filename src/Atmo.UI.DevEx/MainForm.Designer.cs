@@ -74,6 +74,7 @@
 			this.simpleButtonTempSource = new DevExpress.XtraEditors.SimpleButton();
 			this.panelLeftSide = new System.Windows.Forms.Panel();
 			this.backgroundWorkerLiveGraph = new System.ComponentModel.BackgroundWorker();
+			this.barButtonItemFirmwareUpdateV2 = new DevExpress.XtraBars.BarButtonItem();
 			((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
 			this.panelSensors.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.groupControlDbList)).BeginInit();
@@ -114,9 +115,10 @@
             this.barButtonItemExit,
             this.barButtonItemTimeSync,
             this.barSubItemDebug,
-            this.barButtonItemAdd24Hours});
+            this.barButtonItemAdd24Hours,
+            this.barButtonItemFirmwareUpdateV2});
 			this.barManager.MainMenu = this.bar2;
-			this.barManager.MaxItemId = 20;
+			this.barManager.MaxItemId = 21;
 			// 
 			// bar2
 			// 
@@ -176,6 +178,7 @@
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemPrefs),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemSensorSetup, true),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemFirmwareUpdate),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemFirmwareUpdateV2),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemTimeCorrection, true)});
 			this.barSubItem3.Name = "barSubItem3";
 			// 
@@ -195,7 +198,7 @@
 			// 
 			// barButtonItemFirmwareUpdate
 			// 
-			this.barButtonItemFirmwareUpdate.Caption = "Firmware Update...";
+			this.barButtonItemFirmwareUpdate.Caption = "Firmware Update V1...";
 			this.barButtonItemFirmwareUpdate.Id = 9;
 			this.barButtonItemFirmwareUpdate.Name = "barButtonItemFirmwareUpdate";
 			this.barButtonItemFirmwareUpdate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemFirmwareUpdate_ItemClick);
@@ -261,24 +264,28 @@
 			// 
 			// barDockControlTop
 			// 
+			this.barDockControlTop.CausesValidation = false;
 			this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
 			this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
 			this.barDockControlTop.Size = new System.Drawing.Size(813, 24);
 			// 
 			// barDockControlBottom
 			// 
+			this.barDockControlBottom.CausesValidation = false;
 			this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.barDockControlBottom.Location = new System.Drawing.Point(0, 862);
 			this.barDockControlBottom.Size = new System.Drawing.Size(813, 0);
 			// 
 			// barDockControlLeft
 			// 
+			this.barDockControlLeft.CausesValidation = false;
 			this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
 			this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
 			this.barDockControlLeft.Size = new System.Drawing.Size(0, 838);
 			// 
 			// barDockControlRight
 			// 
+			this.barDockControlRight.CausesValidation = false;
 			this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
 			this.barDockControlRight.Location = new System.Drawing.Point(813, 24);
 			this.barDockControlRight.Size = new System.Drawing.Size(0, 838);
@@ -602,7 +609,6 @@
 			// 
 			// labelControlPwsStatus
 			// 
-			this.labelControlPwsStatus.Appearance.Options.UseTextOptions = true;
 			this.labelControlPwsStatus.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top;
 			this.labelControlPwsStatus.AutoEllipsis = true;
 			this.labelControlPwsStatus.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -676,6 +682,13 @@
 			// 
 			this.backgroundWorkerLiveGraph.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLiveGraph_DoWork);
 			this.backgroundWorkerLiveGraph.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerLiveGraph_RunWorkerCompleted);
+			// 
+			// barButtonItemFirmwareUpdateV2
+			// 
+			this.barButtonItemFirmwareUpdateV2.Caption = "Firmware Update V2...";
+			this.barButtonItemFirmwareUpdateV2.Id = 20;
+			this.barButtonItemFirmwareUpdateV2.Name = "barButtonItemFirmwareUpdateV2";
+			this.barButtonItemFirmwareUpdateV2.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemFirmwareUpdateV2_ItemClick);
 			// 
 			// MainForm
 			// 
@@ -771,6 +784,7 @@
 		private System.ComponentModel.BackgroundWorker backgroundWorkerLiveGraph;
 		private DevExpress.XtraBars.BarSubItem barSubItemDebug;
 		private DevExpress.XtraBars.BarButtonItem barButtonItemAdd24Hours;
+		private DevExpress.XtraBars.BarButtonItem barButtonItemFirmwareUpdateV2;
 
 	}
 }

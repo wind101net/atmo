@@ -280,7 +280,7 @@
 			this.Name = "PatcherForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Upgrade Firmware";
+			this.Text = "Upgrade Firmware v1";
 			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
 			this.groupControl1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.daqUpdateProgress.Properties)).EndInit();

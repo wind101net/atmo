@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using System.IO;
 using Atmo.Daq.Win32;
 using Atmo.Device;
+using DevExpress.XtraEditors;
 using log4net;
 
 namespace Atmo.UI.DevEx {
@@ -39,10 +40,16 @@ namespace Atmo.UI.DevEx {
         private readonly UsbDaqConnection _device = null;
         private int _anemNid = -1;
 
+		protected PatcherForm() : this(null) { }
+
 		public PatcherForm(UsbDaqConnection device) {
             _device = device;
             InitializeComponent();
         }
+
+    	protected RadioGroup AnemSelectionRadioItems {
+			get { return radioGroup1; }
+    	}
 
         private void daqUpdateFileChooser_Click(object sender, EventArgs e) {
 
@@ -184,6 +191,14 @@ namespace Atmo.UI.DevEx {
             anemUpgradeThread.RunWorkerAsync();
         }
 
+    	protected UsbDaqConnection Device {
+			get { return _device; }
+    	}
+
+		protected virtual bool ProgramAnem(int nid, MemoryRegionDataCollection memoryRegionDataBlocks, Action<double, string> progressUpdated) {
+			return Device.ProgramAnem(nid, memoryRegionDataBlocks, progressUpdated);
+		}
+
         private void anemUpgradeThread_DoWork(object sender, DoWorkEventArgs e) {
             if (null == _anemPatchData) {
                 return;
@@ -193,11 +208,7 @@ namespace Atmo.UI.DevEx {
 			bool connected = _device.Connect();
 
             if (connected) {
-                programmed = _device.ProgramAnem(
-					_anemNid,
-					_anemPatchData,
-					anemReportProgress
-				);
+            	programmed = ProgramAnem(_anemNid, _anemPatchData, anemReportProgress);
             }
 
             if (programmed) {
