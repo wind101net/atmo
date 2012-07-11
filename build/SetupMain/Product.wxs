@@ -8,8 +8,9 @@
 		Manufacturer="Barani Design"
 		UpgradeCode="22cf86d5-9ef4-402b-88eb-7cbb1c7a8ed9"
 	>
-		<Package InstallerVersion="200" Compressed="yes" />
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" InstallPrivileges="elevated" />
 		<Property Id="MSIFASTINSTALL" Value="7" />
+		<Property Id="MSIUSEREALADMINDETECTION" Value="1" />
 		<Media Id="1" Cabinet="atmo.cab" EmbedCab="yes" CompressionLevel="high" />
 
 		<Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
@@ -42,15 +43,15 @@
 							<File Id="AtmoUIWinFormsControls" Name="Atmo.UI.WinForms.Controls.dll" Source="$(var.OutputPath)\Atmo.UI.WinForms.Controls.dll" KeyPath="yes"  />
 						</Component>
 						<Component Id="DevExpress3rdParty" Guid="9F7F0063-EA4D-4478-B3C7-5DB2404C280D" NeverOverwrite="no">
-							<File Id="DevExpress.Charts.v10.1.Core.dll" Name="DevExpress.Charts.v10.1.Core.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Charts.v10.1.Core.dll" />
-							<File Id="DevExpress.Data.v10.1.dll" Name="DevExpress.Data.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.1.dll" KeyPath="yes" />
-							<File Id="DevExpress.Utils.v10.1.dll" Name="DevExpress.Utils.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.1.dll"  />
-							<File Id="DevExpress.XtraBars.v10.1.dll" Name="DevExpress.XtraBars.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.1.dll"  />
-							<File Id="DevExpress.XtraCharts.v10.1.dll" Name="DevExpress.XtraCharts.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.dll"  />
-							<File Id="DevExpress.XtraCharts.v10.1.UI.dll" Name="DevExpress.XtraCharts.v10.1.UI.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.1.UI.dll"  />
-							<File Id="DevExpress.XtraEditors.v10.1.dll" Name="DevExpress.XtraEditors.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraEditors.v10.1.dll"  />
-							<File Id="DevExpress.XtraGrid.v10.1.dll" Name="DevExpress.XtraGrid.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraGrid.v10.1.dll" />
-							<File Id="DevExpress.XtraNavBar.v10.1.dll" Name="DevExpress.XtraNavBar.v10.1.dll" Source="C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\DevExpress.XtraNavBar.v10.1.dll" />
+							<File Id="DevExpress.Charts.v10.2.Core.dll" Name="DevExpress.Charts.v10.2.Core.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Charts.v10.2.Core.dll" />
+							<File Id="DevExpress.Data.v10.2.dll" Name="DevExpress.Data.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.2.dll" KeyPath="yes" />
+							<File Id="DevExpress.Utils.v10.2.dll" Name="DevExpress.Utils.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.2.dll"  />
+							<File Id="DevExpress.XtraBars.v10.2.dll" Name="DevExpress.XtraBars.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.2.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.2.dll" Name="DevExpress.XtraCharts.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.2.UI.dll" Name="DevExpress.XtraCharts.v10.2.UI.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.UI.dll"  />
+							<File Id="DevExpress.XtraEditors.v10.2.dll" Name="DevExpress.XtraEditors.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraEditors.v10.2.dll"  />
+							<File Id="DevExpress.XtraGrid.v10.2.dll" Name="DevExpress.XtraGrid.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraGrid.v10.2.dll" />
+							<File Id="DevExpress.XtraNavBar.v10.2.dll" Name="DevExpress.XtraNavBar.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraNavBar.v10.2.dll" />
 						</Component>
 						<Component Id="AtmoUIExecutable" Guid="68d1ecba-629a-4125-9967-5206f272ba31" NeverOverwrite="no">
 							<File Id="AtmoUIDevExexe" Name="Atmo.UI.DevEx.exe" Source="$(var.OutputPath)\Atmo.UI.DevEx.exe" KeyPath="yes">

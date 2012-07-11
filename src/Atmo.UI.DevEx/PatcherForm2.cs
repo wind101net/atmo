@@ -30,7 +30,7 @@ namespace Atmo.UI.DevEx
 
 		}
 
-		protected virtual bool ProgramAnem(int nid, MemoryRegionDataCollection memoryRegionDataBlocks, Action<double, string> progressUpdated) {
+		protected override bool ProgramAnem(int nid, MemoryRegionDataCollection memoryRegionDataBlocks, Action<double, string> progressUpdated) {
 			return Device.ProgramAnemVersion2(nid, memoryRegionDataBlocks, progressUpdated);
 		}
 

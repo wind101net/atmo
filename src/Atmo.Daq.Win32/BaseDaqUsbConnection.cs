@@ -32,8 +32,16 @@ namespace Atmo.Daq.Win32 {
 		/// </summary>
 		/// <returns>A new blank packet.</returns>
 		protected static byte[] GenerateEmptyPacketData() {
+			return GenerateEmptyPacketData(64);
+		}
+
+		/// <summary>
+		/// Generates bytes which have been cleared using <see cref="ClearPacket"/>. 
+		/// </summary>
+		/// <returns>A new blank packet.</returns>
+		protected static byte[] GenerateEmptyPacketData(int dataSize) {
 			//return Enumerable.Repeat((byte)0xff, 65).ToArray();
-			var data = new byte[65];
+			var data = new byte[dataSize+1];
 			ClearPacket(data);
 			return data;
 		}
