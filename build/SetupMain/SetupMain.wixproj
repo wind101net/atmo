@@ -15,7 +15,7 @@
     <OutputPath>..\..\bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <BaseInputPath>..\..\bin\$(Configuration)\</BaseInputPath>
-    <DefineConstants>Debug</DefineConstants>
+    <DefineConstants>Debug;OutputPath=$(OutputPath);</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>..\..\bin\$(Configuration)\</OutputPath>

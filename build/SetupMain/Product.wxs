@@ -28,6 +28,11 @@
 			<Directory Id="ProgramFilesFolder">
 				<Directory Id="BaraniDesign" Name="BaraniDesign">
 					<Directory Id="INSTALLLOCATION" Name="Atmo2">
+						<Component Id="CoreFolderComponent" Guid="CF362C7A-676C-498C-92D1-F36F96492688">
+							<CreateFolder Directory="INSTALLLOCATION">
+								<Permission User="Users" GenericAll="yes" CreateFile="yes" />
+							</CreateFolder>
+						</Component>
 						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
 							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="$(var.OutputPath)\System.Data.SQLite.dll" KeyPath="yes"/>
 							<File Id="Log4Net" Name="log4net.dll" Source="$(var.OutputPath)\log4net.dll" KeyPath="no"/>
@@ -59,6 +64,7 @@
 								<Shortcut Id="desktopAtmoUIDevExexe" Directory="DesktopFolder" Name="Atmo 2"
 								  WorkingDirectory='INSTALLDIR' Icon="atmo.ico" IconIndex="0" Advertise="yes" />
 							</File>
+							<File Id="AtmoUIDevExeCfg" Name="Atmo.UI.DevEx.exe.config" Source="$(var.OutputPath)\Atmo.UI.DevEx.exe.config" />
 							<File Id="SplashPng" Name="atmoSplash.png" Source="$(var.OutputPath)\atmoSplash.png" />
 						</Component>
 					</Directory>
@@ -79,6 +85,7 @@
 		
 
 		<Feature Id="ProductFeature" Title="Atmo 2" Level="1">
+			<ComponentRef Id="CoreFolderComponent"/>
 			<ComponentRef Id="Core3rdParty" />
 			<ComponentRef Id="AtmoCore" />
 			<ComponentRef Id="AtmoWinFormsLibs" />
