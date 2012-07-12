@@ -815,7 +815,7 @@ namespace Atmo.Daq.Win32 {
 			packet[2] = nid;
 			if(WritePacket(packet)) {
 				packet = UsbConn.ReadPacket(HalfSecond);
-				return null != packet && packet[0] == 0xa0 && packet[1] == 0x01;
+				return null != packet && packet[1] == 0xa0 && packet[2] == 0x01;
 			}
 			return false;
 		}
@@ -831,6 +831,26 @@ namespace Atmo.Daq.Win32 {
 				if(WritePacket(packet)) {
 					var res = UsbConn.ReadPacket(QuarterSecond);
 					if (IsValidResetAnemResponse(res)) {
+						Thread.Sleep(QuarterSecond);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		private bool AnemResetVersion2(int nid) {
+			return AnemResetVersion2(checked((byte)nid));
+		}
+
+		private bool AnemResetVersion2(byte nid) {
+			const int numTries = 5;
+			var packet = GenerateEmptyPacketData();
+			packet[1] = 0xaf;
+			for(int i = 0; i < numTries; i++) {
+				if(WritePacket(packet)) {
+					var res = UsbConn.ReadPacket(QuarterSecond);
+					if(null != res && res[0] == 0xaf && res[1] == 0x01) {
 						Thread.Sleep(QuarterSecond);
 						return true;
 					}
@@ -1073,8 +1093,8 @@ namespace Atmo.Daq.Win32 {
 
 						if(!anemEnterProgramMode) {
 							progressUpdated(0, "Bad boot response.");
-							if(0xf != nid) {
-								result = false; // NOTE: if it was corrupted, try it anyhow
+							if(0xf != nid && 0 != nid) {
+								result = false; // NOTE: if it was corrupted or unassigned, try it anyhow
 							}
 						}
 						Thread.Sleep(HalfSecond);
@@ -1095,7 +1115,7 @@ namespace Atmo.Daq.Win32 {
 								byte[] data = block.Data.ToArray();
 								int checksumFails = 0;
 								const int maxChecksumFails = 64;
-								const int stride = 64;
+								const int stride = 32;
 
 								long startIndex = 0;
 								if(block.Address < 0x800)
@@ -1105,20 +1125,21 @@ namespace Atmo.Daq.Win32 {
 								if(block.LastAddress > 0x3fff) {
 									indexLimit = indexLimit - (block.LastAddress - 0x3fff);
 								}
-
+								int chunkCount = 0;
 								for(long i = startIndex; i < indexLimit; i += stride) {
-									var bytesToWrite = Math.Min(64, (int)((long)(data.Length) - i));
+									var bytesToWrite = Math.Min(stride, (int)(data.Length - i));
 									var address = i + block.Address;
-									var packet = GenerateEmptyPacketData(68); // NOTE: because of the first weird byte, indices are 1 based, not zero based
+									var packet = GenerateEmptyPacketData(); // NOTE: length is 65 because of the first extra byte
 									packet[1] = 0xa1;
-									packet[2] = unchecked((byte)(address >> 8));
-									packet[3] = unchecked((byte)address);
-									Array.Copy(data, i, packet, 4, bytesToWrite);
+									packet[2] = unchecked((byte)(chunkCount % 2));
+									packet[3] = unchecked((byte)(address >> 8));
+									packet[4] = unchecked((byte)address);
+									Array.Copy(data, i, packet, 5, bytesToWrite);
 									byte checkSum = 0;
-									for(int csi = 4; csi < 68; csi++ ) {
+									for(int csi = 2; csi < 37; csi++) {
 										checkSum = unchecked((byte)(checkSum + packet[csi]));
 									}
-									packet[68] = checkSum;
+									packet[37] = checkSum;
 
 									UsbConn.ClearPacketQueue();
 									if(!WritePacket(packet)) {
@@ -1128,7 +1149,7 @@ namespace Atmo.Daq.Win32 {
 									}
 
 									packet = UsbConn.ReadPacket(ThreeQuarterSecond);
-									if(null == packet || (packet[2] != 0x00)) {
+									if(null == packet || !(packet[1] == 0xa1 && packet[2] == 0x01)) {
 										checksumFails++;
 										if(checksumFails <= (firstBlock ? 3 : maxChecksumFails)) {
 											i -= stride;
@@ -1152,6 +1173,8 @@ namespace Atmo.Daq.Win32 {
 											String.Concat("Writing", new String(Enumerable.Repeat('.', dotCount).ToArray()))
 										);
 									}
+
+									chunkCount++;
 								}
 								firstBlock = false;
 							}
@@ -1163,7 +1186,7 @@ namespace Atmo.Daq.Win32 {
 					result = false;
 				}
 				finally {
-					var resetOk = AnemReset(nid);
+					var resetOk = AnemResetVersion2(nid);
 					if(!resetOk) {
 						progressUpdated(0, "Anem reboot failure.");
 					}
