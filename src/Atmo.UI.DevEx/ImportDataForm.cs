@@ -10,11 +10,13 @@ using System.IO;
 using System.Linq;
 using Atmo.UI.DevEx.Controls;
 using Atmo.Units;
+using log4net;
 
 
 namespace Atmo.UI.DevEx {
     public partial class ImportDataForm : DevExpress.XtraEditors.XtraForm {
 
+		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static IEnumerable<FileInfo> GetAnemFiles(DirectoryInfo folder) {
 			try {
@@ -203,6 +205,7 @@ namespace Atmo.UI.DevEx {
 			private string _message;
 
 			public void DoWork(object sender, DoWorkEventArgs e) {
+				/*
 				var moveThread = new Thread(MoveData) {
 					IsBackground = true
 				};
@@ -212,8 +215,18 @@ namespace Atmo.UI.DevEx {
 				moveThread.Start(sender);
 				importThread.Start(sender);
 				moveThread.Join();
-				importThread.Join();
-				e.Result = _message;
+				Thread.Sleep(500);
+				importThread.Join();*/
+
+				try {
+					MoveData(sender);
+					ImportData(sender);
+					e.Result = _message;
+				}
+				catch(Exception ex) {
+					Log.Error("Import failure", ex);
+					e.Result = "Import failed. See the log file for details.";
+				}
 			}
 
 			private void MoveData(object o) {
@@ -226,6 +239,12 @@ namespace Atmo.UI.DevEx {
 					new DirectoryInfo(Path.Combine(atmoFolder.FullName, "Imports"));
 				if (!atmoImportsFolder.Exists)
 					atmoImportsFolder.Create();
+
+				Action<int> reportProgress = null;
+				if(o is BackgroundWorker)
+					reportProgress = (o as BackgroundWorker).ReportProgress;
+				else
+					reportProgress = x => {};
 
 				while(true) {
 					ImportDataSet currentSet;
@@ -263,13 +282,13 @@ namespace Atmo.UI.DevEx {
 
 					lock(_queueLock) {
 						MoveProgress = (MaxQueue - _moveSetQueue.Count) / (double)MaxQueue;
-						(o as BackgroundWorker).ReportProgress((int)(Progress * 100));
+						reportProgress((int)(Progress * 100));
 						_importSetQueue.Enqueue(currentSet);
 					}
 				}
 				lock(_queueLock) {
 					MoveProgress = 1.0;
-					(o as BackgroundWorker).ReportProgress((int)(Progress * 100));
+					reportProgress((int)(Progress * 100));
 				}
 			}
 
@@ -277,6 +296,13 @@ namespace Atmo.UI.DevEx {
 				int doneCount = 0;
 				int failedCount = 0;
 				int successCount = 0;
+
+				Action<int> reportProgress = null;
+				if(o is BackgroundWorker)
+					reportProgress = (o as BackgroundWorker).ReportProgress;
+				else
+					reportProgress = x => { };
+
 				while(true) {
 					ImportDataSet currentSet = null;
 					lock(_queueLock) {
@@ -333,7 +359,7 @@ namespace Atmo.UI.DevEx {
 					}
 					lock(_queueLock) {
 						ImportProgress = doneCount / (double)MaxQueue;
-						(o as BackgroundWorker).ReportProgress((int)(Progress * 100));
+						reportProgress((int)(Progress * 100));
 					}
 				}
 
@@ -349,7 +375,7 @@ namespace Atmo.UI.DevEx {
 
 				lock (_queueLock) {
 					ImportProgress = 1.0;
-					(o as BackgroundWorker).ReportProgress((int)(Progress * 100));
+					reportProgress((int)(Progress * 100));
 				}
 
 			}
