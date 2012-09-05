@@ -10,7 +10,6 @@
 /build/SetupMain/obj
 /build/SetupMain/bin
 /build/SetupMain/buildresult
-/packages
 /src/*/bin/*
 */_ReSharper.*
 _ReSharper.*
