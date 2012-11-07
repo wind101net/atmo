@@ -2,7 +2,7 @@
 //
 // Atmo 2
 // Copyright (C) 2011  BARANI DESIGN
-//
+//AutoStartRapidFire
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -38,13 +38,15 @@ using Atmo.Units;
 using DevExpress.XtraEditors;
 using System.Windows.Forms;
 using log4net;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Atmo.UI.DevEx {
 	public partial class MainForm : XtraForm
 	{
 
 		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private static readonly string DatabaseFileName = "ClearStorage.db";
+		private static readonly string DatabaseFileName = @"ClearStorage.db";  //rp @
 
 		private IDaqConnection _deviceConnection = null;
 		private MemoryDataStore _memoryDataStore = null;
@@ -133,6 +135,14 @@ namespace Atmo.UI.DevEx {
 			HandleRapidFireSetup();
 			HandleDaqTemperatureSourceSet(_deviceConnection.UsingDaqTemp);
 
+            //rp
+            HandleWFSetup();
+
+            //rp
+            HandleAWSetup();
+
+
+
 			ReloadHistoric();
 			_historicSensorViewPanelController.OnSelectionChanged += RequestHistoricalUpdate;
 			historicalGraphBreakdown.OnSelectedPropertyChanged += RequestHistoricalUpdate;
@@ -150,6 +160,51 @@ namespace Atmo.UI.DevEx {
 				CancelRapidFire("Not enabled.");
 			}
 		}
+
+
+        //rp
+        private void HandleWFSetup()
+        {
+            if (AppContext.PersistentState.PwfEnabled)
+            {
+                StartWindFinder();
+            }
+            else
+            {
+                CancelWindFinder("Not enabled.");
+            }
+        }
+        //rp
+
+        //rp
+        private void HandleAWSetup()
+        {
+            if (AppContext.PersistentState.PawEnabled)
+            {
+                StartAwekas();
+            }
+            else
+            {
+                CancelAwekas("Not enabled.");
+            }
+        }
+
+        public string CalculateMD5Hash(string input)
+        {
+            // step 1, calculate MD5 hash from input
+            MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // step 2, convert byte array to hex string
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
+        }
+
 
 		public void historicalTimeSelectHeader_TimeRangeValueChanged(object sender, EventArgs args) {
 			AppContext.PersistentState.HistoricalTimeScale = historicalTimeSelectHeader.TimeRange.SelectedSpan;
@@ -242,7 +297,15 @@ namespace Atmo.UI.DevEx {
 			try {
 				var settingsForm = new SettingsForm(AppContext.PersistentState);
 				settingsForm.ShowDialog(this);
-			}
+
+
+                //rp
+                // send event after close SettingsForm
+                timerAwekas_Tick(null, null);
+                timerWindFinder_Tick(null,null);
+
+
+            }
 			catch(Exception ex) {
 				Log.Error("Settings change failed.", ex);
 				MessageBox.Show("Settings change failed.", "Failure");
@@ -459,7 +522,9 @@ namespace Atmo.UI.DevEx {
 				CancelRapidFire("User canceled.");
 			}
 			else {
+
 				AutoStartRapidFire();
+
 			}
 		}
 
@@ -918,6 +983,622 @@ namespace Atmo.UI.DevEx {
 				timerQueryTime.Start();
 			}
 		}
+
+
+
+        //rp>>
+        private void StartWindFinder()
+        {
+            AppContext.PersistentState.PwfEnabled = true;
+
+
+            pom_inverval = 60 * 60;
+            timerWindFinder.Enabled = true;
+
+            //labelControlPwsStatus.Text = "Running";
+            labelControlWindFinder.SetPropertyThreadSafe(() => labelControlWindFinder.Text, RunningText);
+            //simpleButtonPwsAction.Text = "Running";
+            simpleButtonWindFinderAction.SetPropertyThreadSafe(() => simpleButtonWindFinderAction.Text, RunningText + " (click to stop).");
+            //simpleButtonPwsAction.BackColor = Color.LightGreen;
+            simpleButtonWindFinderAction.SetPropertyThreadSafe(() => simpleButtonWindFinderAction.ForeColor, ForeColor);
+
+        }
+
+        //rp>>
+        private void StartAwekas()
+        {
+            AppContext.PersistentState.PawEnabled = true;
+
+
+            pom_inverval_aw = 60 * 60;
+            timerAwekas.Enabled = true;
+
+            //labelControlPwsStatus.Text = "Running";
+            labelControlAwekas.SetPropertyThreadSafe(() => labelControlWindFinder.Text, RunningText);
+            //simpleButtonPwsAction.Text = "Running";
+            simpleButtonAwekas.SetPropertyThreadSafe(() => simpleButtonWindFinderAction.Text, RunningText + " (click to stop).");
+            //simpleButtonPwsAction.BackColor = Color.LightGreen;
+            simpleButtonAwekas.SetPropertyThreadSafe(() => simpleButtonWindFinderAction.ForeColor, ForeColor);
+
+        }
+
+
+        private void CancelWindFinder(string message)
+        {
+            timerWindFinder.Enabled = false;
+
+
+          //rp !!!!!!!!!!!!
+          //  AppContext.PersistentState.PwfEnabled = false;
+
+
+
+            //labelControlPwsStatus.Text = message;
+            labelControlWindFinder.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, message);
+            //simpleButtonPwsAction.Text = "Disabled";
+            simpleButtonWindFinderAction.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, "Stopped (click to start).");
+            //simpleButtonPwsAction.BackColor = Color.LightPink;
+            simpleButtonWindFinderAction.SetPropertyThreadSafe(() => labelControlPwsStatus.ForeColor, Color.Red);
+            Log.InfoFormat("WindFinder canceled due to '{0}'.", message);
+        }
+
+
+        private void CancelAwekas(string message)
+        {
+            timerAwekas.Enabled = false;
+
+
+            //rp !!!!!!!!!!!!
+            //  AppContext.PersistentState.PawEnabled = false;
+
+
+
+            //labelControlPwsStatus.Text = message;
+            labelControlAwekas.SetPropertyThreadSafe(() => labelControlAwekas.Text, message);
+            //simpleButtonPwsAction.Text = "Disabled";
+            simpleButtonAwekas.SetPropertyThreadSafe(() => labelControlAwekas.Text, "Stopped (click to start).");
+            //simpleButtonPwsAction.BackColor = Color.LightPink;
+            simpleButtonAwekas.SetPropertyThreadSafe(() => labelControlAwekas.ForeColor, Color.Red);
+            Log.InfoFormat("Awekas canceled due to '{0}'.", message);
+        }
+
+
+        private void simpleButtonWindFinderAction_Click(object sender, EventArgs e)
+        {
+
+            if (timerWindFinder.Enabled)
+            {
+                CancelWindFinder("User canceled.");
+            }
+            else
+            {
+
+              //  AppContext.PersistentState.StationNameWF = "meno";
+                //AppContext.PersistentState.StationPasswordWF = "heslo";
+                AutoStartWindFinder();
+
+            }
+
+            //rp pokus
+            /*
+            String str = "";
+            for (int i = 0; i < 4; i++)
+            {
+                ISensor[] sensors = _deviceConnection.ToArray();
+                str += i.ToString() + " - " + 
+                    sensors[i].GetCurrentReading().Temperature.ToString() +
+                    sensors[i].GetCurrentReading().Pressure.ToString() +
+                    sensors[i].GetCurrentReading().WindSpeed.ToString() +
+                    sensors[i].GetCurrentReading().WindDirection.ToString() +
+                    sensors[i].GetCurrentReading().TimeStamp.ToString();
+                str += "\r\n"; 
+            }
+            MessageBox.Show(str);
+            */
+            //rp pokus
+        }
+
+
+
+        public int pom_inverval = 0;
+        private void timerWindFinder_Tick(object sender, EventArgs e)
+        {
+            int sensor_num;
+            sensor_num = AppContext.PersistentState.StationSensorIndexWF;
+
+            string str_not_corr_sensor = "Not correct sensor selected!";
+
+            ISensor[] sensors = _deviceConnection.ToArray();
+
+            if (sensors[sensor_num].IsValid)
+            {
+                if (labelControlWindFinder.Text == str_not_corr_sensor)
+                {
+                    labelControlWindFinder.Text = "Correct sensor selected";
+                }
+            }
+            else
+            {
+               // CancelWindFinder("Not correct sensor selected!");
+                labelControlWindFinder.SetPropertyThreadSafe(() => labelControlWindFinder.Text,  str_not_corr_sensor);
+                return;
+            }
+
+            pom_inverval++;
+            if ( pom_inverval < AppContext.PersistentState.StationIntervalWF * 6 ) return;
+            
+            pom_inverval = 0;
+
+
+
+            var reading = sensors[sensor_num].GetCurrentReading();
+
+            // Log.DebugFormat("readed from sensor: " + reading.ToString() );
+            //   System.Diagnostics.Debug.WriteLine("readed from sensor: " + reading.Humidity.ToString() + " " + reading.Temperature.ToString() +
+            //     " " + reading.Pressure.ToString() + " " + reading.TimeStamp.ToString() + " " + reading.WindDirection.ToString() + " " + reading.WindSpeed.ToString());
+
+
+
+
+
+
+
+            Dictionary<string, string> queryParams = new Dictionary<string, string>();
+            queryParams.Add("sender_id",  AppContext.PersistentState.StationNameWF);
+            queryParams.Add("password", AppContext.PersistentState.StationPasswordWF);
+            DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+            //queryParams.Add("date", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
+
+            queryParams.Add("date", utcStamp.ToString("dd.MM.yyyy"));
+            queryParams.Add("time", utcStamp.ToString("hh:mm"));
+
+
+            if (reading.IsTemperatureValid)
+            {
+                var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                var temperature = tempConverter.Convert(reading.Temperature);
+                queryParams.Add("airtemp", temperature.ToString());
+            }
+
+            if (reading.IsWindSpeedValid)
+            {
+                var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+                    .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
+                var speed = speedConverter.Convert(reading.WindSpeed/3.6);
+                queryParams.Add("windspeed", speed.ToString());
+            }
+            
+            if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
+            {
+                queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
+            }
+
+            
+            if (reading.IsPressureValid)
+            {
+                var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+                    .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
+                var pressure = pressConverter.Convert(reading.Pressure);
+                queryParams.Add("pressure", pressure.ToString());
+            }
+
+
+            /*
+            if (reading.IsHumidityValid)
+            {
+                queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
+            }
+              
+            if (reading.IsHumidityValid && reading.IsTemperatureValid)
+            {
+                var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
+                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
+                    .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
+
+                var tempC = tempConverterCelcius.Convert(reading.Temperature);
+                var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
+                var dewPointF = tempConverterCToF.Convert(dewPointC);
+                queryParams.Add("dewptf", dewPointF.ToString());
+            }
+             
+              
+           */
+
+            var builder = new UriBuilder("http://www.windfinder.com/wind-cgi/httpload.pl?");
+            
+            
+            //sender_id="++"&password=&date=19.5.2011&time=17:13&airtemp=20&windspeed=12&gust=14&winddir=180&pressure=1012&rain=5");
+
+
+            builder.Query = String.Join(
+                "&",
+                queryParams
+                    .Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
+                    .ToArray()
+            );
+            try
+            {
+                var reqSent = HttpWebRequest.Create(builder.Uri);
+                reqSent.BeginGetResponse(HandlWFResult, reqSent);
+
+                System.Diagnostics.Debug.WriteLine("\r\nRiadok: " + builder.Uri);
+
+            }
+            catch (Exception ex)
+            {
+                Log.Warn("WindFinder failure.", ex);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+        private void HandleAwResult(IAsyncResult result)
+        {
+            var req = (WebRequest)result.AsyncState;
+            try
+            {
+                using (WebResponse res = req.EndGetResponse(result))
+                {
+                    using (var reader = new StreamReader(res.GetResponseStream()))
+                    {
+                        string responseMessage = reader.ReadToEnd().ToUpperInvariant();
+
+
+
+                        if (responseMessage.Contains("OK"))
+                        {
+                            ; // OK
+
+
+                            DateTime current = DateTime.Now;
+                            System.Diagnostics.Debug.WriteLine(current.ToShortTimeString() + "Prijate AWEKAS: " + responseMessage);
+   //                         MessageBox.Show("AWEKAS PRISLO OK - ("+current.ToShortTimeString() + ")"  + responseMessage);
+
+                            labelControlAwekas.SetPropertyThreadSafe(() => labelControlAwekas.Text, "Running");
+
+                        }
+                        else if (responseMessage.Contains("PASSWORT"))
+                        {
+                            CancelAwekas("Username or password is invalid.");
+                        }
+                        else
+                        {
+                            CancelAwekas("Awekas protocol error.");
+                        }
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                // CancelAwekas("Awekas Communication failure.");
+                //rp
+                labelControlAwekas.SetPropertyThreadSafe(() => labelControlAwekas.Text, "Connection error!");
+
+                Log.Warn("Awekas was disabled due to an error.", webEx);
+            }
+        }
+
+        private void HandlWFResult(IAsyncResult result)
+        {
+            var req = (WebRequest)result.AsyncState;
+            try
+            {
+                using (WebResponse res = req.EndGetResponse(result))
+                {
+                    using (var reader = new StreamReader(res.GetResponseStream()))
+                    {
+                        string responseMessage = reader.ReadToEnd().ToUpperInvariant();
+                        if (responseMessage.Contains("OK\n"))
+                        {
+                            //                            MessageBox.Show(responseMessage);
+                            System.Diagnostics.Debug.WriteLine("WINDFINDER - OK - responseMessage: " + responseMessage);
+                            labelControlWindFinder.SetPropertyThreadSafe(() => labelControlWindFinder.Text, "Running");
+                        }
+                        else if (responseMessage.Contains("PASSWORD"))
+                        {
+                            CancelWindFinder("Station ID or password is invalid.");
+                        }
+                        else
+                        {
+                            CancelWindFinder("WindFinder protocol error.");
+                            System.Diagnostics.Debug.WriteLine("WINDFINDER - responseMessage: " + responseMessage);
+                        }
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                //CancelWindFinder("WindFinder Communication failure.");
+                Log.Warn("WindFinder was disabled due to an error.", webEx);
+
+                labelControlWindFinder.SetPropertyThreadSafe(() => labelControlWindFinder.Text, "Connection error!");
+                
+
+            }
+        }
+
+
+        private void AutoStartAwekas()
+        {
+            var stationName = AppContext.PersistentState.StationNameAw;
+            var stationPassword = AppContext.PersistentState.StationPasswordAw;
+            bool isValid = !String.IsNullOrEmpty(stationName) &&
+                !String.IsNullOrEmpty(stationPassword);
+
+
+            //MessageBox.Show(stationName + stationPassword);
+
+            if (timerAwekas.Enabled != isValid)
+            {
+                if (isValid)
+                {
+                    StartAwekas();
+                    this.pom_inverval_aw = 60 * 60;
+                    timerAwekas_Tick(null, null);
+                }
+            }
+        }
+
+   		private void AutoStartWindFinder() {
+			var stationName = AppContext.PersistentState.StationNameWF;
+            var stationPassword = AppContext.PersistentState.StationPasswordWF;
+            bool isValid = !String.IsNullOrEmpty(stationName) && 
+				!String.IsNullOrEmpty(stationPassword);
+
+
+            //MessageBox.Show(stationName + stationPassword);
+
+            if (timerWindFinder.Enabled != isValid)
+            {
+				if(isValid) {
+                    StartWindFinder();
+                    this.pom_inverval = 60 * 60;
+                    timerWindFinder_Tick(null, null);
+				}
+			}
+		}
+
+        private void simpleButtonAwekasaction_Click(object sender, EventArgs e)
+        {
+            if (timerAwekas.Enabled)
+            {
+                CancelAwekas("User canceled.");
+            }
+            else
+            {
+
+                AutoStartAwekas();
+
+            }
+        }
+
+        public int pom_inverval_aw = 0;
+        private void timerAwekas_Tick(object sender, EventArgs e)
+        {
+
+            string str_not_corr_sensor = "Not correct sensor selected!";
+
+            int sensor_num;
+            sensor_num = AppContext.PersistentState.StationSensorIndexAw;
+
+
+            ISensor[] sensors = _deviceConnection.ToArray();
+
+            if (sensors[sensor_num].IsValid)
+            {
+                     if (labelControlAwekas.Text == str_not_corr_sensor)
+                     {
+                         labelControlAwekas.Text = "Correct sensor selected!";
+                     }
+            }
+            else
+            {
+               // CancelAwekas("Not correct sensor selected!");
+                labelControlAwekas.Text = str_not_corr_sensor;
+
+                return;
+            }
+
+            pom_inverval_aw++;
+
+            var reading = sensors[sensor_num].GetCurrentReading();
+
+
+
+            DateTime current = DateTime.Now;
+            //System.Diagnostics.Debug.WriteLine(current.ToShortTimeString() + "Timer prerusenie - AWEKAS: " + pom_inverval_aw.ToString() );
+
+
+
+
+            if (pom_inverval_aw < (AppContext.PersistentState.StationIntervalAW * 6)) return;
+            pom_inverval_aw = 0;
+
+
+
+
+            /*
+            
+
+            Dictionary<string, string> queryParams = new Dictionary<string, string>();
+            queryParams.Add("sender_id", AppContext.PersistentState.StationNameWF);
+            queryParams.Add("password", AppContext.PersistentState.StationPasswordWF);
+            DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+            //queryParams.Add("date", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
+
+            queryParams.Add("date", utcStamp.ToString("dd.MM.yyyy"));
+            queryParams.Add("time", utcStamp.ToString("hh:mm"));
+
+
+            if (reading.IsTemperatureValid)
+            {
+                var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                var temperature = tempConverter.Convert(reading.Temperature);
+                queryParams.Add("airtemp", temperature.ToString());
+            }
+
+            if (reading.IsWindSpeedValid)
+            {
+                var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+                    .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
+                var speed = speedConverter.Convert(reading.WindSpeed / 3.6);
+                queryParams.Add("windspeed", speed.ToString());
+            }
+
+            if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
+            {
+                queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
+            }
+
+
+            if (reading.IsPressureValid)
+            {
+                var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+                    .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
+                var pressure = pressConverter.Convert(reading.Pressure);
+                queryParams.Add("pressure", pressure.ToString());
+            }
+
+
+            /*
+            if (reading.IsHumidityValid)
+            {
+                queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
+            }
+              
+            if (reading.IsHumidityValid && reading.IsTemperatureValid)
+            {
+                var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
+                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
+                    .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
+
+                var tempC = tempConverterCelcius.Convert(reading.Temperature);
+                var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
+                var dewPointF = tempConverterCToF.Convert(dewPointC);
+                queryParams.Add("dewptf", dewPointF.ToString());
+            }
+             
+              
+           */
+
+
+            DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+            string str_temp = ""; 
+            if (reading.IsTemperatureValid)
+            {
+                var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                var temperature = tempConverter.Convert(reading.Temperature);
+                str_temp = temperature.ToString();
+            }
+            string str_hum = ""; 
+            if (reading.IsHumidityValid)
+            {
+                str_hum = (reading.Humidity * 100.0).ToString();
+            }
+            string str_press= "";
+            if (reading.IsPressureValid)
+            {
+                var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+                    .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
+                var pressure = pressConverter.Convert(reading.Pressure);
+                str_press = pressure.ToString();
+            }
+            string str_windspeed="";
+            if (reading.IsWindSpeedValid)
+            {
+                var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+                    .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
+                var speed = speedConverter.Convert(reading.WindSpeed / 3.6);
+                str_windspeed = speed.ToString();
+            }
+
+
+            string str_windir="";
+            if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
+            {
+                str_windir = ((int)(reading.WindDirection)).ToString();
+            }
+            
+            var builder = new UriBuilder("http://www.awekas.at/extern/eingabe_pruefung.php?val=" + AppContext.PersistentState.StationNameAw.ToString()+";" + 
+                  CalculateMD5Hash(AppContext.PersistentState.StationPasswordAw.ToString() ) + ";" +
+                  utcStamp.ToString("dd.MM.yyyy") + ";" +
+                  utcStamp.ToString("hh:mm") + ";" +
+                  str_temp + ";" +
+                  str_hum + ";" + 
+                  str_press + ";" +
+                  ";"+ // precipiation 
+                  str_windspeed +";"+
+                  str_windir +";"+
+                  ";" + // 11
+                  ";" + // 12
+                  ";" + // 13
+                  "en"+";"+//14
+                  "0"+";"+//15
+                  "0"+";" //16
+
+            ) ;
+
+
+
+            current = DateTime.Now;
+            System.Diagnostics.Debug.WriteLine(current.ToShortTimeString() + "Poslane AWEKAS: " + builder.Uri);
+
+
+            try
+            {
+                var reqSent = HttpWebRequest.Create(builder.Uri);
+                reqSent.BeginGetResponse(HandleAwResult, reqSent);
+
+            }
+            catch (Exception ex)
+            {
+                Log.Warn("Awekas failure.", ex);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
 	}
 
 }

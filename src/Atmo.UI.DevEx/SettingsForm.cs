@@ -83,7 +83,40 @@ namespace Atmo.UI.DevEx {
 			textEditPwsPass.Text = State.StationPassword;
 			checkButtonPwsEnabled.Checked = State.PwsEnabled;
 			checkButtonPwsEnabled_CheckedChanged(null, null);
-		}
+
+            //rp
+            checkEditWF.Checked = State.PwfEnabled;
+            //checkEditWF_CheckedChanged(null, null);
+            listBoxWFtime.Text = State.StationIntervalWF.ToString();
+            textBoxWFname.Text = State.StationNameWF;
+            textBoxWFpassword.Text = State.StationPasswordWF;
+
+            listBoxWFsensor.SetSelected(0, false);
+            listBoxWFsensor.SetSelected(1, false);
+            listBoxWFsensor.SetSelected(2, false);
+            listBoxWFsensor.SetSelected(3, false);
+
+            listBoxWFsensor.SetSelected(State.StationSensorIndexWF, true);
+
+            //rp
+            checkEditAW.Checked = State.PawEnabled;
+            //checkEditWF_CheckedChanged(null, null);
+            textBoxAWName.Text = State.StationNameAw;
+            textBoxAwPassword.Text = State.StationPasswordAw;
+
+            listBoxAwTime.Text = State.StationIntervalAW.ToString();
+
+            listBoxAwSensor.SetSelected(0, false);
+            listBoxAwSensor.SetSelected(1, false);
+            listBoxAwSensor.SetSelected(2, false);
+            listBoxAwSensor.SetSelected(3, false);
+
+            listBoxAwSensor.SetSelected(State.StationSensorIndexAw, true);
+
+
+
+
+        }
 
 		public void SetStatePws() {
 			var stationTextFields = new[] {
@@ -94,8 +127,52 @@ namespace Atmo.UI.DevEx {
 			};
 			State.StationNames = stationTextFields.Select(tf => tf.Text ?? String.Empty).ToList();
 			State.StationPassword = textEditPwsPass.Text;
-			State.PwsEnabled = checkButtonPwsEnabled.Checked;
-		}
+            State.PwsEnabled = checkButtonPwsEnabled.Checked;
+
+
+            State.PawEnabled = checkEditAW.Checked;
+            State.StationNameAw = textBoxAWName.Text;
+            State.StationPasswordAw = textBoxAwPassword.Text;
+            State.StationIntervalAW = Int16.Parse(listBoxAwTime.Text);
+           int  ako = 0;
+            if (listBoxAwSensor.GetSelected(0) == true)
+                ako = 0;
+            if (listBoxAwSensor.GetSelected(1) == true)
+                ako = 1;
+            if (listBoxAwSensor.GetSelected(2) == true)
+                ako = 2;
+            if (listBoxAwSensor.GetSelected(3) == true)
+                ako = 3;
+            State.StationSensorIndexAw = ako;
+            
+            //rp
+            State.PwfEnabled = checkEditWF.Checked;
+            State.StationNameWF = textBoxWFname.Text;
+            State.StationPasswordWF = textBoxWFpassword.Text;
+            State.StationIntervalWF = Int16.Parse(listBoxWFtime.Text);
+
+            ako = 0;
+            if (listBoxWFsensor.GetSelected(0) == true)
+                ako = 0;
+            if (listBoxWFsensor.GetSelected(1) == true)
+                ako = 1;
+            if (listBoxWFsensor.GetSelected(2) == true)
+                ako = 2;
+            if (listBoxWFsensor.GetSelected(3) == true)
+                ako = 3;
+
+            State.StationSensorIndexWF = ako;
+
+
+
+
+
+
+
+
+
+
+        }
 
 		public void SetGraphRangeValues() {
 			spinEditTemperature.Value = (decimal) State.MinRangeSizes.Temperature;
@@ -159,6 +236,7 @@ namespace Atmo.UI.DevEx {
 
 		private void simpleButtonOk_Click(object sender, EventArgs e) {
 			SetStateFromForm();
+
 			Close();
 		}
 
@@ -187,6 +265,35 @@ namespace Atmo.UI.DevEx {
 		private void SettingsForm_Load(object sender, EventArgs e) {
 
 		}
+
+        private void checkEditWF_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBoxShowPasswordAwekas_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxShowPasswordAwekas.Checked == true)
+            {
+                textBoxAwPassword.PasswordChar = '\0';
+            }
+            else
+            {
+                textBoxAwPassword.PasswordChar = '*';
+            }
+        }
+
+        private void checkBoxShowPasswordWind_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxShowPasswordWind.Checked == true)
+            {
+                textBoxWFpassword.PasswordChar = '\0';
+            }
+            else
+            {
+                textBoxWFpassword.PasswordChar = '*';
+            }
+        }
 
 	}
 }
