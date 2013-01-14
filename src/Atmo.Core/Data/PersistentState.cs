@@ -201,9 +201,38 @@ namespace Atmo.Data {
 		[XmlElement]
 		public string StationPassword { get; set; }
 
-		[XmlElement]
-		public bool PwsEnabled { get; set; }
+        [XmlElement]
+        public string StationNameWF { get; set; }
 
+        [XmlElement]
+        public string StationPasswordWF { get; set; }
 
+        [XmlElement]
+        public string StationNameAw  { get; set; }
+
+        [XmlElement]
+        public string StationPasswordAw { get; set; }
+
+        [XmlElement]
+        public int StationIntervalWF { get; set; }
+
+        [XmlElement]
+        public int StationIntervalAW { get; set; }
+
+        [XmlElement]
+        public bool PwsEnabled { get; set; }
+
+        [XmlElement]
+        public bool PwfEnabled { get; set; }
+
+        [XmlElement]
+        public bool PawEnabled { get; set; }
+
+        [XmlElement]
+        public int StationSensorIndexWF { get; set; }
+
+        [XmlElement]
+        public int StationSensorIndexAw { get; set; }
+                
 	}
 }
