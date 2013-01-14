@@ -28,6 +28,17 @@
             this.simpleButtonOk = new DevExpress.XtraEditors.SimpleButton();
             this.simpleButtonCancel = new DevExpress.XtraEditors.SimpleButton();
             this.xtraTabControlSettings = new DevExpress.XtraTab.XtraTabControl();
+            this.xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
+            this.checkBoxShowPasswordAwekas = new System.Windows.Forms.CheckBox();
+            this.checkEditAW = new System.Windows.Forms.CheckBox();
+            this.listBoxAwTime = new System.Windows.Forms.ListBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.listBoxAwSensor = new System.Windows.Forms.ListBox();
+            this.textBoxAwPassword = new System.Windows.Forms.TextBox();
+            this.textBoxAWName = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.xtraTabPageGraph = new DevExpress.XtraTab.XtraTabPage();
             this.groupControlUserGraph = new DevExpress.XtraEditors.GroupControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
@@ -74,6 +85,7 @@
             this.labelControl16 = new DevExpress.XtraEditors.LabelControl();
             this.checkButtonPwsEnabled = new DevExpress.XtraEditors.CheckButton();
             this.xtraTabPageFW = new DevExpress.XtraTab.XtraTabPage();
+            this.checkBoxShowPasswordWind = new System.Windows.Forms.CheckBox();
             this.checkEditWF = new System.Windows.Forms.CheckBox();
             this.listBoxWFtime = new System.Windows.Forms.ListBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -83,20 +95,9 @@
             this.textBoxWFname = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
-            this.checkBoxShowPasswordAwekas = new System.Windows.Forms.CheckBox();
-            this.checkEditAW = new System.Windows.Forms.CheckBox();
-            this.listBoxAwTime = new System.Windows.Forms.ListBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.listBoxAwSensor = new System.Windows.Forms.ListBox();
-            this.textBoxAwPassword = new System.Windows.Forms.TextBox();
-            this.textBoxAWName = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.checkBoxShowPasswordWind = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).BeginInit();
             this.xtraTabControlSettings.SuspendLayout();
+            this.xtraTabPage1.SuspendLayout();
             this.xtraTabPageGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControlUserGraph)).BeginInit();
             this.groupControlUserGraph.SuspendLayout();
@@ -130,7 +131,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.textEditStationB.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).BeginInit();
             this.xtraTabPageFW.SuspendLayout();
-            this.xtraTabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // simpleButtonApply
@@ -170,7 +170,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.xtraTabControlSettings.Location = new System.Drawing.Point(12, 12);
             this.xtraTabControlSettings.Name = "xtraTabControlSettings";
-            this.xtraTabControlSettings.SelectedTabPage = this.xtraTabPageGraph;
+            this.xtraTabControlSettings.SelectedTabPage = this.xtraTabPage1;
             this.xtraTabControlSettings.Size = new System.Drawing.Size(428, 294);
             this.xtraTabControlSettings.TabIndex = 4;
             this.xtraTabControlSettings.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
@@ -179,6 +179,121 @@
             this.xtraTabPagePws,
             this.xtraTabPageFW,
             this.xtraTabPage1});
+            // 
+            // xtraTabPage1
+            // 
+            this.xtraTabPage1.Controls.Add(this.checkBoxShowPasswordAwekas);
+            this.xtraTabPage1.Controls.Add(this.checkEditAW);
+            this.xtraTabPage1.Controls.Add(this.listBoxAwTime);
+            this.xtraTabPage1.Controls.Add(this.label5);
+            this.xtraTabPage1.Controls.Add(this.label6);
+            this.xtraTabPage1.Controls.Add(this.listBoxAwSensor);
+            this.xtraTabPage1.Controls.Add(this.textBoxAwPassword);
+            this.xtraTabPage1.Controls.Add(this.textBoxAWName);
+            this.xtraTabPage1.Controls.Add(this.label7);
+            this.xtraTabPage1.Controls.Add(this.label8);
+            this.xtraTabPage1.Name = "xtraTabPage1";
+            this.xtraTabPage1.Size = new System.Drawing.Size(426, 272);
+            this.xtraTabPage1.Text = "AWEKAS";
+            // 
+            // checkBoxShowPasswordAwekas
+            // 
+            this.checkBoxShowPasswordAwekas.AutoSize = true;
+            this.checkBoxShowPasswordAwekas.Location = new System.Drawing.Point(288, 74);
+            this.checkBoxShowPasswordAwekas.Name = "checkBoxShowPasswordAwekas";
+            this.checkBoxShowPasswordAwekas.Size = new System.Drawing.Size(75, 17);
+            this.checkBoxShowPasswordAwekas.TabIndex = 20;
+            this.checkBoxShowPasswordAwekas.Text = "Show text";
+            this.checkBoxShowPasswordAwekas.UseVisualStyleBackColor = true;
+            this.checkBoxShowPasswordAwekas.CheckedChanged += new System.EventHandler(this.checkBoxShowPasswordAwekas_CheckedChanged);
+            // 
+            // checkEditAW
+            // 
+            this.checkEditAW.AutoSize = true;
+            this.checkEditAW.Location = new System.Drawing.Point(33, 16);
+            this.checkEditAW.Name = "checkEditAW";
+            this.checkEditAW.Size = new System.Drawing.Size(147, 17);
+            this.checkEditAW.TabIndex = 19;
+            this.checkEditAW.Text = "Enable Awekas scheduler";
+            this.checkEditAW.UseVisualStyleBackColor = true;
+            // 
+            // listBoxAwTime
+            // 
+            this.listBoxAwTime.FormattingEnabled = true;
+            this.listBoxAwTime.Items.AddRange(new object[] {
+            "1",
+            "5",
+            "10",
+            "15",
+            "30"});
+            this.listBoxAwTime.Location = new System.Drawing.Point(134, 177);
+            this.listBoxAwTime.Name = "listBoxAwTime";
+            this.listBoxAwTime.Size = new System.Drawing.Size(125, 82);
+            this.listBoxAwTime.TabIndex = 18;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(24, 177);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(95, 13);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "Time interval [min]";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(24, 109);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(104, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Select sensor to use";
+            // 
+            // listBoxAwSensor
+            // 
+            this.listBoxAwSensor.FormattingEnabled = true;
+            this.listBoxAwSensor.Items.AddRange(new object[] {
+            "A",
+            "B",
+            "C",
+            "D"});
+            this.listBoxAwSensor.Location = new System.Drawing.Point(134, 109);
+            this.listBoxAwSensor.Name = "listBoxAwSensor";
+            this.listBoxAwSensor.Size = new System.Drawing.Size(125, 56);
+            this.listBoxAwSensor.TabIndex = 15;
+            // 
+            // textBoxAwPassword
+            // 
+            this.textBoxAwPassword.Location = new System.Drawing.Point(134, 71);
+            this.textBoxAwPassword.Name = "textBoxAwPassword";
+            this.textBoxAwPassword.PasswordChar = '*';
+            this.textBoxAwPassword.Size = new System.Drawing.Size(125, 21);
+            this.textBoxAwPassword.TabIndex = 14;
+            // 
+            // textBoxAWName
+            // 
+            this.textBoxAWName.Location = new System.Drawing.Point(134, 43);
+            this.textBoxAWName.Name = "textBoxAWName";
+            this.textBoxAWName.Size = new System.Drawing.Size(125, 21);
+            this.textBoxAWName.TabIndex = 13;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(24, 74);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(86, 13);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "Enter password:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(24, 46);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(66, 13);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "Enter name:";
             // 
             // xtraTabPageGraph
             // 
@@ -579,7 +694,7 @@
             this.xtraTabPagePws.Controls.Add(this.groupControl2);
             this.xtraTabPagePws.Name = "xtraTabPagePws";
             this.xtraTabPagePws.Size = new System.Drawing.Size(426, 272);
-            this.xtraTabPagePws.Text = "PWS";
+            this.xtraTabPagePws.Text = "W. Underground";
             // 
             // groupControl2
             // 
@@ -773,6 +888,17 @@
             this.xtraTabPageFW.Size = new System.Drawing.Size(426, 272);
             this.xtraTabPageFW.Text = "Wind Finder";
             // 
+            // checkBoxShowPasswordWind
+            // 
+            this.checkBoxShowPasswordWind.AutoSize = true;
+            this.checkBoxShowPasswordWind.Location = new System.Drawing.Point(287, 76);
+            this.checkBoxShowPasswordWind.Name = "checkBoxShowPasswordWind";
+            this.checkBoxShowPasswordWind.Size = new System.Drawing.Size(75, 17);
+            this.checkBoxShowPasswordWind.TabIndex = 11;
+            this.checkBoxShowPasswordWind.Text = "Show text";
+            this.checkBoxShowPasswordWind.UseVisualStyleBackColor = true;
+            this.checkBoxShowPasswordWind.CheckedChanged += new System.EventHandler(this.checkBoxShowPasswordWind_CheckedChanged);
+            // 
             // checkEditWF
             // 
             this.checkEditWF.AutoSize = true;
@@ -861,132 +987,6 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Enter name:";
             // 
-            // xtraTabPage1
-            // 
-            this.xtraTabPage1.Controls.Add(this.checkBoxShowPasswordAwekas);
-            this.xtraTabPage1.Controls.Add(this.checkEditAW);
-            this.xtraTabPage1.Controls.Add(this.listBoxAwTime);
-            this.xtraTabPage1.Controls.Add(this.label5);
-            this.xtraTabPage1.Controls.Add(this.label6);
-            this.xtraTabPage1.Controls.Add(this.listBoxAwSensor);
-            this.xtraTabPage1.Controls.Add(this.textBoxAwPassword);
-            this.xtraTabPage1.Controls.Add(this.textBoxAWName);
-            this.xtraTabPage1.Controls.Add(this.label7);
-            this.xtraTabPage1.Controls.Add(this.label8);
-            this.xtraTabPage1.Name = "xtraTabPage1";
-            this.xtraTabPage1.Size = new System.Drawing.Size(426, 272);
-            this.xtraTabPage1.Text = "Awekas";
-            // 
-            // checkBoxShowPasswordAwekas
-            // 
-            this.checkBoxShowPasswordAwekas.AutoSize = true;
-            this.checkBoxShowPasswordAwekas.Location = new System.Drawing.Point(288, 74);
-            this.checkBoxShowPasswordAwekas.Name = "checkBoxShowPasswordAwekas";
-            this.checkBoxShowPasswordAwekas.Size = new System.Drawing.Size(75, 17);
-            this.checkBoxShowPasswordAwekas.TabIndex = 20;
-            this.checkBoxShowPasswordAwekas.Text = "Show text";
-            this.checkBoxShowPasswordAwekas.UseVisualStyleBackColor = true;
-            this.checkBoxShowPasswordAwekas.CheckedChanged += new System.EventHandler(this.checkBoxShowPasswordAwekas_CheckedChanged);
-            // 
-            // checkEditAW
-            // 
-            this.checkEditAW.AutoSize = true;
-            this.checkEditAW.Location = new System.Drawing.Point(33, 16);
-            this.checkEditAW.Name = "checkEditAW";
-            this.checkEditAW.Size = new System.Drawing.Size(147, 17);
-            this.checkEditAW.TabIndex = 19;
-            this.checkEditAW.Text = "Enable Awekas scheduler";
-            this.checkEditAW.UseVisualStyleBackColor = true;
-            // 
-            // listBoxAwTime
-            // 
-            this.listBoxAwTime.FormattingEnabled = true;
-            this.listBoxAwTime.Items.AddRange(new object[] {
-            "1",
-            "5",
-            "10",
-            "15",
-            "30"});
-            this.listBoxAwTime.Location = new System.Drawing.Point(134, 177);
-            this.listBoxAwTime.Name = "listBoxAwTime";
-            this.listBoxAwTime.Size = new System.Drawing.Size(125, 82);
-            this.listBoxAwTime.TabIndex = 18;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(24, 177);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(95, 13);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "Time interval [min]";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(24, 109);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(104, 13);
-            this.label6.TabIndex = 16;
-            this.label6.Text = "Select sensor to use";
-            // 
-            // listBoxAwSensor
-            // 
-            this.listBoxAwSensor.FormattingEnabled = true;
-            this.listBoxAwSensor.Items.AddRange(new object[] {
-            "A",
-            "B",
-            "C",
-            "D"});
-            this.listBoxAwSensor.Location = new System.Drawing.Point(134, 109);
-            this.listBoxAwSensor.Name = "listBoxAwSensor";
-            this.listBoxAwSensor.Size = new System.Drawing.Size(125, 56);
-            this.listBoxAwSensor.TabIndex = 15;
-            // 
-            // textBoxAwPassword
-            // 
-            this.textBoxAwPassword.Location = new System.Drawing.Point(134, 71);
-            this.textBoxAwPassword.Name = "textBoxAwPassword";
-            this.textBoxAwPassword.PasswordChar = '*';
-            this.textBoxAwPassword.Size = new System.Drawing.Size(125, 21);
-            this.textBoxAwPassword.TabIndex = 14;
-            // 
-            // textBoxAWName
-            // 
-            this.textBoxAWName.Location = new System.Drawing.Point(134, 43);
-            this.textBoxAWName.Name = "textBoxAWName";
-            this.textBoxAWName.Size = new System.Drawing.Size(125, 21);
-            this.textBoxAWName.TabIndex = 13;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(24, 74);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(86, 13);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Enter password:";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(24, 46);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(66, 13);
-            this.label8.TabIndex = 11;
-            this.label8.Text = "Enter name:";
-            // 
-            // checkBoxShowPasswordWind
-            // 
-            this.checkBoxShowPasswordWind.AutoSize = true;
-            this.checkBoxShowPasswordWind.Location = new System.Drawing.Point(287, 76);
-            this.checkBoxShowPasswordWind.Name = "checkBoxShowPasswordWind";
-            this.checkBoxShowPasswordWind.Size = new System.Drawing.Size(75, 17);
-            this.checkBoxShowPasswordWind.TabIndex = 11;
-            this.checkBoxShowPasswordWind.Text = "Show text";
-            this.checkBoxShowPasswordWind.UseVisualStyleBackColor = true;
-            this.checkBoxShowPasswordWind.CheckedChanged += new System.EventHandler(this.checkBoxShowPasswordWind_CheckedChanged);
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1007,6 +1007,8 @@
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).EndInit();
             this.xtraTabControlSettings.ResumeLayout(false);
+            this.xtraTabPage1.ResumeLayout(false);
+            this.xtraTabPage1.PerformLayout();
             this.xtraTabPageGraph.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.groupControlUserGraph)).EndInit();
             this.groupControlUserGraph.ResumeLayout(false);
@@ -1042,8 +1044,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).EndInit();
             this.xtraTabPageFW.ResumeLayout(false);
             this.xtraTabPageFW.PerformLayout();
-            this.xtraTabPage1.ResumeLayout(false);
-            this.xtraTabPage1.PerformLayout();
             this.ResumeLayout(false);
 
 		}

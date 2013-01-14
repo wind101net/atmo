@@ -1108,139 +1108,142 @@ namespace Atmo.UI.DevEx {
 
             string str_not_corr_sensor = "Not correct sensor selected!";
 
-            ISensor[] sensors = _deviceConnection.ToArray();
 
-            if (sensors[sensor_num].IsValid)
-            {
-                if (labelControlWindFinder.Text == str_not_corr_sensor)
-                {
-                    labelControlWindFinder.Text = "Correct sensor selected";
-                }
-            }
-            else
-            {
-               // CancelWindFinder("Not correct sensor selected!");
-                labelControlWindFinder.SetPropertyThreadSafe(() => labelControlWindFinder.Text,  str_not_corr_sensor);
-                return;
-            }
-
-            pom_inverval++;
-            if ( pom_inverval < AppContext.PersistentState.StationIntervalWF * 6 ) return;
-            
-            pom_inverval = 0;
-
-
-
-            var reading = sensors[sensor_num].GetCurrentReading();
-
-            // Log.DebugFormat("readed from sensor: " + reading.ToString() );
-            //   System.Diagnostics.Debug.WriteLine("readed from sensor: " + reading.Humidity.ToString() + " " + reading.Temperature.ToString() +
-            //     " " + reading.Pressure.ToString() + " " + reading.TimeStamp.ToString() + " " + reading.WindDirection.ToString() + " " + reading.WindSpeed.ToString());
-
-
-
-
-
-
-
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            queryParams.Add("sender_id",  AppContext.PersistentState.StationNameWF);
-            queryParams.Add("password", AppContext.PersistentState.StationPasswordWF);
-            DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
-            //queryParams.Add("date", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
-
-            queryParams.Add("date", utcStamp.ToString("dd.MM.yyyy"));
-            queryParams.Add("time", utcStamp.ToString("hh:mm"));
-
-
-            if (reading.IsTemperatureValid)
-            {
-                var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
-                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
-                var temperature = tempConverter.Convert(reading.Temperature);
-                queryParams.Add("airtemp", temperature.ToString());
-            }
-
-            if (reading.IsWindSpeedValid)
-            {
-                var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
-                    .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
-                var speed = speedConverter.Convert(reading.WindSpeed/3.6);
-                queryParams.Add("windspeed", speed.ToString());
-            }
-            
-            if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
-            {
-                queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
-            }
-
-            
-            if (reading.IsPressureValid)
-            {
-                var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
-                    .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
-                var pressure = pressConverter.Convert(reading.Pressure);
-                queryParams.Add("pressure", pressure.ToString());
-            }
-
-
-            /*
-            if (reading.IsHumidityValid)
-            {
-                queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
-            }
-              
-            if (reading.IsHumidityValid && reading.IsTemperatureValid)
-            {
-                var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
-                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
-                var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
-                    .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
-
-                var tempC = tempConverterCelcius.Convert(reading.Temperature);
-                var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
-                var dewPointF = tempConverterCToF.Convert(dewPointC);
-                queryParams.Add("dewptf", dewPointF.ToString());
-            }
-             
-              
-           */
-
-            var builder = new UriBuilder("http://www.windfinder.com/wind-cgi/httpload.pl?");
-            
-            
-            //sender_id="++"&password=&date=19.5.2011&time=17:13&airtemp=20&windspeed=12&gust=14&winddir=180&pressure=1012&rain=5");
-
-
-            builder.Query = String.Join(
-                "&",
-                queryParams
-                    .Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
-                    .ToArray()
-            );
             try
             {
-                var reqSent = HttpWebRequest.Create(builder.Uri);
-                reqSent.BeginGetResponse(HandlWFResult, reqSent);
 
-                System.Diagnostics.Debug.WriteLine("\r\nRiadok: " + builder.Uri);
+
+                ISensor[] sensors = _deviceConnection.ToArray();
+
+                if (sensors[sensor_num].IsValid)
+                {
+                    if (labelControlWindFinder.Text == str_not_corr_sensor)
+                    {
+                        labelControlWindFinder.Text = "Correct sensor selected";
+                    }
+                }
+                else
+                {
+                    // CancelWindFinder("Not correct sensor selected!");
+                    labelControlWindFinder.SetPropertyThreadSafe(() => labelControlWindFinder.Text, str_not_corr_sensor);
+                    return;
+                }
+
+                pom_inverval++;
+                if (pom_inverval < AppContext.PersistentState.StationIntervalWF * 6) return;
+
+                pom_inverval = 0;
+
+
+
+                var reading = sensors[sensor_num].GetCurrentReading();
+
+                // Log.DebugFormat("readed from sensor: " + reading.ToString() );
+                //   System.Diagnostics.Debug.WriteLine("readed from sensor: " + reading.Humidity.ToString() + " " + reading.Temperature.ToString() +
+                //     " " + reading.Pressure.ToString() + " " + reading.TimeStamp.ToString() + " " + reading.WindDirection.ToString() + " " + reading.WindSpeed.ToString());
+
+
+
+
+
+
+
+                Dictionary<string, string> queryParams = new Dictionary<string, string>();
+                queryParams.Add("sender_id", AppContext.PersistentState.StationNameWF);
+                queryParams.Add("password", AppContext.PersistentState.StationPasswordWF);
+                DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+                //queryParams.Add("date", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
+
+                queryParams.Add("date", utcStamp.ToString("dd.MM.yyyy"));
+                queryParams.Add("time", utcStamp.ToString("hh:mm"));
+
+
+                if (reading.IsTemperatureValid)
+                {
+                    var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                    var temperature = tempConverter.Convert(reading.Temperature);
+                    queryParams.Add("airtemp", temperature.ToString());
+                }
+
+                if (reading.IsWindSpeedValid)
+                {
+                    var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+                        .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
+                    var speed = speedConverter.Convert(reading.WindSpeed / 3.6);
+                    queryParams.Add("windspeed", speed.ToString());
+                }
+
+                if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
+                {
+                    queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
+                }
+
+
+                if (reading.IsPressureValid)
+                {
+                    var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+                        .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
+                    var pressure = pressConverter.Convert(reading.Pressure);
+                    queryParams.Add("pressure", pressure.ToString());
+                }
+
+
+                /*
+                if (reading.IsHumidityValid)
+                {
+                    queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
+                }
+              
+                if (reading.IsHumidityValid && reading.IsTemperatureValid)
+                {
+                    var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                    var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
+
+                    var tempC = tempConverterCelcius.Convert(reading.Temperature);
+                    var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
+                    var dewPointF = tempConverterCToF.Convert(dewPointC);
+                    queryParams.Add("dewptf", dewPointF.ToString());
+                }
+             
+              
+               */
+
+                var builder = new UriBuilder("http://www.windfinder.com/wind-cgi/httpload.pl?");
+
+
+                //sender_id="++"&password=&date=19.5.2011&time=17:13&airtemp=20&windspeed=12&gust=14&winddir=180&pressure=1012&rain=5");
+
+
+                builder.Query = String.Join(
+                    "&",
+                    queryParams
+                        .Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
+                        .ToArray()
+                );
+                try
+                {
+                    var reqSent = HttpWebRequest.Create(builder.Uri);
+                    reqSent.BeginGetResponse(HandlWFResult, reqSent);
+
+                    System.Diagnostics.Debug.WriteLine("\r\nRiadok: " + builder.Uri);
+
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn("WindFinder failure.", ex);
+                }
+
 
             }
-            catch (Exception ex)
+            catch (Exception mainex)
             {
-                Log.Warn("WindFinder failure.", ex);
+                Log.Warn("WindFinder failure main: ", mainex);
             }
-
-
-
-
-
-
-
-
-
-
-
+             
+            
 
 
 
@@ -1280,7 +1283,8 @@ namespace Atmo.UI.DevEx {
                         }
                         else
                         {
-                            CancelAwekas("Awekas protocol error.");
+                            labelControlAwekas.SetPropertyThreadSafe(() => labelControlAwekas.Text, "Awekas protocol error.");
+                        //    CancelAwekas("Awekas protocol error.");
                         }
                     }
                 }
@@ -1317,7 +1321,9 @@ namespace Atmo.UI.DevEx {
                         }
                         else
                         {
-                            CancelWindFinder("WindFinder protocol error.");
+                            //CancelWindFinder("WindFinder protocol error.");
+                            labelControlWindFinder.SetPropertyThreadSafe(() => labelControlWindFinder.Text, "WindFinder protocol error.");
+
                             System.Diagnostics.Debug.WriteLine("WINDFINDER - responseMessage: " + responseMessage);
                         }
                     }
@@ -1396,206 +1402,202 @@ namespace Atmo.UI.DevEx {
             string str_not_corr_sensor = "Not correct sensor selected!";
 
             int sensor_num;
-            sensor_num = AppContext.PersistentState.StationSensorIndexAw;
 
-
-            ISensor[] sensors = _deviceConnection.ToArray();
-
-            if (sensors[sensor_num].IsValid)
-            {
-                     if (labelControlAwekas.Text == str_not_corr_sensor)
-                     {
-                         labelControlAwekas.Text = "Correct sensor selected!";
-                     }
-            }
-            else
-            {
-               // CancelAwekas("Not correct sensor selected!");
-                labelControlAwekas.Text = str_not_corr_sensor;
-
-                return;
-            }
-
-            pom_inverval_aw++;
-
-            var reading = sensors[sensor_num].GetCurrentReading();
-
-
-
-            DateTime current = DateTime.Now;
-            //System.Diagnostics.Debug.WriteLine(current.ToShortTimeString() + "Timer prerusenie - AWEKAS: " + pom_inverval_aw.ToString() );
-
-
-
-
-            if (pom_inverval_aw < (AppContext.PersistentState.StationIntervalAW * 6)) return;
-            pom_inverval_aw = 0;
-
-
-
-
-            /*
-            
-
-            Dictionary<string, string> queryParams = new Dictionary<string, string>();
-            queryParams.Add("sender_id", AppContext.PersistentState.StationNameWF);
-            queryParams.Add("password", AppContext.PersistentState.StationPasswordWF);
-            DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
-            //queryParams.Add("date", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
-
-            queryParams.Add("date", utcStamp.ToString("dd.MM.yyyy"));
-            queryParams.Add("time", utcStamp.ToString("hh:mm"));
-
-
-            if (reading.IsTemperatureValid)
-            {
-                var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
-                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
-                var temperature = tempConverter.Convert(reading.Temperature);
-                queryParams.Add("airtemp", temperature.ToString());
-            }
-
-            if (reading.IsWindSpeedValid)
-            {
-                var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
-                    .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
-                var speed = speedConverter.Convert(reading.WindSpeed / 3.6);
-                queryParams.Add("windspeed", speed.ToString());
-            }
-
-            if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
-            {
-                queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
-            }
-
-
-            if (reading.IsPressureValid)
-            {
-                var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
-                    .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
-                var pressure = pressConverter.Convert(reading.Pressure);
-                queryParams.Add("pressure", pressure.ToString());
-            }
-
-
-            /*
-            if (reading.IsHumidityValid)
-            {
-                queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
-            }
-              
-            if (reading.IsHumidityValid && reading.IsTemperatureValid)
-            {
-                var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
-                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
-                var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
-                    .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
-
-                var tempC = tempConverterCelcius.Convert(reading.Temperature);
-                var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
-                var dewPointF = tempConverterCToF.Convert(dewPointC);
-                queryParams.Add("dewptf", dewPointF.ToString());
-            }
-             
-              
-           */
-
-
-            DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
-            string str_temp = ""; 
-            if (reading.IsTemperatureValid)
-            {
-                var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
-                    .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
-                var temperature = tempConverter.Convert(reading.Temperature);
-                str_temp = temperature.ToString();
-            }
-            string str_hum = ""; 
-            if (reading.IsHumidityValid)
-            {
-                str_hum = (reading.Humidity * 100.0).ToString();
-            }
-            string str_press= "";
-            if (reading.IsPressureValid)
-            {
-                var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
-                    .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
-                var pressure = pressConverter.Convert(reading.Pressure);
-                str_press = pressure.ToString();
-            }
-            string str_windspeed="";
-            if (reading.IsWindSpeedValid)
-            {
-                var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
-                    .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
-                var speed = speedConverter.Convert(reading.WindSpeed / 3.6);
-                str_windspeed = speed.ToString();
-            }
-
-
-            string str_windir="";
-            if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
-            {
-                str_windir = ((int)(reading.WindDirection)).ToString();
-            }
-            
-            var builder = new UriBuilder("http://www.awekas.at/extern/eingabe_pruefung.php?val=" + AppContext.PersistentState.StationNameAw.ToString()+";" + 
-                  CalculateMD5Hash(AppContext.PersistentState.StationPasswordAw.ToString() ) + ";" +
-                  utcStamp.ToString("dd.MM.yyyy") + ";" +
-                  utcStamp.ToString("hh:mm") + ";" +
-                  str_temp + ";" +
-                  str_hum + ";" + 
-                  str_press + ";" +
-                  ";"+ // precipiation 
-                  str_windspeed +";"+
-                  str_windir +";"+
-                  ";" + // 11
-                  ";" + // 12
-                  ";" + // 13
-                  "en"+";"+//14
-                  "0"+";"+//15
-                  "0"+";" //16
-
-            ) ;
-
-
-
-            current = DateTime.Now;
-            System.Diagnostics.Debug.WriteLine(current.ToShortTimeString() + "Poslane AWEKAS: " + builder.Uri);
 
 
             try
             {
-                var reqSent = HttpWebRequest.Create(builder.Uri);
-                reqSent.BeginGetResponse(HandleAwResult, reqSent);
+
+
+
+
+
+                sensor_num = AppContext.PersistentState.StationSensorIndexAw;
+
+
+                ISensor[] sensors = _deviceConnection.ToArray();
+
+                if (sensors[sensor_num].IsValid)
+                {
+                    if (labelControlAwekas.Text == str_not_corr_sensor)
+                    {
+                        labelControlAwekas.Text = "Correct sensor selected!";
+                    }
+                }
+                else
+                {
+                    // CancelAwekas("Not correct sensor selected!");
+                    labelControlAwekas.Text = str_not_corr_sensor;
+
+                    return;
+                }
+
+                pom_inverval_aw++;
+
+                var reading = sensors[sensor_num].GetCurrentReading();
+
+
+
+                DateTime current = DateTime.Now;
+                //System.Diagnostics.Debug.WriteLine(current.ToShortTimeString() + "Timer prerusenie - AWEKAS: " + pom_inverval_aw.ToString() );
+
+
+
+
+                if (pom_inverval_aw < (AppContext.PersistentState.StationIntervalAW * 6)) return;
+                pom_inverval_aw = 0;
+
+
+
+
+                /*
+            
+
+                Dictionary<string, string> queryParams = new Dictionary<string, string>();
+                queryParams.Add("sender_id", AppContext.PersistentState.StationNameWF);
+                queryParams.Add("password", AppContext.PersistentState.StationPasswordWF);
+                DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+                //queryParams.Add("date", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
+
+                queryParams.Add("date", utcStamp.ToString("dd.MM.yyyy"));
+                queryParams.Add("time", utcStamp.ToString("hh:mm"));
+
+
+                if (reading.IsTemperatureValid)
+                {
+                    var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                    var temperature = tempConverter.Convert(reading.Temperature);
+                    queryParams.Add("airtemp", temperature.ToString());
+                }
+
+                if (reading.IsWindSpeedValid)
+                {
+                    var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+                        .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
+                    var speed = speedConverter.Convert(reading.WindSpeed / 3.6);
+                    queryParams.Add("windspeed", speed.ToString());
+                }
+
+                if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
+                {
+                    queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
+                }
+
+
+                if (reading.IsPressureValid)
+                {
+                    var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+                        .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
+                    var pressure = pressConverter.Convert(reading.Pressure);
+                    queryParams.Add("pressure", pressure.ToString());
+                }
+
+
+                /*
+                if (reading.IsHumidityValid)
+                {
+                    queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
+                }
+              
+                if (reading.IsHumidityValid && reading.IsTemperatureValid)
+                {
+                    var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                    var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
+
+                    var tempC = tempConverterCelcius.Convert(reading.Temperature);
+                    var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
+                    var dewPointF = tempConverterCToF.Convert(dewPointC);
+                    queryParams.Add("dewptf", dewPointF.ToString());
+                }
+             
+              
+               */
+
+
+                DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+                string str_temp = "";
+                if (reading.IsTemperatureValid)
+                {
+                    var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                    var temperature = tempConverter.Convert(reading.Temperature);
+                    str_temp = temperature.ToString();
+                }
+                string str_hum = "";
+                if (reading.IsHumidityValid)
+                {
+                    str_hum = (reading.Humidity * 100.0).ToString();
+                }
+                string str_press = "";
+                if (reading.IsPressureValid)
+                {
+                    var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+                        .Get(sensors[sensor_num].PressureUnit, PressureUnit.KiloPascals);
+                    var pressure = pressConverter.Convert(reading.Pressure);
+                    str_press = pressure.ToString();
+                }
+                string str_windspeed = "";
+                if (reading.IsWindSpeedValid)
+                {
+                    var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+                        .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MetersPerSec);
+                    var speed = speedConverter.Convert(reading.WindSpeed / 3.6);
+                    str_windspeed = speed.ToString();
+                }
+
+
+                string str_windir = "";
+                if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
+                {
+                    str_windir = ((int)(reading.WindDirection)).ToString();
+                }
+
+                var builder = new UriBuilder("http://www.awekas.at/extern/eingabe_pruefung.php?val=" + AppContext.PersistentState.StationNameAw.ToString() + ";" +
+                      CalculateMD5Hash(AppContext.PersistentState.StationPasswordAw.ToString()) + ";" +
+                      utcStamp.ToString("dd.MM.yyyy") + ";" +
+                      utcStamp.ToString("hh:mm") + ";" +
+                      str_temp + ";" +
+                      str_hum + ";" +
+                      str_press + ";" +
+                      ";" + // precipiation 
+                      str_windspeed + ";" +
+                      str_windir + ";" +
+                      ";" + // 11
+                      ";" + // 12
+                      ";" + // 13
+                      "en" + ";" +//14
+                      "0" + ";" +//15
+                      "0" + ";" //16
+
+                );
+
+
+
+                current = DateTime.Now;
+                System.Diagnostics.Debug.WriteLine(current.ToShortTimeString() + "Poslane AWEKAS: " + builder.Uri);
+
+
+                try
+                {
+                    var reqSent = HttpWebRequest.Create(builder.Uri);
+                    reqSent.BeginGetResponse(HandleAwResult, reqSent);
+
+                }
+                catch (Exception ex)
+                {
+                   Log.Warn("Awekas failure.", ex );
+                }
+
+
 
             }
-            catch (Exception ex)
+            catch (Exception exmain)
             {
-                Log.Warn("Awekas failure.", ex);
+                Log.Warn("Awekas failure main: ", exmain );
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         }
 
