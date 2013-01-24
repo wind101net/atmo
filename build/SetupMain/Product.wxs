@@ -33,6 +33,22 @@
 								<Permission User="Users" GenericAll="yes" CreateFile="yes" />
 							</CreateFolder>
 						</Component>
+            <Directory Id="x64Folder" Name="x64">
+              <Component Id="x64FolderComponent" Guid="{5305CBDA-2883-4309-B373-B520EC9559C9}">
+                <CreateFolder Directory="x64Folder">
+                  <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+                </CreateFolder>
+                <File Id="SqLite_x64" Name="SQLite.Interop.dll" Source="$(var.OutputPath)x64\SQLite.Interop.dll" />
+              </Component>
+            </Directory>
+            <Directory Id="x86Folder" Name="x86">
+              <Component Id="x86FolderComponent" Guid="{D06D32AF-B59D-4DA3-8120-7EE71E2A14D1}">
+                <CreateFolder Directory="x86Folder">
+                  <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+                </CreateFolder>
+                <File Id="SqLite_x86" Name="SQLite.Interop.dll" Source="$(var.OutputPath)x86\SQLite.Interop.dll" />
+              </Component>
+            </Directory>
 						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
 							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="$(var.OutputPath)\System.Data.SQLite.dll" KeyPath="yes"/>
 							<File Id="Log4Net" Name="log4net.dll" Source="$(var.OutputPath)\log4net.dll" KeyPath="no"/>
@@ -87,6 +103,8 @@
 		<Feature Id="ProductFeature" Title="Atmo 2" Level="1">
 			<ComponentRef Id="CoreFolderComponent"/>
 			<ComponentRef Id="Core3rdParty" />
+      <ComponentRef Id="x64FolderComponent"/>
+      <ComponentRef Id="x86FolderComponent"/>
 			<ComponentRef Id="AtmoCore" />
 			<ComponentRef Id="AtmoWinFormsLibs" />
 			<ComponentRef Id="DevExpress3rdParty" />

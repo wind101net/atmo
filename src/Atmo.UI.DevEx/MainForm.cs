@@ -48,6 +48,9 @@ namespace Atmo.UI.DevEx {
 		private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private static readonly string DatabaseFileName = @"ClearStorage.db";  //rp @
 
+	    private const int RapidFireInterval = 5000;
+	    private const int RapidFirePauseDuration = 30000;
+
 		private IDaqConnection _deviceConnection = null;
 		private MemoryDataStore _memoryDataStore = null;
 		private SensorViewPanelController _sensorViewPanelControler = null;
@@ -545,6 +548,7 @@ namespace Atmo.UI.DevEx {
 		private const string RunningText = "Running";
 
 		private void StartRapidFire() {
+		    timerRapidFire.Interval = RapidFireInterval;
 			timerRapidFire.Enabled = true;
 			AppContext.PersistentState.PwsEnabled = true;
 
@@ -570,19 +574,28 @@ namespace Atmo.UI.DevEx {
 			Log.InfoFormat("PWS rapid fire canceled due to '{0}'.", message);
 		}
 
+        private void PauseRapidFire(string message = null) {
+            if (String.IsNullOrEmpty(message))
+                message = "Paused";
+            labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, message);
+
+            timerRapidFire.Interval = RapidFirePauseDuration;
+        }
+
 		private void timerRapidFire_Tick(object sender, EventArgs e) {
+		    if (timerRapidFire.Interval != RapidFireInterval)
+		        timerRapidFire.Interval = RapidFireInterval;
+
 			ISensor[] sensors = _deviceConnection.ToArray();
 
 			IReading[] readings = sensors
 				.Select(sensor => sensor.IsValid ? sensor.GetCurrentReading() : null)
-				.ToArray()
-			;
+				.ToArray();
 
-			if(readings.All(r => null == r)) {
+			if(readings.All(r => null == r))
 				labelControlPwsStatus.Text = "No sensors.";
-			}else {
+			else
 				labelControlPwsStatus.Text = RunningText;
-			}
 
 			var stationNames = AppContext.PersistentState.StationNames;
 			var stationPassword = AppContext.PersistentState.StationPassword;
@@ -591,7 +604,7 @@ namespace Atmo.UI.DevEx {
 				return;
 			}
 			if(stationNames == null || stationNames.Count == 0) {
-				CancelRapidFire("No PWS stations.");
+                CancelRapidFire("Paused: No PWS stations.");
 				return;
 			}
 			for (int i = 0; i < readings.Length; i++) {
@@ -648,7 +661,7 @@ namespace Atmo.UI.DevEx {
 				}
 				queryParams.Add(
 					"softwaretype",
-					"Atmo"
+					"Atmo2"
 				);
 
 				var builder = new UriBuilder("http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php");
@@ -688,7 +701,8 @@ namespace Atmo.UI.DevEx {
 				}
 			}
 			catch (WebException webEx) {
-				CancelRapidFire("PWS Communication failure.");
+                PauseRapidFire("Paused due to communication failure.");
+				//CancelRapidFire("PWS Communication failure.");
 				Log.Warn("PWS rapid fire was disabled due to an error.", webEx);
 			}
 		}
@@ -1599,6 +1613,11 @@ namespace Atmo.UI.DevEx {
                 Log.Warn("Awekas failure main: ", exmain );
             }
 
+        }
+
+        private void barButtonItem1_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            PauseRapidFire("Paused: Debug menu.");
         }
 
 	}
