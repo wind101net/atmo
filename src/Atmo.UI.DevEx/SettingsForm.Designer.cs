@@ -69,21 +69,16 @@
             this.labelControl8 = new DevExpress.XtraEditors.LabelControl();
             this.comboBoxEditTemp = new DevExpress.XtraEditors.ComboBoxEdit();
             this.xtraTabPagePws = new DevExpress.XtraTab.XtraTabPage();
-            this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.textEditPwsPass = new DevExpress.XtraEditors.TextEdit();
-            this.textEditStationD = new DevExpress.XtraEditors.TextEdit();
-            this.textEditStationC = new DevExpress.XtraEditors.TextEdit();
-            this.textEditStationB = new DevExpress.XtraEditors.TextEdit();
-            this.labelControl10 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl12 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl13 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl14 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl15 = new DevExpress.XtraEditors.LabelControl();
-            this.textEditStationA = new DevExpress.XtraEditors.TextEdit();
-            this.labelControl17 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl16 = new DevExpress.XtraEditors.LabelControl();
-            this.checkButtonPwsEnabled = new DevExpress.XtraEditors.CheckButton();
+            this.checkBoxShowPasswordWeather = new System.Windows.Forms.CheckBox();
+            this.checkEditWeather = new System.Windows.Forms.CheckBox();
+            this.listBoxWeatherTime = new System.Windows.Forms.ListBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.listBoxWeatherSensor = new System.Windows.Forms.ListBox();
+            this.textBoxWeatherPassword = new System.Windows.Forms.TextBox();
+            this.textBoxWeatherName = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.xtraTabPageFW = new DevExpress.XtraTab.XtraTabPage();
             this.checkBoxShowPasswordWind = new System.Windows.Forms.CheckBox();
             this.checkEditWF = new System.Windows.Forms.CheckBox();
@@ -122,14 +117,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxEditPress.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxEditTemp.Properties)).BeginInit();
             this.xtraTabPagePws.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
-            this.groupControl2.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditPwsPass.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationD.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationC.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationB.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).BeginInit();
             this.xtraTabPageFW.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -301,7 +288,7 @@
             this.xtraTabPageGraph.Controls.Add(this.groupControlUserGraph);
             this.xtraTabPageGraph.Controls.Add(this.groupControlGraphMinRanges);
             this.xtraTabPageGraph.Name = "xtraTabPageGraph";
-            this.xtraTabPageGraph.Size = new System.Drawing.Size(426, 272);
+            this.xtraTabPageGraph.Size = new System.Drawing.Size(422, 268);
             this.xtraTabPageGraph.Text = "Graph";
             // 
             // groupControlUserGraph
@@ -569,7 +556,7 @@
             this.xtraTabPageData.Controls.Add(this.groupControl3);
             this.xtraTabPageData.Controls.Add(this.groupControl1);
             this.xtraTabPageData.Name = "xtraTabPageData";
-            this.xtraTabPageData.Size = new System.Drawing.Size(426, 272);
+            this.xtraTabPageData.Size = new System.Drawing.Size(422, 268);
             this.xtraTabPageData.Text = "Data";
             // 
             // groupControl3
@@ -578,7 +565,7 @@
             this.groupControl3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupControl3.Location = new System.Drawing.Point(0, 95);
             this.groupControl3.Name = "groupControl3";
-            this.groupControl3.Size = new System.Drawing.Size(426, 44);
+            this.groupControl3.Size = new System.Drawing.Size(422, 44);
             this.groupControl3.TabIndex = 3;
             this.groupControl3.Text = "Data Logger";
             // 
@@ -588,7 +575,7 @@
             this.checkEditSyncDaqClock.Location = new System.Drawing.Point(2, 22);
             this.checkEditSyncDaqClock.Name = "checkEditSyncDaqClock";
             this.checkEditSyncDaqClock.Properties.Caption = "Auto sync data logger clock";
-            this.checkEditSyncDaqClock.Size = new System.Drawing.Size(422, 19);
+            this.checkEditSyncDaqClock.Size = new System.Drawing.Size(418, 19);
             this.checkEditSyncDaqClock.TabIndex = 0;
             // 
             // groupControl1
@@ -597,7 +584,7 @@
             this.groupControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupControl1.Location = new System.Drawing.Point(0, 0);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(426, 95);
+            this.groupControl1.Size = new System.Drawing.Size(422, 95);
             this.groupControl1.TabIndex = 2;
             this.groupControl1.Text = "Data Units";
             // 
@@ -619,7 +606,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(422, 71);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(418, 71);
             this.tableLayoutPanel2.TabIndex = 5;
             // 
             // comboBoxEditSpeed
@@ -629,7 +616,7 @@
             this.comboBoxEditSpeed.Name = "comboBoxEditSpeed";
             this.comboBoxEditSpeed.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.comboBoxEditSpeed.Size = new System.Drawing.Size(316, 20);
+            this.comboBoxEditSpeed.Size = new System.Drawing.Size(312, 20);
             this.comboBoxEditSpeed.TabIndex = 5;
             // 
             // comboBoxEditPress
@@ -639,7 +626,7 @@
             this.comboBoxEditPress.Name = "comboBoxEditPress";
             this.comboBoxEditPress.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.comboBoxEditPress.Size = new System.Drawing.Size(316, 20);
+            this.comboBoxEditPress.Size = new System.Drawing.Size(312, 20);
             this.comboBoxEditPress.TabIndex = 4;
             // 
             // labelControl4
@@ -686,191 +673,123 @@
             this.comboBoxEditTemp.Name = "comboBoxEditTemp";
             this.comboBoxEditTemp.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.comboBoxEditTemp.Size = new System.Drawing.Size(316, 20);
+            this.comboBoxEditTemp.Size = new System.Drawing.Size(312, 20);
             this.comboBoxEditTemp.TabIndex = 3;
             // 
             // xtraTabPagePws
             // 
-            this.xtraTabPagePws.Controls.Add(this.groupControl2);
+            this.xtraTabPagePws.Controls.Add(this.checkBoxShowPasswordWeather);
+            this.xtraTabPagePws.Controls.Add(this.checkEditWeather);
+            this.xtraTabPagePws.Controls.Add(this.listBoxWeatherTime);
+            this.xtraTabPagePws.Controls.Add(this.label9);
+            this.xtraTabPagePws.Controls.Add(this.label10);
+            this.xtraTabPagePws.Controls.Add(this.listBoxWeatherSensor);
+            this.xtraTabPagePws.Controls.Add(this.textBoxWeatherPassword);
+            this.xtraTabPagePws.Controls.Add(this.textBoxWeatherName);
+            this.xtraTabPagePws.Controls.Add(this.label11);
+            this.xtraTabPagePws.Controls.Add(this.label12);
             this.xtraTabPagePws.Name = "xtraTabPagePws";
-            this.xtraTabPagePws.Size = new System.Drawing.Size(426, 272);
+            this.xtraTabPagePws.Size = new System.Drawing.Size(422, 268);
             this.xtraTabPagePws.Text = "W. Underground";
             // 
-            // groupControl2
+            // checkBoxShowPasswordWeather
             // 
-            this.groupControl2.Controls.Add(this.tableLayoutPanel3);
-            this.groupControl2.Controls.Add(this.labelControl17);
-            this.groupControl2.Controls.Add(this.labelControl16);
-            this.groupControl2.Controls.Add(this.checkButtonPwsEnabled);
-            this.groupControl2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupControl2.Location = new System.Drawing.Point(0, 0);
-            this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(426, 221);
-            this.groupControl2.TabIndex = 0;
-            this.groupControl2.Text = "PWS Streaming Data Configuration";
+            this.checkBoxShowPasswordWeather.AutoSize = true;
+            this.checkBoxShowPasswordWeather.Location = new System.Drawing.Point(288, 74);
+            this.checkBoxShowPasswordWeather.Name = "checkBoxShowPasswordWeather";
+            this.checkBoxShowPasswordWeather.Size = new System.Drawing.Size(75, 17);
+            this.checkBoxShowPasswordWeather.TabIndex = 21;
+            this.checkBoxShowPasswordWeather.Text = "Show text";
+            this.checkBoxShowPasswordWeather.UseVisualStyleBackColor = true;
+            this.checkBoxShowPasswordWeather.CheckedChanged += new System.EventHandler(this.checkBoxShowPasswordWeather_CheckedChanged);
             // 
-            // tableLayoutPanel3
+            // checkEditWeather
             // 
-            this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Controls.Add(this.textEditPwsPass, 1, 4);
-            this.tableLayoutPanel3.Controls.Add(this.textEditStationD, 1, 3);
-            this.tableLayoutPanel3.Controls.Add(this.textEditStationC, 1, 2);
-            this.tableLayoutPanel3.Controls.Add(this.textEditStationB, 1, 1);
-            this.tableLayoutPanel3.Controls.Add(this.labelControl10, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.labelControl12, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.labelControl13, 0, 2);
-            this.tableLayoutPanel3.Controls.Add(this.labelControl14, 0, 3);
-            this.tableLayoutPanel3.Controls.Add(this.labelControl15, 0, 4);
-            this.tableLayoutPanel3.Controls.Add(this.textEditStationA, 1, 0);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(2, 22);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 5;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(422, 125);
-            this.tableLayoutPanel3.TabIndex = 0;
+            this.checkEditWeather.AutoSize = true;
+            this.checkEditWeather.Location = new System.Drawing.Point(32, 15);
+            this.checkEditWeather.Name = "checkEditWeather";
+            this.checkEditWeather.Size = new System.Drawing.Size(217, 17);
+            this.checkEditWeather.TabIndex = 20;
+            this.checkEditWeather.Text = "Enable Weather underground scheduler";
+            this.checkEditWeather.UseVisualStyleBackColor = true;
             // 
-            // textEditPwsPass
+            // listBoxWeatherTime
             // 
-            this.textEditPwsPass.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textEditPwsPass.Location = new System.Drawing.Point(123, 103);
-            this.textEditPwsPass.Name = "textEditPwsPass";
-            this.textEditPwsPass.Size = new System.Drawing.Size(296, 20);
-            this.textEditPwsPass.TabIndex = 9;
+            this.listBoxWeatherTime.FormattingEnabled = true;
+            this.listBoxWeatherTime.Items.AddRange(new object[] {
+            "1",
+            "5",
+            "10",
+            "15",
+            "30"});
+            this.listBoxWeatherTime.Location = new System.Drawing.Point(133, 176);
+            this.listBoxWeatherTime.Name = "listBoxWeatherTime";
+            this.listBoxWeatherTime.Size = new System.Drawing.Size(125, 82);
+            this.listBoxWeatherTime.TabIndex = 19;
             // 
-            // textEditStationD
+            // label9
             // 
-            this.textEditStationD.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textEditStationD.Location = new System.Drawing.Point(123, 78);
-            this.textEditStationD.Name = "textEditStationD";
-            this.textEditStationD.Size = new System.Drawing.Size(296, 20);
-            this.textEditStationD.TabIndex = 8;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(23, 176);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(95, 13);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "Time interval [min]";
             // 
-            // textEditStationC
+            // label10
             // 
-            this.textEditStationC.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textEditStationC.Location = new System.Drawing.Point(123, 53);
-            this.textEditStationC.Name = "textEditStationC";
-            this.textEditStationC.Size = new System.Drawing.Size(296, 20);
-            this.textEditStationC.TabIndex = 7;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(23, 108);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(104, 13);
+            this.label10.TabIndex = 17;
+            this.label10.Text = "Select sensor to use";
             // 
-            // textEditStationB
+            // listBoxWeatherSensor
             // 
-            this.textEditStationB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textEditStationB.Location = new System.Drawing.Point(123, 28);
-            this.textEditStationB.Name = "textEditStationB";
-            this.textEditStationB.Size = new System.Drawing.Size(296, 20);
-            this.textEditStationB.TabIndex = 6;
+            this.listBoxWeatherSensor.FormattingEnabled = true;
+            this.listBoxWeatherSensor.Items.AddRange(new object[] {
+            "A",
+            "B",
+            "C",
+            "D"});
+            this.listBoxWeatherSensor.Location = new System.Drawing.Point(133, 108);
+            this.listBoxWeatherSensor.Name = "listBoxWeatherSensor";
+            this.listBoxWeatherSensor.Size = new System.Drawing.Size(125, 56);
+            this.listBoxWeatherSensor.TabIndex = 16;
             // 
-            // labelControl10
+            // textBoxWeatherPassword
             // 
-            this.labelControl10.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.labelControl10.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.labelControl10.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl10.Location = new System.Drawing.Point(3, 3);
-            this.labelControl10.Name = "labelControl10";
-            this.labelControl10.Size = new System.Drawing.Size(114, 19);
-            this.labelControl10.TabIndex = 0;
-            this.labelControl10.Text = "Station Name A";
+            this.textBoxWeatherPassword.Location = new System.Drawing.Point(133, 70);
+            this.textBoxWeatherPassword.Name = "textBoxWeatherPassword";
+            this.textBoxWeatherPassword.PasswordChar = '*';
+            this.textBoxWeatherPassword.Size = new System.Drawing.Size(125, 21);
+            this.textBoxWeatherPassword.TabIndex = 15;
             // 
-            // labelControl12
+            // textBoxWeatherName
             // 
-            this.labelControl12.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.labelControl12.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.labelControl12.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl12.Location = new System.Drawing.Point(3, 28);
-            this.labelControl12.Name = "labelControl12";
-            this.labelControl12.Size = new System.Drawing.Size(114, 19);
-            this.labelControl12.TabIndex = 1;
-            this.labelControl12.Text = "Station Name B";
+            this.textBoxWeatherName.Location = new System.Drawing.Point(133, 42);
+            this.textBoxWeatherName.Name = "textBoxWeatherName";
+            this.textBoxWeatherName.Size = new System.Drawing.Size(125, 21);
+            this.textBoxWeatherName.TabIndex = 14;
             // 
-            // labelControl13
+            // label11
             // 
-            this.labelControl13.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.labelControl13.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.labelControl13.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl13.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl13.Location = new System.Drawing.Point(3, 53);
-            this.labelControl13.Name = "labelControl13";
-            this.labelControl13.Size = new System.Drawing.Size(114, 19);
-            this.labelControl13.TabIndex = 2;
-            this.labelControl13.Text = "Station Name C";
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(23, 73);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(86, 13);
+            this.label11.TabIndex = 13;
+            this.label11.Text = "Enter password:";
             // 
-            // labelControl14
+            // label12
             // 
-            this.labelControl14.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.labelControl14.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.labelControl14.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl14.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl14.Location = new System.Drawing.Point(3, 78);
-            this.labelControl14.Name = "labelControl14";
-            this.labelControl14.Size = new System.Drawing.Size(114, 19);
-            this.labelControl14.TabIndex = 3;
-            this.labelControl14.Text = "Station Name D";
-            // 
-            // labelControl15
-            // 
-            this.labelControl15.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.labelControl15.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.labelControl15.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl15.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl15.Location = new System.Drawing.Point(3, 103);
-            this.labelControl15.Name = "labelControl15";
-            this.labelControl15.Size = new System.Drawing.Size(114, 19);
-            this.labelControl15.TabIndex = 4;
-            this.labelControl15.Text = "Password";
-            // 
-            // textEditStationA
-            // 
-            this.textEditStationA.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textEditStationA.Location = new System.Drawing.Point(123, 3);
-            this.textEditStationA.Name = "textEditStationA";
-            this.textEditStationA.Size = new System.Drawing.Size(296, 20);
-            this.textEditStationA.TabIndex = 5;
-            // 
-            // labelControl17
-            // 
-            this.labelControl17.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.labelControl17.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl17.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.labelControl17.Location = new System.Drawing.Point(2, 147);
-            this.labelControl17.Name = "labelControl17";
-            this.labelControl17.Size = new System.Drawing.Size(422, 21);
-            this.labelControl17.TabIndex = 18;
-            this.labelControl17.Text = "Note: Wunderground.com password transmission/storage is not secure.";
-            // 
-            // labelControl16
-            // 
-            this.labelControl16.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Underline);
-            this.labelControl16.Appearance.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.labelControl16.AutoEllipsis = true;
-            this.labelControl16.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl16.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelControl16.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.labelControl16.Location = new System.Drawing.Point(2, 168);
-            this.labelControl16.Name = "labelControl16";
-            this.labelControl16.Size = new System.Drawing.Size(422, 28);
-            this.labelControl16.TabIndex = 17;
-            this.labelControl16.Text = "http://www.wunderground.com/wxstation/signup.html";
-            this.labelControl16.Click += new System.EventHandler(this.labelControl16_Click);
-            // 
-            // checkButtonPwsEnabled
-            // 
-            this.checkButtonPwsEnabled.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.checkButtonPwsEnabled.Location = new System.Drawing.Point(2, 196);
-            this.checkButtonPwsEnabled.Name = "checkButtonPwsEnabled";
-            this.checkButtonPwsEnabled.Size = new System.Drawing.Size(422, 23);
-            this.checkButtonPwsEnabled.TabIndex = 1;
-            this.checkButtonPwsEnabled.Text = "N/A";
-            this.checkButtonPwsEnabled.CheckedChanged += new System.EventHandler(this.checkButtonPwsEnabled_CheckedChanged);
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(23, 45);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(66, 13);
+            this.label12.TabIndex = 12;
+            this.label12.Text = "Enter name:";
             // 
             // xtraTabPageFW
             // 
@@ -885,7 +804,7 @@
             this.xtraTabPageFW.Controls.Add(this.label2);
             this.xtraTabPageFW.Controls.Add(this.label1);
             this.xtraTabPageFW.Name = "xtraTabPageFW";
-            this.xtraTabPageFW.Size = new System.Drawing.Size(426, 272);
+            this.xtraTabPageFW.Size = new System.Drawing.Size(422, 268);
             this.xtraTabPageFW.Text = "Wind Finder";
             // 
             // checkBoxShowPasswordWind
@@ -1034,14 +953,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxEditPress.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxEditTemp.Properties)).EndInit();
             this.xtraTabPagePws.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
-            this.groupControl2.ResumeLayout(false);
-            this.tableLayoutPanel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.textEditPwsPass.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationD.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationC.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationB.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.textEditStationA.Properties)).EndInit();
+            this.xtraTabPagePws.PerformLayout();
             this.xtraTabPageFW.ResumeLayout(false);
             this.xtraTabPageFW.PerformLayout();
             this.ResumeLayout(false);
@@ -1081,22 +993,7 @@
 		private DevExpress.XtraEditors.LabelControl labelControl4;
 		private DevExpress.XtraEditors.LabelControl labelControl6;
 		private DevExpress.XtraEditors.LabelControl labelControl8;
-		private DevExpress.XtraEditors.ComboBoxEdit comboBoxEditTemp;
-		private DevExpress.XtraEditors.GroupControl groupControl2;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-		private DevExpress.XtraEditors.TextEdit textEditPwsPass;
-		private DevExpress.XtraEditors.TextEdit textEditStationD;
-		private DevExpress.XtraEditors.TextEdit textEditStationC;
-		private DevExpress.XtraEditors.TextEdit textEditStationB;
-		private DevExpress.XtraEditors.LabelControl labelControl10;
-		private DevExpress.XtraEditors.LabelControl labelControl12;
-		private DevExpress.XtraEditors.LabelControl labelControl13;
-		private DevExpress.XtraEditors.LabelControl labelControl14;
-		private DevExpress.XtraEditors.LabelControl labelControl15;
-		private DevExpress.XtraEditors.TextEdit textEditStationA;
-		private DevExpress.XtraEditors.CheckButton checkButtonPwsEnabled;
-		private DevExpress.XtraEditors.LabelControl labelControl17;
-		private DevExpress.XtraEditors.LabelControl labelControl16;
+        private DevExpress.XtraEditors.ComboBoxEdit comboBoxEditTemp;
 		private DevExpress.XtraEditors.GroupControl groupControl3;
 		private DevExpress.XtraEditors.CheckEdit checkEditSyncDaqClock;
         private DevExpress.XtraTab.XtraTabPage xtraTabPageFW;
@@ -1121,5 +1018,15 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBoxShowPasswordAwekas;
         private System.Windows.Forms.CheckBox checkBoxShowPasswordWind;
+        private System.Windows.Forms.CheckBox checkBoxShowPasswordWeather;
+        private System.Windows.Forms.CheckBox checkEditWeather;
+        private System.Windows.Forms.ListBox listBoxWeatherTime;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ListBox listBoxWeatherSensor;
+        private System.Windows.Forms.TextBox textBoxWeatherPassword;
+        private System.Windows.Forms.TextBox textBoxWeatherName;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
 	}
 }

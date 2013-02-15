@@ -28,10 +28,26 @@
 			<Directory Id="ProgramFilesFolder">
 				<Directory Id="BaraniDesign" Name="BaraniDesign">
 					<Directory Id="INSTALLLOCATION" Name="Atmo2">
+            <Directory Id="bin_x86" Name="x86">
+              <Component Id="SQLite_x86" Guid="D23C4117-7414-4FAE-B38B-3A4CCC7871BD" NeverOverwrite="no">
+                <File Id="SQLite_x86" Name="SQLite.Interop.dll" Source="$(var.OutputPath)\x86\SQLite.Interop.dll" />
+              </Component>
+            </Directory>
+            <Directory Id="bin_x64" Name="x64">
+              <Component Id="SQLite_x64" Guid="58B7D532-529C-4124-A53C-A23CA486013E" NeverOverwrite="no">
+                <File Id="SQLite_x64" Name="SQLite.Interop.dll" Source="$(var.OutputPath)\x64\SQLite.Interop.dll" />
+              </Component>
+            </Directory>
 						<Component Id="CoreFolderComponent" Guid="CF362C7A-676C-498C-92D1-F36F96492688">
 							<CreateFolder Directory="INSTALLLOCATION">
 								<Permission User="Users" GenericAll="yes" CreateFile="yes" />
 							</CreateFolder>
+              <CreateFolder Directory="bin_x86">
+                <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+              </CreateFolder>
+              <CreateFolder Directory="bin_x64">
+                <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+              </CreateFolder>
 						</Component>
 						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
 							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="$(var.OutputPath)\System.Data.SQLite.dll" KeyPath="yes"/>
@@ -48,15 +64,15 @@
 							<File Id="AtmoUIWinFormsControls" Name="Atmo.UI.WinForms.Controls.dll" Source="$(var.OutputPath)\Atmo.UI.WinForms.Controls.dll" KeyPath="yes"  />
 						</Component>
 						<Component Id="DevExpress3rdParty" Guid="9F7F0063-EA4D-4478-B3C7-5DB2404C280D" NeverOverwrite="no">
-							<File Id="DevExpress.Charts.v10.2.Core.dll" Name="DevExpress.Charts.v10.2.Core.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Charts.v10.2.Core.dll" />
-							<File Id="DevExpress.Data.v10.2.dll" Name="DevExpress.Data.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.2.dll" KeyPath="yes" />
-							<File Id="DevExpress.Utils.v10.2.dll" Name="DevExpress.Utils.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.2.dll"  />
-							<File Id="DevExpress.XtraBars.v10.2.dll" Name="DevExpress.XtraBars.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.2.dll"  />
-							<File Id="DevExpress.XtraCharts.v10.2.dll" Name="DevExpress.XtraCharts.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.dll"  />
-							<File Id="DevExpress.XtraCharts.v10.2.UI.dll" Name="DevExpress.XtraCharts.v10.2.UI.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.UI.dll"  />
-							<File Id="DevExpress.XtraEditors.v10.2.dll" Name="DevExpress.XtraEditors.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraEditors.v10.2.dll"  />
-							<File Id="DevExpress.XtraGrid.v10.2.dll" Name="DevExpress.XtraGrid.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraGrid.v10.2.dll" />
-							<File Id="DevExpress.XtraNavBar.v10.2.dll" Name="DevExpress.XtraNavBar.v10.2.dll" Source="C:\Program Files (x86)\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraNavBar.v10.2.dll" />
+							<File Id="DevExpress.Charts.v10.2.Core.dll" Name="DevExpress.Charts.v10.2.Core.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Charts.v10.2.Core.dll" />
+							<File Id="DevExpress.Data.v10.2.dll" Name="DevExpress.Data.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.2.dll" KeyPath="yes" />
+							<File Id="DevExpress.Utils.v10.2.dll" Name="DevExpress.Utils.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.2.dll"  />
+							<File Id="DevExpress.XtraBars.v10.2.dll" Name="DevExpress.XtraBars.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.2.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.2.dll" Name="DevExpress.XtraCharts.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.2.UI.dll" Name="DevExpress.XtraCharts.v10.2.UI.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.UI.dll"  />
+							<File Id="DevExpress.XtraEditors.v10.2.dll" Name="DevExpress.XtraEditors.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraEditors.v10.2.dll"  />
+							<File Id="DevExpress.XtraGrid.v10.2.dll" Name="DevExpress.XtraGrid.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraGrid.v10.2.dll" />
+							<File Id="DevExpress.XtraNavBar.v10.2.dll" Name="DevExpress.XtraNavBar.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraNavBar.v10.2.dll" />
 						</Component>
 						<Component Id="AtmoUIExecutable" Guid="68d1ecba-629a-4125-9967-5206f272ba31" NeverOverwrite="no">
 							<File Id="AtmoUIDevExexe" Name="Atmo.UI.DevEx.exe" Source="$(var.OutputPath)\Atmo.UI.DevEx.exe" KeyPath="yes">
@@ -87,6 +103,8 @@
 		<Feature Id="ProductFeature" Title="Atmo 2" Level="1">
 			<ComponentRef Id="CoreFolderComponent"/>
 			<ComponentRef Id="Core3rdParty" />
+      <ComponentRef Id="SQLite_x86" />
+      <ComponentRef Id="SQLite_x64" />
 			<ComponentRef Id="AtmoCore" />
 			<ComponentRef Id="AtmoWinFormsLibs" />
 			<ComponentRef Id="DevExpress3rdParty" />

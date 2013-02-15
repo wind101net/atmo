@@ -222,11 +222,19 @@ namespace Atmo.Data {
         [XmlElement]
         public bool PwsEnabled { get; set; }
 
+        //rp
+        [XmlElement]
+        public bool WeatherEnabled { get; set; }
+        
+
         [XmlElement]
         public bool PwfEnabled { get; set; }
 
         [XmlElement]
         public bool PawEnabled { get; set; }
+
+        [XmlElement]
+        public int StationSensorIndexWeather { get; set; }
 
         [XmlElement]
         public int StationSensorIndexWF { get; set; }
