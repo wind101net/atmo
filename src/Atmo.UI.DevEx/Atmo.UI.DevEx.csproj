@@ -120,6 +120,7 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="AdvancedSensorValues.cs" />
     <Compile Include="Controls\CustomTimeRangeSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>

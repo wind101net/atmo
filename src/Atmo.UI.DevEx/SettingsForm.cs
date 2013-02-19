@@ -28,11 +28,15 @@ using Atmo.Data;
 using Atmo.Units;
 using DevExpress.XtraEditors;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Net;
 
 namespace Atmo.UI.DevEx {
 	public partial class SettingsForm : XtraForm {
 
 		public PersistentState State { get; private set; }
+
+        public double time_correction;
 
 		public SettingsForm(PersistentState state) {
 			if(null == state) {
@@ -69,13 +73,13 @@ namespace Atmo.UI.DevEx {
 
 		public void SetPwsFormValues() {
 
-
+            //rp
+            time_label.Text = time_correction.ToString();
 
             //rp - uprava pre weather underground
             textBoxWeatherName.Text = State.StationNameWeather;
             textBoxWeatherPassword.Text = State.StationPasswordWeather;
             checkEditWeather.Checked = State.WeatherEnabled;
-            listBoxWeatherTime.Text = State.StationIntervalWeather.ToString();
             listBoxWeatherSensor.SetSelected(0, false);
             listBoxWeatherSensor.SetSelected(1, false);
             listBoxWeatherSensor.SetSelected(2, false);
@@ -114,7 +118,6 @@ namespace Atmo.UI.DevEx {
             State.WeatherEnabled = checkEditWeather.Checked;
             State.StationNameWeather = textBoxWeatherName.Text;
             State.StationPasswordWeather = textBoxWeatherPassword.Text;
-            State.StationIntervalWeather = Int16.Parse(listBoxWeatherTime.Text);
             int ako = 0;
             if (listBoxWeatherSensor.GetSelected(0) == true)
                 ako = 0;
@@ -281,5 +284,102 @@ namespace Atmo.UI.DevEx {
                 textBoxWeatherPassword.PasswordChar = '*';
         }
 
+
+        public DateTime GetNetworkTime()
+        {
+
+            try
+            {
+
+                //default Windows time server
+                const string ntpServer = "time.windows.com";
+
+                // NTP message size - 16 bytes of the digest (RFC 2030)
+                var ntpData = new byte[48];
+
+                //Setting the Leap Indicator, Version Number and Mode values
+                ntpData[0] = 0x1B; //LI = 0 (no warning), VN = 3 (IPv4 only), Mode = 3 (Client Mode)
+
+                var addresses = Dns.GetHostEntry(ntpServer).AddressList;
+
+                //The UDP port number assigned to NTP is 123
+                var ipEndPoint = new IPEndPoint(addresses[0], 123);
+                //NTP uses UDP
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+                //rp
+                socket.ReceiveTimeout = 1000;
+                socket.SendTimeout = 500;
+
+
+                socket.Connect(ipEndPoint);
+
+
+
+                socket.Send(ntpData);
+                socket.Receive(ntpData);
+                socket.Close();
+
+                //Offset to get to the "Transmit Timestamp" field (time at which the reply 
+                //departed the server for the client, in 64-bit timestamp format."
+                const byte serverReplyTime = 40;
+
+                //Get the seconds part
+                ulong intPart = BitConverter.ToUInt32(ntpData, serverReplyTime);
+
+                //Get the seconds fraction
+                ulong fractPart = BitConverter.ToUInt32(ntpData, serverReplyTime + 4);
+
+                //Convert From big-endian to little-endian
+                intPart = SwapEndianness(intPart);
+                fractPart = SwapEndianness(fractPart);
+
+                var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
+
+                //**UTC** time
+                var networkDateTime = (new DateTime(1900, 1, 1)).AddMilliseconds((long)milliseconds);
+
+                return networkDateTime;
+            }
+            catch (Exception ex)
+            {
+                //  MessageBox.Show("Error with time synchronization !!!");
+
+                return new DateTime(1905, 2, 2, 2, 2, 2);
+            }
+        }
+
+        // stackoverflow.com/a/3294698/162671
+        static uint SwapEndianness(ulong x)
+        {
+            return (uint)(((x & 0x000000ff) << 24) +
+                           ((x & 0x0000ff00) << 8) +
+                           ((x & 0x00ff0000) >> 8) +
+                           ((x & 0xff000000) >> 24));
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DateTime dtNet = GetNetworkTime();
+            DateTime dtNow = DateTime.UtcNow;
+
+            if (dtNet.Year == 1905)
+            {
+                MessageBox.Show("Time synchronization error !");
+            }
+            else
+            {
+                time_correction = (dtNet - dtNow).TotalMilliseconds;
+                time_label.Text = "Time synchronized - Correction = " + time_correction + " [ms]";
+                MessageBox.Show("Time synchronized !");
+            }
+
+
+        }
+
+
+
+
 	}
+
 }

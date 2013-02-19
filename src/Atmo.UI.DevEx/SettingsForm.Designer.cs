@@ -71,8 +71,6 @@
             this.xtraTabPagePws = new DevExpress.XtraTab.XtraTabPage();
             this.checkBoxShowPasswordWeather = new System.Windows.Forms.CheckBox();
             this.checkEditWeather = new System.Windows.Forms.CheckBox();
-            this.listBoxWeatherTime = new System.Windows.Forms.ListBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.listBoxWeatherSensor = new System.Windows.Forms.ListBox();
             this.textBoxWeatherPassword = new System.Windows.Forms.TextBox();
@@ -90,6 +88,9 @@
             this.textBoxWFname = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
+            this.time_label = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).BeginInit();
             this.xtraTabControlSettings.SuspendLayout();
             this.xtraTabPage1.SuspendLayout();
@@ -118,6 +119,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxEditTemp.Properties)).BeginInit();
             this.xtraTabPagePws.SuspendLayout();
             this.xtraTabPageFW.SuspendLayout();
+            this.xtraTabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // simpleButtonApply
@@ -165,7 +167,8 @@
             this.xtraTabPageData,
             this.xtraTabPagePws,
             this.xtraTabPageFW,
-            this.xtraTabPage1});
+            this.xtraTabPage1,
+            this.xtraTabPage2});
             // 
             // xtraTabPage1
             // 
@@ -680,8 +683,6 @@
             // 
             this.xtraTabPagePws.Controls.Add(this.checkBoxShowPasswordWeather);
             this.xtraTabPagePws.Controls.Add(this.checkEditWeather);
-            this.xtraTabPagePws.Controls.Add(this.listBoxWeatherTime);
-            this.xtraTabPagePws.Controls.Add(this.label9);
             this.xtraTabPagePws.Controls.Add(this.label10);
             this.xtraTabPagePws.Controls.Add(this.listBoxWeatherSensor);
             this.xtraTabPagePws.Controls.Add(this.textBoxWeatherPassword);
@@ -712,29 +713,6 @@
             this.checkEditWeather.TabIndex = 20;
             this.checkEditWeather.Text = "Enable Weather underground scheduler";
             this.checkEditWeather.UseVisualStyleBackColor = true;
-            // 
-            // listBoxWeatherTime
-            // 
-            this.listBoxWeatherTime.FormattingEnabled = true;
-            this.listBoxWeatherTime.Items.AddRange(new object[] {
-            "1",
-            "5",
-            "10",
-            "15",
-            "30"});
-            this.listBoxWeatherTime.Location = new System.Drawing.Point(133, 176);
-            this.listBoxWeatherTime.Name = "listBoxWeatherTime";
-            this.listBoxWeatherTime.Size = new System.Drawing.Size(125, 82);
-            this.listBoxWeatherTime.TabIndex = 19;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(23, 176);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(95, 13);
-            this.label9.TabIndex = 18;
-            this.label9.Text = "Time interval [min]";
             // 
             // label10
             // 
@@ -906,6 +884,33 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Enter name:";
             // 
+            // xtraTabPage2
+            // 
+            this.xtraTabPage2.Controls.Add(this.time_label);
+            this.xtraTabPage2.Controls.Add(this.button1);
+            this.xtraTabPage2.Name = "xtraTabPage2";
+            this.xtraTabPage2.Size = new System.Drawing.Size(426, 272);
+            this.xtraTabPage2.Text = "Time settings";
+            // 
+            // time_label
+            // 
+            this.time_label.AutoSize = true;
+            this.time_label.Location = new System.Drawing.Point(18, 50);
+            this.time_label.Name = "time_label";
+            this.time_label.Size = new System.Drawing.Size(25, 13);
+            this.time_label.TabIndex = 1;
+            this.time_label.Text = "___";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(241, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Synchronize time with internet server";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -956,6 +961,8 @@
             this.xtraTabPagePws.PerformLayout();
             this.xtraTabPageFW.ResumeLayout(false);
             this.xtraTabPageFW.PerformLayout();
+            this.xtraTabPage2.ResumeLayout(false);
+            this.xtraTabPage2.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1020,13 +1027,14 @@
         private System.Windows.Forms.CheckBox checkBoxShowPasswordWind;
         private System.Windows.Forms.CheckBox checkBoxShowPasswordWeather;
         private System.Windows.Forms.CheckBox checkEditWeather;
-        private System.Windows.Forms.ListBox listBoxWeatherTime;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ListBox listBoxWeatherSensor;
         private System.Windows.Forms.TextBox textBoxWeatherPassword;
         private System.Windows.Forms.TextBox textBoxWeatherName;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private DevExpress.XtraTab.XtraTabPage xtraTabPage2;
+        private System.Windows.Forms.Label time_label;
+        private System.Windows.Forms.Button button1;
 	}
 }
