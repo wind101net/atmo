@@ -83,7 +83,6 @@
             this.backgroundWorkerLiveGraph = new System.ComponentModel.BackgroundWorker();
             this.timerWindFinder = new System.Windows.Forms.Timer(this.components);
             this.timerAwekas = new System.Windows.Forms.Timer(this.components);
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             this.panelSensors.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl4)).BeginInit();
@@ -129,10 +128,9 @@
             this.barButtonItemTimeSync,
             this.barSubItemDebug,
             this.barButtonItemAdd24Hours,
-            this.barButtonItemFirmwareUpdateV2,
-            this.barButtonItem1});
+            this.barButtonItemFirmwareUpdateV2});
             this.barManager.MainMenu = this.bar2;
-            this.barManager.MaxItemId = 22;
+            this.barManager.MaxItemId = 21;
             // 
             // bar2
             // 
@@ -272,8 +270,7 @@
             this.barSubItemDebug.Caption = "Debug";
             this.barSubItemDebug.Id = 18;
             this.barSubItemDebug.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemAdd24Hours),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem1)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItemAdd24Hours)});
             this.barSubItemDebug.Name = "barSubItemDebug";
             this.barSubItemDebug.Visibility = DevExpress.XtraBars.BarItemVisibility.Never;
             // 
@@ -289,32 +286,28 @@
             this.barDockControlTop.CausesValidation = false;
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
-            this.barDockControlTop.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.barDockControlTop.Size = new System.Drawing.Size(948, 29);
+            this.barDockControlTop.Size = new System.Drawing.Size(813, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 1055);
-            this.barDockControlBottom.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.barDockControlBottom.Size = new System.Drawing.Size(948, 0);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 862);
+            this.barDockControlBottom.Size = new System.Drawing.Size(813, 0);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 29);
-            this.barDockControlLeft.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 1026);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 838);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(948, 29);
-            this.barDockControlRight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 1026);
+            this.barDockControlRight.Location = new System.Drawing.Point(813, 24);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 838);
             // 
             // barSubItem5
             // 
@@ -334,11 +327,10 @@
             this.liveAtmosphericGraph.ConverterCacheReadingValues = null;
             this.liveAtmosphericGraph.Dock = System.Windows.Forms.DockStyle.Top;
             this.liveAtmosphericGraph.HeightAboveSeaLevel = 0D;
-            this.liveAtmosphericGraph.Location = new System.Drawing.Point(0, 34);
-            this.liveAtmosphericGraph.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.liveAtmosphericGraph.Location = new System.Drawing.Point(0, 28);
             this.liveAtmosphericGraph.Name = "liveAtmosphericGraph";
             this.liveAtmosphericGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-            this.liveAtmosphericGraph.Size = new System.Drawing.Size(682, 623);
+            this.liveAtmosphericGraph.Size = new System.Drawing.Size(586, 506);
             this.liveAtmosphericGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
             this.liveAtmosphericGraph.State = null;
             this.liveAtmosphericGraph.TabIndex = 4;
@@ -360,10 +352,9 @@
             this.panelSensors.Controls.Add(this.groupControlDbList);
             this.panelSensors.Controls.Add(this.groupControlSensors);
             this.panelSensors.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelSensors.Location = new System.Drawing.Point(0, 331);
-            this.panelSensors.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.panelSensors.Location = new System.Drawing.Point(0, 269);
             this.panelSensors.Name = "panelSensors";
-            this.panelSensors.Size = new System.Drawing.Size(238, 595);
+            this.panelSensors.Size = new System.Drawing.Size(204, 483);
             this.panelSensors.TabIndex = 13;
             // 
             // groupControl4
@@ -371,10 +362,9 @@
             this.groupControl4.Controls.Add(this.labelControlAwekas);
             this.groupControl4.Controls.Add(this.simpleButtonAwekas);
             this.groupControl4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupControl4.Location = new System.Drawing.Point(0, 377);
-            this.groupControl4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupControl4.Location = new System.Drawing.Point(0, 305);
             this.groupControl4.Name = "groupControl4";
-            this.groupControl4.Size = new System.Drawing.Size(236, 108);
+            this.groupControl4.Size = new System.Drawing.Size(202, 88);
             this.groupControl4.TabIndex = 61;
             this.groupControl4.Text = "AWEKAS";
             // 
@@ -384,10 +374,9 @@
             this.labelControlAwekas.AutoEllipsis = true;
             this.labelControlAwekas.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControlAwekas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControlAwekas.Location = new System.Drawing.Point(2, 24);
-            this.labelControlAwekas.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControlAwekas.Location = new System.Drawing.Point(2, 22);
             this.labelControlAwekas.Name = "labelControlAwekas";
-            this.labelControlAwekas.Size = new System.Drawing.Size(232, 39);
+            this.labelControlAwekas.Size = new System.Drawing.Size(198, 29);
             this.labelControlAwekas.TabIndex = 0;
             this.labelControlAwekas.Text = "N/A";
             // 
@@ -397,11 +386,10 @@
             this.simpleButtonAwekas.Appearance.Options.UseForeColor = true;
             this.simpleButtonAwekas.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.simpleButtonAwekas.Image = global::Atmo.UI.DevEx.Properties.Resources.Stream_Off;
-            this.simpleButtonAwekas.Location = new System.Drawing.Point(2, 63);
+            this.simpleButtonAwekas.Location = new System.Drawing.Point(2, 51);
             this.simpleButtonAwekas.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.UltraFlat;
-            this.simpleButtonAwekas.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.simpleButtonAwekas.Name = "simpleButtonAwekas";
-            this.simpleButtonAwekas.Size = new System.Drawing.Size(232, 43);
+            this.simpleButtonAwekas.Size = new System.Drawing.Size(198, 35);
             this.simpleButtonAwekas.TabIndex = 1;
             this.simpleButtonAwekas.Text = "N/A";
             this.simpleButtonAwekas.Click += new System.EventHandler(this.simpleButtonAwekasaction_Click);
@@ -411,10 +399,9 @@
             this.groupControl3.Controls.Add(this.labelControlWindFinder);
             this.groupControl3.Controls.Add(this.simpleButtonWindFinderAction);
             this.groupControl3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupControl3.Location = new System.Drawing.Point(0, 485);
-            this.groupControl3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupControl3.Location = new System.Drawing.Point(0, 393);
             this.groupControl3.Name = "groupControl3";
-            this.groupControl3.Size = new System.Drawing.Size(236, 108);
+            this.groupControl3.Size = new System.Drawing.Size(202, 88);
             this.groupControl3.TabIndex = 60;
             this.groupControl3.Text = "Windfinder";
             // 
@@ -424,10 +411,9 @@
             this.labelControlWindFinder.AutoEllipsis = true;
             this.labelControlWindFinder.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControlWindFinder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControlWindFinder.Location = new System.Drawing.Point(2, 24);
-            this.labelControlWindFinder.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControlWindFinder.Location = new System.Drawing.Point(2, 22);
             this.labelControlWindFinder.Name = "labelControlWindFinder";
-            this.labelControlWindFinder.Size = new System.Drawing.Size(232, 39);
+            this.labelControlWindFinder.Size = new System.Drawing.Size(198, 29);
             this.labelControlWindFinder.TabIndex = 0;
             this.labelControlWindFinder.Text = "N/A";
             // 
@@ -437,11 +423,10 @@
             this.simpleButtonWindFinderAction.Appearance.Options.UseForeColor = true;
             this.simpleButtonWindFinderAction.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.simpleButtonWindFinderAction.Image = global::Atmo.UI.DevEx.Properties.Resources.Stream_Off;
-            this.simpleButtonWindFinderAction.Location = new System.Drawing.Point(2, 63);
+            this.simpleButtonWindFinderAction.Location = new System.Drawing.Point(2, 51);
             this.simpleButtonWindFinderAction.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.UltraFlat;
-            this.simpleButtonWindFinderAction.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.simpleButtonWindFinderAction.Name = "simpleButtonWindFinderAction";
-            this.simpleButtonWindFinderAction.Size = new System.Drawing.Size(232, 43);
+            this.simpleButtonWindFinderAction.Size = new System.Drawing.Size(198, 35);
             this.simpleButtonWindFinderAction.TabIndex = 1;
             this.simpleButtonWindFinderAction.Text = "N/A";
             this.simpleButtonWindFinderAction.Click += new System.EventHandler(this.simpleButtonWindFinderAction_Click);
@@ -451,10 +436,9 @@
             this.groupControlDbList.AutoSize = true;
             this.groupControlDbList.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupControlDbList.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupControlDbList.Location = new System.Drawing.Point(0, 26);
-            this.groupControlDbList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupControlDbList.Location = new System.Drawing.Point(0, 24);
             this.groupControlDbList.Name = "groupControlDbList";
-            this.groupControlDbList.Size = new System.Drawing.Size(236, 26);
+            this.groupControlDbList.Size = new System.Drawing.Size(202, 24);
             this.groupControlDbList.TabIndex = 2;
             this.groupControlDbList.Text = "Available Sensor Data Databases";
             // 
@@ -464,9 +448,8 @@
             this.groupControlSensors.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupControlSensors.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupControlSensors.Location = new System.Drawing.Point(0, 0);
-            this.groupControlSensors.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupControlSensors.Name = "groupControlSensors";
-            this.groupControlSensors.Size = new System.Drawing.Size(236, 26);
+            this.groupControlSensors.Size = new System.Drawing.Size(202, 24);
             this.groupControlSensors.TabIndex = 1;
             this.groupControlSensors.Text = "Available Sensors";
             // 
@@ -474,10 +457,9 @@
             // 
             this.simpleButtonFindSensors.Dock = System.Windows.Forms.DockStyle.Top;
             this.simpleButtonFindSensors.Image = global::Atmo.UI.DevEx.Properties.Resources.Search_Sensor;
-            this.simpleButtonFindSensors.Location = new System.Drawing.Point(0, 202);
-            this.simpleButtonFindSensors.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.simpleButtonFindSensors.Location = new System.Drawing.Point(0, 164);
             this.simpleButtonFindSensors.Name = "simpleButtonFindSensors";
-            this.simpleButtonFindSensors.Size = new System.Drawing.Size(238, 43);
+            this.simpleButtonFindSensors.Size = new System.Drawing.Size(204, 35);
             this.simpleButtonFindSensors.TabIndex = 18;
             this.simpleButtonFindSensors.Text = "Find Sensors...";
             this.simpleButtonFindSensors.Click += new System.EventHandler(this.simpleButtonFindSensors_Click);
@@ -490,10 +472,9 @@
             // 
             this.simpleButtonDownloadData.Dock = System.Windows.Forms.DockStyle.Top;
             this.simpleButtonDownloadData.Image = global::Atmo.UI.DevEx.Properties.Resources.Download_Data;
-            this.simpleButtonDownloadData.Location = new System.Drawing.Point(0, 159);
-            this.simpleButtonDownloadData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.simpleButtonDownloadData.Location = new System.Drawing.Point(0, 129);
             this.simpleButtonDownloadData.Name = "simpleButtonDownloadData";
-            this.simpleButtonDownloadData.Size = new System.Drawing.Size(238, 43);
+            this.simpleButtonDownloadData.Size = new System.Drawing.Size(204, 35);
             this.simpleButtonDownloadData.TabIndex = 23;
             this.simpleButtonDownloadData.Text = "Get Logger Data";
             this.simpleButtonDownloadData.Click += new System.EventHandler(this.simpleButtonDownloadData_Click);
@@ -502,11 +483,10 @@
             // 
             this.windResourceGraph.ConverterCacheReadingValues = null;
             this.windResourceGraph.Dock = System.Windows.Forms.DockStyle.Top;
-            this.windResourceGraph.Location = new System.Drawing.Point(0, 1381);
-            this.windResourceGraph.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.windResourceGraph.Location = new System.Drawing.Point(0, 1123);
             this.windResourceGraph.Name = "windResourceGraph";
             this.windResourceGraph.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-            this.windResourceGraph.Size = new System.Drawing.Size(682, 958);
+            this.windResourceGraph.Size = new System.Drawing.Size(586, 778);
             this.windResourceGraph.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
             this.windResourceGraph.State = null;
             this.windResourceGraph.TabIndex = 28;
@@ -518,11 +498,10 @@
             this.historicalGraphBreakdown.CumulativeTimeSpan = System.TimeSpan.Parse("00:00:00");
             this.historicalGraphBreakdown.Dock = System.Windows.Forms.DockStyle.Top;
             this.historicalGraphBreakdown.DrillStartDate = new System.DateTime(((long)(0)));
-            this.historicalGraphBreakdown.Location = new System.Drawing.Point(0, 691);
-            this.historicalGraphBreakdown.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.historicalGraphBreakdown.Location = new System.Drawing.Point(0, 562);
             this.historicalGraphBreakdown.Name = "historicalGraphBreakdown";
             this.historicalGraphBreakdown.PressureUnit = Atmo.Units.PressureUnit.Pascals;
-            this.historicalGraphBreakdown.Size = new System.Drawing.Size(682, 690);
+            this.historicalGraphBreakdown.Size = new System.Drawing.Size(586, 561);
             this.historicalGraphBreakdown.SpeedUnit = Atmo.Units.SpeedUnit.MetersPerSec;
             this.historicalGraphBreakdown.State = null;
             this.historicalGraphBreakdown.StepBack = false;
@@ -533,12 +512,11 @@
             // 
             this.historicalTimeSelectHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.historicalTimeSelectHeader.HeaderText = "Historic Data";
-            this.historicalTimeSelectHeader.Location = new System.Drawing.Point(0, 657);
-            this.historicalTimeSelectHeader.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.historicalTimeSelectHeader.MaximumSize = new System.Drawing.Size(0, 34);
-            this.historicalTimeSelectHeader.MinimumSize = new System.Drawing.Size(678, 34);
+            this.historicalTimeSelectHeader.Location = new System.Drawing.Point(0, 534);
+            this.historicalTimeSelectHeader.MaximumSize = new System.Drawing.Size(0, 28);
+            this.historicalTimeSelectHeader.MinimumSize = new System.Drawing.Size(581, 28);
             this.historicalTimeSelectHeader.Name = "historicalTimeSelectHeader";
-            this.historicalTimeSelectHeader.Size = new System.Drawing.Size(682, 34);
+            this.historicalTimeSelectHeader.Size = new System.Drawing.Size(586, 28);
             this.historicalTimeSelectHeader.TabIndex = 43;
             // 
             // liveAtmosphericHeader
@@ -547,11 +525,11 @@
             this.liveAtmosphericHeader.Appearance.Options.UseFont = true;
             this.liveAtmosphericHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.liveAtmosphericHeader.Location = new System.Drawing.Point(0, 0);
-            this.liveAtmosphericHeader.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.liveAtmosphericHeader.MaximumSize = new System.Drawing.Size(0, 34);
-            this.liveAtmosphericHeader.MinimumSize = new System.Drawing.Size(325, 34);
+            this.liveAtmosphericHeader.Margin = new System.Windows.Forms.Padding(4);
+            this.liveAtmosphericHeader.MaximumSize = new System.Drawing.Size(0, 28);
+            this.liveAtmosphericHeader.MinimumSize = new System.Drawing.Size(279, 28);
             this.liveAtmosphericHeader.Name = "liveAtmosphericHeader";
-            this.liveAtmosphericHeader.Size = new System.Drawing.Size(682, 34);
+            this.liveAtmosphericHeader.Size = new System.Drawing.Size(586, 28);
             this.liveAtmosphericHeader.TabIndex = 48;
             // 
             // mainScrollableControl
@@ -565,10 +543,9 @@
             this.mainScrollableControl.Controls.Add(this.liveAtmosphericGraph);
             this.mainScrollableControl.Controls.Add(this.liveAtmosphericHeader);
             this.mainScrollableControl.FireScrollEventOnMouseWheel = true;
-            this.mainScrollableControl.Location = new System.Drawing.Point(245, 28);
-            this.mainScrollableControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.mainScrollableControl.Location = new System.Drawing.Point(210, 23);
             this.mainScrollableControl.Name = "mainScrollableControl";
-            this.mainScrollableControl.Size = new System.Drawing.Size(703, 1034);
+            this.mainScrollableControl.Size = new System.Drawing.Size(603, 840);
             this.mainScrollableControl.TabIndex = 49;
             // 
             // groupControl1
@@ -576,9 +553,8 @@
             this.groupControl1.Controls.Add(this.tableLayoutPanel1);
             this.groupControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupControl1.Location = new System.Drawing.Point(0, 0);
-            this.groupControl1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(238, 159);
+            this.groupControl1.Size = new System.Drawing.Size(204, 129);
             this.groupControl1.TabIndex = 54;
             this.groupControl1.Text = "Logger Status";
             // 
@@ -598,8 +574,7 @@
             this.tableLayoutPanel1.Controls.Add(this.labelVolBat, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.labelDaqTime, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 24);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 22);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0008F));
@@ -607,17 +582,16 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0008F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.9988F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.9988F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(234, 133);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(200, 105);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // labelControl2
             // 
             this.labelControl2.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl2.Location = new System.Drawing.Point(3, 108);
-            this.labelControl2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControl2.Location = new System.Drawing.Point(3, 86);
             this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(99, 21);
+            this.labelControl2.Size = new System.Drawing.Size(84, 16);
             this.labelControl2.TabIndex = 1;
             this.labelControl2.Text = "USB Voltage:";
             // 
@@ -625,10 +599,9 @@
             // 
             this.labelControl1.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl1.Location = new System.Drawing.Point(3, 82);
-            this.labelControl1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControl1.Location = new System.Drawing.Point(3, 66);
             this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(99, 18);
+            this.labelControl1.Size = new System.Drawing.Size(84, 14);
             this.labelControl1.TabIndex = 0;
             this.labelControl1.Text = "Battery Voltage:";
             // 
@@ -636,10 +609,9 @@
             // 
             this.labelControl3.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControl3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl3.Location = new System.Drawing.Point(3, 56);
-            this.labelControl3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControl3.Location = new System.Drawing.Point(3, 45);
             this.labelControl3.Name = "labelControl3";
-            this.labelControl3.Size = new System.Drawing.Size(99, 18);
+            this.labelControl3.Size = new System.Drawing.Size(84, 15);
             this.labelControl3.TabIndex = 2;
             this.labelControl3.Text = "Logger Temp.:";
             // 
@@ -647,10 +619,9 @@
             // 
             this.labelVolUsb.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelVolUsb.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVolUsb.Location = new System.Drawing.Point(108, 108);
-            this.labelVolUsb.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelVolUsb.Location = new System.Drawing.Point(93, 86);
             this.labelVolUsb.Name = "labelVolUsb";
-            this.labelVolUsb.Size = new System.Drawing.Size(123, 21);
+            this.labelVolUsb.Size = new System.Drawing.Size(104, 16);
             this.labelVolUsb.TabIndex = 4;
             this.labelVolUsb.Text = "N/A";
             // 
@@ -658,10 +629,9 @@
             // 
             this.labelTmpDaq.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelTmpDaq.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelTmpDaq.Location = new System.Drawing.Point(108, 56);
-            this.labelTmpDaq.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelTmpDaq.Location = new System.Drawing.Point(93, 45);
             this.labelTmpDaq.Name = "labelTmpDaq";
-            this.labelTmpDaq.Size = new System.Drawing.Size(123, 18);
+            this.labelTmpDaq.Size = new System.Drawing.Size(104, 15);
             this.labelTmpDaq.TabIndex = 3;
             this.labelTmpDaq.Text = "N/A";
             // 
@@ -669,10 +639,9 @@
             // 
             this.labelControl5.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControl5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl5.Location = new System.Drawing.Point(3, 4);
-            this.labelControl5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControl5.Location = new System.Drawing.Point(3, 3);
             this.labelControl5.Name = "labelControl5";
-            this.labelControl5.Size = new System.Drawing.Size(99, 18);
+            this.labelControl5.Size = new System.Drawing.Size(84, 15);
             this.labelControl5.TabIndex = 7;
             this.labelControl5.Text = "Computer Time:";
             // 
@@ -680,10 +649,9 @@
             // 
             this.labelLocalTime.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelLocalTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelLocalTime.Location = new System.Drawing.Point(108, 4);
-            this.labelLocalTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelLocalTime.Location = new System.Drawing.Point(93, 3);
             this.labelLocalTime.Name = "labelLocalTime";
-            this.labelLocalTime.Size = new System.Drawing.Size(123, 18);
+            this.labelLocalTime.Size = new System.Drawing.Size(104, 15);
             this.labelLocalTime.TabIndex = 9;
             this.labelLocalTime.Text = "N/A";
             // 
@@ -691,10 +659,9 @@
             // 
             this.labelControl4.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControl4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl4.Location = new System.Drawing.Point(3, 30);
-            this.labelControl4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControl4.Location = new System.Drawing.Point(3, 24);
             this.labelControl4.Name = "labelControl4";
-            this.labelControl4.Size = new System.Drawing.Size(99, 18);
+            this.labelControl4.Size = new System.Drawing.Size(84, 15);
             this.labelControl4.TabIndex = 6;
             this.labelControl4.Text = "Logger Time:";
             // 
@@ -702,10 +669,9 @@
             // 
             this.labelVolBat.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelVolBat.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVolBat.Location = new System.Drawing.Point(108, 82);
-            this.labelVolBat.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelVolBat.Location = new System.Drawing.Point(93, 66);
             this.labelVolBat.Name = "labelVolBat";
-            this.labelVolBat.Size = new System.Drawing.Size(123, 18);
+            this.labelVolBat.Size = new System.Drawing.Size(104, 14);
             this.labelVolBat.TabIndex = 5;
             this.labelVolBat.Text = "N/A";
             // 
@@ -713,10 +679,9 @@
             // 
             this.labelDaqTime.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelDaqTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelDaqTime.Location = new System.Drawing.Point(108, 30);
-            this.labelDaqTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelDaqTime.Location = new System.Drawing.Point(93, 24);
             this.labelDaqTime.Name = "labelDaqTime";
-            this.labelDaqTime.Size = new System.Drawing.Size(123, 18);
+            this.labelDaqTime.Size = new System.Drawing.Size(104, 15);
             this.labelDaqTime.TabIndex = 8;
             this.labelDaqTime.Text = "N/A";
             // 
@@ -731,10 +696,9 @@
             this.groupControl2.Controls.Add(this.labelControlPwsStatus);
             this.groupControl2.Controls.Add(this.simpleButtonPwsAction);
             this.groupControl2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupControl2.Location = new System.Drawing.Point(0, 926);
-            this.groupControl2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupControl2.Location = new System.Drawing.Point(0, 752);
             this.groupControl2.Name = "groupControl2";
-            this.groupControl2.Size = new System.Drawing.Size(238, 108);
+            this.groupControl2.Size = new System.Drawing.Size(204, 88);
             this.groupControl2.TabIndex = 59;
             this.groupControl2.Text = "Weather Underground";
             // 
@@ -744,10 +708,9 @@
             this.labelControlPwsStatus.AutoEllipsis = true;
             this.labelControlPwsStatus.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControlPwsStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControlPwsStatus.Location = new System.Drawing.Point(2, 24);
-            this.labelControlPwsStatus.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.labelControlPwsStatus.Location = new System.Drawing.Point(2, 22);
             this.labelControlPwsStatus.Name = "labelControlPwsStatus";
-            this.labelControlPwsStatus.Size = new System.Drawing.Size(234, 39);
+            this.labelControlPwsStatus.Size = new System.Drawing.Size(200, 29);
             this.labelControlPwsStatus.TabIndex = 0;
             this.labelControlPwsStatus.Text = "N/A";
             // 
@@ -757,11 +720,10 @@
             this.simpleButtonPwsAction.Appearance.Options.UseForeColor = true;
             this.simpleButtonPwsAction.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.simpleButtonPwsAction.Image = global::Atmo.UI.DevEx.Properties.Resources.Stream_Off;
-            this.simpleButtonPwsAction.Location = new System.Drawing.Point(2, 63);
+            this.simpleButtonPwsAction.Location = new System.Drawing.Point(2, 51);
             this.simpleButtonPwsAction.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.UltraFlat;
-            this.simpleButtonPwsAction.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.simpleButtonPwsAction.Name = "simpleButtonPwsAction";
-            this.simpleButtonPwsAction.Size = new System.Drawing.Size(234, 43);
+            this.simpleButtonPwsAction.Size = new System.Drawing.Size(200, 35);
             this.simpleButtonPwsAction.TabIndex = 1;
             this.simpleButtonPwsAction.Text = "N/A";
             this.simpleButtonPwsAction.Click += new System.EventHandler(this.simpleButtonPwsAction_Click);
@@ -775,10 +737,9 @@
             // 
             this.simpleButtonTimeSync.Dock = System.Windows.Forms.DockStyle.Top;
             this.simpleButtonTimeSync.Image = global::Atmo.UI.DevEx.Properties.Resources.Sync_Time;
-            this.simpleButtonTimeSync.Location = new System.Drawing.Point(0, 288);
-            this.simpleButtonTimeSync.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.simpleButtonTimeSync.Location = new System.Drawing.Point(0, 234);
             this.simpleButtonTimeSync.Name = "simpleButtonTimeSync";
-            this.simpleButtonTimeSync.Size = new System.Drawing.Size(238, 43);
+            this.simpleButtonTimeSync.Size = new System.Drawing.Size(204, 35);
             this.simpleButtonTimeSync.TabIndex = 64;
             this.simpleButtonTimeSync.Text = "Logger Time Sync...";
             this.simpleButtonTimeSync.Click += new System.EventHandler(this.simpleButtonTimeSync_Click);
@@ -789,10 +750,9 @@
             this.simpleButtonTempSource.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
             this.simpleButtonTempSource.Dock = System.Windows.Forms.DockStyle.Top;
             this.simpleButtonTempSource.Image = global::Atmo.UI.DevEx.Properties.Resources.Temp_Sensor_01;
-            this.simpleButtonTempSource.Location = new System.Drawing.Point(0, 245);
-            this.simpleButtonTempSource.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.simpleButtonTempSource.Location = new System.Drawing.Point(0, 199);
             this.simpleButtonTempSource.Name = "simpleButtonTempSource";
-            this.simpleButtonTempSource.Size = new System.Drawing.Size(238, 43);
+            this.simpleButtonTempSource.Size = new System.Drawing.Size(204, 35);
             this.simpleButtonTempSource.TabIndex = 69;
             this.simpleButtonTempSource.Text = "Temperature Source";
             this.simpleButtonTempSource.Click += new System.EventHandler(this.simpleButtonTempSource_Click);
@@ -808,10 +768,9 @@
             this.panelLeftSide.Controls.Add(this.simpleButtonDownloadData);
             this.panelLeftSide.Controls.Add(this.groupControl1);
             this.panelLeftSide.Controls.Add(this.groupControl2);
-            this.panelLeftSide.Location = new System.Drawing.Point(0, 28);
-            this.panelLeftSide.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.panelLeftSide.Location = new System.Drawing.Point(0, 23);
             this.panelLeftSide.Name = "panelLeftSide";
-            this.panelLeftSide.Size = new System.Drawing.Size(238, 1034);
+            this.panelLeftSide.Size = new System.Drawing.Size(204, 840);
             this.panelLeftSide.TabIndex = 74;
             // 
             // backgroundWorkerLiveGraph
@@ -829,18 +788,11 @@
             this.timerAwekas.Interval = 10000;
             this.timerAwekas.Tick += new System.EventHandler(this.timerAwekas_Tick);
             // 
-            // barButtonItem1
-            // 
-            this.barButtonItem1.Caption = "Pause Rapid Fire";
-            this.barButtonItem1.Id = 21;
-            this.barButtonItem1.Name = "barButtonItem1";
-            this.barButtonItem1.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem1_ItemClick);
-            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(948, 1055);
+            this.ClientSize = new System.Drawing.Size(813, 862);
             this.Controls.Add(this.panelLeftSide);
             this.Controls.Add(this.mainScrollableControl);
             this.Controls.Add(this.barDockControlLeft);
@@ -849,7 +801,6 @@
             this.Controls.Add(this.barDockControlTop);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "MainForm";
             this.Text = "Atmo 2";
@@ -944,7 +895,6 @@
         private DevExpress.XtraEditors.LabelControl labelControlAwekas;
         private DevExpress.XtraEditors.SimpleButton simpleButtonAwekas;
         private System.Windows.Forms.Timer timerAwekas;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
 
 	}
 }
