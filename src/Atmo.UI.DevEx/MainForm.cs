@@ -567,10 +567,11 @@ namespace Atmo.UI.DevEx {
 		}
 
 		private void AutoStartRapidFire() {
-			var stationNames = AppContext.PersistentState.StationNames;
-			var stationPassword = AppContext.PersistentState.StationPassword;
-			bool isValid = stationNames.Any(sn => !String.IsNullOrEmpty(sn))
-				&& !String.IsNullOrEmpty(stationPassword);
+
+            var stationName = AppContext.PersistentState.StationNameWeather;
+            var stationPassword = AppContext.PersistentState.StationPasswordWeather;
+			bool isValid = !String.IsNullOrEmpty(stationPassword) 
+				&& !String.IsNullOrEmpty(stationName);
 
 			if (timerRapidFire.Enabled != isValid) {
 				if(isValid) {
@@ -612,103 +613,163 @@ namespace Atmo.UI.DevEx {
         //rp
 		private void timerRapidFire_Tick(object sender, EventArgs e) {
 
-          
+
+            int sensor_num;
+            sensor_num = AppContext.PersistentState.StationSensorIndexWeather;
+
+            string str_not_corr_sensor = "Not correct sensor selected!";
+
+
+            try
+            {
+
+
                 ISensor[] sensors = _deviceConnection.ToArray();
 
-                IReading[] readings = sensors
-                    .Select(sensor => sensor.IsValid ? sensor.GetCurrentReading() : null)
-                    .ToArray()
-                ;
-
-                if(readings.All(r => null == r)) {
-                    labelControlPwsStatus.Text = "No sensors.";
-                }else {
-                    labelControlPwsStatus.Text = RunningText;
+                if (sensors[sensor_num].IsValid)
+                {
+                    if (labelControlPwsStatus.Text == str_not_corr_sensor)
+                    {
+                        labelControlPwsStatus.Text = "Correct sensor selected";
+                    }
                 }
-
-                var stationNames = AppContext.PersistentState.StationNames;
-                var stationPassword = AppContext.PersistentState.StationPassword;
-                if (String.IsNullOrEmpty(stationPassword)) {
-                    CancelRapidFire("No PWS password.");
+                else
+                {
+                    // CancelWindFinder("Not correct sensor selected!");
+                    labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, str_not_corr_sensor);
                     return;
                 }
-                if(stationNames == null || stationNames.Count == 0) {
-                    CancelRapidFire("No PWS stations.");
-                    return;
-                }
-                for (int i = 0; i < readings.Length; i++) {
-                    string id = stationNames[i];
-                    if (String.IsNullOrEmpty(id)) {
-                        continue;
-                    }
-                    IReading reading = readings[i];
-                    if (null == reading || !reading.IsValid) {
-                        continue;
-                    }
-                    Dictionary<string, string> queryParams = new Dictionary<string, string>();
-                    queryParams.Add("action", "updateraw");
-                    queryParams.Add("ID", id);
-                    queryParams.Add("PASSWORD", stationPassword);
-                    DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
-                    queryParams.Add("dateutc", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
-                    queryParams.Add("realtime", "1");
-                    queryParams.Add("rtfreq", ((timerRapidFire.Interval / 1000.0).ToString()));
-                    if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0) {
-                        queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
-                    }
-                    if (reading.IsWindSpeedValid) {
-                        var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
-                            .Get(sensors[i].SpeedUnit, SpeedUnit.MilesPerHour);
-                        var speed = speedConverter.Convert(reading.WindSpeed);
-                        queryParams.Add("windspeedmph",speed.ToString());
-                    }
-                    if (reading.IsHumidityValid) {
-                        queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
-                    }
-                    if (reading.IsTemperatureValid) {
-                        var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
-                            .Get(sensors[i].TemperatureUnit, TemperatureUnit.Fahrenheit);
-                        var temperature = tempConverter.Convert(reading.Temperature);
-                        queryParams.Add("tempf",temperature.ToString());
-                    }
-                    if (reading.IsPressureValid) {
-                        var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
-                            .Get(sensors[i].PressureUnit, PressureUnit.InchOfMercury);
-                        var pressure = pressConverter.Convert(reading.Pressure);
-                        queryParams.Add("baromin",pressure.ToString());
-                    }
-                    if(reading.IsHumidityValid && reading.IsTemperatureValid) {
-                        var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
-                            .Get(sensors[i].TemperatureUnit, TemperatureUnit.Celsius);
-                        var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
-                            .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
 
-                        var tempC = tempConverterCelcius.Convert(reading.Temperature);
-                        var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
-                        var dewPointF = tempConverterCToF.Convert(dewPointC);
-                        queryParams.Add("dewptf", dewPointF.ToString());
-                    }
-                    queryParams.Add(
-                        "softwaretype",
-                        "Atmo"
-                    );
+                pom_inverval_weather++;
+                if (pom_inverval_weather < AppContext.PersistentState.StationIntervalWeather * 6 ) return;
 
-                    var builder = new UriBuilder("http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php");
-                    builder.Query = String.Join(
-                        "&",
-                        queryParams
-                            .Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
-                            .ToArray()
-                    );
-                    try {
-                        var reqSent = HttpWebRequest.Create(builder.Uri);
-                        reqSent.BeginGetResponse(HandleRapidFireResult, reqSent);
-                    }
-                    catch(Exception ex) {
-                        Log.Warn("PWS rapid fire failure.", ex);
-                    }
+                pom_inverval_weather = 0;
+
+
+
+                var reading = sensors[sensor_num].GetCurrentReading();
+
+
+
+
+                var id = AppContext.PersistentState.StationNameWeather;
+                var stationPassword = AppContext.PersistentState.StationPasswordWeather;
+
+
+
+                Dictionary<string, string> queryParams = new Dictionary<string, string>();
+                queryParams.Add("action", "updateraw");
+                queryParams.Add("ID", id);
+                queryParams.Add("PASSWORD", stationPassword);
+
+                //rp povodne
+                DateTime utcStamp = reading.TimeStamp.ToUniversalTime();
+                //queryParams.Add("dateutc", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
+                queryParams.Add("dateutc", utcStamp.ToString("yyyy-MM-dd HH:mm:ss")); // format casu: priklad 18:50:20
+                
+                //rp - pokus z pocitaca brane datetime
+                //DateTime utcStamp = DateTime.Now;//utcNow
+                //queryParams.Add("dateutc", utcStamp.ToString("yyyy-MM-dd hh:mm:ss"));
+
+
+                queryParams.Add("realtime", "1");
+                queryParams.Add("rtfreq", ((  (timerRapidFire.Interval / 1000.0 * 6 ) * AppContext.PersistentState.StationIntervalWeather ).ToString()));
+                if (reading.IsWindDirectionValid && reading.WindDirection >= 0 && reading.WindDirection <= 360.0)
+                {
+                    queryParams.Add("winddir", ((int)(reading.WindDirection)).ToString());
                 }
+                if (reading.IsWindSpeedValid)
+                {
+                    var speedConverter = ReadingValuesConverterCache<Reading>.SpeedCache
+                        .Get(sensors[sensor_num].SpeedUnit, SpeedUnit.MilesPerHour);
+                    var speed = speedConverter.Convert(reading.WindSpeed);
+                    queryParams.Add("windspeedmph", speed.ToString());
+                }
+                if (reading.IsHumidityValid)
+                {
+                    queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
+                }
+                if (reading.IsTemperatureValid)
+                {
+                    var tempConverter = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Fahrenheit);
+                    var temperature = tempConverter.Convert(reading.Temperature);
+                    queryParams.Add("tempf", temperature.ToString());
+                }
+                if (reading.IsPressureValid)
+                {
+                    var pressConverter = ReadingValuesConverterCache<Reading>.PressCache
+                        .Get(sensors[sensor_num].PressureUnit, PressureUnit.InchOfMercury);
+                    var pressure = pressConverter.Convert(reading.Pressure);
+                    queryParams.Add("baromin", pressure.ToString());
+                }
+                if (reading.IsHumidityValid && reading.IsTemperatureValid)
+                {
+                    var tempConverterCelcius = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(sensors[sensor_num].TemperatureUnit, TemperatureUnit.Celsius);
+                    var tempConverterCToF = ReadingValuesConverterCache<Reading>.TemperatureCache
+                        .Get(TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
+
+                    var tempC = tempConverterCelcius.Convert(reading.Temperature);
+                    var dewPointC = DewPointCalculator.DewPoint(tempC, reading.Humidity);
+                    var dewPointF = tempConverterCToF.Convert(dewPointC);
+                    queryParams.Add("dewptf", dewPointF.ToString());
+                }
+                queryParams.Add(
+                    "softwaretype",
+                    "Atmo"
+                );
+
+                var builder = new UriBuilder("http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php");
+                builder.Query = String.Join(
+                    "&",
+                    queryParams
+                        .Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
+                        .ToArray()
+                );
+                try
+                {
+                    var reqSent = HttpWebRequest.Create(builder.Uri);
+                    reqSent.BeginGetResponse(HandleRapidFireResult, reqSent);
+
+
+                    //Log.Debug("WEATHER!!!!!!!: "+builder.Uri);
+                    ////////////////////////////!!!!!!!!!!!!!!!
+                    //MessageBox.Show("WEATHER!!!!!!!: " + builder.Uri);
+
+
+                    
+                    
+                    //rp - pomocny KOD pre ladenie WU
+                    File.AppendAllText("weatherlog.txt",
+                                       DateTime.Now.ToString() + ": " + builder.Uri + Environment.NewLine);
+
+
+
+
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn("PWS rapid fire failure.", ex);
+                }
+         
             
+            
+            
+            
+            
+            
+            
+            
+            
+            }
+            catch
+            { 
+            }
+
+
+
+
 
 
 
@@ -745,6 +806,8 @@ namespace Atmo.UI.DevEx {
 				if (null == reading || !reading.IsValid) {
 					continue;
 				}
+              
+              
 				Dictionary<string, string> queryParams = new Dictionary<string, string>();
 				queryParams.Add("action", "updateraw");
 				queryParams.Add("ID", id);
@@ -813,29 +876,7 @@ namespace Atmo.UI.DevEx {
 
 		}
 
-		private void HandleRapidFireResult(IAsyncResult result) {
-			var req = (WebRequest)result.AsyncState;
-			try {
-				using (WebResponse res = req.EndGetResponse(result)) {
-					using (var reader = new StreamReader(res.GetResponseStream())) {
-						string responseMessage = reader.ReadToEnd().ToUpperInvariant();
-						if (responseMessage.StartsWith("SUCCESS")) {
-							; // OK
-						}
-						else if (responseMessage.Contains("PASSWORD")) {
-							CancelRapidFire("PWS Station ID or password is invalid.");
-						}
-						else {
-							CancelRapidFire("PWS protocol error.");
-						}
-					}
-				}
-			}
-			catch (WebException webEx) {
-				CancelRapidFire("PWS Communication failure.");
-				Log.Warn("PWS rapid fire was disabled due to an error.", webEx);
-			}
-		}
+
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -1429,8 +1470,47 @@ namespace Atmo.UI.DevEx {
 
         }
 
+        private void HandleRapidFireResult(IAsyncResult result)
+        {
+            var req = (WebRequest)result.AsyncState;
+            try
+            {
+                using (WebResponse res = req.EndGetResponse(result))
+                {
+                    using (var reader = new StreamReader(res.GetResponseStream()))
+                    {
+                        string responseMessage = reader.ReadToEnd().ToUpperInvariant();
+                        if (responseMessage.StartsWith("SUCCESS"))
+                        {
+                            ; // OK
+                            labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, "Running");
 
+                        }
+                        else if (responseMessage.Contains("PASSWORD"))
+                        {
 
+                            //rp??????????????? - pokus aby neskoncil pri chybe passwordu a poracoval dalej
+                            // CancelRapidFire("ID or password is invalid.");
+                            labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, "ID or password is invalid.");
+
+                        }
+                        else
+                        {
+                            labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, "Weather underground  protocol error.");
+//                            CancelRapidFire("PWS protocol error.");
+                        }
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                //CancelRapidFire("PWS Communication failure.");
+                labelControlPwsStatus.SetPropertyThreadSafe(() => labelControlPwsStatus.Text, "Connection error!");
+
+                Log.Warn("Weather underground rapid fire was disabled due to an error.", webEx);
+            }
+        }
+        
         private void HandleAwResult(IAsyncResult result)
         {
             var req = (WebRequest)result.AsyncState;
@@ -1527,26 +1607,25 @@ namespace Atmo.UI.DevEx {
 
 
 
-            /*
-            var stationName = AppContext.PersistentState.StationNameAw;
-            var stationPassword = AppContext.PersistentState.StationPasswordAw;
+            
+            var stationName = AppContext.PersistentState.StationNameWeather;
+            var stationPassword = AppContext.PersistentState.StationPasswordWeather;
             bool isValid = !String.IsNullOrEmpty(stationName) &&
                 !String.IsNullOrEmpty(stationPassword);
 
 
             //MessageBox.Show(stationName + stationPassword);
 
-            if (timerAwekas.Enabled != isValid)
+            if (timerRapidFire.Enabled != isValid)
             {
                 if (isValid)
                 {
-                    StartAwekas();
-                    this.pom_inverval_aw = 60 * 60;  // aby to preslo cez casovac prvy krat
-                    timerAwekas_Tick(null, null);
+                    StartWeather();
+                    this.pom_inverval_weather = 60 * 60;  // aby to preslo cez casovac prvy krat
+                    timerRapidFire_Tick(null, null);
                 }
             }
               
-            */
         }
 
 

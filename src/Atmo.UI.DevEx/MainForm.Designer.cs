@@ -730,7 +730,7 @@
             // 
             // timerRapidFire
             // 
-            this.timerRapidFire.Interval = 5000;
+            this.timerRapidFire.Interval = 10000;
             this.timerRapidFire.Tick += new System.EventHandler(this.timerRapidFire_Tick);
             // 
             // simpleButtonTimeSync

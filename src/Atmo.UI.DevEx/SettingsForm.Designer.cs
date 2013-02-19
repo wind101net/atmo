@@ -288,7 +288,7 @@
             this.xtraTabPageGraph.Controls.Add(this.groupControlUserGraph);
             this.xtraTabPageGraph.Controls.Add(this.groupControlGraphMinRanges);
             this.xtraTabPageGraph.Name = "xtraTabPageGraph";
-            this.xtraTabPageGraph.Size = new System.Drawing.Size(422, 268);
+            this.xtraTabPageGraph.Size = new System.Drawing.Size(426, 272);
             this.xtraTabPageGraph.Text = "Graph";
             // 
             // groupControlUserGraph
@@ -556,7 +556,7 @@
             this.xtraTabPageData.Controls.Add(this.groupControl3);
             this.xtraTabPageData.Controls.Add(this.groupControl1);
             this.xtraTabPageData.Name = "xtraTabPageData";
-            this.xtraTabPageData.Size = new System.Drawing.Size(422, 268);
+            this.xtraTabPageData.Size = new System.Drawing.Size(426, 272);
             this.xtraTabPageData.Text = "Data";
             // 
             // groupControl3
@@ -565,7 +565,7 @@
             this.groupControl3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupControl3.Location = new System.Drawing.Point(0, 95);
             this.groupControl3.Name = "groupControl3";
-            this.groupControl3.Size = new System.Drawing.Size(422, 44);
+            this.groupControl3.Size = new System.Drawing.Size(426, 44);
             this.groupControl3.TabIndex = 3;
             this.groupControl3.Text = "Data Logger";
             // 
@@ -575,7 +575,7 @@
             this.checkEditSyncDaqClock.Location = new System.Drawing.Point(2, 22);
             this.checkEditSyncDaqClock.Name = "checkEditSyncDaqClock";
             this.checkEditSyncDaqClock.Properties.Caption = "Auto sync data logger clock";
-            this.checkEditSyncDaqClock.Size = new System.Drawing.Size(418, 19);
+            this.checkEditSyncDaqClock.Size = new System.Drawing.Size(422, 19);
             this.checkEditSyncDaqClock.TabIndex = 0;
             // 
             // groupControl1
@@ -584,7 +584,7 @@
             this.groupControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupControl1.Location = new System.Drawing.Point(0, 0);
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(422, 95);
+            this.groupControl1.Size = new System.Drawing.Size(426, 95);
             this.groupControl1.TabIndex = 2;
             this.groupControl1.Text = "Data Units";
             // 
@@ -606,7 +606,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(418, 71);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(422, 71);
             this.tableLayoutPanel2.TabIndex = 5;
             // 
             // comboBoxEditSpeed
@@ -616,7 +616,7 @@
             this.comboBoxEditSpeed.Name = "comboBoxEditSpeed";
             this.comboBoxEditSpeed.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.comboBoxEditSpeed.Size = new System.Drawing.Size(312, 20);
+            this.comboBoxEditSpeed.Size = new System.Drawing.Size(316, 20);
             this.comboBoxEditSpeed.TabIndex = 5;
             // 
             // comboBoxEditPress
@@ -626,7 +626,7 @@
             this.comboBoxEditPress.Name = "comboBoxEditPress";
             this.comboBoxEditPress.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.comboBoxEditPress.Size = new System.Drawing.Size(312, 20);
+            this.comboBoxEditPress.Size = new System.Drawing.Size(316, 20);
             this.comboBoxEditPress.TabIndex = 4;
             // 
             // labelControl4
@@ -673,7 +673,7 @@
             this.comboBoxEditTemp.Name = "comboBoxEditTemp";
             this.comboBoxEditTemp.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.comboBoxEditTemp.Size = new System.Drawing.Size(312, 20);
+            this.comboBoxEditTemp.Size = new System.Drawing.Size(316, 20);
             this.comboBoxEditTemp.TabIndex = 3;
             // 
             // xtraTabPagePws
@@ -689,7 +689,7 @@
             this.xtraTabPagePws.Controls.Add(this.label11);
             this.xtraTabPagePws.Controls.Add(this.label12);
             this.xtraTabPagePws.Name = "xtraTabPagePws";
-            this.xtraTabPagePws.Size = new System.Drawing.Size(422, 268);
+            this.xtraTabPagePws.Size = new System.Drawing.Size(426, 272);
             this.xtraTabPagePws.Text = "W. Underground";
             // 
             // checkBoxShowPasswordWeather
@@ -804,7 +804,7 @@
             this.xtraTabPageFW.Controls.Add(this.label2);
             this.xtraTabPageFW.Controls.Add(this.label1);
             this.xtraTabPageFW.Name = "xtraTabPageFW";
-            this.xtraTabPageFW.Size = new System.Drawing.Size(422, 268);
+            this.xtraTabPageFW.Size = new System.Drawing.Size(426, 272);
             this.xtraTabPageFW.Text = "Wind Finder";
             // 
             // checkBoxShowPasswordWind

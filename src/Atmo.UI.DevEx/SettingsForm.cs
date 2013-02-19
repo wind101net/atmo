@@ -71,24 +71,16 @@ namespace Atmo.UI.DevEx {
 
 
 
-            //rp - iprava pre weather underground
-
-            // StationSensorIndexWeather
-            checkEditWF.Checked = State.PwfEnabled;
-            //checkEditWF_CheckedChanged(null, null);
-            listBoxWFtime.Text = State.StationIntervalWF.ToString();
-            textBoxWFname.Text = State.StationNameWF;
-            textBoxWFpassword.Text = State.StationPasswordWF;
-
-            listBoxWFsensor.SetSelected(0, false);
-            listBoxWFsensor.SetSelected(1, false);
-            listBoxWFsensor.SetSelected(2, false);
-            listBoxWFsensor.SetSelected(3, false);
-
-            listBoxWFsensor.SetSelected(State.StationSensorIndexWF, true);
-
-
-
+            //rp - uprava pre weather underground
+            textBoxWeatherName.Text = State.StationNameWeather;
+            textBoxWeatherPassword.Text = State.StationPasswordWeather;
+            checkEditWeather.Checked = State.WeatherEnabled;
+            listBoxWeatherTime.Text = State.StationIntervalWeather.ToString();
+            listBoxWeatherSensor.SetSelected(0, false);
+            listBoxWeatherSensor.SetSelected(1, false);
+            listBoxWeatherSensor.SetSelected(2, false);
+            listBoxWeatherSensor.SetSelected(3, false);
+            listBoxWeatherSensor.SetSelected(State.StationSensorIndexWeather, true);
 
 
             //rp
@@ -97,12 +89,10 @@ namespace Atmo.UI.DevEx {
             listBoxWFtime.Text = State.StationIntervalWF.ToString();
             textBoxWFname.Text = State.StationNameWF;
             textBoxWFpassword.Text = State.StationPasswordWF;
-
             listBoxWFsensor.SetSelected(0, false);
             listBoxWFsensor.SetSelected(1, false);
             listBoxWFsensor.SetSelected(2, false);
             listBoxWFsensor.SetSelected(3, false);
-
             listBoxWFsensor.SetSelected(State.StationSensorIndexWF, true);
 
             //rp
@@ -110,28 +100,39 @@ namespace Atmo.UI.DevEx {
             //checkEditWF_CheckedChanged(null, null);
             textBoxAWName.Text = State.StationNameAw;
             textBoxAwPassword.Text = State.StationPasswordAw;
-
             listBoxAwTime.Text = State.StationIntervalAW.ToString();
-
             listBoxAwSensor.SetSelected(0, false);
             listBoxAwSensor.SetSelected(1, false);
             listBoxAwSensor.SetSelected(2, false);
             listBoxAwSensor.SetSelected(3, false);
-
             listBoxAwSensor.SetSelected(State.StationSensorIndexAw, true);
-
-
-
-
         }
 
 		public void SetStatePws() {
 
+            //rp - pre weather under...
+            State.WeatherEnabled = checkEditWeather.Checked;
+            State.StationNameWeather = textBoxWeatherName.Text;
+            State.StationPasswordWeather = textBoxWeatherPassword.Text;
+            State.StationIntervalWeather = Int16.Parse(listBoxWeatherTime.Text);
+            int ako = 0;
+            if (listBoxWeatherSensor.GetSelected(0) == true)
+                ako = 0;
+            if (listBoxWeatherSensor.GetSelected(1) == true)
+                ako = 1;
+            if (listBoxWeatherSensor.GetSelected(2) == true)
+                ako = 2;
+            if (listBoxWeatherSensor.GetSelected(3) == true)
+                ako = 3;
+            State.StationSensorIndexWeather = ako;
+
+            //rp - pre AW
             State.PawEnabled = checkEditAW.Checked;
             State.StationNameAw = textBoxAWName.Text;
             State.StationPasswordAw = textBoxAwPassword.Text;
             State.StationIntervalAW = Int16.Parse(listBoxAwTime.Text);
-            int  ako = 0;
+
+            ako = 0;
             if (listBoxAwSensor.GetSelected(0) == true)
                 ako = 0;
             if (listBoxAwSensor.GetSelected(1) == true)
@@ -142,12 +143,11 @@ namespace Atmo.UI.DevEx {
                 ako = 3;
             State.StationSensorIndexAw = ako;
             
-            //rp
+            //rp windfinder
             State.PwfEnabled = checkEditWF.Checked;
             State.StationNameWF = textBoxWFname.Text;
             State.StationPasswordWF = textBoxWFpassword.Text;
             State.StationIntervalWF = Int16.Parse(listBoxWFtime.Text);
-
             ako = 0;
             if (listBoxWFsensor.GetSelected(0) == true)
                 ako = 0;
@@ -157,15 +157,7 @@ namespace Atmo.UI.DevEx {
                 ako = 2;
             if (listBoxWFsensor.GetSelected(3) == true)
                 ako = 3;
-
             State.StationSensorIndexWF = ako;
-
-
-
-
-
-
-
 
 
 

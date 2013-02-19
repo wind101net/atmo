@@ -117,7 +117,7 @@ namespace Atmo.Data {
 			TemperatureUnit = default(TemperatureUnit);
 			SpeedUnit = default(SpeedUnit);
 			SelectedDatabases = null;
-			StationNames = null;
+			//StationNames = null;
 			AutoSyncClock = false;
 		}
 
@@ -191,15 +191,19 @@ namespace Atmo.Data {
 		/// </summary>
 		private List<string> _stationNames;
 
-		[XmlArray]
+/*		[XmlArray]
 		[XmlArrayItem(ElementName = "StationNames")]
 		public List<string> StationNames {
 			get { return _stationNames; }
 			set { _stationNames = value ?? new List<string>(); }
 		}
+        */
 
+        [XmlElement]
+        public string StationNameWeather { get; set; }
+        
 		[XmlElement]
-		public string StationPassword { get; set; }
+		public string StationPasswordWeather { get; set; }
 
         [XmlElement]
         public string StationNameWF { get; set; }
@@ -213,6 +217,9 @@ namespace Atmo.Data {
         [XmlElement]
         public string StationPasswordAw { get; set; }
 
+        [XmlElement]
+        public int StationIntervalWeather { get; set; }
+        
         [XmlElement]
         public int StationIntervalWF { get; set; }
 
