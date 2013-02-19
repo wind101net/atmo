@@ -23,195 +23,195 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimeCorrection));
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
-			this.dateTimeRangePickerData = new Atmo.UI.DevEx.Controls.DateTimeRangePicker();
-			this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
-			this.dateTimePickerNewStart = new Atmo.UI.DevEx.Controls.DateTimePicker();
-			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-			this.cancelButton = new DevExpress.XtraEditors.SimpleButton();
-			this.adjustButton = new DevExpress.XtraEditors.SimpleButton();
-			this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
-			this.sensorNameSelector = new DevExpress.XtraEditors.ComboBoxEdit();
-			this.labelControlStart = new DevExpress.XtraEditors.LabelControl();
-			this.tableLayoutPanel1.SuspendLayout();
-			this.tableLayoutPanel2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
-			this.groupControl1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
-			this.groupControl2.SuspendLayout();
-			this.tableLayoutPanel3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).BeginInit();
-			this.groupControl3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.sensorNameSelector.Properties)).BeginInit();
-			this.SuspendLayout();
-			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.ColumnCount = 1;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 2);
-			this.tableLayoutPanel1.Controls.Add(this.groupControl3, 0, 0);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 3;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(406, 249);
-			this.tableLayoutPanel1.TabIndex = 0;
-			// 
-			// tableLayoutPanel2
-			// 
-			this.tableLayoutPanel2.ColumnCount = 1;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel2.Controls.Add(this.groupControl1, 0, 0);
-			this.tableLayoutPanel2.Controls.Add(this.groupControl2, 0, 1);
-			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 53);
-			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 2;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(400, 163);
-			this.tableLayoutPanel2.TabIndex = 0;
-			// 
-			// groupControl1
-			// 
-			this.groupControl1.Controls.Add(this.dateTimeRangePickerData);
-			this.groupControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupControl1.Location = new System.Drawing.Point(3, 3);
-			this.groupControl1.Name = "groupControl1";
-			this.groupControl1.Size = new System.Drawing.Size(394, 102);
-			this.groupControl1.TabIndex = 0;
-			this.groupControl1.Text = "Current Recorded Range:";
-			// 
-			// dateTimeRangePickerData
-			// 
-			this.dateTimeRangePickerData.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dateTimeRangePickerData.From = new System.DateTime(((long)(0)));
-			this.dateTimeRangePickerData.Location = new System.Drawing.Point(2, 22);
-			this.dateTimeRangePickerData.Name = "dateTimeRangePickerData";
-			this.dateTimeRangePickerData.Size = new System.Drawing.Size(390, 78);
-			this.dateTimeRangePickerData.TabIndex = 0;
-			this.dateTimeRangePickerData.To = new System.DateTime(((long)(0)));
-			// 
-			// groupControl2
-			// 
-			this.groupControl2.Controls.Add(this.labelControlStart);
-			this.groupControl2.Controls.Add(this.dateTimePickerNewStart);
-			this.groupControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupControl2.Location = new System.Drawing.Point(3, 111);
-			this.groupControl2.Name = "groupControl2";
-			this.groupControl2.Size = new System.Drawing.Size(394, 49);
-			this.groupControl2.TabIndex = 1;
-			this.groupControl2.Text = "Shift To Start From:";
-			// 
-			// dateTimePickerNewStart
-			// 
-			this.dateTimePickerNewStart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimeCorrection));
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+            this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+            this.labelControlStart = new DevExpress.XtraEditors.LabelControl();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.cancelButton = new DevExpress.XtraEditors.SimpleButton();
+            this.adjustButton = new DevExpress.XtraEditors.SimpleButton();
+            this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
+            this.sensorNameSelector = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.dateTimeRangePickerData = new Atmo.UI.DevEx.Controls.DateTimeRangePicker();
+            this.dateTimePickerNewStart = new Atmo.UI.DevEx.Controls.DateTimePicker();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
+            this.groupControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
+            this.groupControl2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl3)).BeginInit();
+            this.groupControl3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sensorNameSelector.Properties)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.groupControl3, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(406, 249);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.groupControl1, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.groupControl2, 0, 1);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 53);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(400, 163);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // groupControl1
+            // 
+            this.groupControl1.Controls.Add(this.dateTimeRangePickerData);
+            this.groupControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupControl1.Location = new System.Drawing.Point(3, 3);
+            this.groupControl1.Name = "groupControl1";
+            this.groupControl1.Size = new System.Drawing.Size(394, 102);
+            this.groupControl1.TabIndex = 0;
+            this.groupControl1.Text = "Current Recorded Range:";
+            // 
+            // groupControl2
+            // 
+            this.groupControl2.Controls.Add(this.labelControlStart);
+            this.groupControl2.Controls.Add(this.dateTimePickerNewStart);
+            this.groupControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupControl2.Location = new System.Drawing.Point(3, 111);
+            this.groupControl2.Name = "groupControl2";
+            this.groupControl2.Size = new System.Drawing.Size(394, 49);
+            this.groupControl2.TabIndex = 1;
+            this.groupControl2.Text = "Shift To Start From:";
+            // 
+            // labelControlStart
+            // 
+            this.labelControlStart.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlStart.LineLocation = DevExpress.XtraEditors.LineLocation.Bottom;
+            this.labelControlStart.Location = new System.Drawing.Point(6, 20);
+            this.labelControlStart.Name = "labelControlStart";
+            this.labelControlStart.Size = new System.Drawing.Size(45, 29);
+            this.labelControlStart.TabIndex = 1;
+            this.labelControlStart.Text = "Start";
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Controls.Add(this.cancelButton, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.adjustButton, 1, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 222);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(400, 24);
+            this.tableLayoutPanel3.TabIndex = 1;
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cancelButton.Location = new System.Drawing.Point(3, 3);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(194, 18);
+            this.cancelButton.TabIndex = 0;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // adjustButton
+            // 
+            this.adjustButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.adjustButton.Location = new System.Drawing.Point(203, 3);
+            this.adjustButton.Name = "adjustButton";
+            this.adjustButton.Size = new System.Drawing.Size(194, 18);
+            this.adjustButton.TabIndex = 1;
+            this.adjustButton.Text = "Adjust";
+            this.adjustButton.Click += new System.EventHandler(this.adjustButton_Click);
+            // 
+            // groupControl3
+            // 
+            this.groupControl3.Controls.Add(this.sensorNameSelector);
+            this.groupControl3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupControl3.Location = new System.Drawing.Point(3, 3);
+            this.groupControl3.Name = "groupControl3";
+            this.groupControl3.Size = new System.Drawing.Size(400, 44);
+            this.groupControl3.TabIndex = 2;
+            this.groupControl3.Text = "Sensor Database";
+            // 
+            // sensorNameSelector
+            // 
+            this.sensorNameSelector.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sensorNameSelector.Location = new System.Drawing.Point(2, 22);
+            this.sensorNameSelector.Name = "sensorNameSelector";
+            this.sensorNameSelector.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.sensorNameSelector.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.sensorNameSelector.Size = new System.Drawing.Size(396, 20);
+            this.sensorNameSelector.TabIndex = 0;
+            // 
+            // dateTimeRangePickerData
+            // 
+            this.dateTimeRangePickerData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dateTimeRangePickerData.From = new System.DateTime(((long)(0)));
+            this.dateTimeRangePickerData.Location = new System.Drawing.Point(2, 22);
+            this.dateTimeRangePickerData.Name = "dateTimeRangePickerData";
+            this.dateTimeRangePickerData.Size = new System.Drawing.Size(390, 78);
+            this.dateTimeRangePickerData.TabIndex = 0;
+            this.dateTimeRangePickerData.To = new System.DateTime(((long)(0)));
+            // 
+            // dateTimePickerNewStart
+            // 
+            this.dateTimePickerNewStart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.dateTimePickerNewStart.DateTime = new System.DateTime(((long)(0)));
-			this.dateTimePickerNewStart.Location = new System.Drawing.Point(57, 20);
-			this.dateTimePickerNewStart.Name = "dateTimePickerNewStart";
-			this.dateTimePickerNewStart.Size = new System.Drawing.Size(331, 26);
-			this.dateTimePickerNewStart.TabIndex = 0;
-			// 
-			// tableLayoutPanel3
-			// 
-			this.tableLayoutPanel3.ColumnCount = 2;
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel3.Controls.Add(this.cancelButton, 0, 0);
-			this.tableLayoutPanel3.Controls.Add(this.adjustButton, 1, 0);
-			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 222);
-			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 1;
-			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(400, 24);
-			this.tableLayoutPanel3.TabIndex = 1;
-			// 
-			// cancelButton
-			// 
-			this.cancelButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.cancelButton.Location = new System.Drawing.Point(3, 3);
-			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(194, 18);
-			this.cancelButton.TabIndex = 0;
-			this.cancelButton.Text = "Cancel";
-			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-			// 
-			// adjustButton
-			// 
-			this.adjustButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.adjustButton.Location = new System.Drawing.Point(203, 3);
-			this.adjustButton.Name = "adjustButton";
-			this.adjustButton.Size = new System.Drawing.Size(194, 18);
-			this.adjustButton.TabIndex = 1;
-			this.adjustButton.Text = "Adjust";
-			this.adjustButton.Click += new System.EventHandler(this.adjustButton_Click);
-			// 
-			// groupControl3
-			// 
-			this.groupControl3.Controls.Add(this.sensorNameSelector);
-			this.groupControl3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupControl3.Location = new System.Drawing.Point(3, 3);
-			this.groupControl3.Name = "groupControl3";
-			this.groupControl3.Size = new System.Drawing.Size(400, 44);
-			this.groupControl3.TabIndex = 2;
-			this.groupControl3.Text = "Sensor Database";
-			// 
-			// sensorNameSelector
-			// 
-			this.sensorNameSelector.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.sensorNameSelector.Location = new System.Drawing.Point(2, 22);
-			this.sensorNameSelector.Name = "sensorNameSelector";
-			this.sensorNameSelector.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.sensorNameSelector.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-			this.sensorNameSelector.Size = new System.Drawing.Size(396, 20);
-			this.sensorNameSelector.TabIndex = 0;
-			// 
-			// labelControlStart
-			// 
-			this.labelControlStart.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-			this.labelControlStart.LineLocation = DevExpress.XtraEditors.LineLocation.Bottom;
-			this.labelControlStart.Location = new System.Drawing.Point(6, 20);
-			this.labelControlStart.Name = "labelControlStart";
-			this.labelControlStart.Size = new System.Drawing.Size(45, 29);
-			this.labelControlStart.TabIndex = 1;
-			this.labelControlStart.Text = "Start";
-			// 
-			// TimeCorrection
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(406, 249);
-			this.Controls.Add(this.tableLayoutPanel1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(400, 260);
-			this.Name = "TimeCorrection";
-			this.ShowInTaskbar = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Time Correction";
-			this.Load += new System.EventHandler(this.TimeCorrection_Load);
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
-			this.groupControl1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
-			this.groupControl2.ResumeLayout(false);
-			this.tableLayoutPanel3.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.groupControl3)).EndInit();
-			this.groupControl3.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.sensorNameSelector.Properties)).EndInit();
-			this.ResumeLayout(false);
+            this.dateTimePickerNewStart.DateTime = new System.DateTime(((long)(0)));
+            this.dateTimePickerNewStart.Location = new System.Drawing.Point(57, 20);
+            this.dateTimePickerNewStart.Name = "dateTimePickerNewStart";
+            this.dateTimePickerNewStart.Size = new System.Drawing.Size(331, 26);
+            this.dateTimePickerNewStart.TabIndex = 0;
+            // 
+            // TimeCorrection
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(406, 249);
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(400, 260);
+            this.Name = "TimeCorrection";
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Time Correction";
+            this.Load += new System.EventHandler(this.TimeCorrection_Load);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
+            this.groupControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).EndInit();
+            this.groupControl2.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl3)).EndInit();
+            this.groupControl3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.sensorNameSelector.Properties)).EndInit();
+            this.ResumeLayout(false);
 
         }
 
