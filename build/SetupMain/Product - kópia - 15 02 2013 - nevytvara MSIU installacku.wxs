@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product
+		Id="*"
+		Name="Atmo 2"
+		Language="1033" 
+		Version="2.0.0.1"
+		Manufacturer="Barani Design"
+		UpgradeCode="22cf86d5-9ef4-402b-88eb-7cbb1c7a8ed9"
+	>
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" InstallPrivileges="elevated" />
+		<Property Id="MSIFASTINSTALL" Value="7" />
+		<Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+		<Media Id="1" Cabinet="atmo.cab" EmbedCab="yes" CompressionLevel="high" />
+
+		<Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+		<Upgrade Id="22cf86d5-9ef4-402b-88eb-7cbb1c7a8ed9">
+			<UpgradeVersion Minimum="0.0.1"
+							IncludeMinimum="yes"
+							Maximum="3.0.0"
+							IncludeMaximum="yes"
+							Property="PREVIOUSVERSIONSINSTALLED" />
+		</Upgrade>
+
+		
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="BaraniDesign" Name="BaraniDesign">
+					<Directory Id="INSTALLLOCATION" Name="Atmo2">
+            <Directory Id="bin_x86" Name="x86">
+              <Component Id="SQLite_x86" Guid="D23C4117-7414-4FAE-B38B-3A4CCC7871BD" NeverOverwrite="no">
+                <File Id="SQLite_x86" Name="SQLite.Interop.dll" Source="$(var.OutputPath)\x86\SQLite.Interop.dll" />
+              </Component>
+            </Directory>
+            <Directory Id="bin_x64" Name="x64">
+              <Component Id="SQLite_x64" Guid="58B7D532-529C-4124-A53C-A23CA486013E" NeverOverwrite="no">
+                <File Id="SQLite_x64" Name="SQLite.Interop.dll" Source="$(var.OutputPath)\x64\SQLite.Interop.dll" />
+              </Component>
+            </Directory>
+						<Component Id="CoreFolderComponent" Guid="CF362C7A-676C-498C-92D1-F36F96492688">
+							<CreateFolder Directory="INSTALLLOCATION">
+								<Permission User="Users" GenericAll="yes" CreateFile="yes" />
+							</CreateFolder>
+              <CreateFolder Directory="bin_x86">
+                <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+              </CreateFolder>
+              <CreateFolder Directory="bin_x64">
+                <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+              </CreateFolder>
+						</Component>
+						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
+							<File Id="SqLite" Name="System.Data.SQLite.dll" Source="$(var.OutputPath)\System.Data.SQLite.dll" KeyPath="yes"/>
+							<File Id="Log4Net" Name="log4net.dll" Source="$(var.OutputPath)\log4net.dll" KeyPath="no"/>
+						</Component>
+						<Component Id="AtmoCore" Guid="C43E5FA4-228E-44D6-8956-4640CFAE6748" NeverOverwrite="no">
+							<File Id="AtmoCoredll" Name="Atmo.Core.dll" Source="$(var.OutputPath)\Atmo.Core.dll" KeyPath="yes" />
+							<File Id="AtmoDataConverter" Name="AtmoDataConvert.exe" Source="$(var.OutputPath)\AtmoDataConverter.exe" />
+							<File Id="AtmoDaqWin32dll" Name="Atmo.Daq.Win32.dll" Source="$(var.OutputPath)\Atmo.Daq.Win32.dll" />
+							<File Id="COPYING.Text" Name="COPYING" Source="$(var.OutputPath)\COPYING" />
+							<File Id="license.Text" Name="license.txt" Source="$(var.OutputPath)\license.txt" />
+						</Component>
+						<Component Id="AtmoWinFormsLibs" Guid="F32AC172-BD63-4C3A-A600-E704327E9A04" NeverOverwrite="no">
+							<File Id="AtmoUIWinFormsControls" Name="Atmo.UI.WinForms.Controls.dll" Source="$(var.OutputPath)\Atmo.UI.WinForms.Controls.dll" KeyPath="yes"  />
+						</Component>
+						<Component Id="DevExpress3rdParty" Guid="9F7F0063-EA4D-4478-B3C7-5DB2404C280D" NeverOverwrite="no">
+							<File Id="DevExpress.Charts.v10.2.Core.dll" Name="DevExpress.Charts.v10.2.Core.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Charts.v10.2.Core.dll" />
+							<File Id="DevExpress.Data.v10.2.dll" Name="DevExpress.Data.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Data.v10.2.dll" KeyPath="yes" />
+							<File Id="DevExpress.Utils.v10.2.dll" Name="DevExpress.Utils.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.Utils.v10.2.dll"  />
+							<File Id="DevExpress.XtraBars.v10.2.dll" Name="DevExpress.XtraBars.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraBars.v10.2.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.2.dll" Name="DevExpress.XtraCharts.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.dll"  />
+							<File Id="DevExpress.XtraCharts.v10.2.UI.dll" Name="DevExpress.XtraCharts.v10.2.UI.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraCharts.v10.2.UI.dll"  />
+							<File Id="DevExpress.XtraEditors.v10.2.dll" Name="DevExpress.XtraEditors.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraEditors.v10.2.dll"  />
+							<File Id="DevExpress.XtraGrid.v10.2.dll" Name="DevExpress.XtraGrid.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraGrid.v10.2.dll" />
+							<File Id="DevExpress.XtraNavBar.v10.2.dll" Name="DevExpress.XtraNavBar.v10.2.dll" Source="C:\Program Files\DevExpress 2010.2\Components\Sources\DevExpress.DLL\DevExpress.XtraNavBar.v10.2.dll" />
+						</Component>
+						<Component Id="AtmoUIExecutable" Guid="68d1ecba-629a-4125-9967-5206f272ba31" NeverOverwrite="no">
+							<File Id="AtmoUIDevExexe" Name="Atmo.UI.DevEx.exe" Source="$(var.OutputPath)\Atmo.UI.DevEx.exe" KeyPath="yes">
+								<Shortcut Id="startmenuAtmoUIDevExexe" Directory="ProgramMenuDir" Name="Atmo 2" WorkingDirectory='INSTALLDIR' Icon="atmo.ico" IconIndex="0" Advertise="yes" />
+								<Shortcut Id="desktopAtmoUIDevExexe" Directory="DesktopFolder" Name="Atmo 2"
+								  WorkingDirectory='INSTALLDIR' Icon="atmo.ico" IconIndex="0" Advertise="yes" />
+							</File>
+							<File Id="AtmoUIDevExeCfg" Name="Atmo.UI.DevEx.exe.config" Source="$(var.OutputPath)\Atmo.UI.DevEx.exe.config" />
+							<File Id="SplashPng" Name="atmoSplash.png" Source="$(var.OutputPath)\atmoSplash.png" />
+						</Component>
+					</Directory>
+				</Directory>
+			</Directory>
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuDir" Name="Barani Design">
+					<Component Id="ProgramMenuDir" Guid="F8CA001D-6FD3-4275-B397-91A0867B12D7">
+						<RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+						<RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+					</Component>
+				</Directory>
+			</Directory>
+
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+		
+		
+
+		<Feature Id="ProductFeature" Title="Atmo 2" Level="1">
+			<ComponentRef Id="CoreFolderComponent"/>
+			<ComponentRef Id="Core3rdParty" />
+      <ComponentRef Id="SQLite_x86" />
+      <ComponentRef Id="SQLite_x64" />
+			<ComponentRef Id="AtmoCore" />
+			<ComponentRef Id="AtmoWinFormsLibs" />
+			<ComponentRef Id="DevExpress3rdParty" />
+			<ComponentRef Id="AtmoUIExecutable" />
+			<ComponentRef Id="ProgramMenuDir" />
+		</Feature>
+
+		<Icon Id="atmo.ico" SourceFile="$(var.OutputPath)\atmo.ico" />
+		<Property Id="ARPPRODUCTICON" Value="atmo.ico" />
+
+		<InstallExecuteSequence>
+			<RemoveExistingProducts After="InstallInitialize"/>
+		</InstallExecuteSequence>
+
+		<WixVariable Id="WixUILicenseRtf" Value="$(var.OutputPath)\license.rtf"  />
+
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+		<UIRef Id="WixUI_InstallDir" />
+
+	</Product>
+	
+</Wix>
