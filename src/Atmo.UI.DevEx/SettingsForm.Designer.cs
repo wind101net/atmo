@@ -89,7 +89,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
-<<<<<<< HEAD
             this.label14 = new System.Windows.Forms.Label();
             this.time_label = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -99,10 +98,6 @@
             this.label_statistic_sendet_packets = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-=======
-            this.time_label = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControlSettings)).BeginInit();
             this.xtraTabControlSettings.SuspendLayout();
             this.xtraTabPage1.SuspendLayout();
@@ -132,11 +127,8 @@
             this.xtraTabPagePws.SuspendLayout();
             this.xtraTabPageFW.SuspendLayout();
             this.xtraTabPage2.SuspendLayout();
-<<<<<<< HEAD
             this.xtraTabPageStatistic.SuspendLayout();
             this.groupBox1.SuspendLayout();
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             this.SuspendLayout();
             // 
             // simpleButtonApply
@@ -185,12 +177,8 @@
             this.xtraTabPagePws,
             this.xtraTabPageFW,
             this.xtraTabPage1,
-<<<<<<< HEAD
             this.xtraTabPage2,
             this.xtraTabPageStatistic});
-=======
-            this.xtraTabPage2});
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             // 
             // xtraTabPage1
             // 
@@ -908,17 +896,13 @@
             // 
             // xtraTabPage2
             // 
-<<<<<<< HEAD
             this.xtraTabPage2.Controls.Add(this.label14);
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             this.xtraTabPage2.Controls.Add(this.time_label);
             this.xtraTabPage2.Controls.Add(this.button1);
             this.xtraTabPage2.Name = "xtraTabPage2";
             this.xtraTabPage2.Size = new System.Drawing.Size(426, 272);
             this.xtraTabPage2.Text = "Time settings";
             // 
-<<<<<<< HEAD
             // label14
             // 
             this.label14.AutoSize = true;
@@ -929,22 +913,14 @@
             this.label14.Text = "(internet time servers used : pool.ntp.org, time.windows.com)";
             this.label14.Click += new System.EventHandler(this.label14_Click);
             // 
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             // time_label
             // 
             this.time_label.AutoSize = true;
             this.time_label.Location = new System.Drawing.Point(18, 50);
             this.time_label.Name = "time_label";
-<<<<<<< HEAD
             this.time_label.Size = new System.Drawing.Size(13, 13);
             this.time_label.TabIndex = 1;
             this.time_label.Text = "_";
-=======
-            this.time_label.Size = new System.Drawing.Size(25, 13);
-            this.time_label.TabIndex = 1;
-            this.time_label.Text = "___";
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             // 
             // button1
             // 
@@ -952,7 +928,6 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(241, 23);
             this.button1.TabIndex = 0;
-<<<<<<< HEAD
             this.button1.Text = "Show internet time correction";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -1014,12 +989,6 @@
             this.label9.TabIndex = 0;
             this.label9.Text = "Sendet packets:";
             // 
-=======
-            this.button1.Text = "Synchronize time with internet server";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1072,12 +1041,9 @@
             this.xtraTabPageFW.PerformLayout();
             this.xtraTabPage2.ResumeLayout(false);
             this.xtraTabPage2.PerformLayout();
-<<<<<<< HEAD
             this.xtraTabPageStatistic.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             this.ResumeLayout(false);
 
 		}
@@ -1151,7 +1117,6 @@
         private DevExpress.XtraTab.XtraTabPage xtraTabPage2;
         private System.Windows.Forms.Label time_label;
         private System.Windows.Forms.Button button1;
-<<<<<<< HEAD
         private DevExpress.XtraTab.XtraTabPage xtraTabPageStatistic;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label_statistic_incomming_packets;
@@ -1159,7 +1124,5 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label14;
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 	}
 }

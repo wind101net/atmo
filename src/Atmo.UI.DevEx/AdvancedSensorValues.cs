@@ -35,21 +35,14 @@ namespace Atmo.UI.DevEx
     
     class AdvancedSensorValues
     {
-<<<<<<< HEAD
         static object _mylock = new object();
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
         private double[] m_measuredVALUES_WU;
 
         public AdvancedSensorValues()
         {
-<<<<<<< HEAD
             //m_measuredVALUES_WU = new double[48]; // 48 = 2.5s pocas 120s = 2min
             m_measuredVALUES_WU = new double[24]; // 24 = 5s pocas 120s = 2min
-=======
-            m_measuredVALUES_WU = new double[48]; // 48 = 2.5s pocas 120s = 2min
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
         }
 
         public void AddValue_WU_WindSpeed(double nWindSpeed)
@@ -57,7 +50,6 @@ namespace Atmo.UI.DevEx
             double tmp;
             int i;
 
-<<<<<<< HEAD
             try
             {
 
@@ -91,29 +83,7 @@ namespace Atmo.UI.DevEx
 
             }
 
-=======
-            tmp = 0;
-            for (i = (m_measuredVALUES_WU.Length - 1) ; i > 0; i--)
-            {
-                m_measuredVALUES_WU[i] = m_measuredVALUES_WU[i-1];
-            }
-            m_measuredVALUES_WU[0] = nWindSpeed;
 
-
-            for (i = 0; i < m_measuredVALUES_WU.Length; i++)
-            {
-                if (m_measuredVALUES_WU[i] > tmp)
-                {
-                    tmp = m_measuredVALUES_WU[i];
-                }
-
-//                File.AppendAllText("weatherlog_out.txt", "for2(" + i.ToString() + "): " + m_measuredVALUES_WU[i].ToString() + "" + Environment.NewLine);
-
-
-            }
-
-            m_windgust_WU = tmp;
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
             //rp debug only: 
             //File.AppendAllText("weatherlog_out.txt", "m_windgust_WU: " + m_windgust_WU.ToString() + Environment.NewLine);

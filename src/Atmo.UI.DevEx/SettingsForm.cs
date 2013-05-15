@@ -38,13 +38,9 @@ namespace Atmo.UI.DevEx {
 
         public double time_correction;
 
-<<<<<<< HEAD
 
         public SettingsForm(PersistentState state, InternetStreamingStatistics _internetStreamingStatistics)
         {
-=======
-		public SettingsForm(PersistentState state) {
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 			if(null == state) {
 				throw new ArgumentNullException("state");
 			}
@@ -300,24 +296,16 @@ namespace Atmo.UI.DevEx {
         }
 
 
-<<<<<<< HEAD
         public DateTime GetNetworkTime(string ntpServer)
-=======
-        public DateTime GetNetworkTime()
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
         {
 
             try
             {
 
                 //default Windows time server
-<<<<<<< HEAD
                 //const string ntpServer = "time.windows.com";
                 //const string ntpServer = "pool.ntp.org";
 
-=======
-                const string ntpServer = "time.windows.com";
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
                 // NTP message size - 16 bytes of the digest (RFC 2030)
                 var ntpData = new byte[48];
@@ -334,11 +322,7 @@ namespace Atmo.UI.DevEx {
 
                 //rp
                 socket.ReceiveTimeout = 1000;
-<<<<<<< HEAD
                 socket.SendTimeout = 1000;
-=======
-                socket.SendTimeout = 500;
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
 
                 socket.Connect(ipEndPoint);
@@ -389,21 +373,16 @@ namespace Atmo.UI.DevEx {
 
         private void button1_Click(object sender, EventArgs e)
         {
-<<<<<<< HEAD
             string ntpServer1 = "pool.ntp.org";
             string ntpServer2 = "time.windows.com";
 
             bool ok = false;
 
             DateTime dtNet = GetNetworkTime(ntpServer1);
-=======
-            DateTime dtNet = GetNetworkTime();
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             DateTime dtNow = DateTime.UtcNow;
 
             if (dtNet.Year == 1905)
             {
-<<<<<<< HEAD
                 ok = false;
                 //                MessageBox.Show("Time synchronization error !");
             }
@@ -447,22 +426,8 @@ namespace Atmo.UI.DevEx {
 
         private void label14_Click(object sender, EventArgs e)
         {
-=======
-                MessageBox.Show("Time synchronization error !");
-            }
-            else
-            {
-                time_correction = (dtNet - dtNow).TotalMilliseconds;
-                time_label.Text = "Time synchronized - Correction = " + time_correction + " [ms]";
-                MessageBox.Show("Time synchronized !");
-            }
-
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
-
+        
         }
-
-
-
 
 	}
 

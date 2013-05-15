@@ -72,7 +72,6 @@ namespace Atmo.UI.DevEx {
 
         //rp
         private AdvancedSensorValues[] _advancedSensorValues;
-<<<<<<< HEAD
 
         public double time_correction = 0;
         private static System.Timers.Timer timerWU;
@@ -81,11 +80,7 @@ namespace Atmo.UI.DevEx {
         //rp
         public  InternetStreamingStatistics _internetStreamingStatistics;
 
-=======
-        public double time_correction = 0;
-        private static System.Timers.Timer timerWU;
 
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
         private  void OnTimedEventWU(object source, System.Timers.ElapsedEventArgs e)
         {
 
@@ -133,11 +128,7 @@ namespace Atmo.UI.DevEx {
 
 
             timerWU = new System.Timers.Timer(); 
-<<<<<<< HEAD
             timerWU.Interval = 5000; //pov2500
-=======
-            timerWU.Interval = 2500; 
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             timerWU.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventWU);
             timerWU.Enabled = false;
             timerWU.Start();
@@ -407,7 +398,6 @@ namespace Atmo.UI.DevEx {
 
 		private void barButtonItemPrefs_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
 			try {
-<<<<<<< HEAD
 
                 var settingsForm = new SettingsForm(AppContext.PersistentState, _internetStreamingStatistics);
                
@@ -418,16 +408,6 @@ namespace Atmo.UI.DevEx {
                 {
                     //time_correction = settingsForm.time_correction;
                 }
-=======
-				var settingsForm = new SettingsForm(AppContext.PersistentState);
-
-                settingsForm.time_correction = time_correction;
-                if (settingsForm.ShowDialog(this) == DialogResult.OK)
-                {
-                    time_correction = settingsForm.time_correction;
-                }
-
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
 
                 //rp
@@ -728,10 +708,6 @@ namespace Atmo.UI.DevEx {
 
 
 
-<<<<<<< HEAD
-=======
-        private UriBuilder builder_wu = null;
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
         private DateTime timeActual;
         private DateTime timeTemp;
         private int count_to_correction = 10000;
@@ -744,11 +720,7 @@ namespace Atmo.UI.DevEx {
             sensor_num = AppContext.PersistentState.StationSensorIndexWeather;
             string str_not_corr_sensor = "Not correct sensor selected!";
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             try
             {
 
@@ -793,24 +765,15 @@ namespace Atmo.UI.DevEx {
 
 
                 //timeActual = DateTime.UtcNow;
-<<<<<<< HEAD
-                timeActual = timeTemp.AddMilliseconds(5000);//pov5000
+
+                timeActual = timeTemp.AddMilliseconds(5000);//pov2500
                 timeTemp = timeActual;
                 timerWU.Interval = 5000;//pov2500
-=======
-                timeActual = timeTemp.AddMilliseconds(2500);
-                timeTemp = timeActual;
-                timerWU.Interval = 2500;
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
-                
+               
 
                 // is time to time correction ?
-<<<<<<< HEAD
-                if (++count_to_correction > 200) //2.5*200[s]
-=======
-                if (++count_to_correction > 10)
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
+                if (++count_to_correction > 100) //2.5*200[s]
                 {
                     count_to_correction = 0;
 
@@ -830,17 +793,11 @@ namespace Atmo.UI.DevEx {
 
                     timeTemp = timeActual;
 
-<<<<<<< HEAD
 
 
                     File.AppendAllText("weatherlog_out.txt", timeTemp + 
                                                " - TIME CORRECTION: " + dc.ToString() + 
                                                  Environment.NewLine);
-=======
-                    //     File.AppendAllText("weatherlog_out.txt",
-                    //                           "TIME CORRECTION: " + dc.ToString() + 
-                    //                             Environment.NewLine);
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
                 }
 
@@ -874,10 +831,6 @@ namespace Atmo.UI.DevEx {
                     queryParams.Add("windspeedmph", speed.ToString());
                 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
               //  queryParams.Add("windgustmph", "0,0");
                 if (reading.IsWindSpeedValid)
                 {
@@ -901,13 +854,10 @@ namespace Atmo.UI.DevEx {
                     var pressure = pressConverter.Convert(reading.Pressure);
                     queryParams.Add("baromin", pressure.ToString());
                 }
-<<<<<<< HEAD
                 else
                 {
-                    queryParams.Add("baromin", "NaN");
+      //              queryParams.Add("baromin", "NaN");
                 }
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
                 if (reading.IsHumidityValid && reading.IsTemperatureValid)
                 {
@@ -921,14 +871,10 @@ namespace Atmo.UI.DevEx {
                     var dewPointF = tempConverterCToF.Convert(dewPointC);
                     queryParams.Add("dewptf", dewPointF.ToString());
                 }
-<<<<<<< HEAD
                 else
                 {
-                    queryParams.Add("dewptf", "NaN");
+       //             queryParams.Add("dewptf", "NaN");
                 }
-
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
 
 
@@ -936,13 +882,11 @@ namespace Atmo.UI.DevEx {
                 {
                     queryParams.Add("humidity", (reading.Humidity * 100.0).ToString());
                 }
-<<<<<<< HEAD
                 else
                 {
-                    queryParams.Add("humidity", "NaN");
+                    //queryParams.Add("humidity", "NaN");
+               //    queryParams.Add("humidity", "100");
                 }
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
 //               queryParams.Add("weather", "");
 
@@ -958,8 +902,7 @@ namespace Atmo.UI.DevEx {
 
 
                 // pokus z pov 2.5
-<<<<<<< HEAD
-                queryParams.Add("rtfreq", "5,0"); //pov2.5
+                queryParams.Add("rtfreq", "5"); //pov2.5
 
 
 /* rp
@@ -972,15 +915,6 @@ namespace Atmo.UI.DevEx {
 
                 UriBuilder builder_wu;
                 builder_wu = new UriBuilder("http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php");
-=======
-                queryParams.Add("rtfreq", "2,5");
-
-
-                if (builder_wu == null)
-                {
-                    builder_wu = new UriBuilder("http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php");
-                }
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
                 builder_wu.Query = String.Join(
                     "&",
@@ -988,7 +922,6 @@ namespace Atmo.UI.DevEx {
                         .Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), '=', Uri.EscapeDataString(kvp.Value)))
                         .ToArray()
                 );
-<<<<<<< HEAD
 
 
                 try
@@ -1004,7 +937,7 @@ namespace Atmo.UI.DevEx {
 
                     //rp
                     //debug
-                    //Log.Warn("WA - sendet packet: " + builder_wu.Uri);
+                    Log.Warn("WA - sendet packet: " + builder_wu.Uri);
 
 
 
@@ -1014,40 +947,18 @@ namespace Atmo.UI.DevEx {
                     // for statistic
                     _internetStreamingStatistics.m_StreamingServers[0].IncrementSendetPacekets();
 
-=======
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
-
-
-                try
-                {
-
-                    var reqSent = HttpWebRequest.Create(builder_wu.Uri);
-                    reqSent.BeginGetResponse(HandleRapidFireResult, reqSent);
+               
 
                 }
                 catch (Exception ex)
                 {
-<<<<<<< HEAD
                     Log.Warn("PWS rapid fire failure.1.", ex);
-=======
-                    Log.Warn("PWS rapid fire failure.", ex);
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
-
                 }
-         
-            
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD
                 Log.Warn("PWS rapid fire failure.2.", ex);
-=======
-                Log.Warn("PWS rapid fire failure.", ex);
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
             }
-
-
-
 
         }
 
@@ -2008,23 +1919,16 @@ namespace Atmo.UI.DevEx {
         private double GetTimeCorrection( DateTime nDT)
         {
             //rp - time sychronization
-<<<<<<< HEAD
             string ntpServer1 = "pool.ntp.org";
             string ntpServer2 = "time.windows.com";
 
             double correct = 0;
 
             DateTime dt = GetNetworkTime(ntpServer1);
-=======
-
-            DateTime dt = GetNetworkTime();
-            double correct=0;
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
             // nepodarilo sa synchronizovat
             if (dt.Year == 1905)
             {
-<<<<<<< HEAD
 //                return -123456;
                 dt = GetNetworkTime(ntpServer2);
             }
@@ -2038,40 +1942,20 @@ namespace Atmo.UI.DevEx {
 
             return -123456;
 
-=======
-                return -123456;
-            }
-
-            // podarilo sa synchronizovat
-            else
-            {
-                correct = ( dt - nDT ).TotalMilliseconds;
-            }
-
-            return correct;
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
         }
 
 
 
 
-<<<<<<< HEAD
         public DateTime GetNetworkTime( string ntpServer)
-=======
-        public DateTime GetNetworkTime()
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
         {
 
             try
             {
 
                 //default Windows time server
-<<<<<<< HEAD
                 //const string ntpServer = "time.windows.com";
                 //const string ntpServer = "pool.ntp.org";
-=======
-                const string ntpServer = "time.windows.com";
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
 
                 // NTP message size - 16 bytes of the digest (RFC 2030)
                 var ntpData = new byte[48];
@@ -2088,16 +1972,10 @@ namespace Atmo.UI.DevEx {
 
                 //rp
 //                socket.SendTimeout = ;
-<<<<<<< HEAD
                 socket.ReceiveTimeout = 1000;//pov200
                 socket.Connect(ipEndPoint);
                 socket.Send(ntpData);
-=======
-                socket.ReceiveTimeout = 200;
-                socket.Connect(ipEndPoint);
-                socket.Send(ntpData);
-                //socket.set
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
+
                 socket.Receive(ntpData);
                 socket.Close();
 
@@ -2138,18 +2016,6 @@ namespace Atmo.UI.DevEx {
                            ((x & 0x00ff0000) >> 8) +
                            ((x & 0xff000000) >> 24));
         }
-
-<<<<<<< HEAD
-
-=======
-        private void timerSynchronizeTime_Tick(object sender, EventArgs e)
-        {
-
-
-
-        }
->>>>>>> 0cad5a8d70d0696eeb938de59d096b4c3dd3e023
-
 
 	}
 

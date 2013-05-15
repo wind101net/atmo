@@ -83,7 +83,6 @@
             this.backgroundWorkerLiveGraph = new System.ComponentModel.BackgroundWorker();
             this.timerWindFinder = new System.Windows.Forms.Timer(this.components);
             this.timerAwekas = new System.Windows.Forms.Timer(this.components);
-            this.timerSynchronizeTime = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             this.panelSensors.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl4)).BeginInit();
@@ -788,11 +787,6 @@
             this.timerAwekas.Interval = 10000;
             this.timerAwekas.Tick += new System.EventHandler(this.timerAwekas_Tick);
             // 
-            // timerSynchronizeTime
-            // 
-            this.timerSynchronizeTime.Interval = 20000;
-            this.timerSynchronizeTime.Tick += new System.EventHandler(this.timerSynchronizeTime_Tick);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -900,7 +894,6 @@
         private DevExpress.XtraEditors.LabelControl labelControlAwekas;
         private DevExpress.XtraEditors.SimpleButton simpleButtonAwekas;
         private System.Windows.Forms.Timer timerAwekas;
-        private System.Windows.Forms.Timer timerSynchronizeTime;
 
 	}
 }
