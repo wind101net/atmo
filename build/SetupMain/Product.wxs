@@ -11,6 +11,7 @@
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" InstallPrivileges="elevated" />
 		<Property Id="MSIFASTINSTALL" Value="7" />
 		<Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+    <PropertyRef Id="WIX_ACCOUNT_USERS" />
 		<Media Id="1" Cabinet="atmo.cab" EmbedCab="yes" CompressionLevel="high" />
 
 		<Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
@@ -40,13 +41,13 @@
             </Directory>
 						<Component Id="CoreFolderComponent" Guid="CF362C7A-676C-498C-92D1-F36F96492688">
 							<CreateFolder Directory="INSTALLLOCATION">
-								<Permission User="Users" GenericAll="yes" CreateFile="yes" />
+								<Permission User="[WIX_ACCOUNT_USERS]" GenericAll="yes" CreateFile="yes" />
 							</CreateFolder>
               <CreateFolder Directory="bin_x86">
-                <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+                <Permission User="[WIX_ACCOUNT_USERS]" GenericAll="yes" CreateFile="yes" />
               </CreateFolder>
               <CreateFolder Directory="bin_x64">
-                <Permission User="Users" GenericAll="yes" CreateFile="yes" />
+                <Permission User="[WIX_ACCOUNT_USERS]" GenericAll="yes" CreateFile="yes" />
               </CreateFolder>
 						</Component>
 						<Component Id="Core3rdParty" Guid="3DDA1BDF-C1FB-448B-85B1-191755ECA360" NeverOverwrite="no">
